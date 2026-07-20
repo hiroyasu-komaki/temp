@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Theory — The Economics Behind the Switching Decision</title>
+<style>
+  :root{
+    --navy:#12305e; --ink:#1b2430; --gray:#5f6a77; --gray-l:#8b95a1;
+    --line:#d7dde5; --panel:#f5f7fa;
+    --pos:#2f6fc0; --pos-bg:#eef4fc; --pos-line:#a9c6e8;
+    --neg:#c2410c; --neg-bg:#fdf2ea; --neg-line:#eeb185;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; padding:26px 18px 44px; background:#eef1f5; color:var(--ink);
+    font-family:"Yu Gothic UI","Yu Gothic","Hiragino Kaku Gothic ProN","Meiryo","Segoe UI",sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  html[lang="en"] body{font-family:"Segoe UI","Helvetica Neue",Arial,sans-serif;}
+  .slide{
+    max-width:1240px; margin:0 auto; background:#fff; padding:34px 40px 36px;
+    box-shadow:0 2px 18px rgba(18,48,94,.10); border-top:5px solid var(--navy); position:relative;
+  }
+  .lang{position:absolute; top:16px; right:24px; display:flex; border:1px solid var(--line);}
+  .lang button{border:none; background:#fff; color:var(--gray); font:inherit; font-size:11px;
+    font-weight:700; letter-spacing:.06em; padding:5px 13px; cursor:pointer;}
+  .lang button+button{border-left:1px solid var(--line);}
+  .lang button.on{background:var(--navy); color:#fff;}
+  .lang button:focus-visible{outline:2px solid var(--neg); outline-offset:1px;}
+
+  .eyebrow{font-size:10.5px; font-weight:700; letter-spacing:.14em; color:var(--gray-l); margin-bottom:7px;}
+  h1{font-size:25px; margin:0 0 9px; color:var(--navy); font-weight:700; line-height:1.4; padding-right:130px;}
+  .lede{font-size:12.5px; color:var(--gray); line-height:1.8; margin:0 0 22px; padding-bottom:18px; border-bottom:1px solid var(--line);}
+  .lede b{color:var(--ink);}
+
+  .step{font-size:10.5px; font-weight:700; letter-spacing:.1em; color:#fff; background:var(--navy);
+    display:inline-block; padding:3px 11px; margin-bottom:12px;}
+  .step .n{opacity:.6; margin-right:6px;}
+
+  .def{border:1px solid var(--line); background:var(--panel); padding:18px 22px; margin-bottom:26px;}
+  .def .term{font-size:16px; font-weight:700; color:var(--navy); margin-bottom:6px;}
+  .def .term .sub{font-size:12px; color:var(--gray); font-weight:600; margin-left:8px;}
+  .def .body{font-size:12.5px; line-height:1.85;}
+  .def .body b{color:var(--neg);}
+  .def .src{font-size:10.5px; color:var(--gray-l); margin-top:10px; line-height:1.7; padding-top:9px; border-top:1px dashed var(--line);}
+  .def .src b{color:var(--gray); font-weight:700;}
+
+  .keyeq{display:grid; grid-template-columns:1fr 1fr; gap:12px; margin:14px 0 30px;}
+  .eq{border:1px solid var(--line); padding:12px 16px;}
+  .eq.p{border-left:4px solid var(--pos); background:var(--pos-bg);}
+  .eq.n{border-left:4px solid var(--neg); background:var(--neg-bg);}
+  .eq .k{font-size:10.5px; font-weight:700; letter-spacing:.06em; margin-bottom:5px;}
+  .eq.p .k{color:var(--pos);} .eq.n .k{color:var(--neg);}
+  .eq .f{font-size:13.5px; font-weight:700; font-family:Georgia,serif; margin-bottom:4px;}
+  .eq .d{font-size:11px; color:var(--gray); line-height:1.65;}
+
+  .formula{border:1px solid var(--navy); background:var(--panel); padding:14px 18px; margin:0 0 14px;
+    font-family:Georgia,"Times New Roman",serif; font-size:15px; font-weight:700; color:var(--navy); text-align:center;}
+  .formula .op{color:var(--gray-l); margin:0 6px; font-weight:400;}
+
+  .verdict{border-left:4px solid var(--neg); background:var(--neg-bg); padding:11px 16px; margin-bottom:26px;
+    font-size:12.5px; font-weight:700; color:#8a3708; line-height:1.7;}
+  .note{border-left:4px solid var(--navy); background:var(--panel); padding:11px 16px; margin-bottom:26px;
+    font-size:12px; line-height:1.8; color:var(--gray);}
+  .note b{color:var(--ink);}
+
+  table{width:100%; border-collapse:collapse; margin-bottom:26px;}
+  th,td{border:1px solid var(--line); padding:10px 13px; font-size:11.5px; line-height:1.7; vertical-align:top;}
+  thead th{background:var(--navy); color:#fff; font-weight:700; font-size:11.5px; border-color:var(--navy);}
+  th.rh{width:220px; background:#f0f3f8; color:var(--navy); font-weight:700; font-size:11.5px; text-align:left;}
+  td.mid{white-space:nowrap; color:var(--gray-l); font-size:11px;}
+  tbody tr:nth-child(even) td{background:#fafcfe;}
+
+  .refs{margin-top:24px; padding-top:14px; border-top:1px solid var(--line);
+    font-size:10px; color:var(--gray-l); line-height:1.85;}
+  .refs b{color:var(--gray); font-weight:700; letter-spacing:.06em;}
+
+  .nav{margin-top:22px; padding-top:14px; border-top:1px solid var(--line); display:flex; justify-content:space-between; font-size:11px;}
+  .nav a{color:var(--navy); text-decoration:none; font-weight:700;}
+  .nav a:hover{text-decoration:underline;}
+  .nav .sp{color:var(--gray-l); font-weight:400;}
+
+  @media(max-width:900px){
+    h1{padding-right:0; margin-top:38px;}
+    .keyeq{grid-template-columns:1fr;}
+    th.rh{width:auto;}
+    table{display:block; overflow-x:auto;}
+  }
+  @media print{body{background:#fff; padding:0;} .slide{box-shadow:none; max-width:none;} .lang,.nav{display:none;}}
+</style>
+</head>
+<body>
+<div class="slide">
+  <div class="lang" role="group" aria-label="Language">
+    <button id="btn-ja" class="on" onclick="setLang('ja')">日本語</button>
+    <button id="btn-en" onclick="setLang('en')">English</button>
+  </div>
+
+  <div class="eyebrow">CONCEPTUAL FOUNDATION</div>
+  <h1 data-ja="理論編 ─ 切替をめぐる意思決定を支える経済理論"
+      data-en="Theory: The Economics Behind the Switching Decision">理論編 ─ 切替をめぐる意思決定を支える経済理論</h1>
+
+  <p class="lede"
+     data-ja="本提案は思いつきの施策ではなく、<b>確立された経済理論から演繹される制度設計</b>である。<br>本章では、後続の課題認識から運用までのすべての打ち手が、どの理論に依拠しているかを最初に提示する。診断も提案も、ここで示す理論から<b>必然的に導かれる帰結</b>として読めるようにするためである。扱う理論は6つ ── ①スイッチングコストとロックイン、②リアルオプション、③コンテスタビリティと情報の非対称性、④メカニズムデザイン、⑤ポートフォリオ理論、⑥権限と責任の整合。"
+     data-en="This proposal is not an ad-hoc measure but <b>an institutional design deduced from established economic theory</b>.<br>This chapter sets out, at the outset, which theory each subsequent move — from the diagnosis through to operation — rests upon, so that the diagnosis and the proposal read as <b>consequences that follow necessarily</b> from the theory presented here. Six theories are treated: (1) switching costs and lock-in, (2) real options, (3) contestability and asymmetric information, (4) mechanism design, (5) portfolio theory, and (6) the alignment of authority and responsibility.">
+    本提案は思いつきの施策ではなく、<b>確立された経済理論から演繹される制度設計</b>である。<br>本章では、後続の課題認識から運用までのすべての打ち手が、どの理論に依拠しているかを最初に提示する。診断も提案も、ここで示す理論から<b>必然的に導かれる帰結</b>として読めるようにするためである。扱う理論は6つ ── ①スイッチングコストとロックイン、②リアルオプション、③コンテスタビリティと情報の非対称性、④メカニズムデザイン、⑤ポートフォリオ理論、⑥権限と責任の整合。
+  </p>
+
+  <!-- 0.1 -->
+  <div class="step"><span class="n">0.1</span><span data-ja="病理 ─ スイッチングコストとロックイン" data-en="THE DISEASE — SWITCHING COSTS AND LOCK-IN">病理 ─ スイッチングコストとロックイン</span></div>
+  <div class="def">
+    <div class="term" data-ja="事後独占（ロックイン）<span class='sub'>Ex-post Monopoly / Hold-up</span>" data-en="Ex-post Monopoly (Lock-in)<span class='sub'>事後独占</span>">事後独占（ロックイン）<span class="sub">Ex-post Monopoly / Hold-up</span></div>
+    <div class="body"
+      data-ja="出発点は、なぜ更新交渉が「見せかけの競争」に留まるのかである。表面的には移行コストが高いという費用の問題に見えるが、本質は<b>スイッチングコストによる事後独占</b>である。買い手が切替コストを負担できない状況は、既存ベンダーに<b>事後的な独占力</b>を生む。契約前は競争的でも、いったん導入すればスイッチングコストが参入障壁となり、更新局面では既存ベンダーが価格支配力を持つ。既存ベンダーが更新交渉で強気に出られるのは、道徳の問題ではなく、この<b>事後独占の構造的帰結</b>である。"
+      data-en="The starting point is why renewal negotiations remain a hollow show of competition. On the surface it looks like a matter of high switching costs — a cost problem — but at bottom it is <b>ex-post monopoly created by switching costs</b>. A buyer who cannot bear the switching cost hands the incumbent <b>ex-post market power</b>. However competitive things were before the contract, once the system is in place the switching cost becomes a barrier to entry, and at renewal the incumbent holds pricing power. That the incumbent can bargain hard is not a matter of morals; it is <b>a structural consequence of ex-post monopoly</b>.">
+      出発点は、なぜ更新交渉が「見せかけの競争」に留まるのかである。表面的には移行コストが高いという費用の問題に見えるが、本質は<b>スイッチングコストによる事後独占</b>である。買い手が切替コストを負担できない状況は、既存ベンダーに<b>事後的な独占力</b>を生む。契約前は競争的でも、いったん導入すればスイッチングコストが参入障壁となり、更新局面では既存ベンダーが価格支配力を持つ。既存ベンダーが更新交渉で強気に出られるのは、道徳の問題ではなく、この<b>事後独占の構造的帰結</b>である。
+    </div>
+    <div class="src"
+      data-ja="<b>帰結</b>　したがって移行コストの手当ては、単なる費用の工面ではなく、<b>事後独占を打ち消し、競争を事前・事後の両面で機能させるための構造的介入</b>である。依拠：Klemperer（スイッチングコスト）、Williamson（取引費用経済学／資産特殊性とホールドアップ）。"
+      data-en="<b>Consequence</b>　Funding the switching cost is therefore not merely raising money; it is <b>a structural intervention that cancels ex-post monopoly and makes competition work both before and after the contract</b>. After: Klemperer (switching costs); Williamson (transaction-cost economics — asset specificity and hold-up).">
+      <b>帰結</b>　したがって移行コストの手当ては、単なる費用の工面ではなく、<b>事後独占を打ち消し、競争を事前・事後の両面で機能させるための構造的介入</b>である。依拠：Klemperer（スイッチングコスト）、Williamson（取引費用経済学／資産特殊性とホールドアップ）。
+    </div>
+  </div>
+
+  <!-- 0.2 -->
+  <div class="step"><span class="n">0.2</span><span data-ja="予算の価値 ─ リアルオプション" data-en="THE VALUE OF THE BUDGET — REAL OPTIONS">予算の価値 ─ リアルオプション</span></div>
+  <div class="def">
+    <div class="term" data-ja="オプションプレミアム<span class='sub'>Option Premium</span>" data-en="Option Premium<span class='sub'>オプションプレミアム</span>">オプションプレミアム<span class="sub">Option Premium</span></div>
+    <div class="body"
+      data-ja="移行コストのリボルビング型プールは、財務的には<b>リアルオプション</b>として解釈できる。各契約は「満了という行使期限を持つオプション」であり、いま行使（切替着手）するか、情報がクリアになるまで待つかを、時間価値込みで判断する。決定的に重要なのは、<b>プール予算の価値は全額消費を前提としない</b>点である。「使える状態にあること自体が更新交渉のレバレッジを生む」──これは<b>オプションプレミアムそのもの</b>である。実際に切り替えるのは少数でよく、大半は「切り替えられる状態にあること」が交渉力として効く。"
+      data-en="The revolving pool for switching costs can, in financial terms, be read as <b>a real option</b>. Each contract is an option whose exercise deadline is its expiry; whether to exercise now (begin switching) or wait until the information clears is judged with time value included. The decisive point is that <b>the value of the pool does not presuppose spending it in full</b>. That merely being able to draw on it generates leverage in renewal talks — this <b>is the option premium itself</b>. Only a few contracts need actually be switched; for most, the state of being able to switch is what works as bargaining power.">
+      移行コストのリボルビング型プールは、財務的には<b>リアルオプション</b>として解釈できる。各契約は「満了という行使期限を持つオプション」であり、いま行使（切替着手）するか、情報がクリアになるまで待つかを、時間価値込みで判断する。決定的に重要なのは、<b>プール予算の価値は全額消費を前提としない</b>点である。「使える状態にあること自体が更新交渉のレバレッジを生む」──これは<b>オプションプレミアムそのもの</b>である。実際に切り替えるのは少数でよく、大半は「切り替えられる状態にあること」が交渉力として効く。
+    </div>
+    <div class="src"
+      data-ja="<b>制度への接続</b>　初期20百万円から実績を見て追加を引き出す逐次的なやり方は、<b>リアルオプションの逐次行使</b>に対応する。第2章のリボルビング予算設計は、この「行使可能性の価値」を予算の建て付けにそのまま落とし込んだものである。依拠：Myers（リアルオプション）、Dixit &amp; Pindyck（不確実性下の投資）。"
+      data-en="<b>Wiring into the design</b>　Drawing down further from an initial ¥20M on the strength of demonstrated results corresponds to <b>sequential exercise of a real option</b>. The revolving-budget design in Chapter 2 translates this &lsquo;value of exercisability&rsquo; directly into the structure of the budget. After: Myers (real options); Dixit &amp; Pindyck (investment under uncertainty).">
+      <b>制度への接続</b>　初期20百万円から実績を見て追加を引き出す逐次的なやり方は、<b>リアルオプションの逐次行使</b>に対応する。第2章のリボルビング予算設計は、この「行使可能性の価値」を予算の建て付けにそのまま落とし込んだものである。依拠：Myers（リアルオプション）、Dixit &amp; Pindyck（不確実性下の投資）。
+    </div>
+  </div>
+
+  <!-- 0.3 -->
+  <div class="step"><span class="n">0.3</span><span data-ja="土俵の成否 ─ コンテスタビリティと情報の非対称性" data-en="WHETHER AN ARENA FORMS — CONTESTABILITY AND ASYMMETRIC INFORMATION">土俵の成否 ─ コンテスタビリティと情報の非対称性</span></div>
+  <p class="note" style="margin-bottom:14px;"
+    data-ja="切替が現実の選択肢になるかどうかは、<b>市場のコンテスタビリティ（競争可能性）</b>で決まる。これは、実際に別ベンダーがいま存在するかではなく、<b>競争の土俵が成立しうるか</b>の問題である。実行確度 p を単一の数字で扱うと、性質の異なる2つの事象が潰れて見えなくなる。そこで確度を2つの確率の積に分解する："
+    data-en="Whether switching becomes a real option is decided by <b>the contestability of the market</b> — not whether a rival vendor happens to exist right now, but whether <b>an arena for competition can form at all</b>. Treating the confidence p as a single number collapses two events of different natures. We therefore decompose it into a product of two probabilities:">
+    切替が現実の選択肢になるかどうかは、<b>市場のコンテスタビリティ（競争可能性）</b>で決まる。これは、実際に別ベンダーがいま存在するかではなく、<b>競争の土俵が成立しうるか</b>の問題である。実行確度 p を単一の数字で扱うと、性質の異なる2つの事象が潰れて見えなくなる。そこで確度を2つの確率の積に分解する：
+  </p>
+  <div class="formula">p <span class="op">=</span> contestability <span class="op">×</span> execution</div>
+  <div class="keyeq">
+    <div class="eq p">
+      <div class="k" data-ja="土俵成立の確率" data-en="PROBABILITY THE ARENA FORMS">土俵成立の確率</div>
+      <div class="f" data-ja="contestability" data-en="contestability">contestability</div>
+      <div class="d"
+        data-ja="代替供給者の存在（市場の厚み）、要件の特定可能性、スイッチングコストの高低で決まる。三問コンテスタビリティテスト（Q1特定可能性・Q2市場厚み・Q3スイッチングコスト）は、この理論を運用フレームに落としたもの。"
+        data-en="Decided by the existence of alternative suppliers (thickness of the market), the specifiability of requirements, and the level of switching costs. The three-question contestability test (Q1 specifiability, Q2 market thickness, Q3 switching cost) is this theory turned into an operating frame.">
+        代替供給者の存在（市場の厚み）、要件の特定可能性、スイッチングコストの高低で決まる。三問コンテスタビリティテスト（Q1特定可能性・Q2市場厚み・Q3スイッチングコスト）は、この理論を運用フレームに落としたもの。
+      </div>
+    </div>
+    <div class="eq n">
+      <div class="k" data-ja="実行しきる確率" data-en="PROBABILITY OF SEEING IT THROUGH">実行しきる確率</div>
+      <div class="f" data-ja="execution" data-en="execution">execution</div>
+      <div class="d"
+        data-ja="土俵成立後、現場が一時延長に逃げず切替を実行しきる確率。繰り返し延長される案件は現場の実行意欲が構造的に低いシグナルであり、この確率を下げる。"
+        data-en="Given that the arena forms, the probability that the field sees the switch through rather than fleeing into a temporary extension. Contracts extended again and again signal structurally low will to execute, and lower this probability.">
+        土俵成立後、現場が一時延長に逃げず切替を実行しきる確率。繰り返し延長される案件は現場の実行意欲が構造的に低いシグナルであり、この確率を下げる。
+      </div>
+    </div>
+  </div>
+  <p class="note"
+    data-ja="この分離は情報の非対称性の議論に接続する。「切替先が構造的に不在（Single-source）」なのか「今回はたまたま現れなかった」のかを区別し、前者は切替仮説を非活性化して交渉トラックへ移す。<b>これは第5章の情報更新則の理論的根拠である。</b>依拠：Baumol らのコンテスタブル市場理論、情報の非対称性の経済学。"
+    data-en="This separation connects to the economics of asymmetric information: distinguish whether an alternative is <b>structurally absent (single-source)</b> or simply <b>failed to appear this time</b>, and in the former case deactivate the switching hypothesis and move to a negotiation track. <b>This is the theoretical basis for the information-update rules in Chapter 5.</b> After: Baumol et al. (contestable markets); the economics of asymmetric information.">
+    この分離は情報の非対称性の議論に接続する。「切替先が構造的に不在（Single-source）」なのか「今回はたまたま現れなかった」のかを区別し、前者は切替仮説を非活性化して交渉トラックへ移す。<b>これは第5章の情報更新則の理論的根拠である。</b>依拠：Baumol らのコンテスタブル市場理論、情報の非対称性の経済学。
+  </p>
+
+  <!-- 0.4 -->
+  <div class="step"><span class="n">0.4</span><span data-ja="引き出し設計 ─ メカニズムデザイン" data-en="THE DRAWDOWN DESIGN — MECHANISM DESIGN">引き出し設計 ─ メカニズムデザイン</span></div>
+  <div class="def">
+    <div class="term" data-ja="インセンティブ両立性<span class='sub'>Incentive Compatibility</span>" data-en="Incentive Compatibility<span class='sub'>インセンティブ両立性</span>">インセンティブ両立性<span class="sub">Incentive Compatibility</span></div>
+    <div class="body"
+      data-ja="「いくら必要か・いくら下げられるか」を年度初めに総額でコミットせず、初期投資に対する実績をゲートとして段階的に引き出す設計は、<b>情報の非対称性下でのメカニズムデザイン</b>の発想に基づく。年度初めには移行対象も削減額も確定できない。この状況で総額コミットを求める契約は<b>不誠実な約束を誘発する</b>（過大なコミット、あるいは安全側に倒した過小なコミット）。小さく賭けて成果を検証してから追加する構造は、<b>インセンティブ両立的</b>である。実績という検証可能なシグナルにゲートを置くことで、VMOのマンデート拡大を宣言ではなく実績で正当化する。"
+      data-en="Not committing a total figure at the start of the year for &lsquo;how much is needed / how much can be saved&rsquo;, but drawing down in stages gated on results against an initial investment, rests on <b>mechanism design under asymmetric information</b>. At the start of the year neither the targets nor the savings can be fixed. A contract demanding a total commitment in that situation <b>induces dishonest promises</b> — either over-commitment, or an over-cautious under-commitment. A structure that bets small, verifies the result, then adds, is <b>incentive-compatible</b>. Gating on the verifiable signal of results justifies expanding the VMO&rsquo;s mandate by demonstrated track record rather than by declaration.">
+      「いくら必要か・いくら下げられるか」を年度初めに総額でコミットせず、初期投資に対する実績をゲートとして段階的に引き出す設計は、<b>情報の非対称性下でのメカニズムデザイン</b>の発想に基づく。年度初めには移行対象も削減額も確定できない。この状況で総額コミットを求める契約は<b>不誠実な約束を誘発する</b>（過大なコミット、あるいは安全側に倒した過小なコミット）。小さく賭けて成果を検証してから追加する構造は、<b>インセンティブ両立的</b>である。実績という検証可能なシグナルにゲートを置くことで、VMOのマンデート拡大を宣言ではなく実績で正当化する。
+    </div>
+    <div class="src" data-ja="依拠：Myerson（メカニズムデザイン／顕示原理）。" data-en="After: Myerson (mechanism design; the revelation principle).">依拠：Myerson（メカニズムデザイン／顕示原理）。</div>
+  </div>
+
+  <!-- 0.5 -->
+  <div class="step"><span class="n">0.5</span><span data-ja="配分の判断 ─ ポートフォリオ理論とリスク調整" data-en="THE ALLOCATION DECISION — PORTFOLIO THEORY AND RISK ADJUSTMENT">配分の判断 ─ ポートフォリオ理論とリスク調整</span></div>
+  <div class="def">
+    <div class="term" data-ja="平均-分散最適化<span class='sub'>Mean–Variance Optimisation</span>" data-en="Mean–Variance Optimisation<span class='sub'>平均-分散最適化</span>">平均-分散最適化<span class="sub">Mean–Variance Optimisation</span></div>
+    <div class="body"
+      data-ja="限られた手元資金を「一件に集中させるか、複数案件に分散させるか」。この判断は<b>平均-分散型のポートフォリオ選択理論</b>に対応する。期待リターンだけでなくリスク（分散）を明示的にペナルティとして扱い、リスク回避度 λ で選好を表現する。λ を上げれば「確実な小さい勝ち」を、下げれば「不確実な大きい勝ち」を好む。ここが決定的な帰結を生む ── <b>「一件集中か分散か」という本来もめる論点が、リスク回避度 λ という一つの合意事項から内生的に決まる</b>。勘や声の大きさではなく、同じ計算式から機械的に導かれる判断が提示される。"
+      data-en="Whether to concentrate limited funds on one contract or spread them across several corresponds to <b>mean&ndash;variance portfolio selection</b>. Risk (variance), not just expected return, is treated as an explicit penalty, and preference is expressed through a risk-aversion parameter &lambda;. Raise &lambda; and one prefers &lsquo;a sure small win&rsquo;; lower it and one prefers &lsquo;an uncertain large win&rsquo;. This yields the decisive result: <b>the perennially contentious question of &lsquo;concentrate or diversify&rsquo; is settled endogenously by the single agreed parameter &lambda;</b>. What is presented is a judgement derived mechanically from one formula — not from instinct or the loudest voice.">
+      限られた手元資金を「一件に集中させるか、複数案件に分散させるか」。この判断は<b>平均-分散型のポートフォリオ選択理論</b>に対応する。期待リターンだけでなくリスク（分散）を明示的にペナルティとして扱い、リスク回避度 λ で選好を表現する。λ を上げれば「確実な小さい勝ち」を、下げれば「不確実な大きい勝ち」を好む。ここが決定的な帰結を生む ── <b>「一件集中か分散か」という本来もめる論点が、リスク回避度 λ という一つの合意事項から内生的に決まる</b>。勘や声の大きさではなく、同じ計算式から機械的に導かれる判断が提示される。
+    </div>
+    <div class="src" data-ja="<b>制度への接続</b>　第3章のスコアリング（Score = V × U × R）と第2層の予算配分の数理的な背骨。依拠：Markowitz（ポートフォリオ選択）。" data-en="<b>Wiring into the design</b>　The mathematical spine of the Chapter 3 scoring (Score = V × U × R) and the second-layer budget allocation. After: Markowitz (portfolio selection).">
+      <b>制度への接続</b>　第3章のスコアリング（Score = V × U × R）と第2層の予算配分の数理的な背骨。依拠：Markowitz（ポートフォリオ選択）。
+    </div>
+  </div>
+
+  <!-- 0.6 -->
+  <div class="step"><span class="n">0.6</span><span data-ja="ガバナンス ─ 権限と責任の整合" data-en="GOVERNANCE — ALIGNING AUTHORITY AND RESPONSIBILITY">ガバナンス ─ 権限と責任の整合</span></div>
+  <div class="verdict"
+    data-ja="三者構造（現場 / 所管部門 / VMO のパラメータ所有分離）は、組織の意思決定権限の配分に関する設計原理に基づく。VMOはプロセスの整合性を所有しつつ、独立した採点権限は持たず、実行責任は所管部門と共有する。<b>権限と責任（アカウンタビリティ）を一致させることで、越権と責任回避の双方を防ぐ。</b>原資をIT組織長が握ったままにするリボルビング設計（第2章）は、この原理の制度的表現である。"
+    data-en="The three-party structure (separating parameter ownership across field / owning department / VMO) rests on a design principle for allocating decision authority within an organisation. The VMO owns the integrity of the process but holds no independent scoring authority, and shares execution responsibility with the owning department. <b>Aligning authority with responsibility (accountability) prevents both overreach and the shirking of responsibility.</b> Keeping the funds in the hands of the IT organisation head (Chapter 2) is the institutional expression of this principle.">
+    三者構造（現場 / 所管部門 / VMO のパラメータ所有分離）は、組織の意思決定権限の配分に関する設計原理に基づく。VMOはプロセスの整合性を所有しつつ、独立した採点権限は持たず、実行責任は所管部門と共有する。<b>権限と責任（アカウンタビリティ）を一致させることで、越権と責任回避の双方を防ぐ。</b>原資をIT組織長が握ったままにするリボルビング設計（第2章）は、この原理の制度的表現である。
+  </div>
+
+  <!-- 0.7 -->
+  <div class="step"><span class="n">0.7</span><span data-ja="理論から提案へ" data-en="FROM THEORY TO PROPOSAL">理論から提案へ</span></div>
+  <p class="note" style="margin-bottom:14px;"
+    data-ja="以上の6理論は独立した知識ではなく、<b>一つの制度設計に収束する</b>。どの理論がどの打ち手を導くかを一覧する："
+    data-en="These six theories are not separate pieces of knowledge; they <b>converge on a single institutional design</b>. The table lists which theory leads to which move:">
+    以上の6理論は独立した知識ではなく、<b>一つの制度設計に収束する</b>。どの理論がどの打ち手を導くかを一覧する：
+  </p>
+  <table>
+    <thead>
+      <tr>
+        <th class="rh" data-ja="依拠する理論" data-en="Theory">依拠する理論</th>
+        <th data-ja="導かれる打ち手" data-en="The move it leads to">導かれる打ち手</th>
+        <th data-ja="参照" data-en="See">参照</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td class="rh" data-ja="スイッチングコスト／ロックイン" data-en="Switching costs / lock-in">スイッチングコスト／ロックイン</td><td data-ja="移行コストの手当て＝事後独占の打ち消し" data-en="Funding switching costs = cancelling ex-post monopoly">移行コストの手当て＝事後独占の打ち消し</td><td class="mid" data-ja="第1章" data-en="Ch.1">第1章</td></tr>
+      <tr><td class="rh" data-ja="リアルオプション" data-en="Real options">リアルオプション</td><td data-ja="リボルビング型予算・待機価値・逐次行使" data-en="Revolving budget; value of waiting; sequential exercise">リボルビング型予算・待機価値・逐次行使</td><td class="mid" data-ja="第2章" data-en="Ch.2">第2章</td></tr>
+      <tr><td class="rh" data-ja="コンテスタビリティ／情報の非対称性" data-en="Contestability / asymmetric information">コンテスタビリティ／情報の非対称性</td><td data-ja="確度の p = contestability × execution 分解、情報更新則" data-en="Decomposing p = contestability × execution; information-update rules">確度の p = contestability × execution 分解、情報更新則</td><td class="mid" data-ja="第3・5章" data-en="Ch.3, 5">第3・5章</td></tr>
+      <tr><td class="rh" data-ja="メカニズムデザイン" data-en="Mechanism design">メカニズムデザイン</td><td data-ja="総額コミットせず実績ゲートで段階引き出し" data-en="No total commitment; staged drawdown gated on results">総額コミットせず実績ゲートで段階引き出し</td><td class="mid" data-ja="第2章" data-en="Ch.2">第2章</td></tr>
+      <tr><td class="rh" data-ja="ポートフォリオ理論" data-en="Portfolio theory">ポートフォリオ理論</td><td data-ja="Score = V × U × R とリスク調整配分、λ の内生化" data-en="Score = V × U × R and risk-adjusted allocation; endogenous λ">Score = V × U × R とリスク調整配分、λ の内生化</td><td class="mid" data-ja="第3章" data-en="Ch.3">第3章</td></tr>
+      <tr><td class="rh" data-ja="権限と責任の整合" data-en="Alignment of authority and responsibility">権限と責任の整合</td><td data-ja="三者構造ガバナンス" data-en="Three-party governance structure">三者構造ガバナンス</td><td class="mid" data-ja="第2章" data-en="Ch.2">第2章</td></tr>
+    </tbody>
+  </table>
+  <div class="verdict"
+    data-ja="<b>本提案の立場</b>　移行コストのプールは、コスト削減の実行予算ではない。それは<b>「いつでも切り替えられる」という信憑性を制度として保有し、更新価格を下げるための情報・レバレッジ機構</b>である。切替が8割起きないことが問題なのではない。<b>切り替えられる状態にあるかどうかを、我々が制度として保証できていない</b>ことが問題なのである。"
+    data-en="<b>The position taken here</b>　The pool for switching costs is not an execution budget for cost reduction. It is <b>an instrument of information and leverage — holding, as an institution, the credible ability to switch, in order to lower the renewal price</b>. The problem is not that switching fails to happen 80% of the time. It is that <b>we have no institutional guarantee that switching remains possible at all</b>.">
+    <b>本提案の立場</b>　移行コストのプールは、コスト削減の実行予算ではない。それは<b>「いつでも切り替えられる」という信憑性を制度として保有し、更新価格を下げるための情報・レバレッジ機構</b>である。切替が8割起きないことが問題なのではない。<b>切り替えられる状態にあるかどうかを、我々が制度として保証できていない</b>ことが問題なのである。
+  </div>
+
+  <div class="refs">
+    <b data-ja="主要文献" data-en="KEY REFERENCES">主要文献</b>　Markowitz, H. (1952) "Portfolio Selection," <i>J. Finance</i>. ／ Myers, S. (1977) "Determinants of Corporate Borrowing," <i>J. Financial Economics</i>. ／ Myerson, R. (1981) "Optimal Auction Design," <i>Math. OR</i>. ／ Baumol, W., Panzar, J. &amp; Willig, R. (1982) <i>Contestable Markets and the Theory of Industry Structure</i>. ／ Williamson, O. (1985) <i>The Economic Institutions of Capitalism</i>. ／ Dixit, A. &amp; Pindyck, R. (1994) <i>Investment under Uncertainty</i>. ／ Klemperer, P. (1995) "Competition when Consumers have Switching Costs," <i>Rev. Econ. Studies</i>.
+  </div>
+
+  <div class="nav">
+    <a href="../index.html" data-ja="◀ トップへ" data-en="◀ Home">◀ トップへ</a>
+    <a href="01_Problem.html" data-ja="次へ：課題編 ─ なぜ切替が進まないのか ▶" data-en="Next: The Problem — Why Switching Never Happens ▶">次へ：課題編 ─ なぜ切替が進まないのか ▶</a>
+  </div>
+</div>
+
+<script>
+function setLang(l){
+  document.querySelectorAll('[data-ja]').forEach(function(el){
+    var v = el.getAttribute('data-' + l);
+    if (v !== null) el.innerHTML = v;
+  });
+  document.documentElement.lang = l;
+  document.getElementById('btn-ja').classList.toggle('on', l === 'ja');
+  document.getElementById('btn-en').classList.toggle('on', l === 'en');
+}
+</script>
+</body>
+</html>

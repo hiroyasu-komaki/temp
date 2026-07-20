@@ -1,0 +1,2088 @@
+<!DOCTYPE html><html lang="ja"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>【様式2】調達仕様書</title>
+<style>
+  :root{
+    --navy:#12305e; --navy2:#2a4d84; --ink:#1b2430; --gray:#5f6a77; --gray-l:#8b95a1;
+    --line:#d7dde5; --panel:#f5f7fa; --bg:#eef1f5;
+    --pos:#2f6fc0; --pos-bg:#eef4fc;
+    --neg:#c2410c; --neg-bg:#fdf2ea; --neg-line:#eeb185;
+    --ok:#0f7b6c; --ok-bg:#e9f5f2;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0; padding:0 0 80px; background:var(--bg); color:var(--ink);
+    font-family:"Yu Gothic UI","Yu Gothic","Hiragino Kaku Gothic ProN","Meiryo","Segoe UI",sans-serif;
+    -webkit-font-smoothing:antialiased; font-size:13px; line-height:1.7;
+  }
+
+  /* ---------- Sticky status bar ---------- */
+  .bar{
+    position:sticky; top:0; z-index:50; background:var(--navy); color:#fff;
+    padding:9px 22px; display:flex; align-items:center; gap:16px; flex-wrap:wrap;
+    box-shadow:0 2px 10px rgba(18,48,94,.18);
+  }
+  .bar .ttl{font-size:13px; font-weight:700; letter-spacing:.04em;}
+  .bar .sel{font-size:11.5px; opacity:.9; display:flex; gap:7px; align-items:center; flex-wrap:wrap;}
+  .chip{background:rgba(255,255,255,.15); border:1px solid rgba(255,255,255,.3);
+    padding:1px 8px; font-size:11px; font-weight:700; white-space:nowrap; margin-right:4px;}
+  .chip.sub{background:transparent; opacity:.82; font-weight:400;}
+  .chip.none{background:transparent; border-style:dashed; opacity:.6; font-weight:400;}
+  .bar .spacer{flex:1;}
+  .bar button{
+    font:inherit; font-size:11px; font-weight:700; letter-spacing:.04em; cursor:pointer;
+    background:#fff; color:var(--navy); border:none; padding:5px 13px;
+  }
+  .bar button.ghost{background:transparent; color:#fff; border:1px solid rgba(255,255,255,.45);}
+  .bar button:hover{opacity:.85;}
+  .bar button:focus-visible{outline:2px solid #fff; outline-offset:2px;}
+  .lang{display:flex; border:1px solid rgba(255,255,255,.45);}
+  .lang button{background:transparent; color:#fff; padding:4px 11px; font-size:10.5px;}
+  .lang button+button{border-left:1px solid rgba(255,255,255,.45);}
+  .lang button.on{background:#fff; color:var(--navy);}
+  html[lang="en"] body{font-family:"Segoe UI","Helvetica Neue",Arial,sans-serif;}
+
+  .wrap{max-width:1080px; margin:0 auto; padding:26px 18px 0;}
+
+  /* ---------- Header ---------- */
+  .head{background:#fff; border-top:5px solid var(--navy); padding:26px 34px 24px; margin-bottom:16px;
+    box-shadow:0 2px 18px rgba(18,48,94,.09);}
+  .head .eyebrow{font-size:10px; font-weight:700; letter-spacing:.14em; color:var(--gray-l); margin-bottom:6px;}
+  .head h1{font-size:23px; margin:0 0 9px; color:var(--navy); font-weight:700; line-height:1.4;}
+  .head .lede{font-size:12px; color:var(--gray); line-height:1.85; margin:0;
+    padding-top:13px; border-top:1px solid var(--line);}
+  .head .lede b{color:var(--ink);}
+
+  /* ---------- Section ---------- */
+  section{background:#fff; margin-bottom:14px; border:1px solid var(--line);
+    box-shadow:0 1px 8px rgba(18,48,94,.05);}
+  section.hidden{display:none;}
+  .sh{
+    display:flex; align-items:baseline; gap:11px; padding:13px 22px;
+    background:var(--panel); border-bottom:1px solid var(--line);
+  }
+  .sh .no{font-size:11px; font-weight:700; letter-spacing:.08em; color:#fff; background:var(--navy);
+    padding:2px 9px; flex:none;}
+  .sh h2{font-size:15px; margin:0; color:var(--navy); font-weight:700; line-height:1.5;}
+  .sh .tag{margin-left:auto; font-size:10px; font-weight:700; letter-spacing:.05em;
+    color:var(--neg); background:var(--neg-bg); border:1px solid var(--neg-line); padding:1px 7px; flex:none;}
+  .sb{padding:20px 22px 24px;}
+
+  h3{font-size:13px; color:var(--navy); font-weight:700; margin:22px 0 9px;
+    padding-bottom:5px; border-bottom:1px solid var(--line);}
+  h3:first-child{margin-top:0;}
+  h4{font-size:12px; color:var(--ink); font-weight:700; margin:16px 0 7px;}
+  .note{font-size:11.5px; color:var(--gray); line-height:1.8; margin:0 0 12px;}
+  .note b{color:var(--ink);}
+  .note.warn{background:var(--neg-bg); border-left:3px solid var(--neg); padding:9px 13px; color:#8a3708;}
+  .note.warn b{color:var(--neg);}
+
+  /* ---------- Tables ---------- */
+  table{width:100%; border-collapse:collapse; margin-bottom:14px;}
+  th,td{border:1px solid var(--line); padding:7px 10px; font-size:11.5px; line-height:1.65;
+    vertical-align:middle; text-align:left;}
+  th{background:var(--navy2); color:#fff; font-weight:700; font-size:11px;}
+  td.lbl{background:var(--panel); font-weight:700; color:var(--ink); width:32%;}
+  td.lbl .h{display:block; font-weight:400; color:var(--gray-l); font-size:10.5px; margin-top:2px;}
+  td.c{text-align:center; width:44px;}
+  tbody tr:hover td{background:#fbfcfe;}
+  tbody tr:hover td.lbl{background:#eef2f7;}
+
+  /* ---------- Inputs ---------- */
+  input[type=text], input[type=number], input[type=date], textarea, select{
+    font:inherit; font-size:12px; color:var(--ink); width:100%;
+    border:1px solid var(--line); background:#fff; padding:5px 8px;
+  }
+  input:focus, textarea:focus, select:focus{outline:2px solid var(--pos); outline-offset:-1px; border-color:var(--pos);}
+  textarea{resize:vertical; min-height:66px; line-height:1.75;}
+  input[type=checkbox], input[type=radio]{width:14px; height:14px; accent-color:var(--navy); cursor:pointer; margin:0;}
+  label.ck{display:inline-flex; align-items:center; gap:5px; font-size:11.5px; cursor:pointer;
+    margin-right:14px; line-height:1.9;}
+  label.ck:hover{color:var(--navy);}
+  .ckgrid{display:flex; flex-wrap:wrap; gap:0 4px;}
+  .unit{font-size:11px; color:var(--gray-l); white-space:nowrap;}
+  .inline{display:flex; align-items:center; gap:6px;}
+
+  /* ---------- 0-2 Type selector ---------- */
+  .typetbl th.g{background:var(--navy); font-size:11px;}
+  .typetbl td.cat{background:var(--panel); font-weight:700; color:var(--navy); font-size:11px;
+    vertical-align:middle; width:150px;}
+  .typetbl td.code{font-weight:700; color:var(--gray); font-family:Georgia,serif; width:44px; text-align:center;}
+  .typetbl td.nm{font-size:11.5px;}
+  .typetbl tr.on td{background:var(--pos-bg);}
+  .typetbl tr.on td.nm{font-weight:700; color:var(--navy);}
+  .typetbl tr.on td.cat{background:#dfeaf7;}
+  .typetbl tr.onsub td{background:#fafbfd;}
+  .typetbl tr.onsub td.nm{font-weight:700; color:var(--gray);}
+
+  /* ---------- 0-3 Section map ---------- */
+  .map{border:1px solid var(--line); background:var(--panel); padding:0;}
+  .map .mh{background:var(--navy2); color:#fff; padding:9px 15px; font-size:12px; font-weight:700;}
+  .map .mb{padding:14px 16px;}
+  .map .empty{font-size:11.5px; color:var(--gray-l); line-height:1.8;}
+  .maplist{display:flex; flex-wrap:wrap; gap:6px; margin-bottom:12px;}
+  .pill{font-size:11px; font-weight:700; padding:3px 10px; border:1px solid; white-space:nowrap;}
+  .pill.req{color:var(--pos); border-color:#a9c6e8; background:var(--pos-bg);}
+  .pill.add{color:var(--neg); border-color:var(--neg-line); background:var(--neg-bg);}
+  .pill.skip{color:var(--gray-l); border-color:var(--line); background:#fff; font-weight:400;
+    text-decoration:line-through;}
+  .maprow{display:grid; grid-template-columns:96px 1fr; gap:10px; align-items:start;
+    padding:7px 0; border-top:1px dotted var(--line); font-size:11px;}
+  .maprow:first-child{border-top:none; padding-top:0;}
+  .maprow .k{font-weight:700; color:var(--gray-l); font-size:10px; letter-spacing:.05em; padding-top:3px;}
+
+  /* ---------- Standard clauses ---------- */
+  .fixed td.lbl{width:auto;}
+  .fixed td.c input{pointer-events:none;}
+  tr.cond{display:none;}
+  tr.cond.show{display:table-row;}
+  tr.cond td{background:var(--neg-bg);}
+  tr.cond td.lbl{background:#fbe6d6; color:var(--neg);}
+  tr.cond .why{display:block; font-weight:400; color:#8a3708; font-size:10.5px; margin-top:2px;}
+
+  /* ---------- Type-specific blocks ---------- */
+  .tblk{border:1px solid var(--line); margin-bottom:16px;}
+  .tblk.hidden{display:none;}
+  .tblk .th{background:var(--neg); color:#fff; padding:9px 15px; font-size:12.5px; font-weight:700;
+    display:flex; align-items:center; gap:9px;}
+  .tblk .th .cd{background:rgba(255,255,255,.2); padding:1px 7px; font-size:10.5px;
+    font-family:Georgia,serif; letter-spacing:.05em;}
+  .tblk .th .rl{margin-left:auto; font-size:10px; font-weight:400; opacity:.85;}
+  .tblk.assec .th{background:var(--gray); }
+  .tblk .tb{padding:16px 18px 18px;}
+  .tblk table:last-child{margin-bottom:0;}
+
+  .lock{font-size:10px; font-weight:700; color:var(--neg); background:var(--neg-bg);
+    border:1px solid var(--neg-line); padding:0 5px; margin-left:5px; white-space:nowrap;}
+
+  /* ---------- File upload ---------- */
+  .drop{border:1px dashed #a9b4c2; background:var(--panel); padding:12px 14px;}
+  .drop:hover{border-color:var(--pos); background:#fbfdff;}
+  .drop input[type=file]{font-size:11.5px; width:100%; cursor:pointer;}
+  .drop .cap{font-size:10.5px; color:var(--gray-l); line-height:1.7; margin-top:6px;}
+  .drop .cap b{color:var(--neg);}
+  .filelist{margin-top:8px; font-size:11px;}
+  .filelist .f{display:flex; align-items:center; gap:8px; padding:3px 0;
+    border-top:1px dotted var(--line); color:var(--gray);}
+  .filelist .f .nm{flex:1; color:var(--ink); word-break:break-all;}
+  .filelist .f .sz{color:var(--gray-l); white-space:nowrap; font-size:10.5px;}
+  .quota{margin-top:9px; padding:7px 11px; background:#fff; border:1px solid var(--line);
+    font-size:11px; display:flex; align-items:center; gap:9px;}
+  .quota .bar2{flex:1; height:5px; background:var(--line); overflow:hidden;}
+  .quota .bar2 i{display:block; height:100%; background:var(--pos); width:0; transition:width .2s;}
+  .quota.over .bar2 i{background:var(--neg);}
+  .quota .n{font-weight:700; color:var(--gray); white-space:nowrap; font-size:10.5px;}
+  .quota.over .n{color:var(--neg);}
+
+  /* ---------- Guide text inside textarea blocks ---------- */
+  .guide{background:var(--pos-bg); border-left:3px solid var(--pos); padding:10px 13px;
+    margin-bottom:9px; font-size:11px; line-height:1.85; color:#2c4d76;}
+  .guide b{color:var(--navy);}
+  .guide ul{margin:5px 0 0; padding-left:17px;}
+  .guide li{margin-bottom:2px;}
+
+  /* ---------- 0-3 jump links ---------- */
+  .jump{display:flex; flex-wrap:wrap; gap:6px;}
+  a.pill{cursor:pointer; text-decoration:none; transition:background .12s;}
+  a.pill:hover{background:var(--navy); color:#fff; border-color:var(--navy);}
+  a.pill:focus-visible{outline:2px solid var(--navy); outline-offset:2px;}
+  a.pill.add:hover{background:var(--neg); border-color:var(--neg);}
+  section:target .sh{background:#e4ecf6;}
+
+  /* ---------- Budget grid ---------- */
+  .money td.lbl{width:36%;}
+  .money .yen{display:inline-flex; align-items:center; gap:5px;}
+  .money input[type=text]{width:190px; text-align:right;}
+  .money .hint{font-size:10.5px; color:var(--gray-l); margin-left:8px;}
+
+  /* ---------- Footer / print ---------- */
+  .foot{margin-top:20px; padding:16px 22px; background:#fff; border:1px solid var(--line);
+    font-size:11.5px; color:var(--gray); line-height:1.9;}
+  .foot b{color:var(--ink);}
+
+  @media(max-width:820px){
+    .wrap{padding:16px 10px 0;}
+    .head{padding:20px 18px;}
+    .sb{padding:16px 13px 18px;}
+    .sh{padding:11px 14px;}
+    td.lbl{width:auto;}
+    table, tbody, tr, td, th{display:block; width:100%;}
+    thead{display:none;}
+    tr{margin-bottom:9px; border:1px solid var(--line);}
+    td{border:none; border-bottom:1px solid var(--line);}
+    td:last-child{border-bottom:none;}
+    td.c{text-align:left;}
+    .maprow{grid-template-columns:1fr;}
+  }
+  @media print{
+    body{background:#fff; padding:0;}
+    .bar{display:none;}
+    section, .head, .foot{box-shadow:none; page-break-inside:avoid;}
+    .hidden{display:none !important;}
+  }
+</style>
+</head>
+<body>
+
+<div class="bar">
+  <span class="ttl" data-ja="様式2　調達仕様書" data-en="Form 2  Procurement Specification">様式2　調達仕様書</span>
+  <span class="sel" id="barSel"><span class="chip none">類型が未選択です</span></span>
+  <span class="spacer"></span>
+  <span class="lang" role="group" aria-label="Language">
+    <button type="button" id="btnJa" class="on">日本語</button>
+    <button type="button" id="btnEn">English</button>
+  </span>
+  <button type="button" class="ghost" id="btnAll" data-ja="全セクションを表示" data-en="Show all sections">全セクションを表示</button>
+  <button type="button" id="btnPrint" data-ja="印刷 / PDF" data-en="Print / PDF">印刷 / PDF</button>
+</div>
+
+<div class="wrap">
+
+  <div class="head">
+    <div class="eyebrow" data-ja="IT PROCUREMENT GOVERNANCE ／ 競争調達フレームワーク" data-en="IT PROCUREMENT GOVERNANCE / THE COMPETITIVE SOURCING FRAMEWORK">IT PROCUREMENT GOVERNANCE ／ 競争調達フレームワーク</div>
+    <h1 data-ja="【様式2】調達仕様書" data-en="Form 2 — Procurement Specification">【様式2】調達仕様書</h1>
+    <p class="lede" data-ja="本様式は、<b>競争入札に付す案件においてのみ作成する。</b>随意契約案件では作成しない。<br>
+      <b>0-2 で契約類型を選択すると、記入すべきセクションだけが表示される。</b>" data-en="This form is completed <b>only for cases going to competitive tender.</b> It is not used for sole-source awards.<br>
+      <b>Select a contract type in 0-2 and only the sections you need will be shown.</b>
+    ">
+      本様式は、<b>競争入札に付す案件においてのみ作成する。</b>随意契約案件では作成しない。<br>
+      <b>0-2 で契約類型を選択すると、記入すべきセクションだけが表示される。</b>
+    </p>
+  </div>
+
+  <!-- ============ 0 ============ -->
+  <section id="sec0">
+    <div class="sh"><span class="no">0</span><h2 data-ja="案件情報" data-en="Case information">案件情報</h2></div>
+    <div class="sb">
+
+      <h3 data-ja="0-1. 基本情報" data-en="0-1. Basic information">0-1. 基本情報</h3>
+      <table>
+        <tbody><tr><td class="lbl" data-ja="件名" data-en="Title">件名</td><td><input type="text"></td></tr>
+        <tr><td class="lbl" data-ja="契約予定期間" data-en="Contract period">契約予定期間</td><td><input type="text" placeholder="例：2026年10月1日 〜 2029年9月30日" data-ph-ja="例：2026年10月1日 〜 2029年9月30日" data-ph-en="e.g. 1 Oct 2026 – 30 Sep 2029"></td></tr>
+      </tbody></table>
+      <p class="note" data-ja="案件番号・作成部署・作成者・作成日・様式1の受付番号は、システム側で自動的に付与されます。" data-en="The case number, department, author, date and the form 1 reference are assigned automatically by the system.">案件番号・作成部署・作成者・作成日・様式1の受付番号は、システム側で自動的に付与されます。</p>
+
+      <h3 data-ja="0-2. 契約類型の選択" data-en="0-2. Select the contract type">0-2. 契約類型の選択</h3>
+      <p class="note" data-ja="<b>主類型を1つ選択すること。</b>該当する副類型があれば、あわせて選択する。" data-en="<b>Select one primary type.</b> Add a secondary type where one applies."><b>主類型を1つ選択すること。</b>該当する副類型があれば、あわせて選択する。</p>
+      <table class="typetbl" id="typeTbl">
+        <thead>
+          <tr>
+            <th class="g" style="width:150px;" data-ja="カテゴリ" data-en="Category">カテゴリ</th>
+            <th class="g" style="width:44px;" data-ja="コード" data-en="Code">コード</th>
+            <th class="g" data-ja="類型" data-en="Type">類型</th>
+            <th class="g" style="width:60px; text-align:center;" data-ja="主類型" data-en="Primary">主類型</th>
+            <th class="g" style="width:60px; text-align:center;" data-ja="副類型" data-en="Secondary">副類型</th>
+          </tr>
+        </thead>
+        <tbody id="typeBody"><!-- generated --></tbody>
+      </table>
+      <div id="otherWrap" style="display:none;">
+        <h4 data-ja="「該当しない」を選択した場合、その内容" data-en="If &quot;none of the above&quot; was selected, describe the case">「該当しない」を選択した場合、その内容</h4>
+        <textarea placeholder="契約の対象・性質を記述してください" data-ph-ja="契約の対象・性質を記述してください" data-ph-en="Describe what is being procured and its nature"></textarea>
+      </div>
+
+      <h3 data-ja="0-3. 記入すべきセクション" data-en="0-3. Sections to complete">0-3. 記入すべきセクション</h3>
+      <div class="map">
+        <div class="mh" data-ja="選択した類型に応じ、以下のセクションを記入する（クリックで移動）" data-en="Complete the sections below for the type selected (click to jump)">選択した類型に応じ、以下のセクションを記入する（クリックで移動）</div>
+        <div class="mb" id="mapBody">
+          <div class="empty" data-ja="0-2 で主類型を選択すると、記入すべきセクションが表示されます。" data-en="Select a primary type in 0-2 and the sections you need will appear here.">0-2 で主類型を選択すると、記入すべきセクションが表示されます。</div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============ 1 ============ -->
+  <section id="sec1" data-sec="1">
+    <div class="sh"><span class="no">1</span><h2 data-ja="目的・背景" data-en="Purpose and background">目的・背景</h2></div>
+    <div class="sb">
+      <div class="guide" data-ja="
+        <b>整理された文章である必要はありません。</b>以下のような内容が含まれていると、
+        応札者が提案の前提を置けます。書ける範囲で構いません。
+        <ul>
+          <li><b>目的</b>　この調達によって、業務がどういう状態になればよいのか</li>
+          <li><b>背景・経緯</b>　なぜ今なのか。これまでの経緯、直近で起きたこと</li>
+          <li><b>解決したい課題</b>　現状の何が困っているのか。放置するとどうなるのか</li>
+          <li><b>制度・組織の事情</b>　期限、監査、組織変更など、外から見えない事情</li>
+        </ul>
+      " data-en="<b>It does not need to be a tidy piece of writing.</b> If it covers roughly the ground below,
+        a bidder can work out the premises of a proposal. Write what you can.
+        <ul>
+          <li><b>Purpose</b>　What state should the business be in once this is done?</li>
+          <li><b>Background</b>　Why now? What has led up to this; what has happened recently</li>
+          <li><b>The problem</b>　What is going wrong today. What happens if it is left alone</li>
+          <li><b>Institutional and organisational facts</b>　Deadlines, audits, reorganisations — things an outsider cannot see</li>
+        </ul>">
+        <b>整理された文章である必要はありません。</b>以下のような内容が含まれていると、
+        応札者が提案の前提を置けます。書ける範囲で構いません。
+        <ul>
+          <li><b>目的</b>　この調達によって、業務がどういう状態になればよいのか</li>
+          <li><b>背景・経緯</b>　なぜ今なのか。これまでの経緯、直近で起きたこと</li>
+          <li><b>解決したい課題</b>　現状の何が困っているのか。放置するとどうなるのか</li>
+          <li><b>制度・組織の事情</b>　期限、監査、組織変更など、外から見えない事情</li>
+        </ul>
+      </div>
+      <textarea style="min-height:190px;" placeholder="例：現行の受発注システムは2014年導入で、サポートが2027年3月に終了する。
+現場からは、モバイル対応がなく外出先で在庫が確認できないという要望が継続的に出ている。
+サポート終了に伴う更改を機に、モバイル対応と基幹系との連携を実現したい。
+なお、2027年4月に組織統合が予定されており、統合後の拠点数は未確定である。" data-ph-ja="例：現行の受発注システムは2014年導入で、サポートが2027年3月に終了する。
+現場からは、モバイル対応がなく外出先で在庫が確認できないという要望が継続的に出ている。
+サポート終了に伴う更改を機に、モバイル対応と基幹系との連携を実現したい。
+なお、2027年4月に組織統合が予定されており、統合後の拠点数は未確定である。" data-ph-en="e.g. The current order-management system went in during 2014 and support ends in March 2027.
+The business keeps asking for mobile access — today stock cannot be checked away from a desk.
+We want to use the end-of-support replacement to add mobile access and integrate with the core systems.
+Note that a reorganisation is planned for April 2027; the number of sites afterwards is not yet settled."></textarea>
+      <h4 data-ja="関連資料の添付" data-en="Attach related documents">関連資料の添付</h4>
+      <div class="drop">
+          <input type="file" multiple="" data-up="s1">
+          <div class="cap" data-ja="企画書、稟議書、要望メモ、検討中のたたき台など。整理されていなくて構いません。<b>添付ファイルの総容量には上限があります（上限値は別途定めます）。</b>
+            超過する場合は、代表的な資料に絞るか、共有リンクを本文に記載してください。" data-en="Plans, approval papers, notes of requests, working drafts — they need not be tidy. <b>There is a cap on the total size of attachments (the limit will be set separately).</b>
+            If you exceed it, attach only the most representative documents, or put a link in the body text.">企画書、稟議書、要望メモ、検討中のたたき台など。整理されていなくて構いません。<b>添付ファイルの総容量には上限があります（上限値は別途定めます）。</b>
+            超過する場合は、代表的な資料に絞るか、共有リンクを本文に記載してください。</div>
+          <div class="filelist" data-list="s1"></div>
+        </div>
+    </div>
+  </section>
+
+  <!-- ============ 2 ============ -->
+  <section id="sec2" data-sec="2">
+    <div class="sh"><span class="no">2</span><h2 data-ja="現行環境" data-en="Current environment">現行環境</h2></div>
+    <div class="sb">
+      <div class="guide" data-ja="
+        <b>資料をそのまま添付してください。</b>清書は不要です。
+        既存の資料があればそれを、新規案件で構想段階であれば構想中の資料を共有してください。
+        <b>整理された粒度になっているかは、VMO 側で確認します。</b>
+        <ul>
+          <li>システム構成図、ネットワーク図、基盤の一覧</li>
+          <li>技術スタック（OS・DB・言語・フレームワーク・認証基盤など）が分かる資料</li>
+          <li>周辺システムとの連携一覧、インターフェース定義</li>
+          <li>規模（利用者数、データ量、トランザクション量、画面・帳票・バッチ本数）</li>
+          <li>稼働条件（サービス提供時間、停止可能な時間帯、繁忙期）</li>
+        </ul>
+      " data-en="<b>Attach the documents as they are.</b> Do not tidy them up.
+        Send whatever exists; for a new initiative still being shaped, send the working drafts.
+        <b>Whether the level of detail is sufficient is for the VMO to judge.</b>
+        <ul>
+          <li>System and network diagrams; an inventory of the platform</li>
+          <li>Anything showing the technology stack (OS, DB, language, framework, identity)</li>
+          <li>Interfaces to surrounding systems; interface definitions</li>
+          <li>Scale (users, data volume, transaction volume, screens, reports, batch jobs)</li>
+          <li>Operating conditions (service hours, permissible downtime, peak periods)</li>
+        </ul>">
+        <b>資料をそのまま添付してください。</b>清書は不要です。
+        既存の資料があればそれを、新規案件で構想段階であれば構想中の資料を共有してください。
+        <b>整理された粒度になっているかは、VMO 側で確認します。</b>
+        <ul>
+          <li>システム構成図、ネットワーク図、基盤の一覧</li>
+          <li>技術スタック（OS・DB・言語・フレームワーク・認証基盤など）が分かる資料</li>
+          <li>周辺システムとの連携一覧、インターフェース定義</li>
+          <li>規模（利用者数、データ量、トランザクション量、画面・帳票・バッチ本数）</li>
+          <li>稼働条件（サービス提供時間、停止可能な時間帯、繁忙期）</li>
+        </ul>
+      </div>
+      <h4 data-ja="2-1. 現行環境の説明" data-en="2-1. Describe the current environment">2-1. 現行環境の説明</h4>
+      <textarea style="min-height:150px;" placeholder="添付資料の補足、資料に書かれていないこと、資料が存在しない部分を記述してください。
+
+例：構成図は2019年時点のもので、その後インフラをAWSに移設している。移設後の構成を示す資料は存在しない。
+バッチ処理の仕様は文書化されていない。ソースコードは提供可能だが、設計意図の記述はない。" data-ph-ja="添付資料の補足、資料に書かれていないこと、資料が存在しない部分を記述してください。
+
+例：構成図は2019年時点のもので、その後インフラをAWSに移設している。移設後の構成を示す資料は存在しない。
+バッチ処理の仕様は文書化されていない。ソースコードは提供可能だが、設計意図の記述はない。" data-ph-en="Add anything the attachments do not cover, or where no document exists at all.
+
+e.g. The architecture diagram is from 2019; the infrastructure has since moved to AWS and nothing documents the current state.
+The batch specification was never written down. Source code can be provided, but there is no record of the design intent."></textarea>
+
+      <h4 data-ja="2-2. 資料の添付" data-en="2-2. Attach documents">2-2. 資料の添付</h4>
+      <div class="drop">
+          <input type="file" multiple="" data-up="s2">
+          <div class="cap" data-ja="構成図、基盤一覧、連携一覧、運用手順書など。<b>添付ファイルの総容量には上限があります（上限値は別途定めます）。</b>
+            超過する場合は、代表的な資料に絞るか、共有リンクを本文に記載してください。" data-en="Diagrams, platform inventories, interface lists, operating procedures. <b>There is a cap on the total size of attachments (the limit will be set separately).</b>
+            If you exceed it, attach only the most representative documents, or put a link in the body text.">構成図、基盤一覧、連携一覧、運用手順書など。<b>添付ファイルの総容量には上限があります（上限値は別途定めます）。</b>
+            超過する場合は、代表的な資料に絞るか、共有リンクを本文に記載してください。</div>
+          <div class="filelist" data-list="s2"></div>
+        </div>
+
+      <h4 data-ja="2-3. 現行ドキュメントの提供範囲" data-en="2-3. Which existing documents will be provided">2-3. 現行ドキュメントの提供範囲</h4>
+      <p class="note" data-ja="応札者は、ここで「提供する」とされたものだけを前提に見積を作成します。" data-en="Bidders will price the work on the basis of what is marked as provided here — and nothing else.">応札者は、ここで「提供する」とされたものだけを前提に見積を作成します。</p>
+      <table>
+        <thead><tr><th data-ja="ドキュメント" data-en="Document">ドキュメント</th><th style="width:190px;" data-ja="提供可否" data-en="Provided?">提供可否</th><th style="width:22%;" data-ja="提供時期" data-en="When">提供時期</th><th style="width:22%;" data-ja="備考" data-en="Notes">備考</th></tr></thead>
+        <tbody id="docTbl"><!-- generated --></tbody>
+      </table>
+      <p class="note warn" data-ja="<b>「不可」「一部」がある場合、以下を必ず記入すること。</b>
+        不足を明示し、どう補うかを書けば、応札者はそのリスクを価格に織り込める。
+        <b>応札者が価格を出せなくなるのは、何が無いのかすら分からないときである。</b>" data-en="<b>Where anything is marked &quot;no&quot; or &quot;partial&quot;, the following must be completed.</b>
+        State plainly what is missing and how it will be made good, and a bidder can price that risk.
+        <b>What stops a bidder pricing at all is not knowing what is missing.</b>"><b>「不可」「一部」がある場合、以下を必ず記入すること。</b>
+        不足を明示し、どう補うかを書けば、応札者はそのリスクを価格に織り込める。
+        <b>応札者が価格を出せなくなるのは、何が無いのかすら分からないときである。</b></p>
+      <table>
+        <tbody><tr>
+          <td class="lbl" data-ja="不足する情報を、応札者はどう補うか" data-en="How will bidders make up for the missing information?">不足する情報を、応札者はどう補うか</td>
+          <td>
+            <div class="ckgrid">
+              <label class="ck" data-ja-text="現地調査の機会を提供する" data-en-text="Provide a site survey"><input type="checkbox"> 現地調査の機会を提供する</label>
+              <label class="ck" data-ja-text="既存ベンダーへのヒアリング機会を提供する" data-en-text="Provide access to the incumbent for questions"><input type="checkbox"> 既存ベンダーへのヒアリング機会を提供する</label>
+              <label class="ck" data-ja-text="初期調査工程を、別途見積項目として設定する" data-en-text="Price an initial investigation phase separately"><input type="checkbox"> 初期調査工程を、別途見積項目として設定する</label>
+              <label class="ck" data-ja-text="その他" data-en-text="Other"><input type="checkbox"> その他</label>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td class="lbl" data-ja="上記に伴う追加工数は、見積に含めるか" data-en="Should the resulting extra effort be priced into the bid?">上記に伴う追加工数は、見積に含めるか</td>
+          <td>
+            <label class="ck" data-ja-text="含める（別項目として計上を求める）" data-en-text="Yes — require it as a separate line item"><input type="radio" name="addwork"> 含める（別項目として計上を求める）</label>
+            <label class="ck" data-ja-text="含めない（発注側が別途負担する）" data-en-text="No — the buyer will bear it separately"><input type="radio" name="addwork"> 含めない（発注側が別途負担する）</label>
+          </td>
+        </tr>
+      </tbody></table>
+    </div>
+  </section>
+
+  <!-- ============ 3 ============ -->
+  <section id="sec3" data-sec="3">
+    <div class="sh"><span class="no">3</span><h2 data-ja="要求事項" data-en="Requirements">要求事項</h2></div>
+    <div class="sb">
+      <p class="note" data-ja="<b>実現方式・設計は応札者が提案します。</b>ここでは「何を」「なぜ」を書き、「どうやって」は指定しないでください。<br>
+        各項目は、<b>フリーテキスト・添付ファイルのどちらか一方（または両方）</b>で構いません。" data-en="<b>The design and the means of delivery are for bidders to propose.</b> Write what and why; do not specify how.<br>
+        For each item, <b>free text or an attachment — or both — is fine.</b>"><b>実現方式・設計は応札者が提案します。</b>ここでは「何を」「なぜ」を書き、「どうやって」は指定しないでください。<br>
+        各項目は、<b>フリーテキスト・添付ファイルのどちらか一方（または両方）</b>で構いません。</p>
+
+      <h3 data-ja="3-1. 機能要件" data-en="3-1. Functional requirements">3-1. 機能要件</h3>
+      <div class="guide" data-ja="
+        <b>手段ではなく、結果で書いてください。</b>
+        「◯◯という画面を作る」ではなく「◯◯が××できる状態にする」。
+        必須と任意が分かれていれば、その別も記載してください。
+      " data-en="<b>Write the outcome, not the method.</b>
+        Not &quot;build a screen that does X&quot; but &quot;X can be done&quot;.
+        If some requirements are mandatory and others optional, say which.">
+        <b>手段ではなく、結果で書いてください。</b>
+        「◯◯という画面を作る」ではなく「◯◯が××できる状態にする」。
+        必須と任意が分かれていれば、その別も記載してください。
+      </div>
+      <textarea placeholder="例：
+【必須】外出先から在庫数をリアルタイムで照会できること
+【必須】発注承認をモバイル端末で実施できること
+【任意】過去12ヶ月の受発注実績をグラフで確認できること" data-ph-ja="例：
+【必須】外出先から在庫数をリアルタイムで照会できること
+【必須】発注承認をモバイル端末で実施できること
+【任意】過去12ヶ月の受発注実績をグラフで確認できること" data-ph-en="e.g.
+[Mandatory] Stock levels can be checked in real time away from a desk
+[Mandatory] Purchase approvals can be given from a mobile device
+[Optional] The last 12 months of orders can be viewed as a chart"></textarea>
+      <h4 data-ja="添付" data-en="Attachments">添付</h4>
+      <div class="drop">
+          <input type="file" multiple="" data-up="s3f">
+          <div class="cap" data-ja="要件一覧、業務フロー図、画面イメージなど。<b>添付ファイルの総容量には上限があります（上限値は別途定めます）。</b>
+            超過する場合は、代表的な資料に絞るか、共有リンクを本文に記載してください。" data-en="Requirement lists, process flows, screen sketches. <b>There is a cap on the total size of attachments (the limit will be set separately).</b>
+            If you exceed it, attach only the most representative documents, or put a link in the body text.">要件一覧、業務フロー図、画面イメージなど。<b>添付ファイルの総容量には上限があります（上限値は別途定めます）。</b>
+            超過する場合は、代表的な資料に絞るか、共有リンクを本文に記載してください。</div>
+          <div class="filelist" data-list="s3f"></div>
+        </div>
+
+      <h3 data-ja="3-2. 業務要件" data-en="3-2. Business requirements">3-2. 業務要件</h3>
+      <div class="guide" data-ja="
+        業務プロセス上、満たされなければならない条件を記述してください。
+        <b>組織・権限・承認フロー・業務ルール</b>など、システム外の事情も含みます。
+      " data-en="Describe the conditions the business process itself imposes.
+        This includes things outside the system — <b>organisation, authority, approval routes, business rules.</b>">
+        業務プロセス上、満たされなければならない条件を記述してください。
+        <b>組織・権限・承認フロー・業務ルール</b>など、システム外の事情も含みます。
+      </div>
+      <textarea placeholder="例：発注承認は、金額に応じて課長・部長・本部長の3段階。
+月次締めは第3営業日までに完了する必要がある。" data-ph-ja="例：発注承認は、金額に応じて課長・部長・本部長の3段階。
+月次締めは第3営業日までに完了する必要がある。" data-ph-en="e.g. Purchase approval runs through three levels by value: manager, head of department, division head.
+The monthly close must be finished by the third working day."></textarea>
+      <h4 data-ja="添付" data-en="Attachments">添付</h4>
+      <div class="drop">
+          <input type="file" multiple="" data-up="s3b">
+          <div class="cap" data-ja="業務フロー、承認ルール、規程類など。<b>添付ファイルの総容量には上限があります（上限値は別途定めます）。</b>
+            超過する場合は、代表的な資料に絞るか、共有リンクを本文に記載してください。" data-en="Process flows, approval rules, internal regulations. <b>There is a cap on the total size of attachments (the limit will be set separately).</b>
+            If you exceed it, attach only the most representative documents, or put a link in the body text.">業務フロー、承認ルール、規程類など。<b>添付ファイルの総容量には上限があります（上限値は別途定めます）。</b>
+            超過する場合は、代表的な資料に絞るか、共有リンクを本文に記載してください。</div>
+          <div class="filelist" data-list="s3b"></div>
+        </div>
+
+      <div id="sub3-3" data-sub="3-3">
+        <h3 data-ja="3-3. 移行要件" data-en="3-3. Migration requirements">3-3. 移行要件</h3>
+        <div class="guide" data-ja="
+          <b>移行対象データ</b>（種類・量・期間）、<b>移行方式の制約</b>、
+          <b>並行稼働の要否</b>、<b>切戻し要件</b>などを記述してください。
+        " data-en="Describe the <b>data to be migrated</b> (kind, volume, period), <b>constraints on how</b>,
+        whether <b>parallel running</b> is required, and any <b>rollback requirement</b>.">
+          <b>移行対象データ</b>（種類・量・期間）、<b>移行方式の制約</b>、
+          <b>並行稼働の要否</b>、<b>切戻し要件</b>などを記述してください。
+        </div>
+        <textarea placeholder="例：過去5年分の受発注データ（約400万件）を移行する。
+移行は年度末の連休中に実施し、48時間以内に完了すること。
+並行稼働は1ヶ月間。移行失敗時は現行システムに切り戻せること。" data-ph-ja="例：過去5年分の受発注データ（約400万件）を移行する。
+移行は年度末の連休中に実施し、48時間以内に完了すること。
+並行稼働は1ヶ月間。移行失敗時は現行システムに切り戻せること。" data-ph-en="e.g. Five years of order data (about 4 million records) must be migrated.
+Migration happens over the year-end holiday and must complete within 48 hours.
+Parallel running for one month. It must be possible to roll back to the current system if migration fails."></textarea>
+        <h4 data-ja="添付" data-en="Attachments">添付</h4>
+        <div class="drop">
+          <input type="file" multiple="" data-up="s3m">
+          <div class="cap" data-ja="データ移行計画、データ定義書など。<b>添付ファイルの総容量には上限があります（上限値は別途定めます）。</b>
+            超過する場合は、代表的な資料に絞るか、共有リンクを本文に記載してください。" data-en="Migration plans, data definitions. <b>There is a cap on the total size of attachments (the limit will be set separately).</b>
+            If you exceed it, attach only the most representative documents, or put a link in the body text.">データ移行計画、データ定義書など。<b>添付ファイルの総容量には上限があります（上限値は別途定めます）。</b>
+            超過する場合は、代表的な資料に絞るか、共有リンクを本文に記載してください。</div>
+          <div class="filelist" data-list="s3m"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 4 ============ -->
+  <section id="sec4" data-sec="4">
+    <div class="sh"><span class="no">4</span><h2 data-ja="非機能要件" data-en="Non-functional requirements">非機能要件</h2></div>
+    <div class="sb">
+      <p class="note" data-ja="各項目は、<b>フリーテキスト・添付ファイルのどちらか一方（または両方）</b>で構いません。" data-en="For each item, <b>free text or an attachment — or both — is fine.</b>">各項目は、<b>フリーテキスト・添付ファイルのどちらか一方（または両方）</b>で構いません。</p>
+
+      <h3 data-ja="4-1. 非機能要件" data-en="4-1. Non-functional requirements">4-1. 非機能要件</h3>
+      <div class="guide" data-ja="
+        以下のような観点が含まれていると、応札者が前提を置けます。
+        <b>すべてを埋める必要はありません。</b>該当しないものは飛ばしてください。
+        <ul>
+          <li><b>性能</b>　応答時間、バッチ処理時間、同時接続数、スループット</li>
+          <li><b>可用性</b>　稼働率、RTO / RPO、バックアップ、災害対策</li>
+          <li><b>セキュリティ</b>　認証・認可、暗号化、監査ログ、脆弱性対応、準拠すべき社内規程</li>
+          <li><b>規制・コンプライアンス</b>　GxP（CSV / バリデーション）、21 CFR Part 11、個人情報保護法、J-SOX など</li>
+          <li><b>保守・運用</b>　対応時間帯、障害受付方法、一次対応の範囲、定期メンテナンス</li>
+        </ul>
+      " data-en="Cover roughly the ground below and a bidder can set their premises.
+        <b>You do not have to fill in everything.</b> Skip whatever does not apply.
+        <ul>
+          <li><b>Performance</b>　Response time, batch windows, concurrent users, throughput</li>
+          <li><b>Availability</b>　Uptime, RTO / RPO, backup, disaster recovery</li>
+          <li><b>Security</b>　Authentication, encryption, audit logging, vulnerability handling, internal standards to follow</li>
+          <li><b>Regulatory</b>　GxP (CSV / validation), 21 CFR Part 11, data protection law, J-SOX and the like</li>
+          <li><b>Support and operations</b>　Hours of cover, how faults are raised, scope of first-line response, planned maintenance</li>
+        </ul>">
+        以下のような観点が含まれていると、応札者が前提を置けます。
+        <b>すべてを埋める必要はありません。</b>該当しないものは飛ばしてください。
+        <ul>
+          <li><b>性能</b>　応答時間、バッチ処理時間、同時接続数、スループット</li>
+          <li><b>可用性</b>　稼働率、RTO / RPO、バックアップ、災害対策</li>
+          <li><b>セキュリティ</b>　認証・認可、暗号化、監査ログ、脆弱性対応、準拠すべき社内規程</li>
+          <li><b>規制・コンプライアンス</b>　GxP（CSV / バリデーション）、21 CFR Part 11、個人情報保護法、J-SOX など</li>
+          <li><b>保守・運用</b>　対応時間帯、障害受付方法、一次対応の範囲、定期メンテナンス</li>
+        </ul>
+      </div>
+      <textarea style="min-height:170px;" placeholder="例：
+【性能】画面応答は3秒以内（同時接続200ユーザー時）
+【可用性】稼働率99.5%以上。RTO 4時間、RPO 1時間
+【セキュリティ】社内認証基盤（Entra ID）とのSSO必須。監査ログは5年保管
+【規制】GxP対象システム。CSV対応が必要（IQ/OQ/PQ）" data-ph-ja="例：
+【性能】画面応答は3秒以内（同時接続200ユーザー時）
+【可用性】稼働率99.5%以上。RTO 4時間、RPO 1時間
+【セキュリティ】社内認証基盤（Entra ID）とのSSO必須。監査ログは5年保管
+【規制】GxP対象システム。CSV対応が必要（IQ/OQ/PQ）" data-ph-en="e.g.
+[Performance] Screens respond within 3 seconds at 200 concurrent users
+[Availability] Uptime 99.5% or better. RTO 4 hours, RPO 1 hour
+[Security] SSO with the corporate identity provider (Entra ID) is required. Audit logs kept for 5 years
+[Regulatory] A GxP system. Computer system validation required (IQ/OQ/PQ)"></textarea>
+      <h4 data-ja="添付" data-en="Attachments">添付</h4>
+      <div class="drop">
+          <input type="file" multiple="" data-up="s4n">
+          <div class="cap" data-ja="非機能要件定義書、セキュリティ要件書、社内規程など。<b>添付ファイルの総容量には上限があります（上限値は別途定めます）。</b>
+            超過する場合は、代表的な資料に絞るか、共有リンクを本文に記載してください。" data-en="Non-functional requirement definitions, security requirements, internal standards. <b>There is a cap on the total size of attachments (the limit will be set separately).</b>
+            If you exceed it, attach only the most representative documents, or put a link in the body text.">非機能要件定義書、セキュリティ要件書、社内規程など。<b>添付ファイルの総容量には上限があります（上限値は別途定めます）。</b>
+            超過する場合は、代表的な資料に絞るか、共有リンクを本文に記載してください。</div>
+          <div class="filelist" data-list="s4n"></div>
+        </div>
+
+      <h3 data-ja="4-2. SLA（サービスレベル）" data-en="4-2. SLA (service levels)">4-2. SLA（サービスレベル）</h3>
+      <div class="guide" data-ja="
+        <b>指標・目標値・測定方法・未達時の措置</b>を記述してください。
+        契約後の履行監視は、ここで定義した内容に基づいて行われます。
+      " data-en="Give the <b>metric, the target, how it is measured, and what happens if it is missed.</b>
+        Performance against the contract will be monitored against what is written here.">
+        <b>指標・目標値・測定方法・未達時の措置</b>を記述してください。
+        契約後の履行監視は、ここで定義した内容に基づいて行われます。
+      </div>
+      <textarea placeholder="例：
+稼働率 99.5%以上（月次、計画停止を除く）。未達時は月額の10%を減額
+障害一次応答：重大度S1は30分以内、S2は2時間以内
+復旧目標：S1は4時間以内" data-ph-ja="例：
+稼働率 99.5%以上（月次、計画停止を除く）。未達時は月額の10%を減額
+障害一次応答：重大度S1は30分以内、S2は2時間以内
+復旧目標：S1は4時間以内" data-ph-en="e.g.
+Uptime 99.5% or better, measured monthly, excluding planned downtime. 10% of the monthly fee is credited if missed
+First response: 30 minutes for S1, 2 hours for S2
+Resolution target: 4 hours for S1"></textarea>
+      <h4 data-ja="添付" data-en="Attachments">添付</h4>
+      <div class="drop">
+          <input type="file" multiple="" data-up="s4s">
+          <div class="cap" data-ja="SLA定義書、現行契約のSLA条項など。<b>添付ファイルの総容量には上限があります（上限値は別途定めます）。</b>
+            超過する場合は、代表的な資料に絞るか、共有リンクを本文に記載してください。" data-en="SLA definitions, the SLA clauses of the current contract. <b>There is a cap on the total size of attachments (the limit will be set separately).</b>
+            If you exceed it, attach only the most representative documents, or put a link in the body text.">SLA定義書、現行契約のSLA条項など。<b>添付ファイルの総容量には上限があります（上限値は別途定めます）。</b>
+            超過する場合は、代表的な資料に絞るか、共有リンクを本文に記載してください。</div>
+          <div class="filelist" data-list="s4s"></div>
+        </div>
+    </div>
+  </section>
+
+  <!-- ============ 5 ============ -->
+  <section id="sec5" data-sec="5">
+    <div class="sh"><span class="no">5</span><h2 data-ja="制約条件" data-en="Constraints">制約条件</h2></div>
+    <div class="sb">
+
+      <h3 data-ja="5-1. 期限" data-en="5-1. Deadlines">5-1. 期限</h3>
+      <table>
+        <thead><tr><th style="width:34%;" data-ja="マイルストーン" data-en="Milestone">マイルストーン</th><th style="width:30%;" data-ja="期日" data-en="Date">期日</th><th data-ja="備考" data-en="Notes">備考</th></tr></thead>
+        <tbody id="msTbl"><!-- generated --></tbody>
+      </table>
+
+      <h3 data-ja="5-2. 予算" data-en="5-2. Budget">5-2. 予算</h3>
+      <table class="money">
+        <tbody><tr><td class="lbl" data-ja="予算枠の提示" data-en="Disclose the budget?">予算枠の提示</td><td>
+          <label class="ck" data-ja-text="提示する" data-en-text="Disclose"><input type="radio" name="bud" id="budY"> 提示する</label>
+          <label class="ck" data-ja-text="提示しない" data-en-text="Do not disclose"><input type="radio" name="bud" id="budN"> 提示しない</label>
+        </td></tr>
+      </tbody></table>
+      <div id="budWrap">
+        <table class="money">
+          <thead><tr><th style="width:36%;" data-ja="費目" data-en="Cost item">費目</th><th data-ja="金額（税抜）" data-en="Amount (excl. tax)">金額（税抜）</th></tr></thead>
+          <tbody>
+            <tr><td class="lbl" data-ja="初期費用" data-en="Initial cost">初期費用</td>
+              <td><span class="yen"><span class="unit">￥</span><input type="text" class="mn" placeholder="0"></span></td></tr>
+            <tr><td class="lbl" data-ja="運用費用<span class=&quot;h&quot;>契約期間にかかわらず、<b>年間費用</b>を記載してください</span>" data-en="Running cost<span class=&quot;h&quot;>Give the <b>annual</b> figure, whatever the contract length</span>">運用費用<span class="h">契約期間にかかわらず、<b>年間費用</b>を記載してください</span></td>
+              <td><span class="yen"><span class="unit">￥</span><input type="text" class="mn" placeholder="0"><span class="hint" data-ja="／ 年" data-en="/ year">／ 年</span></span></td></tr>
+            <tr><td class="lbl" data-ja="ライセンス費用" data-en="Licence cost">ライセンス費用</td>
+              <td><span class="yen"><span class="unit">￥</span><input type="text" class="mn" placeholder="0"></span></td></tr>
+            <tr><td class="lbl" data-ja="その他経費" data-en="Other costs">その他経費</td>
+              <td><span class="yen"><span class="unit">￥</span><input type="text" class="mn" placeholder="0"></span></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 data-ja="5-3. 技術標準・アーキテクチャ制約" data-en="5-3. Technical standards and architectural constraints">5-3. 技術標準・アーキテクチャ制約</h3>
+      <div class="guide" data-ja="
+        既存の技術標準、アーキテクチャ方針、採用が禁止されている技術、
+        <b>逸脱が認められる／認められない範囲</b>などを記述してください。
+      " data-en="Describe existing technical standards, architectural policy, technologies that may not be used,
+        and <b>where deviation is and is not permitted.</b>">
+        既存の技術標準、アーキテクチャ方針、採用が禁止されている技術、
+        <b>逸脱が認められる／認められない範囲</b>などを記述してください。
+      </div>
+      <textarea placeholder="例：全社標準としてAzureを採用しており、原則としてAzure上に構築すること。
+認証は社内Entra IDとのSSOを必須とする（逸脱不可）。
+DBはPostgreSQLを標準とするが、合理的理由があれば逸脱可。" data-ph-ja="例：全社標準としてAzureを採用しており、原則としてAzure上に構築すること。
+認証は社内Entra IDとのSSOを必須とする（逸脱不可）。
+DBはPostgreSQLを標準とするが、合理的理由があれば逸脱可。" data-ph-en="e.g. Azure is the corporate standard and the system should be built on it.
+SSO with the corporate Entra ID is mandatory; no deviation.
+PostgreSQL is the standard database, but deviation is permitted with good reason."></textarea>
+      <h4 data-ja="添付" data-en="Attachments">添付</h4>
+      <div class="drop">
+          <input type="file" multiple="" data-up="s5t">
+          <div class="cap" data-ja="技術標準書、アーキテクチャガイドライン、社内規程など。<b>添付ファイルの総容量には上限があります（上限値は別途定めます）。</b>
+            超過する場合は、代表的な資料に絞るか、共有リンクを本文に記載してください。" data-en="Technical standards, architecture guidelines, internal regulations. <b>There is a cap on the total size of attachments (the limit will be set separately).</b>
+            If you exceed it, attach only the most representative documents, or put a link in the body text.">技術標準書、アーキテクチャガイドライン、社内規程など。<b>添付ファイルの総容量には上限があります（上限値は別途定めます）。</b>
+            超過する場合は、代表的な資料に絞るか、共有リンクを本文に記載してください。</div>
+          <div class="filelist" data-list="s5t"></div>
+        </div>
+
+      <h3 data-ja="5-4. その他の制約" data-en="5-4. Other constraints">5-4. その他の制約</h3>
+      <div class="guide" data-ja="
+        期限・予算・技術標準のいずれにも当てはまらない制約を記述してください。
+        <b>組織変更、法規制、他プロジェクトとの依存関係</b>など。
+      " data-en="Describe constraints that are neither deadline, budget nor technical standard.
+        <b>Reorganisations, regulation, dependencies on other projects</b> and so on.">
+        期限・予算・技術標準のいずれにも当てはまらない制約を記述してください。
+        <b>組織変更、法規制、他プロジェクトとの依存関係</b>など。
+      </div>
+      <textarea placeholder="例：2027年4月に組織統合が予定されており、統合後の拠点数は未確定。
+拠点数の変動に耐えられる構成とすること。" data-ph-ja="例：2027年4月に組織統合が予定されており、統合後の拠点数は未確定。
+拠点数の変動に耐えられる構成とすること。" data-ph-en="e.g. A reorganisation is planned for April 2027 and the number of sites afterwards is not yet settled.
+The design must tolerate a change in the number of sites."></textarea>
+    </div>
+  </section>
+
+  <!-- ============ 6 ============ -->
+  <section id="sec6" data-sec="6">
+    <div class="sh"><span class="no">6</span><h2 data-ja="受入基準" data-en="Acceptance criteria">受入基準</h2></div>
+    <div class="sb">
+      <p class="note warn" data-ja="
+        <b>ここが定義されなければ、競争で何を評価するのかが定まりません。</b>
+        契約後の履行監視も、ここで定義した内容に基づいて行われます。
+      " data-en="<b>Without this, there is nothing to evaluate the competition against.</b>
+        Performance against the contract will also be monitored on the basis of what is defined here.">
+        <b>ここが定義されなければ、競争で何を評価するのかが定まりません。</b>
+        契約後の履行監視も、ここで定義した内容に基づいて行われます。
+      </p>
+
+      <h3 data-ja="6-1. 完了の定義" data-en="6-1. Definition of done">6-1. 完了の定義</h3>
+      <div class="guide" data-ja="
+        <b>何をもって「完了」とみなすか</b>を記述してください。
+        現時点で精緻である必要はありませんが、
+        <b>「どうなれば検収するのか」の考え方</b>が分かる程度には書いてください。
+      " data-en="Describe <b>what will count as &quot;done&quot;.</b>
+        It need not be precise at this stage, but it should be clear enough
+        to show <b>how you will decide whether to accept the work.</b>">
+        <b>何をもって「完了」とみなすか</b>を記述してください。
+        現時点で精緻である必要はありませんが、
+        <b>「どうなれば検収するのか」の考え方</b>が分かる程度には書いてください。
+      </div>
+      <textarea placeholder="例：全機能要件が実装され、受入テストの全シナリオが合格すること。
+性能要件（画面応答3秒以内）を、本番同等環境での負荷試験で確認できること。
+運用手順書が納品され、運用部門への引継ぎが完了していること。" data-ph-ja="例：全機能要件が実装され、受入テストの全シナリオが合格すること。
+性能要件（画面応答3秒以内）を、本番同等環境での負荷試験で確認できること。
+運用手順書が納品され、運用部門への引継ぎが完了していること。" data-ph-en="e.g. Every functional requirement is implemented and all acceptance-test scenarios pass.
+The performance requirement (3-second response) is demonstrated under load in a production-equivalent environment.
+The operating procedures are delivered and handover to the operations team is complete."></textarea>
+      <h4 data-ja="添付" data-en="Attachments">添付</h4>
+      <div class="drop">
+          <input type="file" multiple="" data-up="s6a">
+          <div class="cap" data-ja="受入基準書、テスト計画、検収要件など。<b>添付ファイルの総容量には上限があります（上限値は別途定めます）。</b>
+            超過する場合は、代表的な資料に絞るか、共有リンクを本文に記載してください。" data-en="Acceptance criteria, test plans, acceptance requirements. <b>There is a cap on the total size of attachments (the limit will be set separately).</b>
+            If you exceed it, attach only the most representative documents, or put a link in the body text.">受入基準書、テスト計画、検収要件など。<b>添付ファイルの総容量には上限があります（上限値は別途定めます）。</b>
+            超過する場合は、代表的な資料に絞るか、共有リンクを本文に記載してください。</div>
+          <div class="filelist" data-list="s6a"></div>
+        </div>
+
+      <h3 data-ja="6-2. 成果物" data-en="6-2. Deliverables">6-2. 成果物</h3>
+      <div class="guide" data-ja="
+        <b>納品を求める成果物</b>を記述してください。形式・提出時期が決まっていれば、あわせて記載してください。
+      " data-en="Describe <b>the deliverables you require.</b> Where the format and timing are settled, give those too.">
+        <b>納品を求める成果物</b>を記述してください。形式・提出時期が決まっていれば、あわせて記載してください。
+      </div>
+      <textarea placeholder="例：
+基本設計書・詳細設計書（Word / PDF、開発完了時）
+ソースコード一式（Git リポジトリ、本番稼働時）
+運用手順書（Word、本番稼働の1ヶ月前）
+テスト仕様書・結果報告書（Excel、テスト完了時）" data-ph-ja="例：
+基本設計書・詳細設計書（Word / PDF、開発完了時）
+ソースコード一式（Git リポジトリ、本番稼働時）
+運用手順書（Word、本番稼働の1ヶ月前）
+テスト仕様書・結果報告書（Excel、テスト完了時）" data-ph-en="e.g.
+High-level and detailed design (Word / PDF, at build completion)
+Full source code (Git repository, at go-live)
+Operating procedures (Word, one month before go-live)
+Test specifications and results (Excel, at test completion)"></textarea>
+      <h4 data-ja="添付" data-en="Attachments">添付</h4>
+      <div class="drop">
+          <input type="file" multiple="" data-up="s6d">
+          <div class="cap" data-ja="成果物一覧、納品物定義書など。<b>添付ファイルの総容量には上限があります（上限値は別途定めます）。</b>
+            超過する場合は、代表的な資料に絞るか、共有リンクを本文に記載してください。" data-en="Deliverable lists, definitions of what is to be delivered. <b>There is a cap on the total size of attachments (the limit will be set separately).</b>
+            If you exceed it, attach only the most representative documents, or put a link in the body text.">成果物一覧、納品物定義書など。<b>添付ファイルの総容量には上限があります（上限値は別途定めます）。</b>
+            超過する場合は、代表的な資料に絞るか、共有リンクを本文に記載してください。</div>
+          <div class="filelist" data-list="s6d"></div>
+        </div>
+    </div>
+  </section>
+
+  <!-- ============ 7 ============ -->
+  <section id="sec7" data-sec="7">
+    <div class="sh"><span class="no">7</span><h2 data-ja="前提と責任分界" data-en="Assumptions and division of responsibility">前提と責任分界</h2></div>
+    <div class="sb">
+      <div class="guide" data-ja="
+        以下のような観点が含まれていると、応札者がリスクを価格に織り込めます。
+        <b>すべてを埋める必要はありません。</b>
+        <ul>
+          <li><b>発注側が提供するもの</b>　環境、データ、要員、既存ベンダーとの調整窓口など</li>
+          <li><b>責任分界</b>　要件定義・設計・実装・テスト・移行・教育などを、どちらが担うか</li>
+          <li><b>リスクの所在</b>　想定されるリスクを、どちらが負担するか</li>
+          <li><b>前提条件</b>　見積の前提として置いてよい条件。<b>前提が崩れた場合の扱い</b>も書いてください</li>
+        </ul>
+      " data-en="Cover roughly the ground below and a bidder can price the risk.
+        <b>You do not have to fill in everything.</b>
+        <ul>
+          <li><b>What the buyer provides</b>　Environments, data, people, a channel to the incumbent</li>
+          <li><b>Division of responsibility</b>　Who does requirements, design, build, test, migration, training</li>
+          <li><b>Where risk sits</b>　Which party bears each foreseeable risk</li>
+          <li><b>Assumptions</b>　What a bidder may assume — and <b>what happens if an assumption fails</b></li>
+        </ul>">
+        以下のような観点が含まれていると、応札者がリスクを価格に織り込めます。
+        <b>すべてを埋める必要はありません。</b>
+        <ul>
+          <li><b>発注側が提供するもの</b>　環境、データ、要員、既存ベンダーとの調整窓口など</li>
+          <li><b>責任分界</b>　要件定義・設計・実装・テスト・移行・教育などを、どちらが担うか</li>
+          <li><b>リスクの所在</b>　想定されるリスクを、どちらが負担するか</li>
+          <li><b>前提条件</b>　見積の前提として置いてよい条件。<b>前提が崩れた場合の扱い</b>も書いてください</li>
+        </ul>
+      </div>
+      <textarea style="min-height:190px;" placeholder="例：
+【発注側が提供】開発環境（Azure サブスクリプション）、テストデータ、業務部門のレビュー要員（週2時間）
+【責任分界】要件定義は共同。基本設計以降は受注者。受入テストは発注側
+【既存ベンダーとの調整】発注側が窓口となる。受注者が直接連絡することは不可
+【リスク】組織統合による拠点数の変動は発注側が負担。追加拠点は別途精算
+【前提】現行のデータ品質は保証しない。クレンジングが必要な場合は別途協議" data-ph-ja="例：
+【発注側が提供】開発環境（Azure サブスクリプション）、テストデータ、業務部門のレビュー要員（週2時間）
+【責任分界】要件定義は共同。基本設計以降は受注者。受入テストは発注側
+【既存ベンダーとの調整】発注側が窓口となる。受注者が直接連絡することは不可
+【リスク】組織統合による拠点数の変動は発注側が負担。追加拠点は別途精算
+【前提】現行のデータ品質は保証しない。クレンジングが必要な場合は別途協議" data-ph-en="e.g.
+[Provided by us] Development environment (Azure subscription), test data, business reviewers (2 hours a week)
+[Responsibility] Requirements jointly. Design onward: the supplier. Acceptance testing: us
+[The incumbent] We act as the channel. The supplier must not approach them directly
+[Risk] A change in the number of sites from the reorganisation is ours. Extra sites are settled separately
+[Assumption] We do not warrant the quality of the current data. If cleansing is needed it will be discussed separately"></textarea>
+      <h4 data-ja="添付" data-en="Attachments">添付</h4>
+      <div class="drop">
+          <input type="file" multiple="" data-up="s7">
+          <div class="cap" data-ja="体制図、RACI、リスク一覧など。<b>添付ファイルの総容量には上限があります（上限値は別途定めます）。</b>
+            超過する場合は、代表的な資料に絞るか、共有リンクを本文に記載してください。" data-en="Organisation charts, RACI matrices, risk registers. <b>There is a cap on the total size of attachments (the limit will be set separately).</b>
+            If you exceed it, attach only the most representative documents, or put a link in the body text.">体制図、RACI、リスク一覧など。<b>添付ファイルの総容量には上限があります（上限値は別途定めます）。</b>
+            超過する場合は、代表的な資料に絞るか、共有リンクを本文に記載してください。</div>
+          <div class="filelist" data-list="s7"></div>
+        </div>
+    </div>
+  </section>
+
+  <!-- ============ 8 ============ -->
+  <section id="sec8" data-sec="8">
+    <div class="sh"><span class="no">8</span><h2 data-ja="契約条件" data-en="Contract terms">契約条件</h2></div>
+    <div class="sb">
+      <h3 data-ja="8-1. 契約標準条項" data-en="8-1. Standard contract clauses">8-1. 契約標準条項</h3>
+      <p class="note warn" data-ja="
+        <b>初期値はすべて適用（チェック済み）です。</b>
+        適用しない条項がある場合はチェックを外し、<b>その理由を記載してください。</b>
+        <b>これらは、今日の契約が来年のロックインを生まないための条項です。</b>
+        契約締結後に追加することは、実務上ほぼ不可能です。
+      " data-en="<b>All clauses apply by default.</b>
+        To disapply one, untick it and <b>state the reason.</b>
+        <b>These are the clauses that stop today's contract manufacturing next year's lock-in.</b>
+        Adding them after signature is, in practice, close to impossible.">
+        <b>初期値はすべて適用（チェック済み）です。</b>
+        適用しない条項がある場合はチェックを外し、<b>その理由を記載してください。</b>
+        <b>これらは、今日の契約が来年のロックインを生まないための条項です。</b>
+        契約締結後に追加することは、実務上ほぼ不可能です。
+      </p>
+      <table>
+        <thead><tr><th class="c" style="width:44px;" data-ja="適用" data-en="Apply">適用</th><th style="width:28%;" data-ja="条項" data-en="Clause">条項</th><th data-ja="内容" data-en="Detail">内容</th></tr></thead>
+        <tbody id="stdTbl"><!-- generated --></tbody>
+      </table>
+      <div id="stdWhyWrap" style="display:none;">
+        <h4 data-ja="適用しない条項がある場合、その理由" data-en="If any clause is not applied, state why">適用しない条項がある場合、その理由</h4>
+        <textarea id="stdWhy" placeholder="どの条項を、なぜ適用しないのかを記述してください。" data-ph-ja="どの条項を、なぜ適用しないのかを記述してください。" data-ph-en="State which clause is not applied, and why."></textarea>
+      </div>
+
+      <h3 data-ja="8-1-2. 類型別の追加標準条項" data-en="8-1-2. Additional standard clauses by contract type">8-1-2. 類型別の追加標準条項</h3>
+      <p class="note warn" id="lockNote" data-ja="
+        <b>選択した類型に応じ、以下を必ず契約に含めます。</b>初期値はすべて適用です。
+        <b>類型ごとに、ロックインの生じ方は異なります。</b>
+      " data-en="<b>The clauses below are included for the type selected.</b> All apply by default.
+        <b>Lock-in takes a different shape in each type of contract.</b>">
+        <b>選択した類型に応じ、以下を必ず契約に含めます。</b>初期値はすべて適用です。
+        <b>類型ごとに、ロックインの生じ方は異なります。</b>
+      </p>
+      <table>
+        <thead><tr><th class="c" style="width:44px;" data-ja="適用" data-en="Apply">適用</th><th style="width:28%;" data-ja="条項" data-en="Clause">条項</th><th data-ja="内容" data-en="Detail">内容</th></tr></thead>
+        <tbody id="lockTbl"><!-- generated --></tbody>
+      </table>
+      <p class="note" id="lockEmpty" style="display:none;" data-ja="選択された類型には、追加の標準条項はありません。" data-en="No additional standard clauses apply to the type selected.">選択された類型には、追加の標準条項はありません。</p>
+
+      <h3 data-ja="8-2. 契約形態" data-en="8-2. Form of contract">8-2. 契約形態</h3>
+      <table>
+        <tbody><tr><td class="lbl" data-ja="契約形態" data-en="Form of contract">契約形態</td><td>
+          <div class="ckgrid">
+            <label class="ck" data-ja-text="請負" data-en-text="Contract for work"><input type="radio" name="ctype"> 請負</label>
+            <label class="ck" data-ja-text="準委任" data-en-text="Quasi-mandate"><input type="radio" name="ctype"> 準委任</label>
+            <label class="ck" data-ja-text="成果連動" data-en-text="Outcome-based"><input type="radio" name="ctype"> 成果連動</label>
+            <label class="ck" data-ja-text="その他" data-en-text="Other"><input type="radio" name="ctype"> その他</label>
+            <input type="text" style="width:160px;">
+          </div>
+        </td></tr>
+        <tr><td class="lbl" data-ja="支払条件" data-en="Payment terms">支払条件</td><td><input type="text"></td></tr>
+        <tr><td class="lbl" data-ja="検収後の瑕疵担保 / 契約不適合責任" data-en="Warranty / liability for non-conformity after acceptance">検収後の瑕疵担保 / 契約不適合責任</td><td><input type="text"></td></tr>
+      </tbody></table>
+    </div>
+  </section>
+
+  <!-- ============ 9 ============ -->
+  <section id="sec9" data-sec="9">
+    <div class="sh"><span class="no">9</span><h2 data-ja="類型別の追加要件" data-en="Additional requirements by contract type">類型別の追加要件</h2></div>
+    <div class="sb">
+      <p class="note" id="t9intro" data-ja="選択した主類型・副類型に対応するブロックのみ表示されます。" data-en="Only the blocks matching the primary and secondary types selected are shown.">選択した主類型・副類型に対応するブロックのみ表示されます。</p>
+      <div id="typeBlocks"><!-- generated --></div>
+      <p class="note" id="t9empty" style="display:none;" data-ja="選択された類型には、追加要件はありません。" data-en="No additional requirements apply to the type selected.">選択された類型には、追加要件はありません。</p>
+    </div>
+  </section>
+
+  <!-- ============ 10 ============ -->
+  <section id="sec10" data-sec="10">
+    <div class="sh"><span class="no">10</span><h2 data-ja="提案書に記載を求める事項" data-en="What the proposal must contain">提案書に記載を求める事項</h2></div>
+    <div class="sb">
+      <p class="note warn" data-ja="
+        <b>初期値はすべて要求（チェック済み）です。</b>不要な項目はチェックを外してください。<br>
+        <b>提案要求の重さは、案件規模に比例させること。</b>少額案件に重い提案書を求めれば、
+        応札者は「割に合わない」と判断し、市場から去ります。<b>競争にかける権利は、
+        応札してもらえるだけの信用の上にしか成立しません。</b>
+      " data-en="<b>Every item is required by default.</b> Untick anything you do not need.<br>
+        <b>Scale the weight of the proposal to the size of the deal.</b> Demand a heavyweight proposal
+        for a small contract and bidders will conclude it is not worth it and leave the market.
+        <b>The right to run a competition rests on nothing but the credit that makes firms willing to bid.</b>">
+        <b>初期値はすべて要求（チェック済み）です。</b>不要な項目はチェックを外してください。<br>
+        <b>提案要求の重さは、案件規模に比例させること。</b>少額案件に重い提案書を求めれば、
+        応札者は「割に合わない」と判断し、市場から去ります。<b>競争にかける権利は、
+        応札してもらえるだけの信用の上にしか成立しません。</b>
+      </p>
+      <table>
+        <thead><tr><th class="c" style="width:44px;" data-ja="要求" data-en="Require">要求</th><th data-ja="提案項目" data-en="Proposal item">提案項目</th><th style="width:150px;" data-ja="ページ数上限" data-en="Page limit">ページ数上限</th></tr></thead>
+        <tbody id="propTbl"><!-- generated --></tbody>
+      </table>
+      <div class="quota" id="propCount" style="border-color:var(--line);">
+        <span class="n">要求する提案項目：<b id="propN">12</b> / 12</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 11 ============ -->
+  <section id="sec11" data-sec="11">
+    <div class="sh"><span class="no">11</span><h2 data-ja="評価項目と配点" data-en="Evaluation criteria and weights">評価項目と配点</h2></div>
+    <div class="sb">
+      <table>
+        <thead><tr><th style="width:34px;">#</th><th style="width:26%;" data-ja="評価項目" data-en="Criterion">評価項目</th><th class="c" style="width:90px;" data-ja="配点" data-en="Weight">配点</th><th data-ja="評価の観点" data-en="What is assessed">評価の観点</th></tr></thead>
+        <tbody id="evalTbl"><!-- generated --></tbody>
+        <tfoot>
+          <tr>
+            <td class="c"></td>
+            <td class="lbl" data-ja="合計" data-en="Total">合計</td>
+            <td class="c" style="font-weight:700; color:var(--navy);"><span id="evalSum">0</span> / 100</td>
+            <td><span class="note" id="evalWarn" style="color:var(--neg); font-weight:700; display:none;" data-ja="合計が100になっていません" data-en="The weights do not total 100">合計が100になっていません</span></td>
+          </tr>
+        </tfoot>
+      </table>
+      <table>
+        <tbody><tr><td class="lbl" data-ja="評価項目・配点の設定者（事業部門）" data-en="Who set the criteria and weights (business)">評価項目・配点の設定者（事業部門）</td><td><input type="text"></td></tr>
+        <tr><td class="lbl" data-ja="評価項目・配点の設定者（技術部門）" data-en="Who set the criteria and weights (technical)">評価項目・配点の設定者（技術部門）</td><td><input type="text"></td></tr>
+        <tr><td class="lbl" data-ja="評価実施者（採点者）" data-en="Who will score the proposals">評価実施者（採点者）</td><td><input type="text"></td></tr>
+      </tbody></table>
+      <p class="note warn" data-ja="
+        <b>本項目は、VMO 承認をもって凍結される。</b>
+        修正は、提案書提出前・全応札者への同時通知を条件とする場合のみ可能。
+        <b>開札後の変更は、一切認められない。</b>
+      " data-en="<b>These are frozen at the point of VMO approval.</b>
+        They may be amended only before proposals are submitted, and only with simultaneous notice to every bidder.
+        <b>No change whatsoever is permitted after the bids are opened.</b>">
+        <b>本項目は、VMO 承認をもって凍結される。</b>
+        修正は、提案書提出前・全応札者への同時通知を条件とする場合のみ可能。
+        <b>開札後の変更は、一切認められない。</b>
+      </p>
+    </div>
+  </section>
+
+  <!-- ============ 12 ============ -->
+  <section id="sec12" data-sec="12">
+    <div class="sh"><span class="no">12</span><h2 data-ja="スケジュール" data-en="Schedule">スケジュール</h2></div>
+    <div class="sb">
+      <table>
+        <thead><tr><th style="width:34px;">#</th><th data-ja="項目" data-en="Item">項目</th><th style="width:32%;" data-ja="期日" data-en="Date">期日</th></tr></thead>
+        <tbody id="schTbl"><!-- generated --></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ============ 13 ============ -->
+  <section id="sec13" data-sec="13">
+    <div class="sh"><span class="no">13</span><h2 data-ja="添付資料" data-en="Attachments">添付資料</h2></div>
+    <div class="sb">
+      <table>
+        <thead><tr><th style="width:34px;">#</th><th data-ja="資料名" data-en="Document">資料名</th><th style="width:22%;" data-ja="提供時期" data-en="When">提供時期</th><th style="width:210px;" data-ja="提供条件" data-en="Conditions">提供条件</th></tr></thead>
+        <tbody>
+          <tr><td class="c">1</td><td><input type="text"></td><td><input type="text"></td>
+            <td><label class="ck" data-ja-text="無条件" data-en-text="No conditions"><input type="radio" name="att1"> 無条件</label><label class="ck" data-ja-text="NDA締結後" data-en-text="After an NDA is signed"><input type="radio" name="att1"> NDA締結後</label></td></tr>
+          <tr><td class="c">2</td><td><input type="text"></td><td><input type="text"></td>
+            <td><label class="ck" data-ja-text="無条件" data-en-text="No conditions"><input type="radio" name="att2"> 無条件</label><label class="ck" data-ja-text="NDA締結後" data-en-text="After an NDA is signed"><input type="radio" name="att2"> NDA締結後</label></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ============ 14 ============ -->
+  <section id="sec14" data-sec="14">
+    <div class="sh"><span class="no">14</span><h2 data-ja="作成者確認" data-en="Author's confirmation">作成者確認</h2></div>
+    <div class="sb">
+      <table>
+        <tbody><tr><td class="lbl" data-ja="上記の記載内容に相違ないことを確認した" data-en="I confirm the above is accurate">上記の記載内容に相違ないことを確認した</td>
+          <td><label class="ck" data-ja-text="確認した" data-en-text="Confirmed"><input type="checkbox"> 確認した</label></td></tr>
+        <tr><td class="lbl" data-ja="作成者署名" data-en="Author's signature">作成者署名</td><td><input type="text"></td></tr>
+        <tr><td class="lbl" data-ja="所属長承認" data-en="Approved by line manager">所属長承認</td><td><input type="text"></td></tr>
+        <tr><td class="lbl" data-ja="提出日" data-en="Date submitted">提出日</td><td><input type="date"></td></tr>
+      </tbody></table>
+    </div>
+  </section>
+
+  <div class="quota" id="quotaAll" style="margin-top:14px;">
+    <span class="n">添付合計 <b>0 B</b></span>
+    <span class="bar2"><i></i></span>
+  </div>
+
+  <div class="foot" data-ja="
+    本様式の提出後、<b>VMO が発行前チェックを行う。</b>RFP の発行は、VMO 承認をもって可能となる。<br>
+    VMO は、7項目（目的・背景／現行環境／要求事項／非機能要件／制約条件／受入基準／前提と責任分界）が、
+    <b>第三者が見積リスクを織り込める程度に記述されているか</b>を判定する。
+  " data-en="Once submitted, <b>the VMO carries out a pre-issue check.</b> The RFP may be issued only on VMO approval.<br>
+    The VMO tests whether the seven items (purpose and background / current environment / requirements /
+    non-functional requirements / constraints / acceptance criteria / assumptions and responsibility)
+    <b>are written well enough for a third party to price the risk.</b>">
+    本様式の提出後、<b>VMO が発行前チェックを行う。</b>RFP の発行は、VMO 承認をもって可能となる。<br>
+    VMO は、7項目（目的・背景／現行環境／要求事項／非機能要件／制約条件／受入基準／前提と責任分界）が、
+    <b>第三者が見積リスクを織り込める程度に記述されているか</b>を判定する。
+  </div>
+
+</div>
+
+<script>
+"use strict";
+
+/* ===================================================================
+   契約類型マスター
+   =================================================================== */
+let LANG = "ja";
+const t = (o) => (typeof o === "string" ? o : o[LANG]);
+
+const CATS = [
+  { g:{ja:"A. クラウドサービス・SaaS", en:"A. Cloud services / SaaS"}, items:[
+      ["A-1",{ja:"IaaS/PaaS 利用", en:"IaaS / PaaS"}],
+      ["A-2",{ja:"SaaS 利用（エンタープライズ）", en:"SaaS (enterprise)"}],
+      ["A-3",{ja:"SaaS 利用（部門・チーム）", en:"SaaS (departmental / team)"}],
+      ["A-4",{ja:"クラウドマーケットプレイス経由の購入", en:"Purchase via a cloud marketplace"}]]},
+  { g:{ja:"B. ソフトウェアライセンス", en:"B. Software licensing"}, items:[
+      ["B-1",{ja:"エンタープライズライセンス（EA/ELA）", en:"Enterprise agreement (EA / ELA)"}],
+      ["B-2",{ja:"サブスクリプションライセンス", en:"Subscription licence"}],
+      ["B-3",{ja:"永続ライセンス", en:"Perpetual licence"}],
+      ["B-4",{ja:"OSS ライセンス（商用サポート付き）", en:"Open source with commercial support"}]]},
+  { g:{ja:"C. システム開発・導入", en:"C. System development / implementation"}, items:[
+      ["C-1",{ja:"システム開発委託（請負）", en:"Development (contract for work)"}],
+      ["C-2",{ja:"技術支援・コンサルティング（準委任）", en:"Technical support / consulting (quasi-mandate)"}],
+      ["C-3",{ja:"アジャイル開発", en:"Agile development"}],
+      ["C-4",{ja:"パッケージ導入・カスタマイズ", en:"Package implementation / customisation"}]]},
+  { g:{ja:"D. 保守・運用・マネージドサービス", en:"D. Maintenance / operations / managed services"}, items:[
+      ["D-1",{ja:"IT 運用保守", en:"IT maintenance and operations"}],
+      ["D-2",{ja:"マネージドサービス", en:"Managed service"}],
+      ["D-3",{ja:"ハードウェア保守", en:"Hardware maintenance"}]]},
+  { g:{ja:"E. セキュリティ・データ", en:"E. Security / data"}, items:[
+      ["E-1",{ja:"データ処理契約（DPA）", en:"Data processing agreement (DPA)"}],
+      ["E-2",{ja:"セキュリティサービス", en:"Security service"}],
+      ["E-3",{ja:"秘密保持契約（NDA）", en:"Non-disclosure agreement (NDA)"}]]},
+  { g:{ja:"F. 通信・ネットワーク", en:"F. Connectivity / network"}, items:[
+      ["F-1",{ja:"回線・ネットワークサービス", en:"Circuits and network services"}],
+      ["F-2",{ja:"SD-WAN・SASE", en:"SD-WAN / SASE"}]]},
+  { g:{ja:"G. IT人材", en:"G. IT staffing"}, items:[
+      ["G-1",{ja:"IT 人材派遣", en:"Worker dispatch"}],
+      ["G-2",{ja:"SES（システムエンジニアリングサービス）", en:"SES (system engineering service)"}]]},
+  { g:{ja:"H. その他", en:"H. Other"}, items:[
+      ["H-1",{ja:"PoC・トライアル", en:"Proof of concept / trial"}],
+      ["H-2",{ja:"API・データ連携", en:"API / data integration"}],
+      ["H-3",{ja:"ドメイン・証明書関連", en:"Domains and certificates"}]]},
+  { g:{ja:"─", en:"—"}, items:[
+      ["X",{ja:"上記のいずれにも該当しない", en:"None of the above"}]]}
+];
+const NAME = {};
+CATS.forEach(c => c.items.forEach(([cd,nm]) => NAME[cd] = nm));
+
+/* ===================================================================
+   セクション表示ルール（0-3 の表に対応）
+   skip … 記入不要のサブセクション
+   =================================================================== */
+const ALL = [1,2,3,4,5,6,7,8,9,10,11,12,13,14];
+const RULES = {
+  /* secs … 表示するセクション　skip … 表示しないサブセクション（3-3 移行要件のみ） */
+  A: { secs:[1,2,3,4,5,6,7,8,9,10,11,12,13,14], skip:[] },
+  B: { secs:[1,3,4,5,6,7,8,9,10,11,12,13,14],   skip:["3-3"] },
+  C: { secs:ALL,                                 skip:[] },
+  D: { secs:ALL,                                 skip:[] },
+  E: { secs:[1,3,4,5,6,7,8,9,10,11,12,13,14],   skip:["3-3"] },
+  F: { secs:[1,3,4,5,6,7,8,9,10,11,12,13,14],   skip:["3-3"] },
+  G: { secs:[1,3,5,6,7,8,9,10,11,12,13,14],     skip:["3-3"] },
+  H1:{ secs:[1,3,5,6,7,8,9,10,11,12,13,14],     skip:["3-3"] },
+  H2:{ secs:[1,3,4,5,6,7,8,9,10,11,12,13,14],   skip:["3-3"] },
+  X: { secs:ALL,                                 skip:[] }
+};
+function ruleKey(code){
+  if(!code) return null;
+  if(code === "X")   return "X";
+  if(code === "H-1") return "H1";
+  if(code === "H-2" || code === "H-3") return "H2";
+  return code[0];
+}
+const SECNAME = {
+  1:{ja:"目的・背景",en:"Purpose & background"},
+  2:{ja:"現行環境",en:"Current environment"},
+  3:{ja:"要求事項",en:"Requirements"},
+  4:{ja:"非機能要件",en:"Non-functional"},
+  5:{ja:"制約条件",en:"Constraints"},
+  6:{ja:"受入基準",en:"Acceptance"},
+  7:{ja:"前提と責任分界",en:"Assumptions & responsibility"},
+  8:{ja:"契約条件",en:"Contract terms"},
+  9:{ja:"類型別の追加要件",en:"Type-specific requirements"},
+  10:{ja:"提案書に記載を求める事項",en:"Proposal contents"},
+  11:{ja:"評価項目と配点",en:"Criteria & weights"},
+  12:{ja:"スケジュール",en:"Schedule"},
+  13:{ja:"添付資料",en:"Attachments"},
+  14:{ja:"作成者確認",en:"Confirmation"}};
+
+/* ===================================================================
+   類型別・追加標準条項（8-1-2）
+   =================================================================== */
+const LOCK = [
+  { for:c=>c[0]==="A",
+    t:{ja:"データの返還・削除", en:"Return and deletion of data"},
+    d:{ja:"契約終了時、標準形式でのデータ一括エクスポートを提供し、その後に消去する。<b>保持期間・提供形式・費用負担を明記する</b>",
+       en:"On termination, provide a full export in a standard format and then erase the data. <b>State the retention period, the format and who bears the cost.</b>"} },
+  { for:c=>c[0]==="A",
+    t:{ja:"サブプロセッサの事前通知", en:"Prior notice of sub-processors"},
+    d:{ja:"再委託先の変更は、事前に通知し、異議申立ての機会を設ける",
+       en:"Give notice before any change of sub-processor, and allow an opportunity to object."} },
+  { for:c=>c[0]==="A"||c[0]==="B",
+    t:{ja:"価格改定の上限", en:"Cap on price increases"},
+    d:{ja:"更新時の価格改定率に上限を設ける",
+       en:"Cap the rate by which the price may rise on renewal."} },
+  { for:c=>c[0]==="B",
+    t:{ja:"ライセンス監査の条件", en:"Terms of a licence audit"},
+    d:{ja:"監査の<b>頻度上限・事前通知期間・費用負担・対象範囲</b>を限定する",
+       en:"Limit the <b>frequency, the notice period, who pays and what may be examined.</b>"} },
+  { for:c=>c[0]==="B",
+    t:{ja:"ライセンスの移転・再配置", en:"Transfer and reassignment of licences"},
+    d:{ja:"組織再編・システム移行に伴うライセンス移転を認める",
+       en:"Permit licences to move with a reorganisation or a system migration."} },
+  { for:c=>c[0]==="B",
+    t:{ja:"ダウングレード権 / 数量減", en:"Downgrade rights / reducing quantities"},
+    d:{ja:"更新時の数量減を認める。<b>True-Down の条件を明記する</b>",
+       en:"Permit quantities to be reduced on renewal. <b>State the true-down terms.</b>"} },
+  { for:c=>c[0]==="D",
+    t:{ja:"引継ぎ期間・引継ぎ成果物", en:"Handover period and handover artefacts"},
+    d:{ja:"契約終了時、<b>引継ぎ期間と引継ぎ成果物を、あらかじめ定義する</b>",
+       en:"<b>Define, in advance, the handover period and what must be handed over</b> on termination."} },
+  { for:c=>c[0]==="D",
+    t:{ja:"運用ドキュメントの継続更新", en:"Keeping the operating documents current"},
+    d:{ja:"保守期間中の変更を、運用手順書に反映して納品する",
+       en:"Reflect every change made during the term in the operating procedures, and deliver them."} },
+  { for:c=>c[0]==="F",
+    t:{ja:"中途解約条件", en:"Terms of early termination"},
+    d:{ja:"違約金の算定方法と上限を明記する",
+       en:"State how any termination charge is calculated, and its ceiling."} },
+  { for:c=>c[0]==="G",
+    t:{ja:"指揮命令関係の明確化", en:"Who directs the work"},
+    d:{ja:"業務遂行の指揮命令が、いずれの当事者に属するかを明記する",
+       en:"State which party directs and instructs the people doing the work."} },
+  { for:c=>c==="H-1",
+    t:{ja:"PoC 成果物の帰属と本契約への移行条件", en:"Ownership of PoC output and terms of moving to a full contract"},
+    d:{ja:"PoC の成果物の帰属、および本契約に移行する場合の条件を明記する",
+       en:"State who owns what the PoC produces, and on what terms it converts into a full contract."} }
+];
+
+/* ===================================================================
+   状態
+   =================================================================== */
+let primary = null;
+const secondary = new Set();
+
+const $  = s => document.querySelector(s);
+const el = (t,c,h) => { const e=document.createElement(t); if(c) e.className=c; if(h!=null) e.innerHTML=h; return e; };
+const txt = (ph,w) => `<input type="text"${ph?` placeholder="${ph}"`:""}${w?` style="width:${w}"`:""}>`;
+
+/* ===================================================================
+   0-2 類型テーブル
+   =================================================================== */
+function buildTypes(){
+  const tb = $("#typeBody");
+  tb.innerHTML = "";
+  CATS.forEach(cat => {
+    cat.items.forEach(([cd,nm],i) => {
+      const tr = el("tr");
+      tr.dataset.code = cd;
+      if(i===0){
+        const td = el("td","cat",t(cat.g));
+        td.rowSpan = cat.items.length;
+        tr.appendChild(td);
+      }
+      tr.appendChild(el("td","code", cd==="X" ? "─" : cd));
+      tr.appendChild(el("td","nm", t(nm)));
+
+      const tdP = el("td","c");
+      const rP = el("input"); rP.type="radio"; rP.name="primary"; rP.value=cd;
+      rP.addEventListener("change", () => { primary = cd; secondary.delete(cd); render(); });
+      tdP.appendChild(rP); tr.appendChild(tdP);
+
+      const tdS = el("td","c");
+      if(cd !== "X"){
+        const cS = el("input"); cS.type="checkbox"; cS.value=cd; cS.className="subck";
+        cS.addEventListener("change", e => {
+          if(e.target.checked){
+            if(cd === primary){ e.target.checked = false; return; }
+            secondary.add(cd);
+          } else secondary.delete(cd);
+          render();
+        });
+        tdS.appendChild(cS);
+      } else tdS.textContent = "─";
+      tr.appendChild(tdS);
+
+      tb.appendChild(tr);
+    });
+  });
+}
+buildTypes();
+
+/* ===================================================================
+   静的テーブルの生成
+   =================================================================== */
+const DOCS = [
+  {ja:"基本設計書",en:"High-level design"},{ja:"詳細設計書",en:"Detailed design"},
+  {ja:"データベース定義書",en:"Database definitions"},{ja:"インターフェース定義書",en:"Interface definitions"},
+  {ja:"運用手順書",en:"Operating procedures"},{ja:"環境構成情報",en:"Environment configuration"},
+  {ja:"ソースコード",en:"Source code"},{ja:"テスト仕様書",en:"Test specifications"}];
+const YNP = ()=>({y:t({ja:"可",en:"Yes"}), n:t({ja:"不可",en:"No"}), p:t({ja:"一部",en:"Partial"})});
+
+const MS = [{ja:"契約締結",en:"Contract signed"},{ja:"要件定義完了",en:"Requirements complete"},
+  {ja:"開発完了",en:"Build complete"},{ja:"テスト完了",en:"Testing complete"},
+  {ja:"本番稼働",en:"Go-live"}];
+
+const STD = [
+  [{ja:"成果物の所有権",en:"Ownership of the deliverables"},
+   {ja:"本調達により作成された成果物の所有権は、発注側に帰属する",
+    en:"Everything produced under this contract belongs to the buyer."}],
+  [{ja:"ドキュメントの納品義務",en:"Obligation to deliver documentation"},
+   {ja:"設計書・運用手順書・環境構成情報を、所定の形式で納品する",
+    en:"Deliver the design documents, operating procedures and environment configuration in the agreed format."}],
+  [{ja:"ドキュメントの更新義務",en:"Obligation to keep documentation current"},
+   {ja:"保守期間中の変更は、ドキュメントに反映して納品する",
+    en:"Reflect any change made during the maintenance term in the documentation, and deliver it."}],
+  [{ja:"データの可搬性",en:"Portability of data"},
+   {ja:"発注側の要求に応じ、標準形式でのデータエクスポートを提供する",
+    en:"On request, provide an export of the data in a standard format."}],
+  [{ja:"契約終了時の引継ぎ協力義務",en:"Duty to co-operate in handover"},
+   {ja:"後継事業者への引継ぎに、合理的な範囲で協力する",
+    en:"Co-operate, so far as is reasonable, in handing over to a successor supplier."}]
+];
+
+const PROPS = [
+  {ja:"提案概要・実現方針",en:"Summary of the proposal and the approach"},
+  {ja:"システム構成・技術方式",en:"System architecture and technical approach"},
+  {ja:"機能要件への対応方針（要求事項一覧に対する回答）",en:"Response to each functional requirement"},
+  {ja:"非機能要件への対応方針",en:"Response to the non-functional requirements"},
+  {ja:"実施体制・要員計画（役割・スキル・稼働率）",en:"Team and staffing (roles, skills, allocation)"},
+  {ja:"スケジュール・WBS",en:"Schedule and work breakdown"},
+  {ja:"移行方針",en:"Migration approach"},
+  {ja:"保守運用体制",en:"Support and operations"},
+  {ja:"リスクと対応策",en:"Risks and mitigations"},
+  {ja:"類似案件の実績",en:"Comparable past work"},
+  {ja:"見積内訳（工数・単価・費目別）",en:"Priced breakdown (effort, rates, cost items)"},
+  {ja:"その他",en:"Other"}];
+
+const EVALS = [{ja:"価格",en:"Price"},{ja:"技術力・実現性",en:"Technical strength and feasibility"},
+  {ja:"実績・体制",en:"Track record and team"},{ja:"保守性・拡張性",en:"Maintainability and extensibility"},null];
+
+const SCH = [
+  {ja:"仕様書公開 / RFP発行",en:"Specification published / RFP issued"},
+  {ja:"質問受付期限",en:"Deadline for questions"},
+  {ja:"質問回答（全応札者に同時公開）",en:"Answers published (to all bidders at once)"},
+  {ja:"提案書提出期限",en:"Deadline for proposals"},
+  {ja:"プレゼンテーション（実施する場合）",en:"Presentations (where held)"},
+  {ja:"評価・選定",en:"Evaluation and selection"},
+  {ja:"結果通知（落選者へのデブリーフを含む）",en:"Outcome notified (including debriefs for losing bidders)"},
+  {ja:"契約締結",en:"Contract signed"}];
+
+function buildTables(){
+  const yn = YNP();
+  $("#docTbl").innerHTML = DOCS.map((d,i)=>`
+    <tr><td class="lbl">${t(d)}</td>
+      <td><label class="ck"><input type="radio" name="doc${i}"> ${yn.y}</label>
+          <label class="ck"><input type="radio" name="doc${i}"> ${yn.n}</label>
+          <label class="ck"><input type="radio" name="doc${i}"> ${yn.p}</label></td>
+      <td>${txt()}</td><td>${txt()}</td></tr>`).join("");
+
+  $("#msTbl").innerHTML = MS.map(m=>`
+    <tr><td class="lbl">${t(m)}</td><td><input type="date"></td><td>${txt()}</td></tr>`).join("");
+
+  $("#stdTbl").innerHTML = STD.map(([a,d])=>`
+    <tr><td class="c"><input type="checkbox" class="stdck" checked></td>
+      <td class="lbl">${t(a)}</td><td>${t(d)}</td></tr>`).join("");
+
+  $("#propTbl").innerHTML = PROPS.map(p=>`
+    <tr><td class="c"><input type="checkbox" class="propck" checked></td><td>${t(p)}</td>
+      <td>${txt(t({ja:"例：3ページ以内",en:"e.g. 3 pages max"}))}</td></tr>`).join("");
+
+  $("#evalTbl").innerHTML = EVALS.map((e,i)=>`
+    <tr><td class="c">${i+1}</td>
+      <td>${e ? `<b>${t(e)}</b>` : txt()}</td>
+      <td class="c"><input type="number" class="pt" min="0" max="100" style="width:70px;text-align:center;"></td>
+      <td>${txt()}</td></tr>`).join("");
+
+  $("#schTbl").innerHTML = SCH.map((x,i)=>`
+    <tr><td class="c">${i+1}</td><td class="lbl">${t(x)}</td><td><input type="date"></td></tr>`).join("");
+}
+/* 標準条項・類型別条項：ひとつでも外されたら理由欄を出す */
+function syncStd(){
+  const off = [...document.querySelectorAll(".stdck")].filter(c=>!c.checked).length
+            + [...document.querySelectorAll(".lockck")].filter(c=>!c.checked).length;
+  const w = $("#stdWhyWrap");
+  if(w) w.style.display = off ? "block" : "none";
+}
+document.addEventListener("change", e=>{
+  if(e.target.classList.contains("stdck") || e.target.classList.contains("lockck")) syncStd();
+});
+
+/* 提案項目のカウンタ */
+function syncProp(){
+  const n = [...document.querySelectorAll(".propck")].filter(c=>c.checked).length;
+  const el2 = $("#propN"); if(el2) el2.textContent = n;
+}
+document.addEventListener("change", e=>{
+  if(e.target.classList.contains("propck")) syncProp();
+});
+
+buildTables();
+
+/* 配点合計 */
+document.addEventListener("input", e=>{
+  if(!e.target.classList.contains("pt")) return;
+  let sum = 0;
+  document.querySelectorAll(".pt").forEach(p => sum += (parseInt(p.value,10) || 0));
+  $("#evalSum").textContent = sum;
+  $("#evalWarn").style.display = (sum === 100 || sum === 0) ? "none" : "block";
+});
+
+/* ===================================================================
+   9. 類型別の追加要件ブロック
+   =================================================================== */
+function row(l,c){ return `<tr><td class="lbl">${l}</td><td>${c}</td></tr>`; }
+const LK = () => `<span class="lock">${LANG==="ja"?"ロックイン防止":"anti-lock-in"}</span>`;
+
+const DICT = {"% ／ 年": "% / year","／ 年": "/ year","回 ／ 年": "times / year","ヶ月": "months","%": "%","￥": "¥","9-A-1. サービス構成": "9-A-1. Service configuration","9-A-2. データの取扱い": "9-A-2. Handling of data","9-A-3. 責任共有モデルの分界": "9-A-3. The shared responsibility boundary","9-A-4. サービスレベル": "9-A-4. Service levels","9-A-5. 事業継続・出口": "9-A-5. Continuity and exit","9-B-1. ライセンス構成": "9-B-1. Licence configuration","9-B-2. 契約条件": "9-B-2. Contract terms","9-B-3. 監査・コンプライアンス": "9-B-3. Audit and compliance","9-B-4. 権利・移転": "9-B-4. Rights and transfer","9-B-5. OSS の場合（B-4）": "9-B-5. Where the item is open source (B-4)","9-D-1. サービス範囲": "9-D-1. Scope of service","9-D-2. 重大度と対応目標": "9-D-2. Severity and response targets","9-D-3. エスカレーション": "9-D-3. Escalation","9-D-4. 引継ぎ・出口条件": "9-D-4. Handover and exit","9-D-5. ハードウェア保守の場合（D-3）": "9-D-5. Where the item is hardware maintenance (D-3)","9-E-1. データ処理契約（E-1 / DPA）": "9-E-1. Data processing agreement (E-1 / DPA)","9-E-2. セキュリティサービス（E-2）": "9-E-2. Security service (E-2)","9-E-3. 秘密保持契約（E-3 / NDA）": "9-E-3. Non-disclosure agreement (E-3 / NDA)","SD-WAN / SASE の場合（F-2）": "Where the item is SD-WAN / SASE (F-2)","労働者派遣の場合（G-1）": "Where the contract is worker dispatch (G-1)","準委任 / SES の場合（G-2）": "Where the contract is quasi-mandate / SES (G-2)","API・データ連携（H-2）": "API / data integration (H-2)","ドメイン・証明書（H-3）": "Domains and certificates (H-3)","利用形態": "Delivery model","想定ユーザー数（初年度 / 3年後）": "Expected users (year 1 / year 3)","ライセンス / 課金単位": "Licensing / charging unit","想定利用量（従量課金の場合）": "Expected volume (where charged by use)","データ所在地の指定": "Where the data must reside","越境移転の可否": "May data cross borders?","取り扱うデータの機密区分": "Confidentiality classification of the data","個人情報の有無": "Any personal data?","契約終了時のデータ返還": "Return of data on termination","契約終了後のデータ削除": "Deletion of data after termination","アップタイム保証": "Uptime commitment","計画停止の除外条件": "What planned downtime is excluded","サービスクレジット（未達時の返還率・上限）": "Service credits (rate and ceiling if missed)","サポート窓口・対応時間": "Support channel and hours","サービス廃止時の通知期間": "Notice given if the service is withdrawn","ベンダーロックイン回避策（標準API／エクスポート機能の有無）": "Means of avoiding lock-in (standard APIs / export)","代替サービスへの移行可能性": "Feasibility of moving to an alternative","マーケットプレイス経由": "Via a marketplace","ユーザー単位": "Per user","従量課金": "By usage","固定": "Fixed","国内限定": "Domestic only","特定リージョン": "A specified region","指定なし": "No requirement","条件": "Conditions","形式": "Format","提供期限": "By when","費用負担": "Who pays","削除期限": "Delete by","削除証明": "Certificate of deletion","要": "Required","不要": "Not required","あり（→ 9-E も記入）": "Yes (also complete 9-E)","なし": "No","算定方法": "How calculated","物理インフラ": "Physical infrastructure","ネットワーク制御": "Network controls","OS / ミドルウェア": "OS / middleware","アプリケーション": "Application","データ / アクセス管理": "Data / access management","バックアップ": "Backup","セキュリティパッチ": "Security patching","領域": "Area","発注側": "Buyer","ベンダー": "Vendor","備考": "Notes","ライセンス形態": "Form of licence","計測単位": "Unit of measure","必要数量（初年度 / 3年後）": "Quantity (year 1 / year 3)","エディション / グレード": "Edition / grade","対象製品・バージョン": "Product and version","契約期間": "Term","自動更新の有無": "Auto-renewal?","価格改定の上限": "Cap on price increase","最低コミットメント（EA/ELA の場合）": "Minimum commitment (EA / ELA)","True-Up の条件": "True-up terms","True-Down / 数量減の可否": "True-down / may quantities be reduced?","ボリュームディスカウントの適用条件": "When volume discounts apply","ライセンス監査権の有無": "Is there a right of audit?","監査の頻度上限": "Maximum audit frequency","事前通知期間": "Notice period","監査費用の負担": "Who bears the cost of an audit","監査対象範囲の限定": "Limits on what may be audited","ライセンスの移転可否（組織再編・システム移行時）": "May licences be transferred (reorganisation / migration)?","ダウングレード権": "Downgrade rights","バージョンアップ権 / Software Assurance": "Upgrade rights / Software Assurance","保守契約の要否": "Is a maintenance contract required?","保守終了後のライセンス継続利用": "Continued use after maintenance ends","対象 OSS とライセンス種別": "The open source component and its licence","商用サポートの範囲": "Scope of commercial support","セキュリティパッチの提供期間": "How long security patches are provided","知的財産補償（IP indemnification）の有無": "Is there an IP indemnity?","永続": "Perpetual","サブスクリプション": "Subscription","OSS商用サポート": "Open source with support","指名ユーザー": "Named user","同時接続": "Concurrent","コア／CPU": "Core / CPU","デバイス": "Device","サーバー": "Server","更新拒否の通知期限": "Deadline to give notice of non-renewal","可": "Yes","不可": "No","条件付": "Conditional","ベンダー負担": "Vendor","発注側負担": "Buyer","未達時のみ発注側": "Buyer only if found non-compliant","必須": "Mandatory","任意": "Optional","その他": "Other","契約形態": "Form of contract","請負（完成義務あり）": "Contract for work (duty to complete)","準委任（善管注意義務）": "Quasi-mandate (duty of care)","アジャイル": "Agile","パッケージ導入": "Package implementation","<b>アジャイルの場合</b>：スプリント単位の受入方法": "<b>If agile</b>: how each sprint is accepted","<b>パッケージ導入の場合</b>：Fit &amp; Gap の実施主体": "<b>If a package</b>: who runs the fit-gap","<b>パッケージ導入の場合</b>：カスタマイズの許容範囲": "<b>If a package</b>: how much customisation is permitted","開発成果物の著作権の帰属": "Who owns the copyright in what is built","第三者ソフトウェア（OSS含む）の使用条件": "Terms for third-party software (including open source)","共同": "Jointly","受注者": "Supplier","共有": "Shared","本類型は、セクション1〜8 が主たる記述領域である。以下は補足のみ。": "For this type, sections 1–8 carry the substance. What follows is supplementary only.","対象システム / 機器": "Systems / equipment covered","サービス区分": "Class of service","対応時間帯": "Hours of cover","障害受付方法": "How faults are raised","個別システム保守": "Maintenance of a single system","包括的運用管理（マネージド）": "Managed operations","ハードウェア保守": "Hardware maintenance","平日日中": "Business hours","24/7": "24/7","電話": "Telephone","メール": "Email","ポータル": "Portal","重大度": "Severity","定義": "Definition","一次応答目標": "Target first response","復旧目標": "Target resolution","緊急（S1）": "Critical (S1)","高（S2）": "High (S2)","中（S3）": "Medium (S3)","低（S4）": "Low (S4)","段階": "Stage","発動条件": "Trigger","エスカレーション先": "Escalate to","1次": "First","2次": "Second","3次": "Third","契約終了時の引継ぎ期間": "Handover period on termination","引継ぎ成果物（後継事業者に引き渡すもの）": "What is handed to the successor supplier","引継ぎ費用の扱い": "How handover costs are treated","並行稼働期間の要否": "Is parallel running required?","運用手順書": "Operating procedures","構成情報": "Configuration","障害履歴": "Fault history","監視設定": "Monitoring configuration","スクリプト類": "Scripts","契約に含む": "Included in the contract","別途精算": "Charged separately","保守方式": "Method of maintenance","オンサイト": "On site","センドバック": "Return to base","先出しセンドバック": "Advance replacement","部品供給の保証期間": "How long parts are guaranteed","EOL / EOS の予定時期": "Expected EOL / EOS","延長保守の可否": "Is extended maintenance available?","取り扱う個人データの種類": "Categories of personal data","処理の目的": "Purpose of processing","データ主体の範囲": "Who the data subjects are","保管期間": "Retention period","発注側の立場": "The buyer's role","ベンダーの立場": "The vendor's role","越境移転の有無": "Any cross-border transfer?","越境移転がある場合の適法性根拠": "If so, the lawful basis","再委託（Sub-processor）の可否": "May sub-processors be used?","データ侵害時の通知期限": "Deadline to notify a breach","監査権 / 監査報告書の提供": "Right of audit / provision of audit reports","契約終了時のデータ返還・削除": "Return and deletion of data on termination","管理者（Controller）": "Controller","処理者（Processor）": "Processor","再処理者（Sub-processor）": "Sub-processor","移転先": "Destination","本人同意": "Consent","十分性認定": "Adequacy decision","可（事前承認要）": "Yes, with prior approval","可（事前通知のみ）": "Yes, with prior notice","サービス種別": "Type of service","脆弱性診断": "Vulnerability assessment","ペネトレーションテスト": "Penetration testing","SOC 運用": "SOC operations","セキュリティ監査": "Security audit","インシデントレスポンス": "Incident response","診断対象範囲": "Scope of assessment","実施頻度": "Frequency","報告書の形式・提出期限": "Format of the report and when it is due","発見事項の是正責任の所在": "Who is responsible for remediating findings","実施時の免責条件": "Exclusions of liability during testing","秘密情報の範囲": "What counts as confidential","一方向 / 相互": "One-way / mutual","秘密保持期間": "Duration of confidentiality","契約終了時の返還・廃棄義務": "Duty to return or destroy on termination","例外事由": "Exceptions","一方向": "One-way","相互": "Mutual","専用線": "Leased line","インターネット接続": "Internet access","広域イーサ": "Wide-area Ethernet","対象拠点 / 回線数": "Sites / number of circuits","帯域": "Bandwidth","帯域保証の有無": "Is bandwidth guaranteed?","帯域保証": "Guaranteed","ベストエフォート": "Best effort","可用性目標": "Availability target","冗長構成の要否": "Is redundancy required?","開通リードタイム": "Lead time to provision","最低利用期間": "Minimum term","中途解約違約金の算定方法": "How an early-termination charge is calculated","障害時の SLA・返金条件": "SLA on faults and terms of refund","増速・減速の可否と条件": "May bandwidth be increased or reduced, and on what terms","PoP の所在地": "Location of the PoPs","ZTNA / ゼロトラスト要件": "ZTNA / zero-trust requirements","既存ネットワークとの共存条件": "How it must coexist with the existing network","労働者派遣（G-1）": "Worker dispatch (G-1)","SES / 準委任（G-2）": "SES / quasi-mandate (G-2)","業務遂行の指揮命令権の所在": "Who directs and instructs the work","発注側（→ 労働者派遣契約とすること）": "The buyer (→ must be a dispatch contract)","受注者（→ 準委任契約とすること）": "The supplier (→ must be a quasi-mandate)","要員数": "Number of people","要求スキル・経験": "Skills and experience required","稼働場所": "Where they work","発注側オフィス（常駐）": "Buyer's office (on site)","受注者オフィス": "Supplier's office","リモート": "Remote","稼働率 / 稼働時間": "Allocation / hours","単価の提示方法": "How rates are quoted","人月単価": "Per person-month","人日単価": "Per person-day","時間単価": "Per hour","超過・控除の精算条件": "How over- and under-run is settled","要員交代時の手続き・引継ぎ": "Process and handover when people change","抵触日": "Dispatch limit date","派遣期間制限への対応": "How the dispatch period limit is met","派遣先責任者": "Responsible person at the buyer","<b>偽装請負の回避に関する確認事項</b>　4項目すべてを確認すること。": "<b>Confirmations to avoid disguised subcontracting.</b> All four must be confirmed.","確認事項": "Confirmation","発注側は、受注者の要員に対し、直接の指揮命令を行わない": "The buyer does not directly instruct the supplier's people","業務の遂行方法・順序は、受注者が決定する": "The supplier decides how and in what order the work is done","受注者側に、業務を管理する責任者が置かれている": "The supplier has a manager responsible for the work","勤怠管理は、受注者が行う": "The supplier manages attendance and hours","PoC の目的": "Purpose of the PoC","検証項目": "What is being tested","<b>成功の判定基準</b>（何が確認できれば成功とするか）": "<b>What counts as success</b> (what must be shown)","実施期間": "Duration","費用": "Cost","無償": "No charge","有償": "Chargeable","提供されるデータ・環境": "Data and environments provided","PoC 成果物の帰属": "Who owns what the PoC produces","本契約への移行条件": "Terms on which it converts to a full contract","本契約に移行しない場合の扱い（データ削除・環境撤去）": "If it does not convert (deletion of data, teardown)","PoC 結果の公表可否": "May the results be published?","連携方式": "Method of integration","ファイル連携": "File transfer","想定呼び出し回数": "Expected call volume","レート制限": "Rate limits","API 仕様変更時の通知期間": "Notice given before the API changes","旧バージョンのサポート期間": "How long old versions are supported","障害時の SLA": "SLA on faults","対象ドメイン / 証明書": "Domains / certificates covered","証明書の種別（DV / OV / EV / ワイルドカード）": "Type of certificate (DV / OV / EV / wildcard)","有効期間": "Validity period","更新手続きの方法": "How renewal is handled","失効時の再発行条件": "Terms of reissue if revoked","あり": "Yes"};
+function L(k){ return LANG === "ja" ? k : (DICT[k] !== undefined ? DICT[k] : k); }
+
+const BLOCKS = [
+{ id:"A", code:"9-A", ttl:{ja:"クラウド・SaaS",en:"Cloud / SaaS"}, rule:"A-1 / A-2 / A-3 / A-4",
+  match:c=>c[0]==="A", html:()=>`
+  <h4>${L("9-A-1. サービス構成")}</h4>
+  <table>
+    ${row(L("利用形態"),`<div class="ckgrid">
+      <label class="ck"><input type="radio" name="aform"> IaaS</label>
+      <label class="ck"><input type="radio" name="aform"> PaaS</label>
+      <label class="ck"><input type="radio" name="aform"> SaaS</label>
+      <label class="ck"><input type="radio" name="aform"> ${L("マーケットプレイス経由")}</label></div>`)}
+    ${row(L("想定ユーザー数（初年度 / 3年後）"), txt())}
+    ${row(L("ライセンス / 課金単位"),`<div class="ckgrid">
+      <label class="ck"><input type="radio" name="abill"> ${L("ユーザー単位")}</label>
+      <label class="ck"><input type="radio" name="abill"> ${L("従量課金")}</label>
+      <label class="ck"><input type="radio" name="abill"> ${L("固定")}</label>
+      <label class="ck"><input type="radio" name="abill"> ${L("その他")}</label>${txt("",'150px')}</div>`)}
+    ${row(L("想定利用量（従量課金の場合）"), txt())}
+  </table>
+
+  <h4>${L("9-A-2. データの取扱い")}</h4>
+  <table>
+    ${row(L("データ所在地の指定"),`<div class="ckgrid">
+      <label class="ck"><input type="radio" name="aloc"> ${L("国内限定")}</label>
+      <label class="ck"><input type="radio" name="aloc"> ${L("特定リージョン")}</label>${txt("",'140px')}
+      <label class="ck"><input type="radio" name="aloc"> ${L("指定なし")}</label></div>`)}
+    ${row(L("越境移転の可否"),`<label class="ck"><input type="radio" name="axb"> ${L("不可")}</label>
+      <label class="ck"><input type="radio" name="axb"> ${L("可")}</label>${txt(L("条件"),'200px')}`)}
+    ${row(L("取り扱うデータの機密区分"), txt())}
+    ${row(L("個人情報の有無"),`<label class="ck"><input type="radio" name="apii"> ${L("あり（→ 9-E も記入）")}</label>
+      <label class="ck"><input type="radio" name="apii"> ${L("なし")}</label>`)}
+    ${row(L("契約終了時のデータ返還")+LK(),`<div class="ckgrid">
+      <span class="unit">${L("形式")}</span>${txt("",'120px')}
+      <span class="unit">${L("提供期限")}</span>${txt("",'120px')}
+      <span class="unit">${L("費用負担")}</span>${txt("",'120px')}</div>`)}
+    ${row(L("契約終了後のデータ削除")+LK(),`<div class="ckgrid">
+      <span class="unit">${L("削除期限")}</span>${txt("",'130px')}
+      <span class="unit">${L("削除証明")}</span>
+      <label class="ck"><input type="radio" name="adel"> ${L("要")}</label>
+      <label class="ck"><input type="radio" name="adel"> ${L("不要")}</label></div>`)}
+  </table>
+
+  <h4>${L("9-A-3. 責任共有モデルの分界")}</h4>
+  <table>
+    <thead><tr><th>${L("領域")}</th><th class="c" style="width:80px;">${L("発注側")}</th><th class="c" style="width:80px;">${L("ベンダー")}</th><th style="width:30%;">${L("備考")}</th></tr></thead>
+    <tbody>
+    ${[L("物理インフラ"),L("ネットワーク制御"),L("OS / ミドルウェア"),L("アプリケーション"),L("データ / アクセス管理"),L("バックアップ"),L("セキュリティパッチ")].map(x=>
+      `<tr><td class="lbl">${x}</td><td class="c"><input type="checkbox"></td>
+       <td class="c"><input type="checkbox"></td><td>${txt()}</td></tr>`).join("")}
+    </tbody>
+  </table>
+
+  <h4>${L("9-A-4. サービスレベル")}</h4>
+  <table>
+    ${row(L("アップタイム保証"),`<div class="ckgrid">${txt("",'80px')}<span class="unit">${L("%")}</span>
+      <span class="unit">${L("算定方法")}</span>${txt("",'240px')}</div>`)}
+    ${row(L("計画停止の除外条件"), txt())}
+    ${row(L("サービスクレジット（未達時の返還率・上限）"), txt())}
+    ${row(L("サポート窓口・対応時間"), txt())}
+  </table>
+
+  <h4>${L("9-A-5. 事業継続・出口")}</h4>
+  <table>
+    ${row(L("サービス廃止時の通知期間"), txt())}
+    ${row(L("ベンダーロックイン回避策（標準API／エクスポート機能の有無）")+LK(), txt())}
+    ${row(L("代替サービスへの移行可能性"), txt())}
+  </table>`},
+
+{ id:"B", code:"9-B", ttl:{ja:"ソフトウェアライセンス",en:"Software licensing"}, rule:"B-1 / B-2 / B-3 / B-4",
+  match:c=>c[0]==="B", html:()=>`
+  <h4>${L("9-B-1. ライセンス構成")}</h4>
+  <table>
+    ${row(L("ライセンス形態"),`<div class="ckgrid">
+      <label class="ck"><input type="radio" name="blf"> ${L("永続")}</label>
+      <label class="ck"><input type="radio" name="blf"> ${L("サブスクリプション")}</label>
+      <label class="ck"><input type="radio" name="blf"> EA/ELA</label>
+      <label class="ck"><input type="radio" name="blf"> ${L("OSS商用サポート")}</label></div>`)}
+    ${row(L("計測単位"),`<div class="ckgrid">
+      <label class="ck"><input type="checkbox"> ${L("指名ユーザー")}</label>
+      <label class="ck"><input type="checkbox"> ${L("同時接続")}</label>
+      <label class="ck"><input type="checkbox"> ${L("コア／CPU")}</label>
+      <label class="ck"><input type="checkbox"> ${L("デバイス")}</label>
+      <label class="ck"><input type="checkbox"> ${L("サーバー")}</label>
+      <label class="ck"><input type="checkbox"> ${L("その他")}</label>${txt("",'140px')}</div>`)}
+    ${row(L("必要数量（初年度 / 3年後）"), txt())}
+    ${row(L("エディション / グレード"), txt())}
+    ${row(L("対象製品・バージョン"), txt())}
+  </table>
+
+  <h4>${L("9-B-2. 契約条件")}</h4>
+  <table>
+    ${row(L("契約期間"), txt())}
+    ${row(L("自動更新の有無"),`<label class="ck"><input type="radio" name="bar"> ${L("あり")}</label>
+      ${txt(L("更新拒否の通知期限"),'190px')}
+      <label class="ck"><input type="radio" name="bar"> ${L("なし")}</label>`)}
+    ${row(L("価格改定の上限")+LK(),`<div class="ckgrid">${txt("",'80px')}<span class="unit">${L("% ／ 年")}</span></div>`)}
+    ${row(L("最低コミットメント（EA/ELA の場合）"), txt())}
+    ${row(L("True-Up の条件"), txt())}
+    ${row(L("True-Down / 数量減の可否")+LK(),`<label class="ck"><input type="radio" name="btd"> ${L("可")}</label>
+      ${txt(L("条件"),'220px')}
+      <label class="ck"><input type="radio" name="btd"> ${L("不可")}</label>`)}
+    ${row(L("ボリュームディスカウントの適用条件"), txt())}
+  </table>
+
+  <h4>${L("9-B-3. 監査・コンプライアンス")}</h4>
+  <table>
+    ${row(L("ライセンス監査権の有無")+LK(),`<label class="ck"><input type="radio" name="bau"> ${L("あり")}</label>
+      <label class="ck"><input type="radio" name="bau"> ${L("なし")}</label>`)}
+    ${row(L("監査の頻度上限")+LK(),`<div class="ckgrid">${txt("",'70px')}<span class="unit">${L("回 ／ 年")}</span></div>`)}
+    ${row(L("事前通知期間")+LK(), txt())}
+    ${row(L("監査費用の負担")+LK(),`<div class="ckgrid">
+      <label class="ck"><input type="radio" name="bac"> ${L("ベンダー負担")}</label>
+      <label class="ck"><input type="radio" name="bac"> ${L("発注側負担")}</label>
+      <label class="ck"><input type="radio" name="bac"> ${L("未達時のみ発注側")}</label></div>`)}
+    ${row(L("監査対象範囲の限定"), txt())}
+  </table>
+
+  <h4>${L("9-B-4. 権利・移転")}</h4>
+  <table>
+    ${row(L("ライセンスの移転可否（組織再編・システム移行時）")+LK(),`<div class="ckgrid">
+      <label class="ck"><input type="radio" name="bmv"> ${L("可")}</label>
+      <label class="ck"><input type="radio" name="bmv"> ${L("不可")}</label>
+      <label class="ck"><input type="radio" name="bmv"> ${L("条件付")}</label>${txt("",'180px')}</div>`)}
+    ${row(L("ダウングレード権"),`<label class="ck"><input type="radio" name="bdg"> ${L("あり")}</label>
+      <label class="ck"><input type="radio" name="bdg"> ${L("なし")}</label>`)}
+    ${row(L("バージョンアップ権 / Software Assurance"),`<label class="ck"><input type="radio" name="bsa"> ${L("あり")}</label>
+      <label class="ck"><input type="radio" name="bsa"> ${L("なし")}</label>`)}
+    ${row(L("保守契約の要否"),`<label class="ck"><input type="radio" name="bmt"> ${L("必須")}</label>
+      <label class="ck"><input type="radio" name="bmt"> ${L("任意")}</label>
+      <label class="ck"><input type="radio" name="bmt"> ${L("不要")}</label>`)}
+    ${row(L("保守終了後のライセンス継続利用"),`<label class="ck"><input type="radio" name="bcn"> ${L("可")}</label>
+      <label class="ck"><input type="radio" name="bcn"> ${L("不可")}</label>`)}
+  </table>
+
+  <h4>${L("9-B-5. OSS の場合（B-4）")}</h4>
+  <table>
+    ${row(L("対象 OSS とライセンス種別"), txt())}
+    ${row(L("商用サポートの範囲"), txt())}
+    ${row(L("セキュリティパッチの提供期間"), txt())}
+    ${row(L("知的財産補償（IP indemnification）の有無"),`<label class="ck"><input type="radio" name="bip"> ${L("あり")}</label>
+      <label class="ck"><input type="radio" name="bip"> ${L("なし")}</label>`)}
+  </table>`},
+
+{ id:"C", code:"9-C", ttl:{ja:"システム開発・導入",en:"Development / implementation"}, rule:"C-1 / C-2 / C-3 / C-4",
+  match:c=>c[0]==="C", html:()=>`
+  <p class="note">${L("本類型は、セクション1〜8 が主たる記述領域である。以下は補足のみ。")}</p>
+  <table>
+    ${row(L("契約形態"),`<div class="ckgrid">
+      <label class="ck"><input type="radio" name="cf"> ${L("請負（完成義務あり）")}</label>
+      <label class="ck"><input type="radio" name="cf"> ${L("準委任（善管注意義務）")}</label>
+      <label class="ck"><input type="radio" name="cf"> ${L("アジャイル")}</label>
+      <label class="ck"><input type="radio" name="cf"> ${L("パッケージ導入")}</label></div>`)}
+    ${row(L("<b>アジャイルの場合</b>：スプリント単位の受入方法"), txt())}
+    ${row(L("<b>パッケージ導入の場合</b>：Fit &amp; Gap の実施主体"),
+      `<label class="ck"><input type="radio" name="cfg"> ${L("発注側")}</label>
+       <label class="ck"><input type="radio" name="cfg"> ${L("受注者")}</label>
+       <label class="ck"><input type="radio" name="cfg"> ${L("共同")}</label>`)}
+    ${row(L("<b>パッケージ導入の場合</b>：カスタマイズの許容範囲"), txt())}
+    ${row(L("開発成果物の著作権の帰属")+LK(),`<label class="ck"><input type="radio" name="ccp"> ${L("発注側")}</label>
+      <label class="ck"><input type="radio" name="ccp"> ${L("受注者")}</label>
+      <label class="ck"><input type="radio" name="ccp"> ${L("共有")}</label>`)}
+    ${row(L("第三者ソフトウェア（OSS含む）の使用条件"), txt())}
+  </table>`},
+
+{ id:"D", code:"9-D", ttl:{ja:"保守・運用・マネージドサービス",en:"Maintenance / operations / managed services"}, rule:"D-1 / D-2 / D-3",
+  match:c=>c[0]==="D", html:()=>`
+  <h4>${L("9-D-1. サービス範囲")}</h4>
+  <table>
+    ${row(L("対象システム / 機器"), txt())}
+    ${row(L("サービス区分"),`<div class="ckgrid">
+      <label class="ck"><input type="radio" name="dsv"> ${L("個別システム保守")}</label>
+      <label class="ck"><input type="radio" name="dsv"> ${L("包括的運用管理（マネージド）")}</label>
+      <label class="ck"><input type="radio" name="dsv"> ${L("ハードウェア保守")}</label></div>`)}
+    ${row(L("対応時間帯"),`<div class="ckgrid">
+      <label class="ck"><input type="radio" name="dht"> ${L("平日日中")}</label>
+      <label class="ck"><input type="radio" name="dht"> ${L("24/7")}</label>
+      <label class="ck"><input type="radio" name="dht"> ${L("その他")}</label>${txt("",'160px')}</div>`)}
+    ${row(L("障害受付方法"),`<div class="ckgrid">
+      <label class="ck"><input type="checkbox"> ${L("電話")}</label>
+      <label class="ck"><input type="checkbox"> ${L("メール")}</label>
+      <label class="ck"><input type="checkbox"> ${L("ポータル")}</label>
+      <label class="ck"><input type="checkbox"> ${L("その他")}</label>${txt("",'140px')}</div>`)}
+  </table>
+
+  <h4>${L("9-D-2. 重大度と対応目標")}</h4>
+  <table>
+    <thead><tr><th style="width:100px;">${L("重大度")}</th><th>${L("定義")}</th><th style="width:20%;">${L("一次応答目標")}</th><th style="width:20%;">${L("復旧目標")}</th></tr></thead>
+    <tbody>
+    ${[L("緊急（S1）"),L("高（S2）"),L("中（S3）"),L("低（S4）")].map(s=>
+      `<tr><td class="lbl">${s}</td><td>${txt()}</td><td>${txt()}</td><td>${txt()}</td></tr>`).join("")}
+    </tbody>
+  </table>
+
+  <h4>${L("9-D-3. エスカレーション")}</h4>
+  <table>
+    <thead><tr><th style="width:100px;">${L("段階")}</th><th>${L("発動条件")}</th><th style="width:34%;">${L("エスカレーション先")}</th></tr></thead>
+    <tbody>
+    ${[L("1次"),L("2次"),L("3次")].map(s=>
+      `<tr><td class="lbl">${s}</td><td>${txt()}</td><td>${txt()}</td></tr>`).join("")}
+    </tbody>
+  </table>
+
+  <h4>${L("9-D-4. 引継ぎ・出口条件")}</h4>
+  <table>
+    ${row(L("契約終了時の引継ぎ期間")+LK(),`<div class="ckgrid">${txt("",'80px')}<span class="unit">${L("ヶ月")}</span></div>`)}
+    ${row(L("引継ぎ成果物（後継事業者に引き渡すもの）")+LK(),`<div class="ckgrid">
+      <label class="ck"><input type="checkbox"> ${L("運用手順書")}</label>
+      <label class="ck"><input type="checkbox"> ${L("構成情報")}</label>
+      <label class="ck"><input type="checkbox"> ${L("障害履歴")}</label>
+      <label class="ck"><input type="checkbox"> ${L("監視設定")}</label>
+      <label class="ck"><input type="checkbox"> ${L("スクリプト類")}</label>
+      <label class="ck"><input type="checkbox"> ${L("その他")}</label>${txt("",'130px')}</div>`)}
+    ${row(L("引継ぎ費用の扱い")+LK(),`<label class="ck"><input type="radio" name="dhc"> ${L("契約に含む")}</label>
+      <label class="ck"><input type="radio" name="dhc"> ${L("別途精算")}</label>`)}
+    ${row(L("並行稼働期間の要否"),`<label class="ck"><input type="radio" name="dpp"> ${L("要")}</label>
+      ${txt(L("ヶ月"),'100px')}
+      <label class="ck"><input type="radio" name="dpp"> ${L("不要")}</label>`)}
+  </table>
+
+  <h4>${L("9-D-5. ハードウェア保守の場合（D-3）")}</h4>
+  <table>
+    ${row(L("保守方式"),`<div class="ckgrid">
+      <label class="ck"><input type="radio" name="dhw"> ${L("オンサイト")}</label>
+      <label class="ck"><input type="radio" name="dhw"> ${L("センドバック")}</label>
+      <label class="ck"><input type="radio" name="dhw"> ${L("先出しセンドバック")}</label></div>`)}
+    ${row(L("部品供給の保証期間"), txt())}
+    ${row(L("EOL / EOS の予定時期"), txt())}
+    ${row(L("延長保守の可否"),`<label class="ck"><input type="radio" name="dex"> ${L("可")}</label>
+      ${txt(L("条件"),'200px')}
+      <label class="ck"><input type="radio" name="dex"> ${L("不可")}</label>`)}
+  </table>`},
+
+{ id:"E", code:"9-E", ttl:{ja:"セキュリティ・データ",en:"Security / data"}, rule:"E-1 / E-2 / E-3",
+  match:c=>c[0]==="E", html:()=>`
+  <h4>${L("9-E-1. データ処理契約（E-1 / DPA）")}</h4>
+  <table>
+    ${row(L("取り扱う個人データの種類"), txt())}
+    ${row(L("処理の目的"), txt())}
+    ${row(L("データ主体の範囲"), txt())}
+    ${row(L("保管期間"), txt())}
+    ${row(L("発注側の立場"),`<label class="ck"><input type="radio" name="epo"> ${L("管理者（Controller）")}</label>
+      <label class="ck"><input type="radio" name="epo"> ${L("処理者（Processor）")}</label>`)}
+    ${row(L("ベンダーの立場"),`<label class="ck"><input type="radio" name="evp"> ${L("処理者（Processor）")}</label>
+      <label class="ck"><input type="radio" name="evp"> ${L("再処理者（Sub-processor）")}</label>`)}
+    ${row(L("越境移転の有無"),`<label class="ck"><input type="radio" name="exb"> ${L("なし")}</label>
+      <label class="ck"><input type="radio" name="exb"> ${L("あり")}</label>${txt(L("移転先"),'190px')}`)}
+    ${row(L("越境移転がある場合の適法性根拠"),`<div class="ckgrid">
+      <label class="ck"><input type="radio" name="elg"> SCC</label>
+      <label class="ck"><input type="radio" name="elg"> ${L("十分性認定")}</label>
+      <label class="ck"><input type="radio" name="elg"> ${L("本人同意")}</label>
+      <label class="ck"><input type="radio" name="elg"> ${L("その他")}</label>${txt("",'130px')}</div>`)}
+    ${row(L("再委託（Sub-processor）の可否"),`<div class="ckgrid">
+      <label class="ck"><input type="radio" name="esp"> ${L("可（事前承認要）")}</label>
+      <label class="ck"><input type="radio" name="esp"> ${L("可（事前通知のみ）")}</label>
+      <label class="ck"><input type="radio" name="esp"> ${L("不可")}</label></div>`)}
+    ${row(L("データ侵害時の通知期限"), txt())}
+    ${row(L("監査権 / 監査報告書の提供"), txt())}
+    ${row(L("契約終了時のデータ返還・削除")+LK(), txt())}
+  </table>
+
+  <h4>${L("9-E-2. セキュリティサービス（E-2）")}</h4>
+  <table>
+    ${row(L("サービス種別"),`<div class="ckgrid">
+      <label class="ck"><input type="checkbox"> ${L("脆弱性診断")}</label>
+      <label class="ck"><input type="checkbox"> ${L("ペネトレーションテスト")}</label>
+      <label class="ck"><input type="checkbox"> ${L("SOC 運用")}</label>
+      <label class="ck"><input type="checkbox"> ${L("セキュリティ監査")}</label>
+      <label class="ck"><input type="checkbox"> ${L("インシデントレスポンス")}</label>
+      <label class="ck"><input type="checkbox"> ${L("その他")}</label>${txt("",'130px')}</div>`)}
+    ${row(L("診断対象範囲"), txt())}
+    ${row(L("実施頻度"), txt())}
+    ${row(L("報告書の形式・提出期限"), txt())}
+    ${row(L("発見事項の是正責任の所在"), txt())}
+    ${row(L("実施時の免責条件"), txt())}
+  </table>
+
+  <h4>${L("9-E-3. 秘密保持契約（E-3 / NDA）")}</h4>
+  <table>
+    ${row(L("秘密情報の範囲"), txt())}
+    ${row(L("一方向 / 相互"),`<label class="ck"><input type="radio" name="end"> ${L("一方向")}</label>
+      <label class="ck"><input type="radio" name="end"> ${L("相互")}</label>`)}
+    ${row(L("秘密保持期間"), txt())}
+    ${row(L("契約終了時の返還・廃棄義務"), txt())}
+    ${row(L("例外事由"), txt())}
+  </table>`},
+
+{ id:"F", code:"9-F", ttl:{ja:"通信・ネットワーク",en:"Connectivity / network"}, rule:"F-1 / F-2",
+  match:c=>c[0]==="F", html:()=>`
+  <table>
+    ${row(L("サービス種別"),`<div class="ckgrid">
+      <label class="ck"><input type="radio" name="fsv"> ${L("専用線")}</label>
+      <label class="ck"><input type="radio" name="fsv"> ${L("インターネット接続")}</label>
+      <label class="ck"><input type="radio" name="fsv"> ${L("広域イーサ")}</label>
+      <label class="ck"><input type="radio" name="fsv"> SD-WAN</label>
+      <label class="ck"><input type="radio" name="fsv"> SASE</label>
+      <label class="ck"><input type="radio" name="fsv"> ${L("その他")}</label>${txt("",'130px')}</div>`)}
+    ${row(L("対象拠点 / 回線数"), txt())}
+    ${row(L("帯域"), txt())}
+    ${row(L("帯域保証の有無"),`<label class="ck"><input type="radio" name="fbw"> ${L("帯域保証")}</label>
+      <label class="ck"><input type="radio" name="fbw"> ${L("ベストエフォート")}</label>`)}
+    ${row(L("可用性目標"),`<div class="ckgrid">${txt("",'90px')}<span class="unit">${L("%")}</span></div>`)}
+    ${row(L("冗長構成の要否"),`<label class="ck"><input type="radio" name="frd"> ${L("要")}</label>
+      <label class="ck"><input type="radio" name="frd"> ${L("不要")}</label>`)}
+    ${row(L("開通リードタイム"), txt())}
+    ${row(L("最低利用期間"), txt())}
+    ${row(L("中途解約違約金の算定方法")+LK(), txt())}
+    ${row(L("障害時の SLA・返金条件"), txt())}
+    ${row(L("増速・減速の可否と条件"), txt())}
+  </table>
+
+  <h4>${L("SD-WAN / SASE の場合（F-2）")}</h4>
+  <table>
+    ${row(L("PoP の所在地"), txt())}
+    ${row(L("ZTNA / ゼロトラスト要件"), txt())}
+    ${row(L("既存ネットワークとの共存条件"), txt())}
+  </table>`},
+
+{ id:"G", code:"9-G", ttl:{ja:"IT人材",en:"IT staffing"}, rule:"G-1 / G-2",
+  match:c=>c[0]==="G", html:()=>`
+  <table>
+    ${row(L("契約形態"),`<label class="ck"><input type="radio" name="gct"> ${L("労働者派遣（G-1）")}</label>
+      <label class="ck"><input type="radio" name="gct"> ${L("SES / 準委任（G-2）")}</label>`)}
+    ${row(L("業務遂行の指揮命令権の所在")+LK(),`<div class="ckgrid">
+      <label class="ck"><input type="radio" name="gcm"> ${L("発注側（→ 労働者派遣契約とすること）")}</label>
+      <label class="ck"><input type="radio" name="gcm"> ${L("受注者（→ 準委任契約とすること）")}</label></div>`)}
+    ${row(L("要員数"), txt())}
+    ${row(L("要求スキル・経験"), txt())}
+    ${row(L("稼働場所"),`<div class="ckgrid">
+      <label class="ck"><input type="radio" name="gwp"> ${L("発注側オフィス（常駐）")}</label>
+      <label class="ck"><input type="radio" name="gwp"> ${L("受注者オフィス")}</label>
+      <label class="ck"><input type="radio" name="gwp"> ${L("リモート")}</label></div>`)}
+    ${row(L("稼働率 / 稼働時間"), txt())}
+    ${row(L("契約期間"), txt())}
+    ${row(L("単価の提示方法"),`<div class="ckgrid">
+      <label class="ck"><input type="radio" name="gpr"> ${L("人月単価")}</label>
+      <label class="ck"><input type="radio" name="gpr"> ${L("人日単価")}</label>
+      <label class="ck"><input type="radio" name="gpr"> ${L("時間単価")}</label></div>`)}
+    ${row(L("超過・控除の精算条件"), txt())}
+    ${row(L("要員交代時の手続き・引継ぎ"), txt())}
+  </table>
+
+  <h4>${L("労働者派遣の場合（G-1）")}</h4>
+  <table>
+    ${row(L("抵触日"), `<input type="date">`)}
+    ${row(L("派遣期間制限への対応"), txt())}
+    ${row(L("派遣先責任者"), txt())}
+  </table>
+
+  <h4>${L("準委任 / SES の場合（G-2）")}</h4>
+  <p class="note warn">${L("<b>偽装請負の回避に関する確認事項</b>　4項目すべてを確認すること。")}</p>
+  <table>
+    <thead><tr><th class="c" style="width:44px;">✓</th><th>${L("確認事項")}</th></tr></thead>
+    <tbody>
+    ${[L("発注側は、受注者の要員に対し、直接の指揮命令を行わない"),L("業務の遂行方法・順序は、受注者が決定する"),L("受注者側に、業務を管理する責任者が置かれている"),L("勤怠管理は、受注者が行う")].map(x=>
+      `<tr><td class="c"><input type="checkbox"></td><td>${x}</td></tr>`).join("")}
+    </tbody>
+  </table>`},
+
+{ id:"H1", code:"9-H", ttl:{ja:"PoC・トライアル",en:"Proof of concept / trial"}, rule:"H-1",
+  match:c=>c==="H-1", html:()=>`
+  <table>
+    ${row(L("PoC の目的"), txt())}
+    ${row(L("検証項目"), txt())}
+    ${row(L("<b>成功の判定基準</b>（何が確認できれば成功とするか）"), txt())}
+    ${row(L("実施期間"), txt())}
+    ${row(L("費用"),`<label class="ck"><input type="radio" name="hcs"> ${L("無償")}</label>
+      <label class="ck"><input type="radio" name="hcs"> ${L("有償")}</label>
+      <span class="unit">${L("￥")}</span>${txt("",'140px')}`)}
+    ${row(L("提供されるデータ・環境"), txt())}
+    ${row(L("PoC 成果物の帰属")+LK(),`<label class="ck"><input type="radio" name="hown"> ${L("発注側")}</label>
+      <label class="ck"><input type="radio" name="hown"> ${L("受注者")}</label>
+      <label class="ck"><input type="radio" name="hown"> ${L("共有")}</label>`)}
+    ${row(L("本契約への移行条件")+LK(), txt())}
+    ${row(L("本契約に移行しない場合の扱い（データ削除・環境撤去）"), txt())}
+    ${row(L("PoC 結果の公表可否"),`<label class="ck"><input type="radio" name="hpb"> ${L("可")}</label>
+      <label class="ck"><input type="radio" name="hpb"> ${L("不可")}</label>`)}
+  </table>`},
+
+{ id:"H2", code:"9-I", ttl:{ja:"API・データ連携／ドメイン・証明書",en:"API integration / domains & certificates"}, rule:"H-2 / H-3",
+  match:c=>c==="H-2"||c==="H-3", html:()=>`
+  <h4>${L("API・データ連携（H-2）")}</h4>
+  <table>
+    ${row(L("連携方式"),`<div class="ckgrid">
+      <label class="ck"><input type="radio" name="hap"> REST API</label>
+      <label class="ck"><input type="radio" name="hap"> Webhook</label>
+      <label class="ck"><input type="radio" name="hap"> ${L("ファイル連携")}</label>
+      <label class="ck"><input type="radio" name="hap"> ${L("その他")}</label>${txt("",'130px')}</div>`)}
+    ${row(L("想定呼び出し回数"), txt())}
+    ${row(L("レート制限"), txt())}
+    ${row(L("API 仕様変更時の通知期間"), txt())}
+    ${row(L("旧バージョンのサポート期間"), txt())}
+    ${row(L("障害時の SLA"), txt())}
+  </table>
+
+  <h4>${L("ドメイン・証明書（H-3）")}</h4>
+  <table>
+    ${row(L("対象ドメイン / 証明書"), txt())}
+    ${row(L("証明書の種別（DV / OV / EV / ワイルドカード）"), txt())}
+    ${row(L("有効期間"), txt())}
+    ${row(L("更新手続きの方法"), txt())}
+    ${row(L("失効時の再発行条件"), txt())}
+  </table>`}
+];
+
+function buildBlocks(){
+  const host = $("#typeBlocks");
+  host.innerHTML = "";
+  BLOCKS.forEach(b => {
+    const d = el("div","tblk hidden");
+    d.id = "blk-" + b.id;
+    d.innerHTML =
+      `<div class="th"><span class="cd">${b.code}</span><span>${t(b.ttl)}</span>
+         <span class="rl">${b.rule}</span></div>
+       <div class="tb">${b.html()}</div>`;
+    host.appendChild(d);
+  });
+}
+buildBlocks();
+
+/* ===================================================================
+   レンダリング
+   =================================================================== */
+function render(){
+  const codes = primary ? [primary, ...secondary] : [...secondary];
+
+  /* --- ステータスバー --- */
+  const bs = $("#barSel");
+  bs.innerHTML = "";
+  if(!primary && secondary.size === 0){
+    bs.appendChild(el("span","chip none", t({ja:"類型が未選択です",en:"No type selected"})));
+  } else {
+    if(primary){
+      bs.appendChild(el("span","chip",
+        `${t({ja:"主",en:"Primary"})} ${primary==="X" ? t({ja:"該当なし",en:"None"}) : primary}`));
+    } else {
+      bs.appendChild(el("span","chip none", t({ja:"主類型が未選択",en:"No primary type"})));
+    }
+    [...secondary].sort().forEach(c =>
+      bs.appendChild(el("span","chip sub", t({ja:"副",en:"Secondary"}) + " " + c)));
+  }
+
+  /* --- 類型テーブルのハイライト --- */
+  document.querySelectorAll("#typeBody tr").forEach(tr => {
+    const c = tr.dataset.code;
+    tr.classList.toggle("on", c === primary);
+    tr.classList.toggle("onsub", secondary.has(c));
+    const sub = tr.querySelector(".subck");
+    if(sub) sub.disabled = (c === primary);
+  });
+  $("#otherWrap").style.display = (primary === "X") ? "block" : "none";
+
+  /* --- 表示すべきセクション / スキップすべきサブ --- */
+  const show = new Set();
+  const skip = new Set();
+  if(primary){
+    const r = RULES[ruleKey(primary)];
+    r.secs.forEach(s => show.add(s));
+    r.skip.forEach(s => skip.add(s));
+  }
+  /* 副類型は「追加」方向にのみ働く。
+     ── 必要とするセクションを足し、副類型が必要とするサブセクションは skip から外す。
+     副類型が「不要」としているものが、主類型の必要を打ち消すことはない。 */
+  secondary.forEach(c => {
+    const r = RULES[ruleKey(c)];
+    r.secs.forEach(s => show.add(s));
+    document.querySelectorAll("[data-sub]").forEach(d => {
+      const sub = d.dataset.sub;
+      const secNo = parseInt(sub.split("-")[0], 10);
+      if(r.secs.includes(secNo) && !r.skip.includes(sub)) skip.delete(sub);
+    });
+  });
+
+  const none = !primary && secondary.size === 0;
+
+  /* --- セクションの表示制御 --- */
+  document.querySelectorAll("section[data-sec]").forEach(s => {
+    const n = parseInt(s.dataset.sec, 10);
+    s.classList.toggle("hidden", !none && !show.has(n));
+  });
+
+  /* --- サブセクションの表示制御 --- */
+  document.querySelectorAll("[data-sub]").forEach(d => {
+    d.style.display = (!none && skip.has(d.dataset.sub)) ? "none" : "";
+  });
+
+  /* --- 9. 類型別ブロック --- */
+  let any = false;
+  BLOCKS.forEach(b => {
+    const hit = codes.some(c => b.match(c));
+    $("#blk-"+b.id).classList.toggle("hidden", !hit);
+    if(hit) any = true;
+  });
+  $("#t9empty").style.display = (!none && !any) ? "block" : "none";
+  $("#t9intro").style.display = none ? "block" : (any ? "block" : "none");
+
+  /* --- 8-1-2 類型別の追加標準条項 --- */
+  const lt = $("#lockTbl");
+  lt.innerHTML = "";
+  let lockN = 0;
+  LOCK.forEach(l => {
+    if(!codes.some(c => l.for(c))) return;
+    lockN++;
+    const tr = el("tr");
+    tr.innerHTML =
+      `<td class="c"><input type="checkbox" class="lockck" checked></td>
+       <td class="lbl" style="color:var(--neg);">${t(l.t)}</td>
+       <td>${t(l.d)}</td>`;
+    tr.querySelectorAll("td").forEach(td => td.style.background =
+      td.classList.contains("lbl") ? "#fbe6d6" : "var(--neg-bg)");
+    lt.appendChild(tr);
+  });
+  $("#lockEmpty").style.display = (!none && lockN === 0) ? "block" : "none";
+  $("#lockNote").style.display  = (none || lockN > 0) ? "block" : "none";
+  lt.parentElement.style.display = (none || lockN > 0) ? "" : "none";
+
+  /* --- 0-3 セクションマップ --- */
+  const mb = $("#mapBody");
+  mb.innerHTML = "";
+  if(none){
+    mb.appendChild(el("div","empty", t({ja:"0-2 で主類型を選択すると、記入すべきセクションが表示されます。",en:"Select a primary type in 0-2 and the sections you need will appear here."})));
+    return;
+  }
+  /* 回答が必要なセクションのみを、ジャンプリンクとして表示する */
+  const jump = el("div","jump");
+  ALL.filter(n => show.has(n)).forEach(n => {
+    const a = el("a", "pill " + (n===9 ? "add" : "req"), `${n}. ${t(SECNAME[n])}`);
+    a.href = "#sec" + n;
+    jump.appendChild(a);
+  });
+  mb.appendChild(jump);
+
+  if(lockN){
+    const rows = el("div");
+    const r4 = el("div","maprow");
+    r4.appendChild(el("div","k", t({ja:"追加条項",en:"Extra clauses"})));
+    r4.appendChild(el("div","v", LANG==="ja"
+      ? `<b style="color:var(--neg);">8-1-2 に ${lockN} 件の類型別標準条項</b>が適用されます`
+      : `<b style="color:var(--neg);">${lockN} type-specific clause${lockN>1?"s":""} in 8-1-2</b> will apply`));
+    rows.appendChild(r4);
+    mb.appendChild(rows);
+  }
+}
+
+/* ===================================================================
+   操作
+   =================================================================== */
+let forceAll = false;
+$("#btnAll").addEventListener("click", () => {
+  forceAll = !forceAll;
+  if(forceAll){
+    document.querySelectorAll("section[data-sec]").forEach(s => s.classList.remove("hidden"));
+    document.querySelectorAll("[data-sub]").forEach(d => d.style.display = "");
+    document.querySelectorAll(".tblk").forEach(b => b.classList.remove("hidden"));
+    $("#btnAll").textContent = t({ja:"選択に応じた表示に戻す",en:"Back to the selected view"});
+  } else {
+    $("#btnAll").textContent = t({ja:"全セクションを表示",en:"Show all sections"});
+    render();
+  }
+});
+$("#btnPrint").addEventListener("click", () => window.print());
+
+/* ===================================================================
+   添付ファイル
+   ── 総容量の上限は別途定める。ここでは合計を可視化する。
+   =================================================================== */
+const MAX_TOTAL = null;   /* 上限値（バイト）。決定後に設定する。例: 50*1024*1024 */
+const store = {};         /* uid -> File[] */
+
+function fmt(b){
+  if(b < 1024) return b + " B";
+  if(b < 1024*1024) return (b/1024).toFixed(1) + " KB";
+  return (b/1024/1024).toFixed(1) + " MB";
+}
+function total(){
+  return Object.values(store).reduce((a,fs)=> a + fs.reduce((x,f)=>x+f.size,0), 0);
+}
+function drawQuota(){
+  const tt = total();
+  let q = $("#quotaAll");
+  if(!q) return;
+  const cap = MAX_TOTAL;
+  const lbl = LANG==="ja" ? "添付合計" : "Attachments total";
+  q.querySelector(".n").innerHTML = cap
+    ? `${lbl} <b>${fmt(tt)}</b> / ${fmt(cap)}`
+    : `${lbl} <b>${fmt(tt)}</b>` + (LANG==="ja" ? "（上限は別途定めます）" : " (a limit will be set separately)");
+  const bar = q.querySelector("i");
+  if(cap){
+    const pct = Math.min(100, tt/cap*100);
+    bar.style.width = pct + "%";
+    q.classList.toggle("over", tt > cap);
+  } else {
+    bar.style.width = tt ? "6%" : "0";
+  }
+}
+function drawList(uid){
+  const box = document.querySelector(`[data-list="${uid}"]`);
+  const fs = store[uid] || [];
+  box.innerHTML = fs.map((f,i)=>
+    `<div class="f"><span class="nm">${f.name}</span>
+       <span class="sz">${fmt(f.size)}</span>
+       <button type="button" class="rm" data-uid="${uid}" data-i="${i}"
+         style="border:none;background:none;color:var(--neg);cursor:pointer;font:inherit;font-size:11px;">${LANG==="ja"?"削除":"Remove"}</button>
+     </div>`).join("");
+}
+document.addEventListener("change", e => {
+  const inp = e.target.closest("[data-up]");
+  if(!inp) return;
+  const uid = inp.dataset.up;
+  store[uid] = [...(store[uid]||[]), ...inp.files];
+  inp.value = "";
+  drawList(uid);
+  drawQuota();
+});
+document.addEventListener("click", e => {
+  const b = e.target.closest(".rm");
+  if(!b) return;
+  store[b.dataset.uid].splice(+b.dataset.i, 1);
+  drawList(b.dataset.uid);
+  drawQuota();
+});
+
+/* 5-2 予算：提示しない場合は費目欄を畳む */
+const budY = $("#budY"), budN = $("#budN"), budWrap = $("#budWrap");
+function syncBud(){ budWrap.style.display = budN.checked ? "none" : "block"; }
+budY.addEventListener("change", syncBud);
+budN.addEventListener("change", syncBud);
+syncBud();
+
+/* 金額欄：3桁区切り */
+document.addEventListener("input", e => {
+  if(!e.target.classList.contains("mn")) return;
+  const v = e.target.value.replace(/[^\d]/g, "");
+  e.target.value = v ? Number(v).toLocaleString("ja-JP") : "";
+});
+
+/* ===================================================================
+   言語切替
+   ── 入力済みの内容（テキスト・選択・添付）は保持する。
+      再生成するテーブルについては、値を退避してから戻す。
+   =================================================================== */
+/* 再生成されるのは「JSが作った表」だけである。
+   静的HTML内の入力欄（本文テキスト・件名など）はDOMに残るため、退避不要。
+   退避が要るのは、再生成される表の中の入力値のみ。
+   位置ではなく「表ID＋行＋列」で対応づける。 */
+const REBUILT = ["#docTbl","#msTbl","#stdTbl","#propTbl","#evalTbl","#schTbl","#typeBody","#typeBlocks"];
+
+function snapshot(){
+  const m = {};
+  REBUILT.forEach(sel=>{
+    const host = document.querySelector(sel);
+    if(!host) return;
+    host.querySelectorAll("input,textarea,select").forEach(e=>{
+      const row = e.closest("tr,.tblk");
+      const rows = [...host.querySelectorAll("tr,.tblk")];
+      const ri = rows.indexOf(row);
+      const ins = [...(row||host).querySelectorAll("input,textarea,select")];
+      const ci = ins.indexOf(e);
+      const key = `${sel}|${ri}|${ci}`;
+      m[key] = (e.type === "checkbox" || e.type === "radio") ? e.checked : e.value;
+    });
+  });
+  return m;
+}
+function restore(m){
+  REBUILT.forEach(sel=>{
+    const host = document.querySelector(sel);
+    if(!host) return;
+    host.querySelectorAll("input,textarea,select").forEach(e=>{
+      const row = e.closest("tr,.tblk");
+      const rows = [...host.querySelectorAll("tr,.tblk")];
+      const ri = rows.indexOf(row);
+      const ins = [...(row||host).querySelectorAll("input,textarea,select")];
+      const ci = ins.indexOf(e);
+      const v = m[`${sel}|${ri}|${ci}`];
+      if(v === undefined) return;
+      if(e.type === "checkbox" || e.type === "radio") e.checked = v;
+      else e.value = v;
+    });
+  });
+}
+
+function setLang(l){
+  if(l === LANG) return;
+  const snap = snapshot();
+  LANG = l;
+  document.documentElement.lang = l;
+
+  /* 静的テキスト（data-ja / data-en） */
+  document.querySelectorAll("[data-ja]").forEach(e=>{
+    const val = e.getAttribute("data-" + l);
+    if(val !== null) e.innerHTML = val;
+  });
+  /* ラベル内のテキストノードのみ差し替える（input を壊さない） */
+  document.querySelectorAll("[data-ja-text]").forEach(e=>{
+    const val = e.getAttribute("data-" + l + "-text");
+    if(val === null) return;
+    const tn = [...e.childNodes].find(n=>n.nodeType===3 && n.textContent.trim());
+    if(tn) tn.textContent = " " + val;
+  });
+  /* placeholder */
+  document.querySelectorAll("[data-ph-ja]").forEach(e=>{
+    const val = e.getAttribute("data-ph-" + l);
+    if(val !== null) e.placeholder = val;
+  });
+
+  /* JS 生成部分を作り直す */
+  buildTypes();
+  buildTables();
+  buildBlocks();
+  restore(snap);
+
+  /* 類型の選択は primary / secondary が正。復元値ではなくこちらを正とする */
+  document.querySelectorAll('input[name="primary"]').forEach(x=>{ x.checked = (x.value === primary); });
+  document.querySelectorAll(".subck").forEach(x=>{
+    x.checked = secondary.has(x.value);
+    x.disabled = (x.value === primary);
+  });
+
+  render();
+  syncStd();
+  syncProp();
+  drawQuota();
+  Object.keys(store).forEach(drawList);
+
+  $("#btnJa").classList.toggle("on", l === "ja");
+  $("#btnEn").classList.toggle("on", l === "en");
+  $("#btnAll").textContent = forceAll
+    ? t({ja:"選択に応じた表示に戻す",en:"Back to the selected view"})
+    : t({ja:"全セクションを表示",en:"Show all sections"});
+}
+$("#btnJa").addEventListener("click", ()=>setLang("ja"));
+$("#btnEn").addEventListener("click", ()=>setLang("en"));
+
+render();
+syncStd();
+drawQuota();
+syncProp();
+</script>
+
+
+</body></html>

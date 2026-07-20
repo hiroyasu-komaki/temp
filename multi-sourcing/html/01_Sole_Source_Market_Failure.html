@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sole-Source Procurement — Structural Diagnosis</title>
+<style>
+  :root{
+    --navy:#12305e; --navy2:#2a4d84; --ink:#1b2430; --gray:#5f6a77; --gray-l:#8b95a1;
+    --line:#d7dde5; --panel:#f5f7fa;
+    --pos:#2f6fc0; --pos-bg:#eef4fc; --pos-line:#a9c6e8;
+    --neg:#c2410c; --neg-bg:#fdf2ea; --neg-line:#eeb185;
+    --com:#7c3f9e; --com-bg:#f4eefa; --com-line:#c9aede;
+    --inf:#0f7b6c; --inf-bg:#e9f5f2; --inf-line:#9ccfc4;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; padding:26px 18px 44px; background:#eef1f5; color:var(--ink);
+    font-family:"Yu Gothic UI","Yu Gothic","Hiragino Kaku Gothic ProN","Meiryo","Segoe UI",sans-serif;
+    -webkit-font-smoothing:antialiased;}
+  html[lang="en"] body{font-family:"Segoe UI","Helvetica Neue",Arial,sans-serif;}
+  .slide{max-width:1240px; margin:0 auto; background:#fff; padding:34px 40px 36px;
+    box-shadow:0 2px 18px rgba(18,48,94,.10); border-top:5px solid var(--navy); position:relative;}
+  .lang{position:absolute; top:16px; right:24px; display:flex; border:1px solid var(--line);}
+  .lang button{border:none; background:#fff; color:var(--gray); font:inherit; font-size:11px;
+    font-weight:700; letter-spacing:.06em; padding:5px 13px; cursor:pointer;}
+  .lang button+button{border-left:1px solid var(--line);}
+  .lang button.on{background:var(--navy); color:#fff;}
+  .lang button:focus-visible{outline:2px solid var(--neg); outline-offset:1px;}
+
+  .eyebrow{font-size:10.5px; font-weight:700; letter-spacing:.14em; color:var(--gray-l); margin-bottom:7px;}
+  h1{font-size:25px; margin:0 0 9px; color:var(--navy); font-weight:700; line-height:1.42; padding-right:130px;}
+  .lede{font-size:12.5px; color:var(--gray); line-height:1.8; margin:0 0 20px; padding-bottom:18px; border-bottom:1px solid var(--line);}
+  .lede b{color:var(--ink);}
+
+  .step{font-size:10.5px; font-weight:700; letter-spacing:.1em; color:#fff; background:var(--navy);
+    display:inline-block; padding:3px 11px; margin-bottom:12px;}
+  .step .n{opacity:.6; margin-right:6px;}
+  .note{font-size:11px; color:var(--gray-l); margin:-6px 0 12px; line-height:1.7;}
+  .note b{color:var(--ink);}
+  .mb30{margin-bottom:30px;}
+
+  .prem{border:1px solid var(--line); background:var(--panel); padding:16px 20px; margin-bottom:30px;}
+  .prem .t{font-size:13px; font-weight:700; color:var(--navy); margin-bottom:8px;}
+  .prem .g{display:grid; grid-template-columns:repeat(3,1fr); gap:12px;}
+  .prem .c{background:#fff; border:1px solid var(--line); padding:10px 13px;}
+  .prem .c .k{font-size:10px; font-weight:700; color:var(--gray-l); letter-spacing:.06em; margin-bottom:3px;}
+  .prem .c .v{font-size:12px; font-weight:700; line-height:1.6;}
+  .prem .c .d{font-size:10.5px; color:var(--gray); line-height:1.6; margin-top:3px;}
+  .prem .cl{font-size:11.5px; line-height:1.8; color:var(--gray); margin-top:11px;}
+  .prem .cl b{color:var(--neg);}
+
+  table{width:100%; border-collapse:collapse;}
+  .mapt th{background:var(--navy); color:#fff; font-size:11px; font-weight:700; padding:9px 11px;
+    text-align:left; border:1px solid var(--navy); line-height:1.5;}
+  .mapt td{border:1px solid var(--line); padding:9px 11px; font-size:11.5px; line-height:1.7; vertical-align:top;}
+  .mapt td.a{font-weight:700;}
+  .mapt tr.g1 td.a{color:var(--pos);} .mapt tr.g1{background:#fbfdff;}
+  .mapt tr.g2 td.a{color:var(--neg);} .mapt tr.g2{background:#fffcfa;}
+  .mapt tr.g3 td.a{color:var(--com);} .mapt tr.g3{background:#fdfbfe;}
+  .sm{color:var(--gray); font-size:10.5px; font-weight:400;}
+
+  .sym{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:14px;}
+  .card{border:1px solid var(--line); background:#fff; display:flex; flex-direction:column;}
+  .card .ch{padding:10px 15px; color:#fff; font-size:13.5px; font-weight:700;}
+  .card .ch .cls{display:block; font-size:10px; font-weight:600; opacity:.85; margin-top:2px;}
+  .card.p .ch{background:var(--pos);} .card.n .ch{background:var(--neg);}
+  .card.c .ch{background:var(--com);} .card.i .ch{background:var(--inf);}
+  .card .cb{padding:13px 16px; flex:1;}
+  .card .mech{font-size:11.5px; line-height:1.8; margin-bottom:10px;}
+  .card.p .mech b{color:var(--pos);} .card.n .mech b{color:var(--neg);}
+  .card.c .mech b{color:var(--com);} .card.i .mech b{color:var(--inf);}
+  .card .lbl{font-size:10px; font-weight:700; letter-spacing:.06em; color:var(--gray-l); margin-bottom:4px;}
+  .card ul{margin:0; padding-left:1.15em;}
+  .card li{font-size:11px; line-height:1.7; color:var(--gray); margin-bottom:2px;}
+  .card.p li b{color:var(--pos);} .card.n li b{color:var(--neg);}
+  .card.c li b{color:var(--com);} .card.i li b{color:var(--inf);}
+  .card .out{padding:8px 12px; font-size:11.5px; font-weight:700; line-height:1.6;}
+  .card.p .out{background:var(--pos-bg); color:var(--pos);}
+  .card.n .out{background:var(--neg-bg); color:var(--neg);}
+  .card.c .out{background:var(--com-bg); color:var(--com);}
+  .card.i .out{background:var(--inf-bg); color:var(--inf);}
+
+  .why{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:30px;}
+  .wcard{border:1px solid var(--line); padding:14px 17px; background:var(--panel);}
+  .wcard .t{font-size:13px; font-weight:700; color:var(--navy); margin-bottom:6px;}
+  .wcard .t .src{font-size:10px; color:var(--gray-l); font-weight:600; margin-left:6px;}
+  .wcard .d{font-size:11.5px; line-height:1.8; color:var(--gray); margin-bottom:8px;}
+  .wcard .d b{color:var(--ink);}
+  .wcard ul{margin:0; padding-left:1.15em;}
+  .wcard li{font-size:11px; line-height:1.75; color:var(--gray); margin-bottom:3px;}
+  .wcard li b{color:var(--neg); font-weight:700;}
+  .ok{color:var(--pos); font-weight:700;} .ng{color:var(--neg); font-weight:700;}
+
+  .sumt th{background:var(--navy2); color:#fff; font-size:11px; font-weight:700; padding:9px 11px;
+    text-align:left; border:1px solid var(--navy2);}
+  .sumt td{border:1px solid var(--line); padding:9px 11px; font-size:11.5px; line-height:1.7; vertical-align:top;}
+  .sumt td.s{font-weight:700;}
+  .sumt td.rx{font-weight:700; color:var(--navy); background:var(--panel);}
+  .sumt td.rx .ex{font-weight:400; color:var(--gray);}
+  .pill{display:inline-block; font-size:9.5px; font-weight:700; padding:1px 6px; border:1px solid; white-space:nowrap;}
+  .pl-p{color:var(--pos); border-color:var(--pos-line); background:var(--pos-bg);}
+  .pl-n{color:var(--neg); border-color:var(--neg-line); background:var(--neg-bg);}
+  .pl-c{color:var(--com); border-color:var(--com-line); background:var(--com-bg);}
+  .pl-i{color:var(--inf); border-color:var(--inf-line); background:var(--inf-bg);}
+
+  .close{margin-top:26px; border-left:5px solid var(--navy); background:var(--panel); padding:15px 20px;}
+  .close .t{font-size:13.5px; font-weight:700; color:var(--navy); margin-bottom:7px; line-height:1.6;}
+  .close .d{font-size:11.5px; line-height:1.9; color:var(--gray);}
+  .close .d b{color:var(--ink);}
+
+  .nav{margin-top:22px; padding-top:14px; border-top:1px solid var(--line); display:flex; justify-content:space-between; font-size:11px;}
+  .nav a{color:var(--navy); text-decoration:none; font-weight:700;}
+  .nav a:hover{text-decoration:underline;}
+
+  @media(max-width:900px){
+    h1{padding-right:0; margin-top:38px;}
+    .prem .g,.sym,.why{grid-template-columns:1fr;}
+    table{display:block; overflow-x:auto;}
+  }
+  @media print{body{background:#fff; padding:0;} .slide{box-shadow:none; max-width:none;} .lang,.nav{display:none;}}
+</style>
+</head>
+<body>
+<div class="slide">
+  <div class="lang" role="group" aria-label="Language">
+    <button id="btn-ja" class="on" onclick="setLang('ja')">日本語</button>
+    <button id="btn-en" onclick="setLang('en')">English</button>
+  </div>
+
+  <div class="eyebrow" data-ja="APPLICATION ／ IT調達における随意契約" data-en="APPLICATION / SOLE-SOURCE CONTRACTING IN IT PROCUREMENT">APPLICATION ／ IT調達における随意契約</div>
+  <h1 data-ja="発注の8割が随意契約である構造下で、何が起きるか"
+      data-en="What Happens When 80% of Contracts Are Sole-Sourced">発注の8割が随意契約である構造下で、何が起きるか</h1>
+  <p class="lede"
+     data-ja="前頁の理論を、当社のIT調達に当てはめる。ここで扱うのは<b>「発注の8割において、比較対象が存在しない」という一点</b>から演繹的に導かれる問題に限る。<br><b>ベンダーの誠実性、担当者の能力、既存関係の価値については、ここでは扱わない。</b>以下に述べる帰結は、当事者が誰であっても、この構造の下では必然的に生じる。"
+     data-en="We now apply the preceding theory to our own IT procurement. The scope is deliberately narrow: only those problems that follow deductively from <b>a single fact — that in 80% of our contracts, no point of comparison exists</b>.<br><b>Vendor integrity, staff capability, and the value of long-standing relationships are all out of scope here.</b> The consequences below follow necessarily from the structure, whoever the parties happen to be.">
+    前頁の理論を、当社のIT調達に当てはめる。ここで扱うのは<b>「発注の8割において、比較対象が存在しない」という一点</b>から演繹的に導かれる問題に限る。<br><b>ベンダーの誠実性、担当者の能力、既存関係の価値については、ここでは扱わない。</b>以下に述べる帰結は、当事者が誰であっても、この構造の下では必然的に生じる。
+  </p>
+
+  <!-- 01 -->
+  <div class="step"><span class="n">01</span><span data-ja="前提とする構造" data-en="THE STRUCTURE ASSUMED">前提とする構造</span></div>
+  <div class="prem">
+    <div class="t" data-ja="随意契約モデル ─ 価格・品質を検証する外部の基準が存在しない"
+        data-en="The sole-source model — no external benchmark exists against which price or quality can be verified">随意契約モデル ─ 価格・品質を検証する外部の基準が存在しない</div>
+    <div class="g">
+      <div class="c">
+        <div class="k" data-ja="価格の決まり方" data-en="HOW PRICE IS SET">価格の決まり方</div>
+        <div class="v" data-ja="単一ベンダーの提示額" data-en="A single vendor&#39;s quote">単一ベンダーの提示額</div>
+        <div class="d" data-ja="提示された見積を、社内の妥当性判断で受容する" data-en="The quote is accepted on the strength of an internal judgement of reasonableness">提示された見積を、社内の妥当性判断で受容する</div>
+      </div>
+      <div class="c">
+        <div class="k" data-ja="比較対象" data-en="POINT OF COMPARISON">比較対象</div>
+        <div class="v" data-ja="存在しない" data-en="None">存在しない</div>
+        <div class="d" data-ja="唯一の基準は「自社の過去実績」＝前年比である" data-en="The only benchmark is our own history — last year&#39;s number">唯一の基準は「自社の過去実績」＝前年比である</div>
+      </div>
+      <div class="c">
+        <div class="k" data-ja="ベンダー側の認識" data-en="WHAT THE VENDOR KNOWS">ベンダー側の認識</div>
+        <div class="v" data-ja="競争相手はいない" data-en="There is no rival">競争相手はいない</div>
+        <div class="d" data-ja="次年度も自社が受注することを、ベンダー自身が知っている" data-en="The vendor knows they will win the work again next year">次年度も自社が受注することを、ベンダー自身が知っている</div>
+      </div>
+    </div>
+    <div class="cl"
+      data-ja="この三つが揃うと、<b>発注側は「その価格・その品質が市場水準にあるか」を検証する手段を、原理的に持たない</b>。検証の基準となる情報が、組織の外にしか存在しないからである。<br>重要なのは、この構造下でベンダーが取る行動は<b>ベンダーの立場からは完全に合理的である</b>という点である。誰も悪意を持っていない。"
+      data-en="Once these three hold, <b>the buyer has, in principle, no means of verifying whether the price or the quality is at market level</b> — because the information needed to verify it exists only outside the organisation.<br>Note carefully: within this structure, every vendor behaviour described below is <b>entirely rational from the vendor&#39;s point of view</b>. No one is acting in bad faith.">
+      この三つが揃うと、<b>発注側は「その価格・その品質が市場水準にあるか」を検証する手段を、原理的に持たない</b>。検証の基準となる情報が、組織の外にしか存在しないからである。<br>重要なのは、この構造下でベンダーが取る行動は<b>ベンダーの立場からは完全に合理的である</b>という点である。誰も悪意を持っていない。
+    </div>
+  </div>
+
+  <!-- 02 -->
+  <div class="step"><span class="n">02</span><span data-ja="IT調達の類型と、競争適合性" data-en="CLASSES OF IT PROCUREMENT AND THEIR SUITABILITY FOR COMPETITION">IT調達の類型と、競争適合性</span></div>
+  <div class="note"
+    data-ja="同じ「IT発注」でも、情報の非対称性の強さと切替コストによって、経済財としての性質はまったく異なる。<b>したがって「8割すべてを競争にせよ」という主張は、理論的に誤りである。</b>競争が原理的に不適合な類型は確かに存在する。"
+    data-en="All of these are called &quot;IT procurement&quot;, yet depending on the degree of information asymmetry and the switching cost, they behave as entirely different classes of economic good. <b>The claim that &quot;all 80% must go to tender&quot; is therefore theoretically wrong.</b> Some classes genuinely are unsuited to competition.">
+    同じ「IT発注」でも、情報の非対称性の強さと切替コストによって、経済財としての性質はまったく異なる。<b>したがって「8割すべてを競争にせよ」という主張は、理論的に誤りである。</b>競争が原理的に不適合な類型は確かに存在する。
+  </div>
+  <table class="mapt mb30">
+    <tr>
+      <th style="width:170px;" data-ja="調達の類型" data-en="Class of procurement">調達の類型</th>
+      <th style="width:215px;" data-ja="具体例" data-en="Examples">具体例</th>
+      <th data-ja="情報の非対称性・切替コスト" data-en="Information asymmetry and switching cost">情報の非対称性・切替コスト</th>
+      <th style="width:165px;" data-ja="競争適合性" data-en="Suitability for competition">競争適合性</th>
+    </tr>
+    <tr class="g1">
+      <td class="a" data-ja="汎用・仕様記述可能な調達" data-en="Commodity procurement, fully specifiable">汎用・仕様記述可能な調達</td>
+      <td data-ja="ハードウェア、ソフトウェアライセンス、標準的な運用・保守サービス、クラウド利用" data-en="Hardware, software licences, standard operations and maintenance services, cloud consumption">ハードウェア、ソフトウェアライセンス、標準的な運用・保守サービス、クラウド利用</td>
+      <td data-ja="仕様が第三者に伝達可能。<b>非対称性は小さく、切替コストも低い</b>" data-en="The specification can be conveyed to any third party. <b>Asymmetry is low; so is the switching cost</b>">仕様が第三者に伝達可能。<b>非対称性は小さく、切替コストも低い</b></td>
+      <td data-ja="<b>競争が最も効く</b><br><span class='sm'>ここを随意契約にしている合理的理由は乏しい</span>" data-en="<b>Competition works best here</b><br><span class='sm'>There is little rational justification for sole-sourcing this</span>"><b>競争が最も効く</b><br><span class="sm">ここを随意契約にしている合理的理由は乏しい</span></td>
+    </tr>
+    <tr>
+      <td class="a" data-ja="準汎用・要件記述可能な<br>開発／構築" data-en="Semi-commodity development<br>and build">準汎用・要件記述可能な<br>開発／構築</td>
+      <td data-ja="新規システム構築、パッケージ導入、既存システムの機能追加、インフラ更改" data-en="New system builds, package implementations, feature additions to existing systems, infrastructure refresh">新規システム構築、パッケージ導入、既存システムの機能追加、インフラ更改</td>
+      <td data-ja="要件は記述しうるが、実現手段・工数の妥当性は<b>ベンダー側にしか見えない</b>（非対称性＝中）" data-en="Requirements can be written, but the reasonableness of the approach and the effort estimate is <b>visible only to the vendor</b> (moderate asymmetry)">要件は記述しうるが、実現手段・工数の妥当性は<b>ベンダー側にしか見えない</b>（非対称性＝中）</td>
+      <td data-ja="<b>総合評価方式が適合</b><br><span class='sm'>価格のみの競争は逆効果</span>" data-en="<b>Suited to a scored (price + quality) tender</b><br><span class='sm'>Price-only competition is counterproductive</span>"><b>総合評価方式が適合</b><br><span class="sm">価格のみの競争は逆効果</span></td>
+    </tr>
+    <tr class="g2">
+      <td class="a" data-ja="自社固有・暗黙知依存の<br>保守" data-en="Bespoke maintenance,<br>dependent on tacit knowledge">自社固有・暗黙知依存の<br>保守</td>
+      <td data-ja="長年の作り込みが蓄積したシステムの改修、ドキュメントが存在しない基幹系の保守" data-en="Modifying systems shaped by years of accumulated customisation; maintaining core systems for which no documentation exists">長年の作り込みが蓄積したシステムの改修、ドキュメントが存在しない基幹系の保守</td>
+      <td data-ja="非対称性＝大、切替コスト＝大。他社は応札しても<b>正確な見積を出せない</b>" data-en="High asymmetry, high switching cost. Even a willing competitor <b>cannot produce a reliable estimate</b>">非対称性＝大、切替コスト＝大。他社は応札しても<b>正確な見積を出せない</b></td>
+      <td data-ja="<b>即時の競争適用は困難</b><br><span class='sm'>ただしこの状態自体が問題である（症状③）</span>" data-en="<b>Cannot be tendered as things stand</b><br><span class='sm'>But this state is itself the problem — see symptom 3</span>"><b>即時の競争適用は困難</b><br><span class="sm">ただしこの状態自体が問題である（症状③）</span></td>
+    </tr>
+    <tr class="g3">
+      <td class="a" data-ja="緊急・障害対応" data-en="Emergency and incident response">緊急・障害対応</td>
+      <td data-ja="本番障害の復旧、セキュリティインシデント対応、法規制の期限直前対応" data-en="Production incident recovery, security incident response, work against an imminent regulatory deadline">本番障害の復旧、セキュリティインシデント対応、法規制の期限直前対応</td>
+      <td data-ja="非対称性＝大、かつ<b>時間制約により入札プロセスを回す余地がない</b>" data-en="High asymmetry, and <b>the time constraint leaves no room to run a tender</b>">非対称性＝大、かつ<b>時間制約により入札プロセスを回す余地がない</b></td>
+      <td data-ja="<b>競争は不適合</b><br><span class='sm'>随意契約が正当。ここを争点にしない</span>" data-en="<b>Not suited to competition</b><br><span class='sm'>Sole-sourcing is legitimate. This is not the battleground</span>"><b>競争は不適合</b><br><span class="sm">随意契約が正当。ここを争点にしない</span></td>
+    </tr>
+  </table>
+
+  <!-- 03 -->
+  <div class="step"><span class="n">03</span><span data-ja="構造から演繹される4つの症状" data-en="FOUR SYMPTOMS THAT FOLLOW FROM THE STRUCTURE">構造から演繹される4つの症状</span></div>
+
+  <div class="sym">
+    <div class="card p">
+      <div class="ch" data-ja="① 価格の妥当性を検証できない<span class='cls'>逆選抜 ／ レモン市場（契約前の非対称性）</span>"
+          data-en="1. Price cannot be verified<span class='cls'>Adverse selection / the market for lemons (asymmetry before contract)</span>">① 価格の妥当性を検証できない<span class="cls">逆選抜 ／ レモン市場（契約前の非対称性）</span></div>
+      <div class="cb">
+        <div class="mech"
+          data-ja="比較対象がないため、提示価格が<b>市場水準なのか、独占レント（交渉力の欠如による割高分）なのかを区別できない</b>。「昨年並みである」「ベンダーが他社より安いと説明している」は、いずれも検証ではない。前者は自社の過去を基準にしているだけであり、後者は情報を持つ側の自己申告である。"
+          data-en="With no point of comparison, we <b>cannot distinguish a market-level price from a monopoly rent</b> — the mark-up that comes from the absence of bargaining power. &quot;It is in line with last year&quot; and &quot;the vendor says they are cheaper than the others&quot; are not verification. The first merely benchmarks against our own past; the second is a self-report from the informed party.">
+          比較対象がないため、提示価格が<b>市場水準なのか、独占レント（交渉力の欠如による割高分）なのかを区別できない</b>。「昨年並みである」「ベンダーが他社より安いと説明している」は、いずれも検証ではない。前者は自社の過去を基準にしているだけであり、後者は情報を持つ側の自己申告である。
+        </div>
+        <div class="lbl" data-ja="観察される具体的な行動" data-en="OBSERVABLE BEHAVIOUR">観察される具体的な行動</div>
+        <ul>
+          <li data-ja="見積の妥当性検証が「前年比」と「ベンダーの説明」に依存する" data-en="Validation of a quote rests on last year&#39;s figure and on the vendor&#39;s own explanation">見積の妥当性検証が「前年比」と「ベンダーの説明」に依存する</li>
+          <li data-ja="値引き交渉はできるが、<b>そもそもの基準価格が不明である</b>" data-en="We can negotiate a discount — but <b>we do not know what we are discounting from</b>">値引き交渉はできるが、<b>そもそもの基準価格が不明である</b></li>
+          <li data-ja="相見積を取っても、応札意欲のない「当て馬見積」しか集まらない" data-en="Comparative quotes are sought, but only token bids from vendors with no intention of winning come back">相見積を取っても、応札意欲のない「当て馬見積」しか集まらない</li>
+          <li data-ja="<b>工数の妥当性を判断する根拠が、ベンダーの説明以外に存在しない</b>" data-en="<b>There is no basis for judging whether the effort estimate is reasonable, other than the vendor&#39;s account of it</b>"><b>工数の妥当性を判断する根拠が、ベンダーの説明以外に存在しない</b></li>
+        </ul>
+      </div>
+      <div class="out" data-ja="帰結：価格を検証する機構が存在しない" data-en="Outcome: no mechanism exists for verifying price">帰結：価格を検証する機構が存在しない</div>
+    </div>
+
+    <div class="card n">
+      <div class="ch" data-ja="② ベンダーの努力水準が低下する<span class='cls'>モラルハザード（契約後の非対称性）</span>"
+          data-en="2. Vendor effort declines<span class='cls'>Moral hazard (asymmetry after contract)</span>">② ベンダーの努力水準が低下する<span class="cls">モラルハザード（契約後の非対称性）</span></div>
+      <div class="cb">
+        <div class="mech"
+          data-ja="契約後の努力は観測しにくく、かつ<b>次年度も自社が受注することをベンダー自身が知っている</b>ため、努力を高く保つ経済的誘因が構造的に存在しない。これはベンダーの怠慢ではなく、<b>契約構造が生む必然的な帰結</b>である。同じ構造に置かれれば、どの会社も同じ行動を取る。"
+          data-en="Effort after the contract is hard to observe, and <b>the vendor knows they will win the work again next year</b>. There is therefore no structural incentive to keep effort high. This is not laziness on the vendor&#39;s part; it is <b>a necessary consequence of the contract structure</b>. Any firm placed in the same structure behaves the same way.">
+          契約後の努力は観測しにくく、かつ<b>次年度も自社が受注することをベンダー自身が知っている</b>ため、努力を高く保つ経済的誘因が構造的に存在しない。これはベンダーの怠慢ではなく、<b>契約構造が生む必然的な帰結</b>である。同じ構造に置かれれば、どの会社も同じ行動を取る。
+        </div>
+        <div class="lbl" data-ja="観察される具体的な行動" data-en="OBSERVABLE BEHAVIOUR">観察される具体的な行動</div>
+        <ul>
+          <li data-ja="提案の質が年を追って低下する（提案書が前年の使い回しになる）" data-en="Proposal quality declines year on year — last year&#39;s document, lightly edited">提案の質が年を追って低下する（提案書が前年の使い回しになる）</li>
+          <li data-ja="工数見積が年々保守的（余裕を持った数字）になる" data-en="Effort estimates grow more conservative each year — more padding">工数見積が年々保守的（余裕を持った数字）になる</li>
+          <li data-ja="新技術・改善・コスト削減の提案が自発的に出てこない" data-en="Proposals for new technology, improvement or cost reduction stop arriving unprompted">新技術・改善・コスト削減の提案が自発的に出てこない</li>
+          <li data-ja="<b>こちらから要求しない限り、何も変わらない</b>" data-en="<b>Nothing changes unless we ask for it</b>"><b>こちらから要求しない限り、何も変わらない</b></li>
+        </ul>
+      </div>
+      <div class="out" data-ja="帰結：規律づけの機構が存在しない" data-en="Outcome: no mechanism exists for discipline">帰結：規律づけの機構が存在しない</div>
+    </div>
+  </div>
+
+  <div class="sym">
+    <div class="card c">
+      <div class="ch" data-ja="③ 依存が固定化し、切替コストが上昇する<span class='cls'>ロックイン ／ 非対称性の自己強化</span>"
+          data-en="3. Dependency hardens and switching costs rise<span class='cls'>Lock-in / self-reinforcing asymmetry</span>">③ 依存が固定化し、切替コストが上昇する<span class="cls">ロックイン ／ 非対称性の自己強化</span></div>
+      <div class="cb">
+        <div class="mech"
+          data-ja="随意契約が続くほど、ベンダー固有の知識・独自実装・ドキュメントの不在が蓄積し、<b>切替コストが上昇する</b>。切替コストが上がるほど、競争を導入できなくなる。競争がないほど、さらに固有化が進む。<b>これは自己強化ループであり、放置すれば時間とともに悪化する</b>。"
+          data-en="The longer sole-sourcing continues, the more vendor-specific knowledge, bespoke implementation and missing documentation accumulate — and <b>the switching cost rises</b>. The higher the switching cost, the less competition can be introduced. The less competition, the deeper the customisation. <b>This is a self-reinforcing loop: left alone, it gets worse with time.</b>">
+          随意契約が続くほど、ベンダー固有の知識・独自実装・ドキュメントの不在が蓄積し、<b>切替コストが上昇する</b>。切替コストが上がるほど、競争を導入できなくなる。競争がないほど、さらに固有化が進む。<b>これは自己強化ループであり、放置すれば時間とともに悪化する</b>。
+        </div>
+        <div class="lbl" data-ja="観察される具体的な行動" data-en="OBSERVABLE BEHAVIOUR">観察される具体的な行動</div>
+        <ul>
+          <li data-ja="「このシステムはあの会社にしか分からない」が事実として通用する" data-en="&quot;Only they understand that system&quot; is accepted as a statement of fact">「このシステムはあの会社にしか分からない」が事実として通用する</li>
+          <li data-ja="設計書・運用手順がベンダー側にしか存在しない" data-en="Design documents and operating procedures exist only on the vendor&#39;s side">設計書・運用手順がベンダー側にしか存在しない</li>
+          <li data-ja="移行費用の見積が禁止的に高く、検討の入口で断念する──しかも<b>その見積の出所は、多くの場合、既存ベンダー自身である</b>" data-en="Migration cost estimates are prohibitive; the idea is dropped before it is examined &mdash; and the estimate itself, more often than not, <b>comes from the incumbent</b>">移行費用の見積が禁止的に高く、検討の入口で断念する──しかも<b>その見積の出所は、多くの場合、既存ベンダー自身である</b></li>
+          <li data-ja="<b>更改時に声をかけても、他社が応札を辞退する</b>" data-en="<b>At renewal, other firms are invited — and decline to bid</b>"><b>更改時に声をかけても、他社が応札を辞退する</b></li>
+        </ul>
+      </div>
+      <div class="out" data-ja="帰結：競争の選択肢そのものが、時間とともに失われる" data-en="Outcome: the option of competing is itself lost, over time">帰結：競争の選択肢そのものが、時間とともに失われる</div>
+    </div>
+
+    <div class="card i">
+      <div class="ch" data-ja="④ 市場の情報が組織に入ってこない<span class='cls'>情報の非対称性の再生産</span>"
+          data-en="4. Market information never reaches the organisation<span class='cls'>The asymmetry reproduces itself</span>">④ 市場の情報が組織に入ってこない<span class="cls">情報の非対称性の再生産</span></div>
+      <div class="cb">
+        <div class="mech"
+          data-ja="RFPを出さないため、市場に他にどのような技術・価格・提案が存在するかを知る機会が、組織に構造的に存在しない。結果として<b>「知らないことを知らない」状態</b>が固定する。技術選択の幅は、既存ベンダーの取扱範囲によって規定される。"
+          data-en="Because no RFP is issued, the organisation has no structural occasion on which to learn what other technologies, prices or approaches exist in the market. The result is a fixed state of <b>not knowing what one does not know</b>. The range of technical options available to us is defined by the range that our incumbent happens to sell.">
+          RFPを出さないため、市場に他にどのような技術・価格・提案が存在するかを知る機会が、組織に構造的に存在しない。結果として<b>「知らないことを知らない」状態</b>が固定する。技術選択の幅は、既存ベンダーの取扱範囲によって規定される。
+        </div>
+        <div class="lbl" data-ja="観察される具体的な行動" data-en="OBSERVABLE BEHAVIOUR">観察される具体的な行動</div>
+        <ul>
+          <li data-ja="技術選択が、既存ベンダーの取扱製品の範囲に収まる" data-en="Technology choices stay within what the incumbent happens to offer">技術選択が、既存ベンダーの取扱製品の範囲に収まる</li>
+          <li data-ja="「これが標準的なやり方だ」の根拠が、ベンダーの説明のみである" data-en="&quot;That is how it is normally done&quot; rests on nothing but the vendor&#39;s say-so">「これが標準的なやり方だ」の根拠が、ベンダーの説明のみである</li>
+          <li data-ja="新規ベンダーとの接点がなく、市場価格の相場観が組織にない" data-en="There is no contact with new vendors, and no institutional sense of what things cost">新規ベンダーとの接点がなく、市場価格の相場観が組織にない</li>
+          <li data-ja="<b>担当者が異動すると、判断の根拠が組織から消える</b>" data-en="<b>When the individual moves on, the basis for the judgement leaves the organisation with them</b>"><b>担当者が異動すると、判断の根拠が組織から消える</b></li>
+        </ul>
+      </div>
+      <div class="out" data-ja="帰結：判断の起点となる情報が、組織に蓄積しない" data-en="Outcome: the information on which judgement rests never accumulates">帰結：判断の起点となる情報が、組織に蓄積しない</div>
+    </div>
+  </div>
+
+  <!-- 04 -->
+  <div class="step"><span class="n">04</span><span data-ja="なぜ、現状の努力では解決しないのか" data-en="WHY EXISTING EFFORTS DO NOT RESOLVE THIS">なぜ、現状の努力では解決しないのか</span></div>
+  <div class="note"
+    data-ja="「もっと厳しく交渉する」「目利きを鍛える」は、いずれも当事者の努力に訴える解である。しかし理論は、これらが原理的に非対称性を解消しないことを示している。"
+    data-en="&quot;Negotiate harder&quot; and &quot;sharpen our judgement&quot; both appeal to the effort of the individuals involved. Theory shows that neither can, in principle, dissolve the asymmetry.">
+    「もっと厳しく交渉する」「目利きを鍛える」は、いずれも当事者の努力に訴える解である。しかし理論は、これらが原理的に非対称性を解消しないことを示している。
+  </div>
+  <div class="why">
+    <div class="wcard">
+      <div class="t" data-ja="なぜ「厳しく交渉する」では解けないか<span class='src'>Akerlof (1970)</span>" data-en="Why &quot;negotiate harder&quot; does not work<span class='src'>Akerlof (1970)</span>">なぜ「厳しく交渉する」では解けないか<span class="src">Akerlof (1970)</span></div>
+      <div class="d"
+        data-ja="交渉力は、<b>情報がなければ機能しない</b>。相手の真のコストを知らないまま値切っても、それが妥当な水準に到達したかどうかを判定できない。値引きに応じたという事実は、<b>元の見積に余裕があったことの証明にはなるが、到達点が適正であることの証明にはならない</b>。"
+        data-en="Bargaining power <b>does not function without information</b>. Pressing for a discount without knowing the other side&#39;s true cost leaves us unable to judge whether we have reached a reasonable level. That they conceded a discount <b>proves there was padding in the original quote — it does not prove that where we ended up is right</b>.">
+        交渉力は、<b>情報がなければ機能しない</b>。相手の真のコストを知らないまま値切っても、それが妥当な水準に到達したかどうかを判定できない。値引きに応じたという事実は、<b>元の見積に余裕があったことの証明にはなるが、到達点が適正であることの証明にはならない</b>。
+      </div>
+      <ul>
+        <li data-ja="<b>相見積は非対称性を解消しない：</b>応札意欲のないベンダーが形式的な見積を出せば、比較の体裁は整うが情報は得られない"
+            data-en="<b>Comparative quotes do not dissolve the asymmetry:</b> a token bid from a vendor with no intention of winning produces the appearance of comparison and none of the information"><b>相見積は非対称性を解消しない：</b>応札意欲のないベンダーが形式的な見積を出せば、比較の体裁は整うが情報は得られない</li>
+        <li data-ja="<b>これは努力の問題に見えて、情報構造の問題である：</b>どれだけ厳しく交渉しても、比較対象が存在しない限り検証はできない"
+            data-en="<b>It looks like a problem of effort; it is a problem of information structure:</b> however hard one negotiates, nothing can be verified while no benchmark exists"><b>これは努力の問題に見えて、情報構造の問題である：</b>どれだけ厳しく交渉しても、比較対象が存在しない限り検証はできない</li>
+      </ul>
+    </div>
+    <div class="wcard">
+      <div class="t" data-ja="なぜ「担当者の目利き」では解けないか<span class='src'>Rothschild &amp; Stiglitz (1976) の含意</span>" data-en="Why &quot;a good eye&quot; does not work<span class='src'>The implication of Rothschild &amp; Stiglitz (1976)</span>">なぜ「担当者の目利き」では解けないか<span class="src">Rothschild &amp; Stiglitz (1976) の含意</span></div>
+      <div class="d"
+        data-ja="スクリーニング理論の核心は、非対称情報は、情報を持たない側が<b>どれだけ賢明であっても</b>、選択肢を提示して自己選択させる<b>仕組み</b>がなければ解消しない、という点にある。個人の眼力に依存する解は、次の三点で必ず破綻する。"
+        data-en="The heart of screening theory is this: an information asymmetry is not dissolved by the uninformed party being <b>clever</b>. It is dissolved by a <b>mechanism</b> — a menu of options that forces the other side to self-select. Any solution resting on individual judgement fails on three counts.">
+        スクリーニング理論の核心は、非対称情報は、情報を持たない側が<b>どれだけ賢明であっても</b>、選択肢を提示して自己選択させる<b>仕組み</b>がなければ解消しない、という点にある。個人の眼力に依存する解は、次の三点で必ず破綻する。
+      </div>
+      <ul>
+        <li data-ja="<span class='ng'>✕</span> <b>属人化する：</b>その担当者が異動すれば、判断能力は組織から失われる"
+            data-en="<span class='ng'>✕</span> <b>It is personal:</b> when that individual moves on, the capability leaves with them"><span class="ng">✕</span> <b>属人化する：</b>その担当者が異動すれば、判断能力は組織から失われる</li>
+        <li data-ja="<span class='ng'>✕</span> <b>検証不能である：</b>「妥当だと判断した」根拠を第三者が検証できない"
+            data-en="<span class='ng'>✕</span> <b>It cannot be audited:</b> no third party can check the basis on which it was &quot;judged reasonable&quot;"><span class="ng">✕</span> <b>検証不能である：</b>「妥当だと判断した」根拠を第三者が検証できない</li>
+        <li data-ja="<span class='ng'>✕</span> <b>継承できない：</b>暗黙知は文書化されず、後任に引き継げない"
+            data-en="<span class='ng'>✕</span> <b>It cannot be handed on:</b> tacit knowledge is not written down, and does not pass to a successor"><span class="ng">✕</span> <b>継承できない：</b>暗黙知は文書化されず、後任に引き継げない</li>
+        <li data-ja="<span class='ok'>→</span> <b>能力の問題ではなく、制度の問題である。</b>優秀な担当者ほど、この構造では消耗する"
+            data-en="<span class='ok'>→</span> <b>This is not a problem of capability but of institutional design.</b> The better the individual, the more this structure exhausts them"><span class="ok">→</span> <b>能力の問題ではなく、制度の問題である。</b>優秀な担当者ほど、この構造では消耗する</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- 05 -->
+  <div class="step"><span class="n">05</span><span data-ja="症状・分類・処方箋の型" data-en="SYMPTOM, CLASSIFICATION, AND THE FORM OF THE REMEDY">症状・分類・処方箋の型</span></div>
+  <table class="sumt">
+    <tr>
+      <th style="width:160px;" data-ja="症状" data-en="Symptom">症状</th>
+      <th style="width:145px;" data-ja="経済学的分類" data-en="Classification">経済学的分類</th>
+      <th data-ja="成立メカニズム" data-en="Mechanism">成立メカニズム</th>
+      <th style="width:305px;" data-ja="理論が示す処方箋の型" data-en="Form of remedy indicated by theory">理論が示す処方箋の型</th>
+    </tr>
+    <tr>
+      <td class="s" style="color:var(--pos);" data-ja="価格が検証できない" data-en="Price cannot be verified">価格が検証できない</td>
+      <td><span class="pill pl-p" data-ja="逆選抜／レモン市場" data-en="Adverse selection">逆選抜／レモン市場</span></td>
+      <td data-ja="比較対象の不在 → 私的情報（真のコスト）が価格として顕示されない" data-en="No benchmark → private information (true cost) is never revealed as a price">比較対象の不在 → 私的情報（真のコスト）が価格として顕示されない</td>
+      <td class="rx" data-ja="競争メカニズムによるスクリーニング。<span class='ex'>複数を競わせ、自己選択させることで真のコストを顕示させる</span>" data-en="Screening through a competitive mechanism. <span class='ex'>Put several parties in competition and let self-selection reveal the true cost</span>">競争メカニズムによるスクリーニング。<span class="ex">複数を競わせ、自己選択させることで真のコストを顕示させる</span></td>
+    </tr>
+    <tr>
+      <td class="s" style="color:var(--neg);" data-ja="努力水準が低下する" data-en="Effort declines">努力水準が低下する</td>
+      <td><span class="pill pl-n" data-ja="モラルハザード" data-en="Moral hazard">モラルハザード</span></td>
+      <td data-ja="再受注が既知 → 努力を高く保つ経済的誘因が消滅する" data-en="Re-award is a known certainty → the incentive to keep effort high disappears">再受注が既知 → 努力を高く保つ経済的誘因が消滅する</td>
+      <td class="rx" data-ja="モニタリング＋<b>競争可能性そのもの</b>。<span class='ex'>「次は競争があるかもしれない」という事実が規律になる</span>" data-en="Monitoring, plus <b>the mere possibility of competition</b>. <span class='ex'>The fact that next time there might be a tender is itself the discipline</span>">モニタリング＋<b>競争可能性そのもの</b>。<span class="ex">「次は競争があるかもしれない」という事実が規律になる</span></td>
+    </tr>
+    <tr>
+      <td class="s" style="color:var(--com);" data-ja="依存が固定化する" data-en="Dependency hardens">依存が固定化する</td>
+      <td><span class="pill pl-c" data-ja="ロックイン" data-en="Lock-in">ロックイン</span></td>
+      <td data-ja="非対称性が時間とともに自己強化する（切替コストの内生的上昇）" data-en="The asymmetry reinforces itself over time (switching cost rises endogenously)">非対称性が時間とともに自己強化する（切替コストの内生的上昇）</td>
+      <td class="rx" data-ja="<b>切替コストの上昇を止める</b>。<span class='ex'>ドキュメント要件・成果物所有権・データ可搬性の契約化</span>" data-en="<b>Stop the switching cost from rising.</b> <span class='ex'>Contractual requirements on documentation, ownership of deliverables, and data portability</span>"><b>切替コストの上昇を止める</b>。<span class="ex">ドキュメント要件・成果物所有権・データ可搬性の契約化</span></td>
+    </tr>
+    <tr>
+      <td class="s" style="color:var(--inf);" data-ja="市場情報が入らない" data-en="Market information never arrives">市場情報が入らない</td>
+      <td><span class="pill pl-i" data-ja="非対称性の再生産" data-en="Asymmetry reproduced">非対称性の再生産</span></td>
+      <td data-ja="探索の機会が構造的に存在しない → 「知らないことを知らない」" data-en="No structural occasion for search → we do not know what we do not know">探索の機会が構造的に存在しない → 「知らないことを知らない」</td>
+      <td class="rx" data-ja="<b>RFPそのものが情報収集装置である</b>。<span class='ex'>落札結果にかかわらず、市場価格・技術動向の情報が組織に残る</span>" data-en="<b>The RFP is itself an instrument of information gathering.</b> <span class='ex'>Regardless of who wins, market prices and technical options remain with the organisation</span>"><b>RFPそのものが情報収集装置である</b>。<span class="ex">落札結果にかかわらず、市場価格・技術動向の情報が組織に残る</span></td>
+    </tr>
+  </table>
+
+  <div class="close">
+    <div class="t" data-ja="結論：これは交渉力や担当者の能力の問題ではなく、制度設計の問題である。"
+        data-en="Conclusion: this is not a problem of bargaining power or individual capability. It is a problem of institutional design.">結論：これは交渉力や担当者の能力の問題ではなく、制度設計の問題である。</div>
+    <div class="d"
+      data-ja="上記の4症状は、いずれも<b>「比較対象が存在しない」という一点</b>から演繹される。したがって「もっと厳しく交渉せよ」「目利きを鍛えよ」と要請しても解消しない。要請は当事者の努力を増やすが、<b>検証の基準となる情報が組織の外にしかない、という事実は変えない</b>からである。<br><b>発注の8割が随意契約であるという事実は、8割の取引において、我々が価格と品質を検証する仕組みを持っていないということを意味する。</b><br>非対称情報の経済学が一貫して示すのは、この種の問題は当事者の努力ではなく、<b>①選択肢の創出（競争）　②評価基準の事前固定　③切替コストの管理</b>によって対処される、ということである。この三つが、次頁の設計要件となる。"
+      data-en="All four symptoms follow from <b>a single fact: no point of comparison exists</b>. Exhorting people to &quot;negotiate harder&quot; or &quot;develop a better eye&quot; will not dissolve them. Exhortation increases individual effort, but it <b>does not alter the fact that the information needed to verify anything exists only outside the organisation</b>.<br><b>That 80% of our contracts are sole-sourced means that, in 80% of our transactions, we have no mechanism for verifying price or quality.</b><br>What the economics of asymmetric information shows consistently is that this class of problem is addressed not through the effort of the parties, but through <b>(1) the creation of alternatives — competition, (2) fixing the evaluation criteria in advance, and (3) managing the switching cost</b>. These three become the design requirements of the following page.">
+      上記の4症状は、いずれも<b>「比較対象が存在しない」という一点</b>から演繹される。したがって「もっと厳しく交渉せよ」「目利きを鍛えよ」と要請しても解消しない。要請は当事者の努力を増やすが、<b>検証の基準となる情報が組織の外にしかない、という事実は変えない</b>からである。<br><b>発注の8割が随意契約であるという事実は、8割の取引において、我々が価格と品質を検証する仕組みを持っていないということを意味する。</b><br>非対称情報の経済学が一貫して示すのは、この種の問題は当事者の努力ではなく、<b>①選択肢の創出（競争）　②評価基準の事前固定　③切替コストの管理</b>によって対処される、ということである。この三つが、次頁の設計要件となる。
+    </div>
+  </div>
+
+  <div class="nav">
+    <a href="00_Information_Asymmetry.html" data-ja="◀ 前へ：情報の非対称性" data-en="◀ Previous: Information Asymmetry">◀ 前へ：情報の非対称性</a>
+    <a href="02_Competitive_Sourcing_Proposal.html" data-ja="次へ：競争調達フレームワーク ─ 提言 ▶" data-en="Next: The Competitive Sourcing Framework — Proposal ▶">次へ：競争調達フレームワーク ─ 提言 ▶</a>
+  </div>
+</div>
+
+<script>
+function setLang(l){
+  document.querySelectorAll('[data-ja]').forEach(function(el){
+    var v = el.getAttribute('data-' + l);
+    if (v !== null) el.innerHTML = v;
+  });
+  document.documentElement.lang = l;
+  document.getElementById('btn-ja').classList.toggle('on', l === 'ja');
+  document.getElementById('btn-en').classList.toggle('on', l === 'en');
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VMO ベンダー切替投資ダッシュボード</title>
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>ベンダー切替投資ポートフォリオ</h1>
+    <p class="sub">リボルビング型予算の配分判断 &mdash; スコア = 期待価値 V &times; 緊急度 U &times; 情報熟度 R。</p>
+  </header>
+
+  <div class="layout">
+    <aside class="panel">
+      <h2>シナリオ設定</h2>
+
+      <div class="ctrl">
+        <label>評価基準日</label>
+        <input type="date" id="asOfDate" value="2026-04-01">
+        <div class="hint">基準日を先に進めると、満了までの残り月数が短くなる（緊急度が上がる）。通常は直近ではなく3〜6ヶ月以上先を設定</div>
+      </div>
+
+      <div class="ctrl">
+        <label>手元資金 B（百万円）<b id="lBudget" class="rag-light-g">20</b></label>
+        <input type="range" id="budget" min="10" max="120" step="5" value="20">
+        <div class="hint">今回配分できる予算総額</div>
+      </div>
+
+      <div class="ctrl">
+        <label>安全余裕 <b id="lMargin" class="rag-light-g">20%</b></label>
+        <input type="range" id="margin" min="0" max="0.5" step="0.05" value="0.2">
+        <div class="hint">本コミットに使わず予備として残す割合</div>
+      </div>
+
+      <div class="ctrl">
+        <label class="toggle"><input type="checkbox" id="useBundle" checked> 束ね（バンドル）を評価に含める</label>
+        <div class="hint">同一ベンダーの複数契約を束ねた場合の案を、個別契約と並べてランキングに表示</div>
+        <div class="subctrl" id="betaSub">
+          <label>束ねプレミアム &beta; <b id="lBeta">1.15</b></label>
+          <input type="range" id="beta" min="1.0" max="1.5" step="0.01" value="1.15">
+          <div class="hint">束ねて一括交渉するとリターンが何倍になるか</div>
+        </div>
+      </div>
+
+      <div class="ctrl">
+        <label>先延ばしへの厳しさ</label>
+        <input type="range" id="extLevel" min="0" max="100" step="25" value="50">
+        <div class="ext-ticks"><span>甘い</span><span>標準</span><span>厳しい</span></div>
+        <div class="hint" id="lExtLevel">標準</div>
+      </div>
+
+      <div class="fixed-note">
+        固定パラメータ（説明が難しいためUI非公開。<code>input/scenario.json</code>で調整）
+        <dl>
+          <dt>リスク回避度 &lambda;</dt><dd id="fixedLambda">0.50</dd>
+          <dt>リードタイム基準 h</dt><dd id="fixedH">3.0ヶ月</dd>
+        </dl>
+      </div>
+    </aside>
+
+    <main>
+      <div class="kpis">
+        <div class="kpi"><div class="v" id="kActionable">–</div><div class="l">即着手候補</div></div>
+        <div class="kpi"><div class="v" id="kCommit">–</div><div class="l">本コミット額（選択分）</div></div>
+        <div class="kpi"><div class="v" id="kReturn">–</div><div class="l">選択分の期待ネット</div></div>
+        <div class="kpi"><div class="v" id="kRoi">–</div><div class="l">ROI</div></div>
+        <div class="kpi"><div class="v" id="kDiff">–</div><div class="l">手元資金との差額</div></div>
+      </div>
+
+      <div class="panel" style="margin-bottom:20px">
+        <h2>優先度ランキング</h2>
+        <div class="note" style="margin-bottom:12px">「対象」列にチェックした案件の合計で、上のKPI（本コミット額・期待ネット・手元資金との差額）が再計算されます。</div>
+        <table id="rankTable">
+          <thead><tr>
+            <th>対象</th><th>案件</th><th class="num">切替コスト(M)</th><th class="num">ネット(M)</th><th class="num">p</th>
+            <th class="num">延長</th><th class="num">残月</th>
+            <th>因子 V・U・R とスコア</th><th>判定</th>
+          </tr></thead>
+          <tbody></tbody>
+        </table>
+        <div class="flabel">
+          <i><span class="dot fV"></span>V 期待価値</i>
+          <i><span class="dot fU"></span>U 緊急度</i>
+          <i><span class="dot fR"></span>R 情報熟度</i>
+          <i><span class="rag rag-g"></span>残月が基準hより余裕あり</i>
+          <i><span class="rag rag-a"></span>着手期限が近い</i>
+          <i><span class="rag rag-r"></span>失効</i>
+        </div>
+      </div>
+
+      <div class="panel" id="inactivePanel" style="margin-bottom:20px" hidden>
+        <h2>評価対象外</h2>
+        <table class="inactive-table">
+          <tbody id="inactiveList"></tbody>
+        </table>
+        <div class="note">Single-source或いはすでに終了している等の理由で、以降候補リストから除外</div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<footer class="src-note">
+  データ元: <code>input/contracts.csv</code> ／ <code>input/scenario.json</code>（<code>python src/Main.py</code> 実行時に
+  <code>src/modules/dashboard_sync.py</code>が<code>assets/js/data.js</code>へ自動反映）。
+  契約データを更新した場合は本体パイプラインを一度実行してください。
+  計算式の根拠: <code>direction/scoring_methodology.md</code>。
+</footer>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/scoring.js"></script>
+<script src="assets/js/ui.js"></script>
+<script src="assets/js/main.js"></script>
+</body>
+</html>

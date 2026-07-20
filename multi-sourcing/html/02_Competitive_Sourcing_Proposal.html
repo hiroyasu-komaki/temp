@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Competitive Sourcing Framework — Proposal</title>
+<style>
+  :root{
+    --navy:#12305e; --navy2:#2a4d84; --ink:#1b2430; --gray:#5f6a77; --gray-l:#8b95a1;
+    --line:#d7dde5; --panel:#f5f7fa;
+    --pos:#2f6fc0; --pos-bg:#eef4fc; --pos-line:#a9c6e8;
+    --neg:#c2410c; --neg-bg:#fdf2ea; --neg-line:#eeb185;
+    --com:#7c3f9e; --com-bg:#f4eefa; --com-line:#c9aede;
+    --inf:#0f7b6c; --inf-bg:#e9f5f2; --inf-line:#9ccfc4;
+    --c1:#eaf1fb; --c1b:#2f6fc0;
+    --c2:#eaf5ee; --c2b:#3d8b5c;
+    --c3:#fdf1e9; --c3b:#c2410c;
+    --c4:#f1eefa; --c4b:#6b52b5;
+    --c5:#e9f4f7; --c5b:#2c7f96;
+    --c6:#eef1f8; --c6b:#40548e;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; padding:26px 18px 44px; background:#eef1f5; color:var(--ink);
+    font-family:"Yu Gothic UI","Yu Gothic","Hiragino Kaku Gothic ProN","Meiryo","Segoe UI",sans-serif;
+    -webkit-font-smoothing:antialiased;}
+  html[lang="en"] body{font-family:"Segoe UI","Helvetica Neue",Arial,sans-serif;}
+  .slide{max-width:1240px; margin:0 auto; background:#fff; padding:34px 40px 36px;
+    box-shadow:0 2px 18px rgba(18,48,94,.10); border-top:5px solid var(--navy); position:relative;}
+  .lang{position:absolute; top:16px; right:24px; display:flex; border:1px solid var(--line);}
+  .lang button{border:none; background:#fff; color:var(--gray); font:inherit; font-size:11px;
+    font-weight:700; letter-spacing:.06em; padding:5px 13px; cursor:pointer;}
+  .lang button+button{border-left:1px solid var(--line);}
+  .lang button.on{background:var(--navy); color:#fff;}
+  .lang button:focus-visible{outline:2px solid var(--neg); outline-offset:1px;}
+
+  .eyebrow{font-size:10.5px; font-weight:700; letter-spacing:.14em; color:var(--gray-l); margin-bottom:7px;}
+  h1{font-size:25px; margin:0 0 9px; color:var(--navy); font-weight:700; line-height:1.42; padding-right:130px;}
+  .lede{font-size:12.5px; color:var(--gray); line-height:1.8; margin:0 0 22px; padding-bottom:18px; border-bottom:1px solid var(--line);}
+  .lede b{color:var(--ink);}
+
+  .step{font-size:10.5px; font-weight:700; letter-spacing:.1em; color:#fff; background:var(--navy);
+    display:inline-block; padding:3px 11px; margin-bottom:12px;}
+  .step .n{opacity:.6; margin-right:6px;}
+  .note{font-size:11px; color:var(--gray-l); margin:-6px 0 12px; line-height:1.75;}
+  .note b{color:var(--ink);}
+  .mb32{margin-bottom:32px;}
+
+  .req{display:grid; grid-template-columns:repeat(3,1fr); gap:14px;}
+  .rq{border:1px solid var(--line); background:#fff; display:flex; flex-direction:column;}
+  .rq .h{background:var(--navy); color:#fff; padding:10px 14px; font-size:13px; font-weight:700;}
+  .rq .h .n{opacity:.6; margin-right:6px;}
+  .rq .b{padding:12px 15px; font-size:11.5px; line-height:1.8; color:var(--gray); flex:1;}
+  .rq .b b{color:var(--ink);}
+  .rq .ans{padding:9px 15px; background:var(--panel); border-top:1px solid var(--line);
+    font-size:11.5px; font-weight:700; color:var(--navy); line-height:1.6;}
+  .rq .ans .k{display:block; font-size:9.5px; color:var(--gray-l); letter-spacing:.08em; margin-bottom:2px;}
+
+  table{width:100%; border-collapse:collapse; table-layout:fixed;}
+  th.rowhd{width:96px; background:var(--navy); color:#fff; font-size:11px; font-weight:700;
+    padding:10px 7px; vertical-align:middle; border-bottom:2px solid #fff; line-height:1.5;}
+  th.rowhd span{display:block; font-weight:400; font-size:9.5px; opacity:.72;}
+  td.cell{border:1px solid var(--line); padding:9px 10px; vertical-align:top; font-size:10.5px; line-height:1.7;}
+  td.hd{text-align:center; padding:11px 8px;}
+  td.hd .num{font-size:10px; color:var(--gray);}
+  td.hd .ja{font-size:13px; font-weight:700; display:block; margin-top:1px;}
+  td.hd .sub{font-size:10px; font-weight:600; display:block; margin-top:2px;}
+  td.q{text-align:center; font-size:11.5px; font-weight:700; line-height:1.65;}
+  td.out{text-align:center; font-size:10.5px; font-weight:600; line-height:1.65;}
+  ul{margin:0; padding-left:1.05em;} li{margin-bottom:2px;}
+  .d1{background:var(--c1);} .d2{background:var(--c2);} .d3{background:var(--c3);}
+  .d4{background:var(--c4);} .d5{background:var(--c5);} .d6{background:var(--c6);}
+  .b1{color:var(--c1b);} .b2{color:var(--c2b);} .b3{color:var(--c3b);}
+  .b4{color:var(--c4b);} .b5{color:var(--c5b);} .b6{color:var(--c6b);}
+  .s1{background:#fbfcfe;} .s2{background:#fbfdfb;} .s3{background:#fffcfa;}
+  .s4{background:#fcfbfe;} .s5{background:#fbfdfe;} .s6{background:#fbfcfe;}
+  .newmark{color:var(--neg); font-weight:700;}
+
+  .axes{display:grid; grid-template-columns:1fr 1fr 1.4fr; gap:13px;}
+  .ax{border:1px solid var(--line); background:#fff; display:flex; flex-direction:column;}
+  .ax.new{border:2px solid var(--neg); box-shadow:0 3px 12px rgba(194,65,12,.13);}
+  .ax .h{background:var(--panel); border-bottom:1px solid var(--line); padding:9px 13px;
+    font-size:13px; font-weight:700; color:var(--navy);}
+  .ax.new .h{background:var(--neg); color:#fff; border-bottom:none;}
+  .ax .h .n{font-size:10.5px; opacity:.7; margin-right:5px;}
+  .ax .h .bd{float:right; font-size:9.5px; background:#fff; color:var(--neg); padding:1px 6px; font-weight:700;}
+  .ax .b{padding:12px 14px; font-size:11px; line-height:1.75; color:var(--gray); flex:1;}
+  .ax .qq{font-size:12px; font-weight:700; color:var(--ink); margin-bottom:7px; line-height:1.6;}
+  .ax .gap{margin-top:10px; padding:8px 11px; background:var(--panel); font-size:10.5px; line-height:1.7;}
+  .ax.new .gap{background:var(--neg-bg); color:#8a3708;}
+  .ax .gap b{color:var(--ink);}
+  .ax.new .gap b{color:var(--neg);}
+
+  .score{width:100%; border-collapse:collapse; margin-top:3px; table-layout:auto;}
+  .score th{background:var(--navy); color:#fff; font-size:10px; font-weight:700; padding:5px 7px;
+    text-align:left; border:1px solid var(--navy);}
+  .score td{border:1px solid var(--line); padding:5px 7px; font-size:10.5px; line-height:1.55; color:var(--ink);}
+  .score td.w{font-weight:700; white-space:nowrap;}
+  .w-biz{color:var(--pos);} .w-it{color:var(--neg);}
+  .tiny{font-weight:400; color:var(--gray); font-size:9.5px;}
+  .ph{font-size:9px; font-weight:700; padding:1px 5px; border:1px solid; white-space:nowrap;}
+  .ph1{color:var(--neg); border-color:var(--neg-line); background:var(--neg-bg);}
+  .ph2{color:var(--gray); border-color:var(--line); background:var(--panel);}
+
+  .own{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
+  .ow{border:1px solid var(--line); padding:14px 17px; background:#fff;}
+  .ow.hi{border:2px solid var(--navy); background:var(--panel);}
+  .ow .t{font-size:13px; font-weight:700; color:var(--navy); margin-bottom:6px; line-height:1.5;}
+  .ow .d{font-size:11.5px; line-height:1.85; color:var(--gray);}
+  .ow .d b{color:var(--ink);}
+  .ow .d .em{color:var(--neg); font-weight:700;}
+
+  .flow{border:1px solid var(--line); padding:16px 18px 18px; background:#fcfdfe;}
+  .lane{display:grid; grid-template-columns:104px 1fr; gap:12px; margin-bottom:10px;}
+  .lane:last-child{margin-bottom:0;}
+  .ll{background:var(--navy); color:#fff; font-size:11px; font-weight:700; display:flex;
+    align-items:center; justify-content:center; text-align:center; padding:8px 4px; line-height:1.45;}
+  .ll.it{background:var(--neg);}
+  .steps{display:flex; align-items:stretch;}
+  .st{flex:1; border:1px solid var(--line); background:#fff; padding:9px 11px;}
+  .st .t{font-size:11.5px; font-weight:700; color:var(--navy); margin-bottom:3px; line-height:1.5;}
+  .st .d{font-size:10.5px; color:var(--gray); line-height:1.7;}
+  .st .d b{color:var(--ink);}
+  .arw{width:22px; display:flex; align-items:center; justify-content:center; color:#9fb0c6; font-size:13px; flex:none;}
+  .st.hot{border:2px solid var(--neg); background:var(--neg-bg);}
+  .st.hot .t{color:var(--neg);}
+  .st.hot .d{color:#8a3708;} .st.hot .d b{color:#7a3106;}
+  .gate{font-size:9.5px; font-weight:700; color:#fff; background:var(--navy2);
+    display:inline-block; padding:1px 6px; margin-bottom:5px;}
+  .gate.hot{background:var(--neg);}
+  .bypr{margin-top:13px; border-left:4px solid var(--neg); background:var(--neg-bg);
+    padding:10px 15px; font-size:11.5px; line-height:1.8; color:#8a3708;}
+  .bypr b{color:var(--neg);}
+  .sustain{margin-top:10px; border-left:4px solid var(--navy); background:var(--panel);
+    padding:10px 15px; font-size:11.5px; line-height:1.8; color:var(--gray);}
+  .sustain b{color:var(--navy);}
+  .spec{table-layout:auto; margin-bottom:12px;}
+  .spec th{background:var(--navy2); color:#fff; font-size:10.5px; font-weight:700; padding:9px 11px;
+    text-align:left; border:1px solid var(--navy2);}
+  .spec td{border:1px solid var(--line); padding:9px 11px; font-size:11px; line-height:1.75; vertical-align:top;}
+  .spec td.no{width:26px; text-align:center; font-weight:700; color:var(--gray-l); background:var(--panel);}
+  .spec td.it{font-weight:700; color:var(--navy); white-space:nowrap;}
+  .spec td.dg{color:var(--neg); font-weight:700;}
+  .spec td.dg span{color:var(--gray); font-weight:400;}
+  .spec tr.key td.no{background:var(--neg); color:#fff; border-color:var(--neg);}
+  .spec tr.key td.it{color:var(--neg);}
+  .whatwhy{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:14px;}
+  .ww{border:1px solid var(--line); padding:13px 16px; background:#fff;}
+  .ww.out{border-left:4px solid var(--gray-l); background:var(--panel);}
+  .ww.in{border-left:4px solid var(--pos); background:var(--pos-bg);}
+  .ww .t{font-size:12.5px; font-weight:700; color:var(--navy); margin-bottom:5px;}
+  .ww .t .sub{font-size:10px; color:var(--gray-l); font-weight:600; margin-left:6px;}
+  .ww .d{font-size:11px; line-height:1.8; color:var(--gray);}
+  .ww .d b{color:var(--ink);}
+  .thr{border:2px solid var(--navy); background:#fff; padding:14px 18px; margin-bottom:12px;}
+  .thr .lbl{font-size:10px; font-weight:700; letter-spacing:.1em; color:#fff; background:var(--navy);
+    display:inline-block; padding:2px 9px; margin-bottom:8px;}
+  .thr .d{font-size:11.5px; line-height:1.9; color:var(--gray);}
+  .thr .d b{color:var(--ink);}
+  .thr .d .em{color:var(--neg); font-weight:700;}
+
+  .mat{display:grid; grid-template-columns:1fr 28px 1fr;}
+  .mc{border:1px solid var(--line); padding:13px 16px; background:#fff;}
+  .mc.now{border:2px solid var(--neg); background:var(--neg-bg);}
+  .mc .y{font-size:9.5px; font-weight:700; letter-spacing:.08em; color:var(--gray-l); margin-bottom:4px;}
+  .mc.now .y{color:var(--neg);}
+  .mc .t{font-size:12.5px; font-weight:700; color:var(--navy); margin-bottom:6px;}
+  .mc .d{font-size:11px; line-height:1.85; color:var(--gray);}
+  .mc .d b{color:var(--ink);}
+  .mm{display:flex; align-items:center; justify-content:center; color:#9fb0c6; font-size:15px;}
+
+  .tr{table-layout:auto;}
+
+  /* --- link to the live form --- */
+  .doc{
+    display:block; text-decoration:none; border:1px solid var(--navy);
+    background:#fff; margin-bottom:32px; transition:box-shadow .15s, transform .15s;
+  }
+  .doc:hover{box-shadow:0 4px 18px rgba(18,48,94,.16); transform:translateY(-1px);}
+  .doc:focus-visible{outline:2px solid var(--navy); outline-offset:2px;}
+  .doc .top{background:var(--navy); color:#fff; padding:7px 16px; display:flex;
+    align-items:center; gap:9px; font-size:10px; font-weight:700; letter-spacing:.1em;}
+  .doc .top .go{margin-left:auto; letter-spacing:.04em; font-weight:700;}
+  .doc .bd{padding:14px 17px; display:grid; grid-template-columns:1fr auto; gap:14px; align-items:center;}
+  .doc .t{font-size:14px; font-weight:700; color:var(--navy); line-height:1.5; margin-bottom:4px;}
+  .doc .d{font-size:11px; line-height:1.8; color:var(--gray);}
+  .doc .d b{color:var(--ink);}
+  .doc .arw{font-size:20px; color:var(--navy); font-weight:700; padding:0 4px;}
+  @media(max-width:600px){
+    .doc .bd{grid-template-columns:1fr;}
+    .doc .arw{display:none;}
+  }
+
+  /* --- v2 additions: Sole/Single split --- */
+  .split{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:14px;}
+  .sp{border:1px solid var(--line); background:#fff; display:flex; flex-direction:column;}
+  .sp.sole{border-top:4px solid var(--pos);}
+  .sp.sing{border-top:4px solid var(--neg);}
+  .sp .h{padding:10px 15px; font-size:13.5px; font-weight:700; border-bottom:1px solid var(--line);}
+  .sp.sole .h{color:var(--pos); background:var(--pos-bg);}
+  .sp.sing .h{color:var(--neg); background:var(--neg-bg);}
+  .sp .h .en{display:block; font-size:10px; font-weight:600; opacity:.75; margin-top:1px;}
+  .sp .b{padding:12px 15px; flex:1;}
+  .sp .row{display:grid; grid-template-columns:78px 1fr; gap:8px; font-size:11px;
+    line-height:1.7; padding:6px 0; border-bottom:1px dotted var(--line);}
+  .sp .row:last-child{border-bottom:none;}
+  .sp .row .k{font-weight:700; color:var(--gray-l); font-size:10px; padding-top:1px;}
+  .sp .row .v{color:var(--gray);}
+  .sp .row .v b{color:var(--ink);}
+  .sp.sole .row .v b.hl{color:var(--pos);}
+  .sp.sing .row .v b.hl{color:var(--neg);}
+  .matr{border-left:4px solid var(--navy); background:var(--panel); padding:11px 16px;
+    font-size:11.5px; line-height:1.85; color:var(--gray); margin-bottom:12px;}
+  .matr b{color:var(--ink);}
+  .matr .em{color:var(--neg); font-weight:700;}
+  .conc{border:2px solid var(--navy); background:#fff; padding:14px 18px;}
+  .conc .lbl{font-size:10px; font-weight:700; letter-spacing:.1em; color:#fff; background:var(--navy);
+    display:inline-block; padding:2px 9px; margin-bottom:8px;}
+  .conc .t{font-size:13px; font-weight:700; color:var(--navy); margin-bottom:7px; line-height:1.55;}
+  .conc .d{font-size:11.5px; line-height:1.9; color:var(--gray);}
+  .conc .d b{color:var(--ink);}
+  .conc .d .em{color:var(--neg); font-weight:700;}
+  .three{display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-top:12px;}
+  .tc{border:1px solid var(--line); padding:11px 14px; background:var(--panel);}
+  .tc.b{border-left:4px solid var(--neg); background:var(--neg-bg);}
+  .tc .n{font-size:10px; font-weight:700; letter-spacing:.06em; color:var(--gray-l); margin-bottom:3px;}
+  .tc.b .n{color:var(--neg);}
+  .tc .t{font-size:12px; font-weight:700; color:var(--navy); margin-bottom:4px; line-height:1.5;}
+  .tc.b .t{color:var(--neg);}
+  .tc .d{font-size:10.5px; line-height:1.7; color:var(--gray);}
+  .tc .d b{color:var(--ink);}
+  .tr th{background:var(--navy2); color:#fff; font-size:10.5px; font-weight:700; padding:9px 11px;
+    text-align:left; border:1px solid var(--navy2);}
+  .tr td{border:1px solid var(--line); padding:9px 11px; font-size:11px; line-height:1.75; vertical-align:top;}
+  .tr td.sym{font-weight:700;}
+  .tr td.fix{font-weight:700; color:var(--navy); background:var(--panel);}
+  .tr td.fix .ex{font-weight:400; color:var(--gray);}
+  .yes{color:var(--pos); font-weight:700;} .no{color:var(--neg); font-weight:700;} .part{color:#b45309; font-weight:700;}
+  .pill{display:inline-block; font-size:9.5px; font-weight:700; padding:1px 6px; border:1px solid; white-space:nowrap;}
+  .pp{color:var(--pos); border-color:var(--pos-line); background:var(--pos-bg);}
+  .pn{color:var(--neg); border-color:var(--neg-line); background:var(--neg-bg);}
+  .pc{color:var(--com); border-color:var(--com-line); background:var(--com-bg);}
+  .pi{color:var(--inf); border-color:var(--inf-line); background:var(--inf-bg);}
+
+  .close{margin-top:26px; border-left:5px solid var(--navy); background:var(--panel); padding:16px 20px;}
+  .close .t{font-size:14px; font-weight:700; color:var(--navy); margin-bottom:8px; line-height:1.6;}
+  .close .d{font-size:11.5px; line-height:1.9; color:var(--gray);}
+  .close .d b{color:var(--ink);}
+  .warn{margin-top:12px; padding:11px 15px; background:var(--neg-bg); border-left:4px solid var(--neg);
+    font-size:11.5px; line-height:1.85; color:#8a3708;}
+  .warn b{color:var(--neg);}
+
+  .nav{margin-top:22px; padding-top:14px; border-top:1px solid var(--line); display:flex; justify-content:space-between; font-size:11px;}
+  .nav a{color:var(--navy); text-decoration:none; font-weight:700;}
+  .nav a:hover{text-decoration:underline;}
+  .nav .sp{color:var(--gray-l); font-weight:400;}
+
+  @media(max-width:900px){
+    h1{padding-right:0; margin-top:38px;}
+    .req,.axes,.own,.mat{grid-template-columns:1fr;}
+    .steps{flex-direction:column;} .arw{width:100%; height:16px; transform:rotate(90deg);}
+    table{display:block; overflow-x:auto;}
+  }
+  @media print{body{background:#fff; padding:0;} .slide{box-shadow:none; max-width:none;} .lang,.nav{display:none;}}
+</style>
+</head>
+<body>
+<div class="slide">
+  <div class="lang" role="group" aria-label="Language">
+    <button id="btn-ja" class="on" onclick="setLang('ja')">日本語</button>
+    <button id="btn-en" onclick="setLang('en')">English</button>
+  </div>
+
+  <div class="eyebrow">PROPOSAL</div>
+  <h1 data-ja="競争調達フレームワーク ─ 選択肢を作り、基準を先に固定し、切替コストを管理する"
+      data-en="The Competitive Sourcing Framework — Create the Alternative, Fix the Criteria First, Manage the Switching Cost">競争調達フレームワーク ─ 選択肢を作り、基準を先に固定し、切替コストを管理する</h1>
+  <p class="lede"
+    data-ja="前頁までに、随意契約の下で生じる4つの症状は、いずれも<b>「比較対象が存在しない」という一点</b>から演繹されることを確認した。<br>経済学が示す処方箋は、交渉努力の強化ではなく<b>①選択肢の創出　②評価基準の事前固定　③切替コストの管理</b>である。本フレームワークは、この三点を制度として実装する。"
+    data-en="The preceding pages established that all four symptoms of sole-source contracting follow deductively from a single fact: <b>no point of comparison exists</b>.<br>The remedy economics prescribes is not harder negotiation but <b>(1) creating the alternative, (2) fixing the evaluation criteria in advance, and (3) managing the switching cost</b>. This framework implements those three as an institution.">
+    前頁までに、随意契約の下で生じる4つの症状は、いずれも<b>「比較対象が存在しない」という一点</b>から演繹されることを確認した。<br>経済学が示す処方箋は、交渉努力の強化ではなく<b>①選択肢の創出　②評価基準の事前固定　③切替コストの管理</b>である。本フレームワークは、この三点を制度として実装する。
+  </p>
+
+  <!-- 01 -->
+  <div class="step"><span class="n">01</span><span data-ja="設計要件と、それに対する回答" data-en="DESIGN REQUIREMENTS AND THE ANSWERS TO THEM">設計要件と、それに対する回答</span></div>
+  <div class="req mb32">
+    <div class="rq">
+      <div class="h"><span class="n" data-ja="要件1" data-en="REQ 1">要件1</span><span data-ja="選択肢" data-en="The alternative">選択肢</span></div>
+      <div class="b" data-ja="比較対象がなければ、何も検証できない。「厳しく交渉する」は情報を生まない。まず<b>競争にかけうる案件を機械的に抽出する仕組み</b>が要る。"
+        data-en="Without a point of comparison, nothing can be verified. Negotiating harder produces no information. What is needed first is <b>a mechanism that mechanically identifies which initiatives can be put to tender</b>.">比較対象がなければ、何も検証できない。「厳しく交渉する」は情報を生まない。まず<b>競争にかけうる案件を機械的に抽出する仕組み</b>が要る。</div>
+      <div class="ans" data-ja="<span class='k'>FRAMEWORK ANSWER</span>調達方式の判定に第3の軸<br>「競争適合性」を導入する"
+        data-en="<span class='k'>FRAMEWORK ANSWER</span>Introduce a third axis for the sourcing decision:<br>Contestability"><span class="k">FRAMEWORK ANSWER</span>調達方式の判定に第3の軸<br>「競争適合性」を導入する</div>
+    </div>
+    <div class="rq">
+      <div class="h"><span class="n" data-ja="要件2" data-en="REQ 2">要件2</span><span data-ja="評価基準の事前固定" data-en="Criteria fixed in advance">評価基準の事前固定</span></div>
+      <div class="b" data-ja="<b>基準を事後に動かせるなら、競争は情報を顕示しない</b>。結果を見てから重みを変えられる入札は、形式だけの競争であり、随意契約よりコストがかかるぶん悪い。"
+        data-en="<b>If the criteria can be moved after the fact, competition reveals nothing.</b> A tender whose weights can be adjusted once the bids are in is competition in form only — and worse than sole-sourcing, because it also costs money."><b>基準を事後に動かせるなら、競争は情報を顕示しない</b>。結果を見てから重みを変えられる入札は、形式だけの競争であり、随意契約よりコストがかかるぶん悪い。</div>
+      <div class="ans" data-ja="<span class='k'>FRAMEWORK ANSWER</span>VMOを「評価プロセスの<br>完全性のオーナー」として定める"
+        data-en="<span class='k'>FRAMEWORK ANSWER</span>Make the VMO the owner of<br>the integrity of the evaluation process"><span class="k">FRAMEWORK ANSWER</span>VMOを「評価プロセスの<br>完全性のオーナー」として定める</div>
+    </div>
+    <div class="rq">
+      <div class="h"><span class="n" data-ja="要件3" data-en="REQ 3">要件3</span><span data-ja="切替コストの管理" data-en="Managing switching cost">切替コストの管理</span></div>
+      <div class="b" data-ja="競争可能性は、放置すれば時間とともに<b>失われていく</b>。判定基準を作っても、切替コストが上がり続ければ、来年も「他社は応札できない」が繰り返される。"
+        data-en="The possibility of competing <b>erodes with time if left alone</b>. A judgement rule changes nothing if the switching cost keeps climbing: next year will again produce the answer &quot;no one else can bid&quot;.">競争可能性は、放置すれば時間とともに<b>失われていく</b>。判定基準を作っても、切替コストが上がり続ければ、来年も「他社は応札できない」が繰り返される。</div>
+      <div class="ans" data-ja="<span class='k'>FRAMEWORK ANSWER</span>成果物・ドキュメント・データの<br>所有権を契約標準条項とする"
+        data-en="<span class='k'>FRAMEWORK ANSWER</span>Make ownership of deliverables,<br>documentation and data a standard contract clause"><span class="k">FRAMEWORK ANSWER</span>成果物・ドキュメント・データの<br>所有権を契約標準条項とする</div>
+    </div>
+  </div>
+
+  <!-- 02 -->
+  <div class="step"><span class="n">02</span><span data-ja="調達ガバナンスの意思決定領域（What）" data-en="THE DECISION DOMAINS OF SOURCING GOVERNANCE (WHAT)">調達ガバナンスの意思決定領域（What）</span></div>
+  <div class="note"
+    data-ja="調達に関する意思決定を6つの領域に分け、それぞれに問いと判断基準を定義する。<b>本フレームワークが新たに追加するのは、領域①における「競争適合性」の一項目である。</b>"
+    data-en="Sourcing decisions are divided into six domains, each with its own question and criteria. <b>What this framework adds is a single item — contestability — in domain 1.</b>">
+    調達に関する意思決定を6つの領域に分け、それぞれに問いと判断基準を定義する。<b>本フレームワークが新たに追加するのは、領域①における「競争適合性」の一項目である。</b>
+  </div>
+  <table class="mb32">
+    <tr>
+      <th class="rowhd" data-ja="領域<span>Domain</span>" data-en="Domain">領域<span>Domain</span></th>
+      <td class="cell hd d1"><span class="num">①</span><span class="ja b1" data-ja="調達方式" data-en="Sourcing mode">調達方式</span><span class="sub b1" data-ja="Sourcing Mode" data-en="調達方式">Sourcing Mode</span></td>
+      <td class="cell hd d2"><span class="num">②</span><span class="ja b2" data-ja="評価基準" data-en="Criteria">評価基準</span><span class="sub b2" data-ja="Criteria" data-en="評価基準">Criteria</span></td>
+      <td class="cell hd d3"><span class="num">③</span><span class="ja b3" data-ja="契約形態" data-en="Contract form">契約形態</span><span class="sub b3" data-ja="Contract Form" data-en="契約形態">Contract Form</span></td>
+      <td class="cell hd d4"><span class="num">④</span><span class="ja b4" data-ja="管理強度" data-en="Management">管理強度</span><span class="sub b4" data-ja="Management Intensity" data-en="管理強度">Management Intensity</span></td>
+      <td class="cell hd d5"><span class="num">⑤</span><span class="ja b5" data-ja="切替可能性" data-en="Switchability">切替可能性</span><span class="sub b5" data-ja="Switchability" data-en="切替可能性">Switchability</span></td>
+      <td class="cell hd d6"><span class="num">⑥</span><span class="ja b6" data-ja="市場情報" data-en="Market intel">市場情報</span><span class="sub b6" data-ja="Market Intelligence" data-en="市場情報">Market Intelligence</span></td>
+    </tr>
+    <tr>
+      <th class="rowhd" data-ja="問い<span>What</span>" data-en="Question">問い<span>What</span></th>
+      <td class="cell q d1" data-ja="競争にかけるか、<br>随意契約とするか？" data-en="Tender it, or sole-source it?">競争にかけるか、<br>随意契約とするか？</td>
+      <td class="cell q d2" data-ja="何を、どの重みで<br>評価するか？" data-en="What do we score, and how heavily?">何を、どの重みで<br>評価するか？</td>
+      <td class="cell q d3" data-ja="リスクを<br>どう分担するか？" data-en="How is risk shared?">リスクを<br>どう分担するか？</td>
+      <td class="cell q d4" data-ja="どのベンダーを<br>重点管理するか？" data-en="Which vendors do we manage closely?">どのベンダーを<br>重点管理するか？</td>
+      <td class="cell q d5" data-ja="どこまで代替性を<br>確保するか？" data-en="How much substitutability do we preserve?">どこまで代替性を<br>確保するか？</td>
+      <td class="cell q d6" data-ja="市場の情報を<br>どこから得るか？" data-en="Where does market information come from?">市場の情報を<br>どこから得るか？</td>
+    </tr>
+    <tr>
+      <th class="rowhd" data-ja="主な判断基準" data-en="Key criteria">主な判断基準</th>
+      <td class="cell s1"
+        data-ja="<ul><li>緊急性・時間制約</li><li>既存ベンダーの知見</li><li class='newmark'>競争適合性 ★</li><li>調達金額</li></ul>"
+        data-en="<ul><li>Urgency / time constraint</li><li>Incumbent&#39;s accumulated knowledge</li><li class='newmark'>Contestability ★</li><li>Contract value</li></ul>"><ul><li>緊急性・時間制約</li><li>既存ベンダーの知見</li><li class="newmark">競争適合性 ★</li><li>調達金額</li></ul></td>
+      <td class="cell s2"
+        data-ja="<ul><li>価格</li><li>技術力・実現性</li><li>実績・体制</li><li>保守性・拡張性</li></ul>"
+        data-en="<ul><li>Price</li><li>Technical capability / feasibility</li><li>Track record and team</li><li>Maintainability / extensibility</li></ul>"><ul><li>価格</li><li>技術力・実現性</li><li>実績・体制</li><li>保守性・拡張性</li></ul></td>
+      <td class="cell s3"
+        data-ja="<ul><li>要件の確定度</li><li>成果物の定義可能性</li><li>リスクの所在</li></ul>"
+        data-en="<ul><li>How firm the requirements are</li><li>Whether deliverables can be defined</li><li>Where the risk sits</li></ul>"><ul><li>要件の確定度</li><li>成果物の定義可能性</li><li>リスクの所在</li></ul></td>
+      <td class="cell s4"
+        data-ja="<ul><li>年間支出額</li><li>依存度</li><li>業務への影響度</li></ul>"
+        data-en="<ul><li>Annual spend</li><li>Degree of dependency</li><li>Business impact</li></ul>"><ul><li>年間支出額</li><li>依存度</li><li>業務への影響度</li></ul></td>
+      <td class="cell s5"
+        data-ja="<ul><li>ドキュメントの所在</li><li>独自実装の度合い</li><li>データ可搬性</li><li>移行費用</li></ul>"
+        data-en="<ul><li>Where the documentation sits</li><li>Extent of bespoke implementation</li><li>Data portability</li><li>Migration cost</li></ul>"><ul><li>ドキュメントの所在</li><li>独自実装の度合い</li><li>データ可搬性</li><li>移行費用</li></ul></td>
+      <td class="cell s6"
+        data-ja="<ul><li>RFPの応札結果</li><li>市場調査（RFI）</li><li>調達実績台帳</li></ul>"
+        data-en="<ul><li>Bids received in tenders</li><li>Market survey (RFI)</li><li>The procurement register</li></ul>"><ul><li>RFPの応札結果</li><li>市場調査（RFI）</li><li>調達実績台帳</li></ul></td>
+    </tr>
+    <tr>
+      <th class="rowhd" data-ja="適用の結果" data-en="Result of applying it">適用の結果</th>
+      <td class="cell out d1" data-ja="競争方式／随意契約<br>随契の場合は理由書を必須化" data-en="Tender or sole-source<br>If sole-source, a written justification">競争方式／随意契約<br>随契の場合は理由書を必須化</td>
+      <td class="cell out d2" data-ja="評価項目と重み<br><b>入札前に凍結</b>" data-en="Scoring items and weights<br><b>Frozen before the tender</b>">評価項目と重み<br><b>入札前に凍結</b></td>
+      <td class="cell out d3" data-ja="請負／準委任／<br>成果連動" data-en="Fixed-price / time-and-materials /<br>performance-linked">請負／準委任／<br>成果連動</td>
+      <td class="cell out d4" data-ja="管理の頻度・深度<br>SLA・モニタリング" data-en="Cadence and depth of management<br>SLAs, monitoring">管理の頻度・深度<br>SLA・モニタリング</td>
+      <td class="cell out d5" data-ja="契約標準条項<br>切替コスト低減投資" data-en="Standard contract clauses<br>Investment to lower switching cost">契約標準条項<br>切替コスト低減投資</td>
+      <td class="cell out d6" data-ja="市場価格の相場観<br>技術選択肢の幅" data-en="A sense of market price<br>A wider range of technical options">市場価格の相場観<br>技術選択肢の幅</td>
+    </tr>
+  </table>
+
+  <!-- 03 -->
+  <div class="step"><span class="n">03</span><span data-ja="要件1への回答 ─ 調達方式判定の第3の軸" data-en="ANSWER TO REQUIREMENT 1 — THE THIRD AXIS OF THE SOURCING DECISION">要件1への回答 ─ 調達方式判定の第3の軸</span></div>
+  <div class="note"
+    data-ja="現在、随意契約は主に2つの軸で正当化されている。いずれも<b>「随意契約にする理由」を探す軸</b>であり、競争が可能な案件も構造的に随意契約へ流れる。第3の軸は、この流れに対する反対向きの問いを立てる。"
+    data-en="At present, sole-sourcing is justified on two axes. Both are <b>axes that look for reasons to sole-source</b> — so initiatives that could perfectly well be tendered flow structurally into sole-source contracts. The third axis asks the question in the opposite direction.">
+    現在、随意契約は主に2つの軸で正当化されている。いずれも<b>「随意契約にする理由」を探す軸</b>であり、競争が可能な案件も構造的に随意契約へ流れる。第3の軸は、この流れに対する反対向きの問いを立てる。
+  </div>
+  <div class="axes mb32">
+    <div class="ax">
+      <div class="h"><span class="n" data-ja="軸1" data-en="AXIS 1">軸1</span><span data-ja="緊急性・時間制約" data-en="Urgency and time">緊急性・時間制約</span></div>
+      <div class="b">
+        <div class="qq" data-ja="入札を回す時間があるか？" data-en="Is there time to run a tender?">入札を回す時間があるか？</div>
+        <span data-ja="障害対応／期限直前の法規制対応／年度内完了要求" data-en="Incident response / regulatory work against a deadline / must-complete-this-year demands">障害対応／期限直前の法規制対応／年度内完了要求</span>
+        <div class="gap" data-ja="<b>問題：</b>「時間がない」は正当な理由だが、<b>計画の遅れが常態化すれば、全案件が緊急案件になる</b>。"
+          data-en="<b>The catch:</b> lack of time is a legitimate reason — but <b>if planning routinely slips, every initiative becomes an emergency</b>."><b>問題：</b>「時間がない」は正当な理由だが、<b>計画の遅れが常態化すれば、全案件が緊急案件になる</b>。</div>
+      </div>
+    </div>
+    <div class="ax">
+      <div class="h"><span class="n" data-ja="軸2" data-en="AXIS 2">軸2</span><span data-ja="既存ベンダーの知見" data-en="Incumbent&#39;s knowledge">既存ベンダーの知見</span></div>
+      <div class="b">
+        <div class="qq" data-ja="他社に頼めるのか？" data-en="Could anyone else do this?">他社に頼めるのか？</div>
+        <span data-ja="長年の作り込み／ドキュメント不在／独自実装" data-en="Years of customisation / no documentation / bespoke implementation">長年の作り込み／ドキュメント不在／独自実装</span>
+        <div class="gap" data-ja="<b>問題：</b>これは事実だが、<b>この事実そのものが随意契約の帰結である</b>。理由として認めるほど、来年はさらに強い理由になる。"
+          data-en="<b>The catch:</b> it is true — but <b>this very fact is a consequence of sole-sourcing</b>. The more it is accepted as a reason, the stronger a reason it becomes next year."><b>問題：</b>これは事実だが、<b>この事実そのものが随意契約の帰結である</b>。理由として認めるほど、来年はさらに強い理由になる。</div>
+      </div>
+    </div>
+    <div class="ax new">
+      <div class="h"><span class="n" data-ja="軸3" data-en="AXIS 3">軸3</span><span data-ja="競争適合性" data-en="Contestability">競争適合性</span><span class="bd">NEW</span></div>
+      <div class="b">
+        <div class="qq" data-ja="この案件は、そもそも競争にかけられるのか？ ── 3つの問いで判定する"
+          data-en="Could this initiative be tendered at all? — Three questions decide it">この案件は、そもそも競争にかけられるのか？ ── 3つの問いで判定する</div>
+        <table class="score">
+          <tr>
+            <th data-ja="判定基準" data-en="Criterion">判定基準</th>
+            <th style="width:88px;" data-ja="判定者" data-en="Assessed by">判定者</th>
+            <th style="width:62px;" data-ja="導入" data-en="Phase">導入</th>
+          </tr>
+          <tr>
+            <td data-ja="<b>Q1. 仕様記述可能性</b> ─ 要件を文書で第三者に伝達できるか<br><span class='tiny'>＝調達仕様7項目で判定（04）</span>" data-en="<b>Q1. Specifiability</b> — can the requirement be written down and conveyed to a third party?<br><span class='tiny'>Tested against the seven-item checklist (04)</span>"><b>Q1. 仕様記述可能性</b> ─ 要件を文書で第三者に伝達できるか<br><span class='tiny'>＝調達仕様7項目で判定（04）</span></td>
+            <td class="w w-biz" data-ja="申請者<br><span class='tiny'>＝事実申告</span>" data-en="Proposer<br><span class='tiny'>facts only</span>">申請者<br><span class="tiny">＝事実申告</span></td>
+            <td><span class="ph ph1" data-ja="初年度" data-en="Year 1">初年度</span></td>
+          </tr>
+          <tr>
+            <td data-ja="<b>Q2. 市場の厚み</b> ─ 実質的に応札しうる事業者が2社以上いるか" data-en="<b>Q2. Thickness of the market</b> — are there two or more firms that could genuinely bid?"><b>Q2. 市場の厚み</b> ─ 実質的に応札しうる事業者が2社以上いるか</td>
+            <td class="w w-it" data-ja="VMO<br><span class='tiny'>＝市場調査</span>" data-en="VMO<br><span class='tiny'>market survey</span>">VMO<br><span class="tiny">＝市場調査</span></td>
+            <td><span class="ph ph1" data-ja="初年度" data-en="Year 1">初年度</span></td>
+          </tr>
+          <tr>
+            <td data-ja="<b>Q3. 切替コスト</b> ─ 移行費用が便益の範囲内に収まるか" data-en="<b>Q3. Switching cost</b> — does the migration cost stay within the benefit?"><b>Q3. 切替コスト</b> ─ 移行費用が便益の範囲内に収まるか</td>
+            <td class="w w-it" data-ja="IT部門 算定<br><span class='tiny'>VMOが検証</span>" data-en="IT estimates<br><span class='tiny'>VMO verifies</span>">IT部門 算定<br><span class="tiny">VMOが検証</span></td>
+            <td><span class="ph ph1" data-ja="初年度" data-en="Year 1">初年度</span></td>
+          </tr>
+          <tr>
+            <td data-ja="標準逸脱度・独自実装の度合い（台帳整備後に追加）" data-en="Extent of deviation from standards and bespoke implementation (added once the register exists)">標準逸脱度・独自実装の度合い（台帳整備後に追加）</td>
+            <td class="w w-it" data-ja="IT部門" data-en="IT">IT部門</td>
+            <td><span class="ph ph2" data-ja="次年度〜" data-en="Year 2+">次年度〜</span></td>
+          </tr>
+        </table>
+        <div class="gap"
+          data-ja="<b>判定ロジック：3つすべてYes ＝ 競争方式が原則。1つでもNo ＝ 随意契約（ただし理由書の記録を必須とする）。</b><br><b>設計原則：挙証責任を反転させる。</b>現在は「競争にする理由」を書かせているが、これを「<b>随意契約にする理由</b>」を書かせる制度に変える。数値目標（8割→X割）は掲げない。判定を回せば、比率は結果として動く。<b>数値目標は必ず形だけの入札を生む。</b><br><b>運用上の但し書き：</b>①Q3の移行費用に、<b>既存ベンダーの自己申告値をそのまま用いない</b>。情報を持つ側の自己申告は検証ではない──症状①と同じ構造を判定の入口に持ち込まないため、算定根拠の添付を必須とし、VMOがRFI等で裏を取る。②<b>閾値未満の少額案件は簡易判定とする</b>。判定機構そのもののコストが、それが生む情報の価値を超えてはならない。"
+          data-en="<b>Decision rule: three yeses = tender by default. Any one no = sole-source (but a written justification is mandatory).</b><br><b>Design principle: reverse the burden of proof.</b> Today we ask people to justify going to tender. Under this framework they must justify <b>sole-sourcing</b>. No numerical target is set (&quot;from 80% down to X%&quot;). Run the test and the ratio moves as a by-product. <b>A numerical target reliably produces tenders in form only.</b><br><b>Two operational caveats.</b> (1) <b>The incumbent&#39;s own migration estimate is never taken at face value in Q3.</b> A self-report from the informed party is not verification — the structure of symptom 1 must not be re-imported at the entrance to the test — so the basis of the estimate is attached, and the VMO checks it, e.g. through an RFI. (2) <b>Initiatives below a value threshold receive a simplified test.</b> The cost of the machinery itself must never exceed the value of the information it produces.">
+          <b>判定ロジック：3つすべてYes ＝ 競争方式が原則。1つでもNo ＝ 随意契約（ただし理由書の記録を必須とする）。</b><br><b>設計原則：挙証責任を反転させる。</b>現在は「競争にする理由」を書かせているが、これを「<b>随意契約にする理由</b>」を書かせる制度に変える。数値目標（8割→X割）は掲げない。判定を回せば、比率は結果として動く。<b>数値目標は必ず形だけの入札を生む。</b><br><b>運用上の但し書き：</b>①Q3の移行費用に、<b>既存ベンダーの自己申告値をそのまま用いない</b>。情報を持つ側の自己申告は検証ではない──症状①と同じ構造を判定の入口に持ち込まないため、算定根拠の添付を必須とし、VMOがRFI等で裏を取る。②<b>閾値未満の少額案件は簡易判定とする</b>。判定機構そのもののコストが、それが生む情報の価値を超えてはならない。
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 03.5 : NEW -->
+  <div class="step"><span class="n">03b</span><span data-ja="Noの内部構造 ─ Sole-source と Single-source を分ける" data-en="INSIDE THE &quot;NO&quot; &mdash; SEPARATING SOLE-SOURCE FROM SINGLE-SOURCE">Noの内部構造 ─ Sole-source と Single-source を分ける</span></div>
+  <div class="note"
+    data-ja="Q1〜Q3の判定は「1つでもNo＝随意契約」で終わっている。しかし<b>随意契約には、性質のまったく異なる二つの状態が含まれている</b>。両者を同じ審査にかければ、制度は必ず窒息する。<b>この分離が、フレームワークにおけるMaterialityの実装である。</b>"
+    data-en="The test so far ends at &quot;any one no = sole-source&quot;. But <b>&quot;sole-source&quot; conceals two states of an entirely different nature</b>. Put both through the same review and the institution will suffocate. <b>This separation is how materiality is implemented in the framework.</b>">
+    Q1〜Q3の判定は「1つでもNo＝随意契約」で終わっている。しかし<b>随意契約には、性質のまったく異なる二つの状態が含まれている</b>。両者を同じ審査にかければ、制度は必ず窒息する。<b>この分離が、フレームワークにおけるMaterialityの実装である。</b>
+  </div>
+
+  <div class="split">
+    <div class="sp sole">
+      <div class="h" data-ja="Sole-source（単独調達）<span class='en'>応札しうる事業者が、原理的に1社しか存在しない</span>" data-en="Sole-source<span class='en'>Only one firm could bid, as a matter of principle</span>">Sole-source（単独調達）<span class="en">応札しうる事業者が、原理的に1社しか存在しない</span></div>
+      <div class="b">
+        <div class="row"><div class="k" data-ja="理論上" data-en="IN THEORY">理論上</div><div class="v" data-ja="<b class='hl'>Q2（市場の厚み）が構造的にNo</b>" data-en="<b class='hl'>Q2 — thickness of the market — fails structurally</b>"><b class="hl">Q2（市場の厚み）が構造的にNo</b></div></div>
+        <div class="row"><div class="k" data-ja="原因" data-en="CAUSE">原因</div><div class="v" data-ja="<b>市場の構造</b>。我々の側の事情ではない" data-en="<b>The structure of the market.</b> Nothing to do with us"><b>市場の構造</b>。我々の側の事情ではない</div></div>
+        <div class="row"><div class="k" data-ja="根拠" data-en="EVIDENCE">根拠</div><div class="v" data-ja="特許／独占販売権／メーカー保証規定／法令指定<br><b>いずれも外部文書で客観的に証明できる</b>" data-en="Patent / exclusive distributorship / manufacturer warranty / statutory designation<br><b>All provable from external documents</b>">特許／独占販売権／メーカー保証規定／法令指定<br><b>いずれも外部文書で客観的に証明できる</b></div></div>
+        <div class="row"><div class="k" data-ja="審査" data-en="REVIEW">審査</div><div class="v" data-ja="<b class='hl'>事実の確認で足りる。</b>証憑があればよく、判断を要しない" data-en="<b class='hl'>Verification of fact is enough.</b> Produce the evidence; no judgement is called for"><b class="hl">事実の確認で足りる。</b>証憑があればよく、判断を要しない</div></div>
+        <div class="row"><div class="k" data-ja="価格検証" data-en="PRICE">価格検証</div><div class="v" data-ja="<b>外部ベンチマークを要求しない。</b>1社しかいない以上、原理的に取得できないものを要求すれば、制度は必ず形骸化する" data-en="<b>No external benchmark is required.</b> With one firm in the market it cannot be obtained; demand the unobtainable and the institution becomes a formality"><b>外部ベンチマークを要求しない。</b>1社しかいない以上、原理的に取得できないものを要求すれば、制度は必ず形骸化する</div></div>
+      </div>
+    </div>
+    <div class="sp sing">
+      <div class="h" data-ja="Single-source（特定調達）<span class='en'>他社も存在するが、あえて1社に限定する</span>" data-en="Single-source<span class='en'>Others exist — we choose to go to one</span>">Single-source（特定調達）<span class="en">他社も存在するが、あえて1社に限定する</span></div>
+      <div class="b">
+        <div class="row"><div class="k" data-ja="理論上" data-en="IN THEORY">理論上</div><div class="v" data-ja="<b>Q2はYes。</b><b class='hl'>Q1（仕様記述可能性）またはQ3（切替コスト）がNo</b>" data-en="<b>Q2 passes.</b> <b class='hl'>Q1 (specifiability) or Q3 (switching cost) fails</b>"><b>Q2はYes。</b><b class="hl">Q1（仕様記述可能性）またはQ3（切替コスト）がNo</b></div></div>
+        <div class="row"><div class="k" data-ja="原因" data-en="CAUSE">原因</div><div class="v" data-ja="<b>我々の側の事情</b>。仕様が書けない／切替コストが高い<br><span style='color:var(--neg);font-weight:700;'>＝ 症状③（ロックイン）の帰結である</span>" data-en="<b>Our own doing.</b> We cannot write the spec; the switching cost is too high<br><span style='color:var(--neg);font-weight:700;'>= a consequence of symptom 3, lock-in</span>"><b>我々の側の事情</b>。仕様が書けない／切替コストが高い<br><span style="color:var(--neg);font-weight:700;">＝ 症状③（ロックイン）の帰結である</span></div></div>
+        <div class="row"><div class="k" data-ja="根拠" data-en="EVIDENCE">根拠</div><div class="v" data-ja="緊急性（軸1）／切替コスト（Q3）／既存ベンダーの知見（軸2）<br><b>いずれも自己申告であり、外部文書で証明できない</b>" data-en="Urgency (axis 1) / switching cost (Q3) / the incumbent's knowledge (axis 2)<br><b>All self-declared; none provable from an external document</b>">緊急性（軸1）／切替コスト（Q3）／既存ベンダーの知見（軸2）<br><b>いずれも自己申告であり、外部文書で証明できない</b></div></div>
+        <div class="row"><div class="k" data-ja="審査" data-en="REVIEW">審査</div><div class="v" data-ja="<b class='hl'>判断を要する。ここがフレームワークの主戦場である</b>" data-en="<b class='hl'>Judgement is required. This is where the framework does its work</b>"><b class="hl">判断を要する。ここがフレームワークの主戦場である</b></div></div>
+        <div class="row"><div class="k" data-ja="価格検証" data-en="PRICE">価格検証</div><div class="v" data-ja="<b>外部ベンチマークを要求する。</b>「他社も存在する」と申告した以上、市場価格は原理的に取得可能である" data-en="<b>An external benchmark is required.</b> Having declared that others exist, one has conceded that a market price can be obtained"><b>外部ベンチマークを要求する。</b>「他社も存在する」と申告した以上、市場価格は原理的に取得可能である</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="matr"
+    data-ja="<b>なぜこの分離が要るのか ── Materialityの実装として。</b>随意契約8割を一律に重い審査にかければ、審査は必ず滞留し、現場は制度を忌避し、理由書は形式的に埋められるようになる。<b>そのとき失われるのは、記録の正確性そのものである</b>──形骸化した理由書からは、Phase 2の投資候補リストは抽出できない。<br>したがって審査の重さは、<b>「理論的に厳密であるべき度合い」ではなく、「そこに判断の余地があるかどうか」で配分する</b>。Sole-sourceは<b>証憑で決着がつくため軽く</b>、Single-sourceは<b>自己申告しか根拠がないため重く</b>、<b>少額案件は簡易判定とする</b>（判定機構のコストが、それが生む情報の価値を超えてはならない）。<br><span class='em'>区分選択の判断基準：「他社に声をかけたとき、応札してくる可能性が少しでもあるか」──Yesなら Single-source である。</span>「他社は応札しても勝てないだろう」「他社に頼むのは現実的でない」は、<b>Sole-sourceの理由ではない。それはSingle-sourceの理由である。</b>ここが緩めば、本来審査すべき案件が審査を素通りする。"
+    data-en="<b>Why the separation is needed — materiality, made operational.</b> Put all 80% through the same heavy review and the queue will jam, the business will come to resent the institution, and the justifications will be filled in as a formality. <b>What is lost at that moment is the accuracy of the record itself</b> — and no Phase 2 investment list can be extracted from a stack of formalities.<br>The weight of review is therefore allocated not by <b>how theoretically rigorous the case deserves to be, but by whether any judgement is called for at all</b>. Sole-source is <b>light, because evidence settles it</b>; single-source is <b>heavy, because nothing but self-declaration supports it</b>; and <b>low-value cases receive a simplified test</b> — the cost of the machinery must never exceed the value of the information it yields.<br><span class='em'>The test for the classification: &quot;if we approached other firms, is there any chance at all that one would bid?&quot; If yes, it is single-source.</span> &quot;No one else would win&quot; and &quot;going elsewhere is not realistic&quot; are <b>not reasons for sole-source. They are reasons for single-source.</b> Let this slip and the very cases that need reviewing will pass through unreviewed.">
+    <b>なぜこの分離が要るのか ── Materialityの実装として。</b>随意契約8割を一律に重い審査にかければ、審査は必ず滞留し、現場は制度を忌避し、理由書は形式的に埋められるようになる。<b>そのとき失われるのは、記録の正確性そのものである</b>──形骸化した理由書からは、Phase 2の投資候補リストは抽出できない。<br>したがって審査の重さは、<b>「理論的に厳密であるべき度合い」ではなく、「そこに判断の余地があるかどうか」で配分する</b>。Sole-sourceは<b>証憑で決着がつくため軽く</b>、Single-sourceは<b>自己申告しか根拠がないため重く</b>、<b>少額案件は簡易判定とする</b>（判定機構のコストが、それが生む情報の価値を超えてはならない）。<br><span class="em">区分選択の判断基準：「他社に声をかけたとき、応札してくる可能性が少しでもあるか」──Yesなら Single-source である。</span>「他社は応札しても勝てないだろう」「他社に頼むのは現実的でない」は、<b>Sole-sourceの理由ではない。それはSingle-sourceの理由である。</b>ここが緩めば、本来審査すべき案件が審査を素通りする。
+  </div>
+
+  <div class="conc mb32">
+    <span class="lbl" data-ja="判定結果の三分岐" data-en="THREE OUTCOMES, NOT TWO">判定結果の三分岐</span>
+    <div class="t" data-ja="随契プールに滞留させるだけでは、来年も同じ理由書が出てくる ── 「条件付承認」を制度化する"
+      data-en="A pool that merely collects justifications will collect the same ones next year — hence a third outcome: conditional approval">随契プールに滞留させるだけでは、来年も同じ理由書が出てくる ── 「条件付承認」を制度化する</div>
+    <div class="d"
+      data-ja="Q1またはQ3のNoは、<b>我々の側の事情に起因する以上、原理的に解消可能である</b>。にもかかわらず、承認して随契プールに流すだけであれば、<b>その解消可能性は、誰の責任にも紐づかないまま放置される</b>。<b>理由書の束は、それ自体では投資計画に変換されない。</b>"
+      data-en="A &quot;no&quot; on Q1 or Q3 arises from our own circumstances and is therefore, in principle, <b>resolvable</b>. Yet if such cases are simply approved and tipped into the pool, <b>that resolvability is attached to no one's responsibility and left where it lies</b>. <b>A stack of justifications does not, by itself, become an investment plan.</b>">
+      Q1またはQ3のNoは、<b>我々の側の事情に起因する以上、原理的に解消可能である</b>。にもかかわらず、承認して随契プールに流すだけであれば、<b>その解消可能性は、誰の責任にも紐づかないまま放置される</b>。<b>理由書の束は、それ自体では投資計画に変換されない。</b>
+    </div>
+    <div class="three">
+      <div class="tc">
+        <div class="n">A</div>
+        <div class="t" data-ja="承認" data-en="Approve">承認</div>
+        <div class="d" data-ja="Sole-sourceの証憑が確認された、または<b>Noが構造的である</b>（解消しえない）<br>→ 契約標準条項を適用して締結" data-en="Sole-source evidence is confirmed, or <b>the &quot;no&quot; is structural</b> and cannot be resolved<br>→ Contract, with the standard clauses applied">Sole-sourceの証憑が確認された、または<b>Noが構造的である</b>（解消しえない）<br>→ 契約標準条項を適用して締結</div>
+      </div>
+      <div class="tc b">
+        <div class="n" data-ja="B ／ 最頻値" data-en="B / THE COMMON CASE">B ／ 最頻値</div>
+        <div class="t" data-ja="条件付承認" data-en="Conditional approval">条件付承認</div>
+        <div class="d" data-ja="Q1／Q3がNoだが、<b>そのNoは解消可能である</b><br>→ 今年は随契を認める。ただし<b>次回更改までに、欠落項目のドキュメント化・所有権条項の組込み・再判定期日を、契約に埋め込む</b><br><b>今日の随意契約が、来年の随意契約の理由を作らないようにする</b>" data-en="Q1 or Q3 fails, but <b>the failure can be undone</b><br>→ Sole-source is allowed this year — but <b>the missing documentation, the ownership clauses and a date for re-assessment are written into the contract</b><br><b>So that today's sole-source award does not manufacture next year's justification</b>">Q1／Q3がNoだが、<b>そのNoは解消可能である</b><br>→ 今年は随契を認める。ただし<b>次回更改までに、欠落項目のドキュメント化・所有権条項の組込み・再判定期日を、契約に埋め込む</b><br><b>今日の随意契約が、来年の随意契約の理由を作らないようにする</b></div>
+      </div>
+      <div class="tc">
+        <div class="n">C</div>
+        <div class="t" data-ja="却下 → 競争入札へ" data-en="Reject → to tender">却下 → 競争入札へ</div>
+        <div class="d" data-ja="<b>Q1〜Q3すべてYes</b>。随意契約とする構造的理由が認められない<br>→ 競争入札プロセスへ移行（フロー5以降）" data-en="<b>All three pass.</b> No structural reason for a sole-source award survives<br>→ Move to the tender process (from flow step 5)"><b>Q1〜Q3すべてYes</b>。随意契約とする構造的理由が認められない<br>→ 競争入札プロセスへ移行（フロー5以降）</div>
+      </div>
+    </div>
+    <div class="d" style="margin-top:12px;"
+      data-ja="<b>Bを設けることの意味。</b>AとCしかない制度は、必ず現場に「理由を盛ってAを取りにいく」誘因を与える。<b>Bは、随契を認めながら、その代償としてロックインの解消を契約に書き込む</b>──「他社では無理」という状態を<b>今年は事実として受け入れ、それを来年も繰り返さないための一手を、いま打つ</b>。<br><b>そしてBこそが、Q1の欠落項目集計をPhase 2の投資に変換する、唯一の接続点である。</b>"
+      data-en="<b>What B is for.</b> An institution offering only A and C reliably teaches the business to dress up its reasons and aim for A. <b>B concedes the sole-source award and, in exchange, writes the undoing of the lock-in into the contract</b> — accepting &quot;no one else can do it&quot; <b>as this year's fact, while taking, now, the one step that stops it being next year's</b>.<br><b>And B is the only point at which the tally of missing Q1 items is converted into the Phase 2 investment.</b>">
+      <b>Bを設けることの意味。</b>AとCしかない制度は、必ず現場に「理由を盛ってAを取りにいく」誘因を与える。<b>Bは、随契を認めながら、その代償としてロックインの解消を契約に書き込む</b>──「他社では無理」という状態を<b>今年は事実として受け入れ、それを来年も繰り返さないための一手を、いま打つ</b>。<br><b>そしてBこそが、Q1の欠落項目集計をPhase 2の投資に変換する、唯一の接続点である。</b>
+    </div>
+  </div>
+
+  <a class="doc" href="Form1_Justification.html">
+    <div class="top">
+      <span data-ja="様式1 ／ 実装" data-en="FORM 1 / THE INSTRUMENT">様式1 ／ 実装</span>
+      <span class="go" data-ja="開く →" data-en="OPEN →">開く →</span>
+    </div>
+    <div class="bd">
+      <div>
+        <div class="t" data-ja="随意契約 理由書 ─ 挙証責任の反転を、記入可能な様式にしたもの"
+          data-en="The Sole-source Justification — the reversal of the burden of proof, rendered as a form">随意契約 理由書 ─ 挙証責任の反転を、記入可能な様式にしたもの</div>
+        <div class="d"
+          data-ja="従来、我々は「競争にする理由」を書かせてきた。<b>本様式以降、書くのは「随意契約にする理由」である。</b><br><b>Sole-source を選べば、問われるのは証憑だけである</b>──市場の構造は我々の落ち度ではないから、審査は軽い。<b>Single-source を選べば、それは「他社も存在する」と自ら申告したことになり</b>、そこから立証責任が生じる。<b>この分岐こそが、審査の重さを配分するMaterialityの実装である。</b>"
+          data-en="Until now we made people write down <b>why a case should be tendered.</b> <b>From here on, what must be written down is why it should not be.</b><br><b>Choose sole-source and only evidence is asked for</b> — the structure of the market is not our doing, so the review is light. <b>Choose single-source and you have declared that others exist</b>, and the burden of proof falls to you. <b>That fork is how the weight of review is allocated — materiality, made operational.</b>">
+          従来、我々は「競争にする理由」を書かせてきた。<b>本様式以降、書くのは「随意契約にする理由」である。</b><br><b>Sole-source を選べば、問われるのは証憑だけである</b>──市場の構造は我々の落ち度ではないから、審査は軽い。<b>Single-source を選べば、それは「他社も存在する」と自ら申告したことになり</b>、そこから立証責任が生じる。<b>この分岐こそが、審査の重さを配分するMaterialityの実装である。</b>
+        </div>
+      </div>
+      <div class="arw">›</div>
+    </div>
+  </a>
+
+  <!-- 04 -->
+  <div class="step"><span class="n">04</span><span data-ja="Q1の具体化 ─ ここでいう「仕様」とは何か" data-en="Q1 IN CONCRETE TERMS &mdash; WHAT IS MEANT BY &quot;SPECIFICATION&quot;">Q1の具体化 ─ ここでいう「仕様」とは何か</span></div>
+  <div class="note"
+    data-ja="Q1は、現状では申請者の自己申告に委ねられている。しかし<b>申請者は既存ベンダーを選びたい誘因を持つ当事者</b>であり、「記述できない」と答えるほど随意契約に近づく。判定の入口そのものが操作可能であってはならない。そこでQ1を、<b>7項目のチェックリストとして構造化する</b>。"
+    data-en="As it stands, Q1 rests on the proposer&#39;s own declaration. But <b>the proposer is a party with an incentive to keep the incumbent</b>: the more freely they answer &quot;it cannot be written down&quot;, the closer the initiative moves to a sole-source award. The entrance to the test must not itself be open to manipulation. Q1 is therefore structured as <b>a checklist of seven items</b>.">
+    Q1は、現状では申請者の自己申告に委ねられている。しかし<b>申請者は既存ベンダーを選びたい誘因を持つ当事者</b>であり、「記述できない」と答えるほど随意契約に近づく。判定の入口そのものが操作可能であってはならない。そこでQ1を、<b>7項目のチェックリストとして構造化する</b>。
+  </div>
+
+  <div class="whatwhy">
+    <div class="ww out">
+      <div class="t" data-ja="設計仕様<span class='sub'>How ／ Q1の対象外</span>" data-en="Design specification<span class='sub'>How &mdash; OUT of scope for Q1</span>">設計仕様<span class="sub">How ／ Q1の対象外</span></div>
+      <div class="d" data-ja="どう作るか。DB設計、モジュール構成、実装方式、コーディング標準。<br><b>これは発注側が書くものではない。</b>発注側が実現手段まで指定すれば、ベンダーの私的情報（より安い実現方法を知っている、という情報）を引き出す余地を自ら潰すことになる。<b>設計はベンダーが提案する</b>。それを競わせるのが総合評価方式である。" data-en="How it is to be built: database design, module structure, implementation approach, coding standards.<br><b>This is not the buyer&#39;s to write.</b> Specify the means and you destroy the very room in which the vendor&#39;s private information — that they know a cheaper way — could have been revealed. <b>The design is what the vendor proposes.</b> Putting those proposals in competition is what a scored tender is for.">どう作るか。DB設計、モジュール構成、実装方式、コーディング標準。<br><b>これは発注側が書くものではない。</b>発注側が実現手段まで指定すれば、ベンダーの私的情報（より安い実現方法を知っている、という情報）を引き出す余地を自ら潰すことになる。<b>設計はベンダーが提案する</b>。それを競わせるのが総合評価方式である。</div>
+    </div>
+    <div class="ww in">
+      <div class="t" data-ja="調達仕様<span class='sub'>What / Why ／ Q1の対象</span>" data-en="Procurement specification<span class='sub'>What / Why &mdash; the scope of Q1</span>">調達仕様<span class="sub">What / Why ／ Q1の対象</span></div>
+      <div class="d" data-ja="何を、どんな制約の下で、どういう状態になれば完了か。<br><b>Q1が問うているのは、これだけである。</b>「設計まで書けるか」ではない。ここを混同すると、現場は「そんな詳細は書けない」と正しく答え、<b>競争可能な案件まで随意契約へ流れる</b>。" data-en="What is to be achieved, under what constraints, and what state counts as done.<br><b>This, and only this, is what Q1 asks for.</b> It does not ask whether you can write the design. Conflate the two and the business answers, quite correctly, that it cannot be written — and <b>contestable initiatives drain away into sole-source contracts</b>.">何を、どんな制約の下で、どういう状態になれば完了か。<br><b>Q1が問うているのは、これだけである。</b>「設計まで書けるか」ではない。ここを混同すると、現場は「そんな詳細は書けない」と正しく答え、<b>競争可能な案件まで随意契約へ流れる</b>。</div>
+    </div>
+  </div>
+
+  <div class="thr">
+    <span class="lbl" data-ja="判定基準" data-en="THE TEST">判定基準</span>
+    <div class="d" data-ja="<b>判定の基準は、ただ一つである：</b>既存ベンダーの暗黙知にアクセスできない<b>第三者が、この文書だけを読んで、リスクを織り込んだ見積を出せるか</b>。<br>出せないなら、他社は応札しても正確な価格を出せない。それは診断編（01）の「自社固有・暗黙知依存の保守」と同じ状態であり、競争にかけても情報は顕示されない。<b>Q1がNoであるとは、成立条件C4（要件の第三者伝達可能性）が満たされていない、ということである。</b>" data-en="<b>There is a single test:</b> can <b>a third party, with no access to the incumbent&#39;s tacit knowledge, read this document alone and produce an estimate with the risk priced into it?</b><br>If they cannot, a competitor cannot bid at a reliable price even if they wish to. That is precisely the state described on page 01 as bespoke, tacit-knowledge-dependent maintenance, and putting it to tender reveals nothing. <b>Q1 answered &quot;no&quot; means condition C4 — that the requirement can be conveyed to a third party — is not met.</b>"><b>判定の基準は、ただ一つである：</b>既存ベンダーの暗黙知にアクセスできない<b>第三者が、この文書だけを読んで、リスクを織り込んだ見積を出せるか</b>。<br>出せないなら、他社は応札しても正確な価格を出せない。それは診断編（01）の「自社固有・暗黙知依存の保守」と同じ状態であり、競争にかけても情報は顕示されない。<b>Q1がNoであるとは、成立条件C4（要件の第三者伝達可能性）が満たされていない、ということである。</b></div>
+  </div>
+
+  <table class="spec">
+    <tr>
+      <th style="width:26px;">#</th>
+      <th style="width:150px;" data-ja="調達仕様の構成要素" data-en="Element of the procurement specification">調達仕様の構成要素</th>
+      <th data-ja="何を書くか" data-en="What is written">何を書くか</th>
+      <th style="width:300px;" data-ja="「書けない」が意味すること（＝診断）" data-en="What &quot;cannot be written&quot; means (the diagnosis)">「書けない」が意味すること（＝診断）</th>
+    </tr>
+    <tr>
+      <td class="no">1</td>
+      <td class="it" data-ja="目的・背景" data-en="Purpose and background">目的・背景</td>
+      <td data-ja="なぜこれをやるのか。達成されるべき業務上の状態" data-en="Why it is being done; the business state that must be reached">なぜこれをやるのか。達成されるべき業務上の状態</td>
+      <td class="dg" data-ja="案件の必要性そのものが<span>既存ベンダー起点である可能性</span>" data-en="The need itself may <span>have originated with the incumbent</span>">案件の必要性そのものが<span>既存ベンダー起点である可能性</span></td>
+    </tr>
+    <tr class="key">
+      <td class="no">2</td>
+      <td class="it" data-ja="現行環境" data-en="The current environment">現行環境</td>
+      <td data-ja="対象システム、技術スタック、周辺連携、データ量、利用者数、稼働条件" data-en="The systems in scope, the stack, the interfaces, data volumes, user counts, operating conditions">対象システム、技術スタック、周辺連携、データ量、利用者数、稼働条件</td>
+      <td class="dg" data-ja="<b>設計書・運用手順が自社に存在しない</b><span>＝症状③（ロックイン）が既に進行している</span>" data-en="<b>The design documents and procedures do not exist on our side</b><span> = symptom 3, lock-in, is already under way</span>"><b>設計書・運用手順が自社に存在しない</b><span>＝症状③（ロックイン）が既に進行している</span></td>
+    </tr>
+    <tr>
+      <td class="no">3</td>
+      <td class="it" data-ja="要求機能・業務要件" data-en="Functional and business requirements">要求機能・業務要件</td>
+      <td data-ja="実現したいこと。<b>手段ではなく、結果で書く</b>" data-en="What is to be achieved. <b>Written as an outcome, never as a means</b>">実現したいこと。<b>手段ではなく、結果で書く</b></td>
+      <td class="dg" data-ja="業務要件が<span>既存実装と不可分になっている</span>" data-en="The business requirement has <span>become inseparable from the existing implementation</span>">業務要件が<span>既存実装と不可分になっている</span></td>
+    </tr>
+    <tr>
+      <td class="no">4</td>
+      <td class="it" data-ja="非機能要件" data-en="Non-functional requirements">非機能要件</td>
+      <td data-ja="性能、可用性、セキュリティ、監査対応（GxP等）、保守条件、SLA" data-en="Performance, availability, security, audit and regulatory obligations, maintenance terms, SLAs">性能、可用性、セキュリティ、監査対応（GxP等）、保守条件、SLA</td>
+      <td class="dg" data-ja="<span>現行のSLAが何であるかを、自社が把握していない</span>" data-en="<span>We do not know what our own current SLA actually is</span>"><span>現行のSLAが何であるかを、自社が把握していない</span></td>
+    </tr>
+    <tr>
+      <td class="no">5</td>
+      <td class="it" data-ja="制約条件" data-en="Constraints">制約条件</td>
+      <td data-ja="期限、予算枠、規制要件、既存標準・アーキテクチャとの整合" data-en="Deadlines, budget envelope, regulatory requirements, alignment with existing standards and architecture">期限、予算枠、規制要件、既存標準・アーキテクチャとの整合</td>
+      <td class="dg" data-ja="&mdash;" data-en="&mdash;">&mdash;</td>
+    </tr>
+    <tr class="key">
+      <td class="no">6</td>
+      <td class="it" data-ja="受入基準" data-en="Acceptance criteria">受入基準</td>
+      <td data-ja="<b>何をもって完了とみなすか</b>。テスト条件、検収要件、性能の合格ライン" data-en="<b>What counts as done.</b> Test conditions, acceptance requirements, the performance threshold that passes"><b>何をもって完了とみなすか</b>。テスト条件、検収要件、性能の合格ライン</td>
+      <td class="dg" data-ja="<b>成果が観測できない</b><span>＝モラルハザードの温床。契約後の履行監視（C7）も成立しない</span>" data-en="<b>The outcome cannot be observed</b><span> = the breeding ground of moral hazard; monitoring after award (C7) does not stand up either</span>"><b>成果が観測できない</b><span>＝モラルハザードの温床。契約後の履行監視（C7）も成立しない</span></td>
+    </tr>
+    <tr>
+      <td class="no">7</td>
+      <td class="it" data-ja="前提と責任分界" data-en="Assumptions and the division of responsibility">前提と責任分界</td>
+      <td data-ja="発注側が提供するもの、ベンダーが担う範囲、リスクの所在" data-en="What the buyer provides, what falls to the vendor, where the risk sits">発注側が提供するもの、ベンダーが担う範囲、リスクの所在</td>
+      <td class="dg" data-ja="責任範囲が<span>慣行によってしか定まっていない</span>" data-en="The boundary of responsibility <span>is fixed by custom and nothing else</span>">責任範囲が<span>慣行によってしか定まっていない</span></td>
+    </tr>
+  </table>
+  <div class="note" style="margin-top:0;"
+    data-ja="<b>赤枠の2項目が決定的である。</b>項目2が書けなければ、他社は見積の<b>前提を置けない</b>──応札しても価格が出せない。項目6が書けなければ、競争で<b>何を評価するのかが定義できず</b>、契約後の履行監視も成立しない。項目1・3・5が書けない場合、それは案件の性質ではなく、<b>自社の要件定義能力の問題である</b>ことが多い。"
+    data-en="<b>The two items in red are decisive.</b> Without item 2, a competitor <b>has no basis on which to build an estimate</b> and cannot price a bid at all. Without item 6, <b>there is nothing defined to evaluate</b> in the competition, and no monitoring of performance after award. Where items 1, 3 or 5 cannot be written, the cause usually lies not in the nature of the initiative but in <b>our own capacity to define requirements</b>.">
+    <b>赤枠の2項目が決定的である。</b>項目2が書けなければ、他社は見積の<b>前提を置けない</b>──応札しても価格が出せない。項目6が書けなければ、競争で<b>何を評価するのかが定義できず</b>、契約後の履行監視も成立しない。項目1・3・5が書けない場合、それは案件の性質ではなく、<b>自社の要件定義能力の問題である</b>ことが多い。
+  </div>
+
+  <div class="thr" style="border-color:var(--neg);">
+    <span class="lbl" style="background:var(--neg);" data-ja="閾値の定義 ─ 最も重要な設計判断" data-en="DEFINING THE THRESHOLD &mdash; THE MOST IMPORTANT DESIGN DECISION">閾値の定義 ─ 最も重要な設計判断</span>
+    <div class="d" data-ja="<b>閾値：「完璧に書けるか」ではない。「第三者が見積リスクを織り込める程度に書けるか」である。</b><br>7項目すべてが完璧に書けることを要求すれば、事実上すべての案件がNoになり、<span class='em'>この判定は随意契約を正当化する装置に堕する</span>。それは本フレームワークが最も避けねばならない失敗である。<br>不確実性が残る部分は、<b>不確実であること自体を仕様に明記すればよい</b>。「現行のバッチ処理仕様は文書化されていないため、初期調査工数を別途見積もること」と書けば、他社も見積を出せる。<br><b>不明点があること自体は、仕様記述不能を意味しない。不明点が不明のまま放置されていることが、記述不能を意味する。</b>" data-en="<b>The threshold is not &quot;can it be written perfectly&quot;. It is &quot;can it be written well enough for a third party to price the risk&quot;.</b><br>Demand that all seven be perfect and every initiative fails, at which point <span class='em'>the test degenerates into a device for legitimising sole-source awards</span> — the one failure this framework must avoid above all others.<br>Where uncertainty remains, <b>write the uncertainty into the specification itself</b>. &quot;The current batch specification is undocumented; price the initial investigation separately&quot; is a sentence against which a competitor can bid.<br><b>The presence of unknowns does not make a requirement unspecifiable. Leaving the unknowns unexamined does.</b>"><b>閾値：「完璧に書けるか」ではない。「第三者が見積リスクを織り込める程度に書けるか」である。</b><br>7項目すべてが完璧に書けることを要求すれば、事実上すべての案件がNoになり、<span class="em">この判定は随意契約を正当化する装置に堕する</span>。それは本フレームワークが最も避けねばならない失敗である。<br>不確実性が残る部分は、<b>不確実であること自体を仕様に明記すればよい</b>。「現行のバッチ処理仕様は文書化されていないため、初期調査工数を別途見積もること」と書けば、他社も見積を出せる。<br><b>不明点があること自体は、仕様記述不能を意味しない。不明点が不明のまま放置されていることが、記述不能を意味する。</b></div>
+  </div>
+
+  <div class="sustain mb32" style="margin-top:12px;"
+    data-ja="<b>「書けない」は、判定結果であると同時に、診断結果である。</b><br>項目2（現行環境）が書けない案件は、ベンダーの誠実性の問題ではなく、<b>自社が設計書・運用手順を保持してこなかったことの帰結</b>である。したがってQ1がNoとなった案件は、随意契約プールに流すだけでは足りない。<b>理由書には「7項目のうち、どれが、なぜ書けなかったか」を構造化して記録する。</b><br>この記録がなければ、理由書の束は投資計画に変換されない。<b>欠落項目の集計が、そのままPhase 2の切替コスト低減投資（何をドキュメント化すべきか）の候補リストになる。</b>"
+    data-en="<b>&quot;It cannot be written&quot; is a diagnosis as much as a verdict.</b><br>Where item 2 — the current environment — cannot be written, the cause is not the vendor&#39;s conduct but <b>the fact that we never kept the design documents and operating procedures ourselves</b>. So an initiative that fails Q1 must not merely be tipped into the sole-source pool. <b>The written justification records, in structured form, which of the seven items could not be written, and why.</b><br>Without that record, the stack of justifications never converts into an investment plan. <b>Tally the missing items and you have, directly, the candidate list for the Phase 2 switching-cost investment: precisely what needs to be documented.</b>">
+    <b>「書けない」は、判定結果であると同時に、診断結果である。</b><br>項目2（現行環境）が書けない案件は、ベンダーの誠実性の問題ではなく、<b>自社が設計書・運用手順を保持してこなかったことの帰結</b>である。したがってQ1がNoとなった案件は、随意契約プールに流すだけでは足りない。<b>理由書には「7項目のうち、どれが、なぜ書けなかったか」を構造化して記録する。</b><br>この記録がなければ、理由書の束は投資計画に変換されない。<b>欠落項目の集計が、そのままPhase 2の切替コスト低減投資（何をドキュメント化すべきか）の候補リストになる。</b>
+  </div>
+
+  <a class="doc" href="Form2_Procurement_Specification.html">
+    <div class="top">
+      <span data-ja="様式2 ／ 実装" data-en="FORM 2 / THE INSTRUMENT">様式2 ／ 実装</span>
+      <span class="go" data-ja="開く →" data-en="OPEN →">開く →</span>
+    </div>
+    <div class="bd">
+      <div>
+        <div class="t" data-ja="調達仕様書 ─ この7項目を、記入可能な様式にしたもの"
+          data-en="The Procurement Specification — the seven items, rendered as a form that can actually be filled in">調達仕様書 ─ この7項目を、記入可能な様式にしたもの</div>
+        <div class="d"
+          data-ja="上の7項目は、<b>そのままでは判定基準にすぎない</b>。競争入札に付す案件では、これを<b>応札者が読んで見積を出せる文書</b>にしなければならない。<br>本様式は、7項目をセクション1〜7として構造化し、さらに<b>契約類型（24類型）を選ぶと、記入すべき項目だけが表示される</b>。<b>類型ごとに、姿の異なるロックイン要因</b>──SaaSのデータ返還条件、ライセンスの監査権とTrue-Down、保守の引継ぎ成果物──が、<b>契約標準条項として自動的に提示される</b>。"
+          data-en="On their own, the seven items are <b>no more than a test</b>. For anything that goes to tender they must become <b>a document a bidder can read and price</b>.<br>This form structures the seven as sections 1–7 and, once <b>one of 24 contract types is selected, shows only the fields that type requires</b>. The <b>lock-in that each type produces in its own particular shape</b> — a SaaS exit-data clause, an audit right and a true-down in a licence, the handover artefacts in a maintenance contract — <b>is surfaced automatically as a mandatory contract term</b>.">
+          上の7項目は、<b>そのままでは判定基準にすぎない</b>。競争入札に付す案件では、これを<b>応札者が読んで見積を出せる文書</b>にしなければならない。<br>本様式は、7項目をセクション1〜7として構造化し、さらに<b>契約類型（24類型）を選ぶと、記入すべき項目だけが表示される</b>。<b>類型ごとに、姿の異なるロックイン要因</b>──SaaSのデータ返還条件、ライセンスの監査権とTrue-Down、保守の引継ぎ成果物──が、<b>契約標準条項として自動的に提示される</b>。
+        </div>
+      </div>
+      <div class="arw">›</div>
+    </div>
+  </a>
+
+  <!-- 05 -->
+  <div class="step"><span class="n">05</span><span data-ja="要件2への回答 ─ 評価プロセスのオーナーを定める" data-en="ANSWER TO REQUIREMENT 2 — ASSIGN AN OWNER TO THE EVALUATION PROCESS">要件2への回答 ─ 評価プロセスのオーナーを定める</span></div>
+  <div class="own mb32">
+    <div class="ow hi">
+      <div class="t" data-ja="VMOを「評価プロセスの完全性のオーナー」として定義する" data-en="Define the VMO as the owner of the integrity of the evaluation process">VMOを「評価プロセスの完全性のオーナー」として定義する</div>
+      <div class="d"
+        data-ja="評価基準が事後に動かせる限り、競争は情報を顕示しない。したがって本フレームワークは、VMOに次の<b>責務と権限を同時に</b>付与する。<br><br><b>【責務】</b>評価項目と重み付けが<b>入札前</b>に確定・文書化されていることを保証する／市場調査により応札候補の存在を把握する／調達実績（応札価格・随契理由書）の台帳を保持する／IT部門が算定した切替コスト（Q3）の妥当性を検証する<br><b>【権限】</b>随意契約の理由書を審査し、競争適合と判断した案件には<span class='em'>競争方式を要求できる</span><br><br><b>【重要】VMOは評価点を独立に付けない。</b>採点は事業部門・技術部門が行う。VMOが所有するのは<b>プロセスの完全性</b>であって、<b>結果に対する裁量ではない</b>。"
+        data-en="So long as the criteria can be moved after the fact, competition reveals nothing. This framework therefore grants the VMO <b>a duty and a right, together</b>.<br><br><b>[Duty]</b> Guarantee that the scoring items and their weights are fixed and documented <b>before</b> the tender opens; establish, through market survey, whether credible bidders exist; maintain the procurement register — bid prices and sole-source justifications; verify the basis of the switching-cost estimates produced by IT (Q3).<br><b>[Right]</b> Review each sole-source justification and, where an initiative is judged contestable, <span class='em'>require that it go to tender</span>.<br><br><b>[Important] The VMO does not score independently.</b> Scoring is done by the business and technical functions. What the VMO owns is <b>the integrity of the process</b> — <b>not discretion over the outcome</b>.">
+        評価基準が事後に動かせる限り、競争は情報を顕示しない。したがって本フレームワークは、VMOに次の<b>責務と権限を同時に</b>付与する。<br><br><b>【責務】</b>評価項目と重み付けが<b>入札前</b>に確定・文書化されていることを保証する／市場調査により応札候補の存在を把握する／調達実績（応札価格・随契理由書）の台帳を保持する／IT部門が算定した切替コスト（Q3）の妥当性を検証する<br><b>【権限】</b>随意契約の理由書を審査し、競争適合と判断した案件には<span class="em">競争方式を要求できる</span><br><br><b>【重要】VMOは評価点を独立に付けない。</b>採点は事業部門・技術部門が行う。VMOが所有するのは<b>プロセスの完全性</b>であって、<b>結果に対する裁量ではない</b>。
+      </div>
+    </div>
+    <div class="ow">
+      <div class="t" data-ja="なぜ VMO でなければならないか" data-en="Why it has to be the VMO">なぜ VMO でなければならないか</div>
+      <div class="d"
+        data-ja="Che (1993) が示したのは、価格と品質を同時に評価する調達において、<b>買い手側が事後に基準を動かせるなら、競争は真の情報を顕示しない</b>ということである。競争入札の形式を整えても、重みを結果に合わせて調整できるなら、それは随意契約を正当化する儀式にすぎない。<br><br>「基準を先に固定し、それを守らせる」役割は、<b>案件の結果に利害を持つ当事者には構造的に担えない</b>。当事者が自らを縛ることはできない。第三者が持つしかない。<br><br><b>裏を返せば</b>──この軸を導入するとは、VMOが「評価プロセスの完全性を保証する唯一の主体」になると<b>約束する</b>ことに等しい。市場調査能力と台帳を持たなければ、この枠組みは成立しない。<br><br>そして同じ原則は、<b>IT部門にも及ぶ</b>。IT部門は運用の安定を理由に既存ベンダーを選好しうる<b>当事者</b>である。だからこそ本フレームワークは、Q3を「IT部門が算定し、VMOが検証する」という分離で設計している。"
+        data-en="Che (1993) showed that where price and quality are scored together, <b>competition reveals nothing truthful if the buyer can move the criteria after the fact</b>. Going through the motions of a tender while adjusting the weights to fit the result is merely a ritual that legitimises the sole-source outcome.<br><br>The role of fixing the criteria first and holding people to them <b>cannot structurally be discharged by a party with a stake in the outcome</b>. No one can bind themselves. It must sit with a third party.<br><br><b>The converse follows.</b> To adopt this axis is to <b>promise</b> that the VMO will be the single body guaranteeing the integrity of the evaluation process. Without a market-survey capability and a register, the framework does not stand up.<br><br>And the same principle reaches <b>IT itself</b>. IT can rationally prefer the incumbent in the name of operational stability — it, too, is <b>a party with a stake</b>. That is why Q3 is split: IT produces the estimate, and the VMO verifies it.">
+        Che (1993) が示したのは、価格と品質を同時に評価する調達において、<b>買い手側が事後に基準を動かせるなら、競争は真の情報を顕示しない</b>ということである。競争入札の形式を整えても、重みを結果に合わせて調整できるなら、それは随意契約を正当化する儀式にすぎない。<br><br>「基準を先に固定し、それを守らせる」役割は、<b>案件の結果に利害を持つ当事者には構造的に担えない</b>。当事者が自らを縛ることはできない。第三者が持つしかない。<br><br><b>裏を返せば</b>──この軸を導入するとは、VMOが「評価プロセスの完全性を保証する唯一の主体」になると<b>約束する</b>ことに等しい。市場調査能力と台帳を持たなければ、この枠組みは成立しない。<br><br>そして同じ原則は、<b>IT部門にも及ぶ</b>。IT部門は運用の安定を理由に既存ベンダーを選好しうる<b>当事者</b>である。だからこそ本フレームワークは、Q3を「IT部門が算定し、VMOが検証する」という分離で設計している。
+      </div>
+    </div>
+  </div>
+
+  <!-- 06 -->
+  <div class="step"><span class="n">06</span><span data-ja="要件3への回答 ─ 判定を調達プロセスに接続する" data-en="ANSWER TO REQUIREMENT 3 — WIRE THE ASSESSMENT INTO THE SOURCING PROCESS">要件3への回答 ─ 判定を調達プロセスに接続する</span></div>
+  <div class="note"
+    data-ja="判定基準を作っただけでは効かない。<b>案件を持つのが事業部門・システム担当である限り、「既存ベンダーが早い・確実だ」が彼らの合理的判断であり続ける。</b>判定は、調達プロセスの中に組み込まれてはじめて機能する。"
+    data-en="A judgement rule by itself does nothing. <b>So long as the initiative belongs to the business or the system owner, &quot;the incumbent is faster and safer&quot; remains their rational answer.</b> The test only works once it is embedded inside the sourcing process.">
+    判定基準を作っただけでは効かない。<b>案件を持つのが事業部門・システム担当である限り、「既存ベンダーが早い・確実だ」が彼らの合理的判断であり続ける。</b>判定は、調達プロセスの中に組み込まれてはじめて機能する。
+  </div>
+  <div class="flow mb32">
+    <div class="lane">
+      <div class="ll" data-ja="事業部門<br>システム担当" data-en="Business unit<br>System owner">事業部門<br>システム担当</div>
+      <div class="steps">
+        <div class="st">
+          <div class="t" data-ja="1. 案件の起票" data-en="1. Raise the initiative">1. 案件の起票</div>
+          <div class="d" data-ja="調達案件を起票する（予算計上済／新規を問わない）" data-en="A procurement initiative is raised — budgeted or new, it makes no difference">調達案件を起票する（予算計上済／新規を問わない）</div>
+        </div>
+        <div class="arw">▶</div>
+        <div class="st">
+          <div class="t" data-ja="2. 要件の記述" data-en="2. Write the requirement">2. 要件の記述</div>
+          <div class="d" data-ja="実現したいこと・制約条件・期限を記載する" data-en="What is to be achieved, under what constraints, by when">実現したいこと・制約条件・期限を記載する</div>
+        </div>
+        <div class="arw">▶</div>
+        <div class="st hot">
+          <div class="gate hot" data-ja="要件1の実装" data-en="REQ 1 IMPLEMENTED">要件1の実装</div>
+          <div class="t" data-ja="3. 事実項目の記入" data-en="3. Record the facts">3. 事実項目の記入</div>
+          <div class="d" data-ja="<b><a href=&quot;Form1_Justification.html&quot; style=&quot;color:var(--navy);&quot;>随意契約理由書（様式1）</a></b>を提出させる。現行ベンダー固有の実装の有無／ドキュメントの所在／移行の見積（<b>算定根拠を添付し、既存ベンダー提示額の転記は認めない</b>）。<b>「競争すべきか」の意見ではなく、事実のみを求める</b>" data-en="Require <b><a href=&quot;Form1_Justification.html&quot; style=&quot;color:var(--navy);&quot;>form 1, the sole-source justification</a></b>. Whether bespoke incumbent-specific implementation exists / where the documentation sits / a migration estimate (<b>with its basis attached — copying the incumbent&#39;s quote is not accepted</b>). <b>Facts only — never an opinion on whether it should be tendered</b>"><b><a href="Form1_Justification.html" style="color:var(--navy);">随意契約理由書（様式1）</a></b>を提出させる。現行ベンダー固有の実装の有無／ドキュメントの所在／移行の見積（<b>算定根拠を添付し、既存ベンダー提示額の転記は認めない</b>）。<b>「競争すべきか」の意見ではなく、事実のみを求める</b></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="lane">
+      <div class="ll it" data-ja="VMO" data-en="VMO">VMO</div>
+      <div class="steps">
+        <div class="st hot">
+          <div class="gate hot" data-ja="軸3を適用" data-en="AXIS 3 APPLIED">軸3を適用</div>
+          <div class="t" data-ja="4. 競争適合性の判定" data-en="4. Test contestability">4. 競争適合性の判定</div>
+          <div class="d" data-ja="<b>Q1 仕様記述可能か／Q2 応札候補は2社以上か／Q3 切替コストは便益の範囲内か</b><br>3つYes＝競争方式／1つでもNo＝随意契約（<b>理由書必須</b>）" data-en="<b>Q1 specifiable? / Q2 two or more credible bidders? / Q3 switching cost within the benefit?</b><br>Three yeses = tender / any one no = sole-source (<b>written justification required</b>)"><b>Q1 仕様記述可能か／Q2 応札候補は2社以上か／Q3 切替コストは便益の範囲内か</b><br>3つYes＝競争方式／1つでもNo＝随意契約（<b>理由書必須</b>）</div>
+        </div>
+        <div class="arw">▶</div>
+        <div class="st hot">
+          <div class="gate hot" data-ja="要件2の実装" data-en="REQ 2 IMPLEMENTED">要件2の実装</div>
+          <div class="t" data-ja="5. 評価基準の事前確定" data-en="5. Fix the criteria in advance">5. 評価基準の事前確定</div>
+          <div class="d" data-ja="評価項目と重みを、事業・技術部門が設定し、VMOが承認する。<b>この時点で凍結</b>。修正は<b>提案書提出前・全応札者への同時通知</b>を条件にのみ認め、<b>開札後の変更は一切不可</b>" data-en="The business and technical functions set the items and weights; the VMO approves them. <b>Frozen at this point.</b> Amendments only before proposals go in, with simultaneous notice to every bidder — <b>after opening, no change whatsoever</b>">評価項目と重みを、事業・技術部門が設定し、VMOが承認する。<b>この時点で凍結</b>。修正は<b>提案書提出前・全応札者への同時通知</b>を条件にのみ認め、<b>開札後の変更は一切不可</b></div>
+        </div>
+        <div class="arw">▶</div>
+        <div class="st hot">
+          <div class="gate hot" data-ja="三分岐（03b）" data-en="THREE OUTCOMES (03b)">三分岐（03b）</div>
+          <div class="t" data-ja="6. 随契の判定 ─ A／B／C" data-en="6. Decide the sole-source case — A / B / C">6. 随契の判定 ─ A／B／C</div>
+          <div class="d" data-ja="<b>A 承認</b>（Noが構造的）／<b>B 条件付承認</b>（Noは解消可能）／<b>C 却下</b>（競争へ）<br><b>Bでは、欠落項目のドキュメント化・所有権条項・再判定期日を契約に埋め込む。</b>理由書には<b>7項目のうち、どれが、なぜ書けなかったかを構造化して記録する</b>。<b>欠落項目の集計が、次年度の切替コスト低減投資の候補リストになる</b>" data-en="<b>A: approve</b> (the failure is structural) / <b>B: approve with conditions</b> (the failure can be undone) / <b>C: reject</b> — to tender<br><b>Under B, the documentation of the missing items, the ownership clauses and a re-assessment date are written into the contract.</b> The justification records, in structured form, <b>which of the seven items could not be written, and why</b>. <b>The tally of missing items becomes next year&#39;s candidate list for switching-cost reduction</b>"><b>A 承認</b>（Noが構造的）／<b>B 条件付承認</b>（Noは解消可能）／<b>C 却下</b>（競争へ）<br><b>Bでは、欠落項目のドキュメント化・所有権条項・再判定期日を契約に埋め込む。</b>理由書には<b>7項目のうち、どれが、なぜ書けなかったかを構造化して記録する</b>。<b>欠落項目の集計が、次年度の切替コスト低減投資の候補リストになる</b></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="lane">
+      <div class="ll" data-ja="実　行" data-en="Execution">実　行</div>
+      <div class="steps">
+        <div class="st">
+          <div class="t" data-ja="7. RFP発行／市場調査" data-en="7. Issue the RFP / survey the market">7. RFP発行／市場調査</div>
+          <div class="d" data-ja="確定した評価基準とともに、<b><a href=&quot;Form2_Procurement_Specification.html&quot; style=&quot;color:var(--navy);&quot;>調達仕様書（様式2）</a></b>をRFPとして発行する。<b>応札価格は、落札結果にかかわらず全件を台帳に記録する</b>" data-en="Issue the <b><a href=&quot;Form2_Procurement_Specification.html&quot; style=&quot;color:var(--navy);&quot;>procurement specification (form 2)</a></b> as the RFP, together with the fixed criteria. <b>Record every bid price in the register, regardless of who wins</b>">確定した評価基準とともに、<b><a href="Form2_Procurement_Specification.html" style="color:var(--navy);">調達仕様書（様式2）</a></b>をRFPとして発行する。<b>応札価格は、落札結果にかかわらず全件を台帳に記録する</b></div>
+        </div>
+        <div class="arw">▶</div>
+        <div class="st">
+          <div class="gate" data-ja="判定" data-en="DECISION">判定</div>
+          <div class="t" data-ja="8. 評価・選定" data-en="8. Score and select">8. 評価・選定</div>
+          <div class="d" data-ja="<b>採点は事業・技術部門が行う。</b>VMOはプロセスの遵守（事前基準どおりか）を監督する" data-en="<b>Scoring is done by the business and technical functions.</b> The VMO oversees adherence to the process — that the pre-agreed criteria were in fact applied"><b>採点は事業・技術部門が行う。</b>VMOはプロセスの遵守（事前基準どおりか）を監督する</div>
+        </div>
+        <div class="arw">▶</div>
+        <div class="st hot">
+          <div class="gate hot" data-ja="要件3の実装" data-en="REQ 3 IMPLEMENTED">要件3の実装</div>
+          <div class="t" data-ja="9. 契約 ─ 標準条項の適用" data-en="9. Contract — apply the standard clauses">9. 契約 ─ 標準条項の適用</div>
+          <div class="d" data-ja="<b>成果物・ドキュメント・データの所有権を標準条項として組み込む。</b>これを怠れば、この契約が来年のロックインを生む" data-en="<b>Build ownership of deliverables, documentation and data into the contract as standard clauses.</b> Omit them and this contract becomes next year&#39;s lock-in"><b>成果物・ドキュメント・データの所有権を標準条項として組み込む。</b>これを怠れば、この契約が来年のロックインを生む</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bypr"
+      data-ja="<b>競争方式の目的を、最初に宣言する：</b>これは<b>コスト削減施策ではない</b>。<b>価格と品質を検証可能にするための情報収集機構</b>である。<br>目的をコスト削減だと宣言すれば、①最低価格入札に堕し、②Stiglitz &amp; Weiss が示すとおり優良ベンダーが撤退して低品質ベンダーだけが残り（逆選抜）、③既存ベンダーとの関係を無用に敵対的にする。<b>この定義を先に固定しなければ、競争方式は必ず「値切り交渉の別名」に変質する。</b>"
+      data-en="<b>Declare the purpose of competitive sourcing before anyone uses it:</b> this is <b>not a cost-reduction programme</b>. It is <b>an instrument for making price and quality verifiable</b>.<br>Declare cost reduction as the goal and three things follow: (i) it degenerates into lowest-price tendering; (ii) as Stiglitz &amp; Weiss showed, the good vendors withdraw and only the poor ones remain — adverse selection; and (iii) relations with the incumbent turn needlessly adversarial. <b>Fix this definition first, or competitive sourcing will inevitably become another word for haggling.</b>">
+      <b>競争方式の目的を、最初に宣言する：</b>これは<b>コスト削減施策ではない</b>。<b>価格と品質を検証可能にするための情報収集機構</b>である。<br>目的をコスト削減だと宣言すれば、①最低価格入札に堕し、②Stiglitz &amp; Weiss が示すとおり優良ベンダーが撤退して低品質ベンダーだけが残り（逆選抜）、③既存ベンダーとの関係を無用に敵対的にする。<b>この定義を先に固定しなければ、競争方式は必ず「値切り交渉の別名」に変質する。</b>
+    </div>
+
+    <div class="sustain"
+      data-ja="<b>応札コストの均衡を、発注側の責務として管理する（成立条件C8）：</b>競争は、<b>応札が割に合うと市場が信じている間だけ</b>機能する。既存ベンダーの姿が見えている案件で、他社が本気の提案コストを負担するのは、勝ち目があると信じられる場合だけである。したがって──①<b>提案要求の重さを案件規模に比例させる</b>（少額案件に重い提案書を求めない）。②<b>落選者全員に評価結果をデブリーフする</b>（応札が、次回につながる情報として報われる）。③<b>初年度の対象に、既存ベンダー以外が現実に勝ちうる案件を必ず含め、評価結果のとおりに発注する</b>（実際の交代が一度でも起これば、それが「この入札は儀式ではない」という最も強いシグナルになる）。これを怠れば、症状①の「当て馬見積」がRFPの階層で再生産され、Q2（市場の厚み）は数年のうちに構造的に満たせなくなる。"
+      data-en="<b>Managing the cost of bidding is the buyer&#39;s responsibility (condition C8):</b> competition functions <b>only for as long as the market believes that bidding pays</b>. Against a visible incumbent, a challenger bears the real cost of a serious proposal only where they believe they can win. Hence: (1) <b>scale the weight of the RFP to the size of the deal</b> — no heavyweight proposals for small contracts; (2) <b>debrief every losing bidder on how they were scored</b> — so that a bid is repaid as information for the next round; (3) <b>make sure year one includes cases a non-incumbent can genuinely win, and award them exactly as scored</b> — a single real change of vendor is the strongest available signal that the tender is not a ritual. Neglect this, and the token bids of symptom 1 are reproduced at the level of the RFP itself: within a few years Q2 — the thickness of the market — becomes structurally unsatisfiable.">
+      <b>応札コストの均衡を、発注側の責務として管理する（成立条件C8）：</b>競争は、<b>応札が割に合うと市場が信じている間だけ</b>機能する。既存ベンダーの姿が見えている案件で、他社が本気の提案コストを負担するのは、勝ち目があると信じられる場合だけである。したがって──①<b>提案要求の重さを案件規模に比例させる</b>（少額案件に重い提案書を求めない）。②<b>落選者全員に評価結果をデブリーフする</b>（応札が、次回につながる情報として報われる）。③<b>初年度の対象に、既存ベンダー以外が現実に勝ちうる案件を必ず含め、評価結果のとおりに発注する</b>（実際の交代が一度でも起これば、それが「この入札は儀式ではない」という最も強いシグナルになる）。これを怠れば、症状①の「当て馬見積」がRFPの階層で再生産され、Q2（市場の厚み）は数年のうちに構造的に満たせなくなる。
+    </div>
+  </div>
+
+  <!-- 07 -->
+  <div class="step"><span class="n">07</span><span data-ja="段階導入 ─ 選定機構であると同時に情報収集機構である" data-en="PHASED ROLLOUT — A SELECTION MECHANISM AND AN INFORMATION-GATHERING MECHANISM AT ONCE">段階導入 ─ 選定機構であると同時に情報収集機構である</span></div>
+  <div class="note"
+    data-ja="市場価格の相場観がないことは制約であるが、同時に<b>それを作るための唯一の機会</b>でもある。精緻な判定を待つのではなく、明白な案件から始めて台帳を育てる。"
+    data-en="Having no sense of market price is a constraint — and simultaneously <b>the one opportunity to build one</b>. Do not wait for a precise test. Start with the obvious cases and let the register grow out of them.">
+    市場価格の相場観がないことは制約であるが、同時に<b>それを作るための唯一の機会</b>でもある。精緻な判定を待つのではなく、明白な案件から始めて台帳を育てる。
+  </div>
+  <div class="mat mb32">
+    <div class="mc now">
+      <div class="y" data-ja="PHASE 1 ／ 初年度" data-en="PHASE 1 / YEAR ONE">PHASE 1 ／ 初年度</div>
+      <div class="t" data-ja="台帳なし ─ 「明白に競争可能な案件」から始める" data-en="No register — start where contestability is obvious">台帳なし ─ 「明白に競争可能な案件」から始める</div>
+      <div class="d"
+        data-ja="・<b>全件を対象にしない。</b>汎用調達（ハードウェア／ライセンス／標準的運用）から着手する<br>・目標は「随契比率を8割→X割」ではなく、<b>競争を経験し、市場価格の情報を得ること</b><br>・応札結果は<b>落札の可否にかかわらず全件を台帳に記録する</b>（＝市場価格DBの初版）<br>・随意契約案件も、<b>理由書の記録を必須とする</b>（＝次年度の判定材料）<br>・<b>集まった理由書と応札価格の束が、そのまま調達台帳の初版になる</b><br>・<b>VMOの市場調査能力を、この初年度の案件そのもので構築する</b>（RFIの試行・外部ベンチマークの整備を含む。台帳と調査能力の両方が揃ってはじめて、枠組みは自立する）"
+        data-en="· <b>Do not attempt everything.</b> Begin with commodity procurement — hardware, licences, standard operations<br>· The goal is not &quot;from 80% down to X%&quot;. It is <b>to experience competition and acquire price information</b><br>· <b>Record every bid, whether or not it wins</b> — this is the first edition of the price database<br>· For sole-source cases too, <b>a written justification is mandatory</b> — that is next year&#39;s evidence<br>· <b>The stack of justifications and bid prices becomes the first edition of the procurement register</b><br>· <b>Build the VMO&#39;s market-survey capability on these very first cases</b> — trial RFIs, external benchmarks. Only with both the register and that capability does the framework stand on its own">
+        ・<b>全件を対象にしない。</b>汎用調達（ハードウェア／ライセンス／標準的運用）から着手する<br>・目標は「随契比率を8割→X割」ではなく、<b>競争を経験し、市場価格の情報を得ること</b><br>・応札結果は<b>落札の可否にかかわらず全件を台帳に記録する</b>（＝市場価格DBの初版）<br>・随意契約案件も、<b>理由書の記録を必須とする</b>（＝次年度の判定材料）<br>・<b>集まった理由書と応札価格の束が、そのまま調達台帳の初版になる</b><br>・<b>VMOの市場調査能力を、この初年度の案件そのもので構築する</b>（RFIの試行・外部ベンチマークの整備を含む。台帳と調査能力の両方が揃ってはじめて、枠組みは自立する）
+      </div>
+    </div>
+    <div class="mm">▶</div>
+    <div class="mc">
+      <div class="y" data-ja="PHASE 2 ／ 次年度以降" data-en="PHASE 2 / YEAR TWO ONWARDS">PHASE 2 ／ 次年度以降</div>
+      <div class="t" data-ja="台帳あり ─ 適用範囲を拡大し、切替コストを下げにいく" data-en="With a register — widen the scope and attack the switching cost">台帳あり ─ 適用範囲を拡大し、切替コストを下げにいく</div>
+      <div class="d"
+        data-ja="・市場価格台帳により、随意契約案件の価格妥当性を<b>事後検証</b>できるようになる<br>・<b>Q1の欠落項目の集計（特に項目2＝現行環境）を根拠に、切替コストを下げる投資（ドキュメント化・標準化）を起案する</b><br>・契約標準条項（成果物所有権・ドキュメント要件）を全新規契約に適用する<br>・「標準逸脱度」を判定基準に追加する<br>・<b>実績を根拠に、競争適用範囲の拡大を提案する</b>"
+        data-en="· The price register makes it possible to <b>verify, after the fact</b>, whether sole-source prices were reasonable<br>· <b>Using the tally of missing Q1 items — above all item 2, the current environment — propose the investment that lowers the switching cost: documentation, standardisation</b><br>· Apply the standard clauses (ownership of deliverables, documentation requirements) to every new contract<br>· Add deviation from standards to the test<br>· <b>Use the record as the basis for widening the scope of competition</b>">
+        ・市場価格台帳により、随意契約案件の価格妥当性を<b>事後検証</b>できるようになる<br>・<b>Q1の欠落項目の集計（特に項目2＝現行環境）を根拠に、切替コストを下げる投資（ドキュメント化・標準化）を起案する</b><br>・契約標準条項（成果物所有権・ドキュメント要件）を全新規契約に適用する<br>・「標準逸脱度」を判定基準に追加する<br>・<b>実績を根拠に、競争適用範囲の拡大を提案する</b>
+      </div>
+    </div>
+  </div>
+
+  <div class="conc mb32" style="border-color:var(--neg);">
+    <span class="lbl" style="background:var(--neg);" data-ja="Phase 1 の正直な前提" data-en="AN HONEST PREMISE FOR PHASE 1">Phase 1 の正直な前提</span>
+    <div class="t" data-ja="初年度、随意契約案件の価格妥当性は、原理的に検証できない ── それを様式に明記する"
+      data-en="In year one, the price of a sole-source award cannot be verified — and the form must say so">初年度、随意契約案件の価格妥当性は、原理的に検証できない ── それを様式に明記する</div>
+    <div class="d"
+      data-ja="台帳がまだ存在しない以上、<b>Phase 1 の随意契約案件には、比較対象が存在しない</b>。これは制度の失敗ではない。<b>台帳がないという事実こそ、8割が随意契約であったことの帰結</b>であり、本フレームワークが解こうとしている問題そのものである。<br>にもかかわらず理由書に「価格の妥当性」欄を設ければ、現場は必ず<b>「前年比」で埋める</b>。そのとき、<b>診断編（01）が「検証ではない」と名指しで否定した手法が、制度としてお墨付きを得る</b>──これは、随意契約8割よりも悪い状態である。無検証が、検証済みとして台帳に記録されるからである。<br><span class='em'>したがって理由書には、「一次証拠を取得できなかった」と正直に申告する欄を設ける。</span>チェックされた案件はVMOが<b>「価格未検証リスト」に登録し、次年度に台帳が育った時点で優先的に検証する</b>。<b>未検証であることを知っている状態は、未検証であることを知らない状態より、はるかに良い。</b>"
+      data-en="With no register in existence, <b>a sole-source case in Phase 1 has no point of comparison</b>. That is not a failure of the institution. <b>The very absence of a register is the consequence of having sole-sourced 80%</b> — it is the problem this framework exists to address.<br>Yet put a &quot;price is reasonable&quot; box on the form and the business will fill it <b>with last year's figure</b>. At that moment <b>the method that page 01 named and rejected as no verification at all acquires the institution's endorsement</b> — a state worse than sole-sourcing 80%, because the unverified is now recorded in the register as verified.<br><span class='em'>The form therefore carries a box for declaring, honestly, that no primary evidence could be obtained.</span> Cases so marked are entered by the VMO on a <b>register of unverified prices, to be verified first once the register has grown</b>. <b>Knowing that something is unverified is far better than not knowing it.</b>">
+      台帳がまだ存在しない以上、<b>Phase 1 の随意契約案件には、比較対象が存在しない</b>。これは制度の失敗ではない。<b>台帳がないという事実こそ、8割が随意契約であったことの帰結</b>であり、本フレームワークが解こうとしている問題そのものである。<br>にもかかわらず理由書に「価格の妥当性」欄を設ければ、現場は必ず<b>「前年比」で埋める</b>。そのとき、<b>診断編（01）が「検証ではない」と名指しで否定した手法が、制度としてお墨付きを得る</b>──これは、随意契約8割よりも悪い状態である。無検証が、検証済みとして台帳に記録されるからである。<br><span class="em">したがって理由書には、「一次証拠を取得できなかった」と正直に申告する欄を設ける。</span>チェックされた案件はVMOが<b>「価格未検証リスト」に登録し、次年度に台帳が育った時点で優先的に検証する</b>。<b>未検証であることを知っている状態は、未検証であることを知らない状態より、はるかに良い。</b>
+    </div>
+  </div>
+
+  <!-- 08 -->
+  <div class="step"><span class="n">08</span><span data-ja="4つの症状は、どこで解かれるか" data-en="WHERE EACH OF THE FOUR SYMPTOMS IS ADDRESSED">4つの症状は、どこで解かれるか</span></div>
+  <table class="tr mb32">
+    <tr>
+      <th style="width:145px;" data-ja="症状" data-en="Symptom">症状</th>
+      <th style="width:135px;" data-ja="分類" data-en="Classification">分類</th>
+      <th style="width:205px;" data-ja="本フレームワークの打ち手" data-en="What this framework does">本フレームワークの打ち手</th>
+      <th data-ja="解消の可否と、その理由" data-en="Does it solve it — and why">解消の可否と、その理由</th>
+    </tr>
+    <tr>
+      <td class="sym" style="color:var(--pos);" data-ja="価格が検証できない" data-en="Price cannot be verified">価格が検証できない</td>
+      <td><span class="pill pp" data-ja="逆選抜" data-en="Adverse selection">逆選抜</span></td>
+      <td class="fix" data-ja="軸3（Q1〜Q3）による競争適合案件の抽出＋応札価格の台帳化" data-en="Axis 3 (Q1–Q3) identifies contestable initiatives + every bid is registered">軸3（Q1〜Q3）による競争適合案件の抽出＋応札価格の台帳化</td>
+      <td data-ja="<span class='yes'>解ける。</span>競争にかければ、真のコストは価格として市場から顕示される。<b>落札しなくても、情報は組織に残る</b>"
+        data-en="<span class='yes'>Yes.</span> Put it to tender and the true cost is revealed by the market as a price. <b>Even where the incumbent wins, the information stays with us</b>"><span class="yes">解ける。</span>競争にかければ、真のコストは価格として市場から顕示される。<b>落札しなくても、情報は組織に残る</b></td>
+    </tr>
+    <tr>
+      <td class="sym" style="color:var(--inf);" data-ja="市場情報が入らない" data-en="Market information never arrives">市場情報が入らない</td>
+      <td><span class="pill pi" data-ja="非対称性の再生産" data-en="Asymmetry reproduced">非対称性の再生産</span></td>
+      <td class="fix" data-ja="RFPプロセスそのもの<br><span class='ex'>＝情報収集装置</span>" data-en="The RFP process itself<br><span class='ex'>= an information-gathering device</span>">RFPプロセスそのもの<br><span class="ex">＝情報収集装置</span></td>
+      <td data-ja="<span class='yes'>解ける。</span>RFPは選定手段であると同時に、<b>市場価格・技術動向・代替手段を組織に取り込む装置</b>である。<b>ここが最も見落とされている便益である</b>"
+        data-en="<span class='yes'>Yes.</span> An RFP is a means of selection and, at the same time, <b>the device by which market prices, technical options and alternatives enter the organisation</b>. <b>This is the most overlooked benefit of the whole exercise</b>"><span class="yes">解ける。</span>RFPは選定手段であると同時に、<b>市場価格・技術動向・代替手段を組織に取り込む装置</b>である。<b>ここが最も見落とされている便益である</b></td>
+    </tr>
+    <tr>
+      <td class="sym" style="color:var(--neg);" data-ja="努力水準が低下する" data-en="Effort declines">努力水準が低下する</td>
+      <td><span class="pill pn" data-ja="モラルハザード" data-en="Moral hazard">モラルハザード</span></td>
+      <td class="fix" data-ja="「次は競争があるかもしれない」という事実＋SLA・成果指標" data-en="The fact that next time there might be a tender + SLAs and performance measures">「次は競争があるかもしれない」という事実＋SLA・成果指標</td>
+      <td data-ja="<span class='part'>部分的に解ける。</span><b>競争可能性が存在すること自体が規律になる</b>（実際に競争にかけなくてもよい）。ただし契約後の努力の観測は、モニタリング設計として別途必要"
+        data-en="<span class='part'>Partly.</span> <b>The mere existence of the possibility disciplines behaviour</b> — the tender need not actually be held. But observing effort after award still requires a monitoring design of its own"><span class="part">部分的に解ける。</span><b>競争可能性が存在すること自体が規律になる</b>（実際に競争にかけなくてもよい）。ただし契約後の努力の観測は、モニタリング設計として別途必要</td>
+    </tr>
+    <tr>
+      <td class="sym" style="color:var(--com);" data-ja="依存が固定化する" data-en="Dependency hardens">依存が固定化する</td>
+      <td><span class="pill pc" data-ja="ロックイン" data-en="Lock-in">ロックイン</span></td>
+      <td class="fix" data-ja="契約標準条項（ドキュメント・所有権）<br><span class='ex'>＋切替コスト低減投資（別枠）</span>" data-en="Standard contract clauses (documentation, ownership)<br><span class='ex'>+ a separate fund to lower switching costs</span>">契約標準条項（ドキュメント・所有権）<br><span class="ex">＋切替コスト低減投資（別枠）</span></td>
+      <td data-ja="<span class='no'>競争導入だけでは解けない。</span>既に固定化した案件は、競争にかけようとしても<b>応札者が現れない</b>。標準条項は<b>これ以上の悪化を止める</b>だけである。<b>切替コストを下げる投資（ドキュメント化・標準化）を別枠で確保しなければ、来年も同じ理由で随意契約になる</b>"
+        data-en="<span class='no'>Competition alone cannot.</span> Where lock-in has already hardened, putting the work to tender simply produces <b>no bidders</b>. The standard clauses only <b>stop it getting worse</b>. <b>Without a separate fund for the investment that lowers switching costs — documentation, standardisation — next year will produce the same justification for sole-sourcing</b>"><span class="no">競争導入だけでは解けない。</span>既に固定化した案件は、競争にかけようとしても<b>応札者が現れない</b>。標準条項は<b>これ以上の悪化を止める</b>だけである。<b>切替コストを下げる投資（ドキュメント化・標準化）を別枠で確保しなければ、来年も同じ理由で随意契約になる</b></td>
+    </tr>
+  </table>
+
+  <!-- 09 -->
+  <div class="step"><span class="n">09</span><span data-ja="理論編（00）の8条件は、どこで担保されるか" data-en="WHERE EACH OF THE EIGHT CONDITIONS FROM PAGE 00 IS SECURED">理論編（00）の8条件は、どこで担保されるか</span></div>
+  <div class="note"
+    data-ja="00で示した「競争が機能する成立条件」C1〜C8をチェックリストとして、本提言を照合する。<b>設計の完了は、条件の充足を意味しない。</b>C3・C5・C7・C8は、制度そのものではなく運用の規律に依存し続ける──この依存関係を明示しておくことが、形骸化への最初の防波堤である。"
+    data-en="The proposal is checked against C1—C8 from page 00 — the conditions under which competition works. <b>Completing the design does not satisfy them.</b> C3, C5, C7 and C8 remain dependent on operating discipline rather than on the institution itself — and stating that dependence openly is the first defence against the framework becoming a formality.">
+    00で示した「競争が機能する成立条件」C1〜C8をチェックリストとして、本提言を照合する。<b>設計の完了は、条件の充足を意味しない。</b>C3・C5・C7・C8は、制度そのものではなく運用の規律に依存し続ける──この依存関係を明示しておくことが、形骸化への最初の防波堤である。
+  </div>
+  <table class="tr mb32">
+    <tr>
+      <th style="width:215px;" data-ja="成立条件（00より）" data-en="Condition (from page 00)">成立条件（00より）</th>
+      <th style="width:250px;" data-ja="本フレームワークでの担保" data-en="Secured by">本フレームワークでの担保</th>
+      <th data-ja="充足の状態" data-en="Status">充足の状態</th>
+    </tr>
+    <tr>
+      <td class="sym" data-ja="<b>C1</b>　評価基準の事前確定・公開" data-en="<b>C1.</b> Criteria fixed and published in advance"><b>C1</b>　評価基準の事前確定・公開</td>
+      <td class="fix" data-ja="要件2／フロー5<br><span class='ex'>VMO承認時点で凍結。修正は提案書提出前・全応札者同時通知のみ</span>" data-en="REQ 2 / flow step 5<br><span class='ex'>Frozen at VMO approval; amendments only pre-submission, with notice to all bidders</span>">要件2／フロー5<br><span class="ex">VMO承認時点で凍結。修正は提案書提出前・全応札者同時通知のみ</span></td>
+      <td data-ja="<span class='yes'>制度で担保。</span>凍結の例外手続きまで定義する" data-en="<span class='yes'>Secured by the institution</span> — down to the exception protocol for the freeze"><span class="yes">制度で担保。</span>凍結の例外手続きまで定義する</td>
+    </tr>
+    <tr>
+      <td class="sym" data-ja="<b>C2</b>　評価者の事後裁量の排除" data-en="<b>C2.</b> No ex-post discretion for evaluators"><b>C2</b>　評価者の事後裁量の排除</td>
+      <td class="fix" data-ja="VMO＝評価プロセスの完全性のオーナー<br><span class='ex'>採点権は持たない。基準の番人を、利害を持つ当事者から分離する</span>" data-en="The VMO as owner of process integrity<br><span class='ex'>No scoring rights; the guardian of the criteria is separated from every party with a stake</span>">VMO＝評価プロセスの完全性のオーナー<br><span class="ex">採点権は持たない。基準の番人を、利害を持つ当事者から分離する</span></td>
+      <td data-ja="<span class='yes'>制度で担保</span>" data-en="<span class='yes'>Secured by the institution</span>"><span class="yes">制度で担保</span></td>
+    </tr>
+    <tr>
+      <td class="sym" data-ja="<b>C3</b>　市場の厚み（実質的な応札者が2社以上）" data-en="<b>C3.</b> Thickness of the market — two or more genuine bidders"><b>C3</b>　市場の厚み（実質的な応札者が2社以上）</td>
+      <td class="fix" data-ja="軸3・Q2（VMOの市場調査）<br><span class='ex'>＋応札コスト管理（C8）による厚みの維持</span>" data-en="Axis 3, Q2 — the VMO&#39;s market survey<br><span class='ex'>+ kept thick through the management of bidding costs (C8)</span>">軸3・Q2（VMOの市場調査）<br><span class="ex">＋応札コスト管理（C8）による厚みの維持</span></td>
+      <td data-ja="<span class='part'>部分的。</span>判定はできるが、厚みの<b>維持</b>はC8の運用に依存する" data-en="<span class='part'>Partly.</span> It can be tested — but <b>keeping</b> the market thick depends on the discipline of C8"><span class="part">部分的。</span>判定はできるが、厚みの<b>維持</b>はC8の運用に依存する</td>
+    </tr>
+    <tr>
+      <td class="sym" data-ja="<b>C4</b>　仕様の第三者伝達可能性" data-en="<b>C4.</b> Specifiability to a third party"><b>C4</b>　仕様の第三者伝達可能性</td>
+      <td class="fix" data-ja="軸3・Q1／調達仕様7項目のチェックリスト（04）<br><span class='ex'>閾値＝第三者が見積リスクを織り込める程度に書けるか</span>" data-en="Axis 3, Q1 / the seven-item checklist (04)<br><span class='ex'>Threshold: written well enough for a third party to price the risk</span>">軸3・Q1／調達仕様7項目のチェックリスト（04）<br><span class="ex">閾値＝第三者が見積リスクを織り込める程度に書けるか</span></td>
+      <td data-ja="<span class='yes'>制度で担保</span>" data-en="<span class='yes'>Secured by the institution</span>"><span class="yes">制度で担保</span></td>
+    </tr>
+    <tr>
+      <td class="sym" data-ja="<b>C5</b>　切替コストが禁止的でないこと" data-en="<b>C5.</b> Switching costs not prohibitive"><b>C5</b>　切替コストが禁止的でないこと</td>
+      <td class="fix" data-ja="軸3・Q3（IT算定・VMO検証）＋契約標準条項<br><span class='ex'>＋切替コスト低減投資（Phase 2・別枠）</span>" data-en="Axis 3, Q3 (IT estimates, VMO verifies) + standard clauses<br><span class='ex'>+ the ring-fenced switching-cost fund (Phase 2)</span>">軸3・Q3（IT算定・VMO検証）＋契約標準条項<br><span class="ex">＋切替コスト低減投資（Phase 2・別枠）</span></td>
+      <td data-ja="<span class='part'>部分的。</span>標準条項は悪化を止めるだけであり、既存ロックインは別枠投資なしには回復しない" data-en="<span class='part'>Partly.</span> The clauses only stop it worsening; existing lock-in does not recover without the fund"><span class="part">部分的。</span>標準条項は悪化を止めるだけであり、既存ロックインは別枠投資なしには回復しない</td>
+    </tr>
+    <tr>
+      <td class="sym" data-ja="<b>C6</b>　品質も評価対象であること" data-en="<b>C6.</b> Quality, not price alone, is scored"><b>C6</b>　品質も評価対象であること</td>
+      <td class="fix" data-ja="総合評価方式（01・類型表）<br><span class='ex'>評価項目・重みの事前設計とVMO承認</span>" data-en="Scored (price + quality) tendering — see the table on page 01<br><span class='ex'>Items and weights designed in advance and approved by the VMO</span>">総合評価方式（01・類型表）<br><span class="ex">評価項目・重みの事前設計とVMO承認</span></td>
+      <td data-ja="<span class='yes'>制度で担保。</span>最低価格入札は採らない" data-en="<span class='yes'>Secured.</span> Lowest-price tendering is not used"><span class="yes">制度で担保。</span>最低価格入札は採らない</td>
+    </tr>
+    <tr>
+      <td class="sym" data-ja="<b>C7</b>　契約後の履行の監視可能性" data-en="<b>C7.</b> Performance after award can be monitored"><b>C7</b>　契約後の履行の監視可能性</td>
+      <td class="fix" data-ja="SLA・成果指標への接続" data-en="Connection to SLAs and performance measures">SLA・成果指標への接続</td>
+      <td data-ja="<span class='part'>部分的。</span>モニタリング設計を別途要する（前表・モラルハザードの行のとおり）" data-en="<span class='part'>Partly.</span> A monitoring design of its own is still required — as the moral-hazard row above states"><span class="part">部分的。</span>モニタリング設計を別途要する（前表・モラルハザードの行のとおり）</td>
+    </tr>
+    <tr>
+      <td class="sym" data-ja="<b>C8</b>　応札費用が便益に見合うこと" data-en="<b>C8.</b> The cost of bidding is proportionate to the benefit"><b>C8</b>　応札費用が便益に見合うこと</td>
+      <td class="fix" data-ja="提案要求の比例化／落選者デブリーフ<br><span class='ex'>＋評価どおりの発注による、実際の交代のシグナル</span>" data-en="RFP weight scaled to deal size / debriefs for losers<br><span class='ex'>+ the signal of a real change of vendor, awarded exactly as scored</span>">提案要求の比例化／落選者デブリーフ<br><span class="ex">＋評価どおりの発注による、実際の交代のシグナル</span></td>
+      <td data-ja="<span class='part'>部分的。</span>制度では担保できず、<b>発注側の毎回の行動規律</b>に依存する" data-en="<span class='part'>Partly.</span> This one cannot be secured by the institution at all — it depends on <b>the buyer&#39;s conduct, every time</b>"><span class="part">部分的。</span>制度では担保できず、<b>発注側の毎回の行動規律</b>に依存する</td>
+    </tr>
+  </table>
+
+  <!-- 結び -->
+  <div class="close">
+    <div class="t" data-ja="結び ─ このフレームワークが本質的に行っていること"
+      data-en="In closing — what this framework is actually doing">結び ─ このフレームワークが本質的に行っていること</div>
+    <div class="d"
+      data-ja="本フレームワークは、コスト削減施策ではない。ベンダーを敵に回す取り組みでもない。<b>随意契約が構造的に手放してきた「価格と品質を検証する能力」を、制度として組織に取り戻すもの</b>である。<br>非対称情報の経済学が処方してきたもの──<b>スクリーニング（選択肢の提示による自己選択）、評価基準の事前コミットメント、切替コストの管理</b>──を、当社の調達プロセスに翻訳したものにほかならない。<br><b>そして「随意契約が8割である」という事実が意味するのは、我々が悪い取引をしているということではない。我々には、良い取引をしているのかどうかを知る手段がない、ということである。</b>"
+      data-en="This framework is not a cost-reduction programme, and it is not an attack on our vendors. It is <b>an institution that restores to the organisation the capability that sole-sourcing structurally gave away: the capability to verify price and quality</b>.<br>It is nothing more, and nothing less, than the translation of what the economics of asymmetric information prescribes — <b>screening through self-selection, prior commitment to evaluation criteria, and management of the switching cost</b> — into the language of our own procurement process.<br><b>And what &quot;80% sole-sourced&quot; means is not that we are getting bad deals. It means we have no way of knowing whether we are getting good ones.</b>">
+      本フレームワークは、コスト削減施策ではない。ベンダーを敵に回す取り組みでもない。<b>随意契約が構造的に手放してきた「価格と品質を検証する能力」を、制度として組織に取り戻すもの</b>である。<br>非対称情報の経済学が処方してきたもの──<b>スクリーニング（選択肢の提示による自己選択）、評価基準の事前コミットメント、切替コストの管理</b>──を、当社の調達プロセスに翻訳したものにほかならない。<br><b>そして「随意契約が8割である」という事実が意味するのは、我々が悪い取引をしているということではない。我々には、良い取引をしているのかどうかを知る手段がない、ということである。</b>
+    </div>
+    <div class="warn"
+      data-ja="<b>導入にあたっての留意：</b>本フレームワークは、次の三つが揃わなければ形骸化する。<br><b>① 評価基準を入札「前」に凍結すること。</b>事後に動かせるなら、競争は情報を顕示しない。<b>形式だけの入札は、随意契約より悪い</b>──ベンダーの応札コストと自社の事務コストだけがかかり、得られる情報はゼロだからである。<br><b>② 切替コストを下げる投資を、別枠で確保すること。</b>競争適合性の判定だけでは、既にロックインされた案件は永久に随意契約のままである。ドキュメント化・標準化への投資がなければ、来年も「他社が応札できない」という理由が、正当な理由として繰り返される。<br><b>③ 応札が割に合う市場を、発注側の行動で維持すること。</b>落選者へのデブリーフがなく、実際のベンダー交代が一度も起こらなければ、応札者は数年で市場から去り、Q2は満たせなくなる。<b>競争にかける権利は、応札してもらえるだけの信用の上にしか成立しない。</b>"
+      data-en="<b>Three conditions for adoption.</b> Without all three, this framework becomes a formality.<br><b>1. Freeze the evaluation criteria BEFORE the tender.</b> If they can be moved afterwards, competition reveals nothing. <b>A tender in form only is worse than sole-sourcing</b> — it incurs the vendors&#39; bidding costs and our own administrative costs, and yields no information at all.<br><b>2. Ring-fence a fund for lowering switching costs.</b> The contestability test alone leaves every already-locked-in case sole-sourced for ever. Without investment in documentation and standardisation, &quot;no one else can bid&quot; will recur next year — and it will be a legitimate reason.<br><b>3. Keep bidding worth the bidders&#39; while — through the buyer&#39;s own conduct.</b> If losers are never debriefed and no incumbent is ever actually replaced, the bidders leave the market within a few years, and Q2 can no longer be met. <b>The right to hold a tender rests on nothing but the credibility that earns the bids.</b>">
+      <b>導入にあたっての留意：</b>本フレームワークは、次の三つが揃わなければ形骸化する。<br><b>① 評価基準を入札「前」に凍結すること。</b>事後に動かせるなら、競争は情報を顕示しない。<b>形式だけの入札は、随意契約より悪い</b>──ベンダーの応札コストと自社の事務コストだけがかかり、得られる情報はゼロだからである。<br><b>② 切替コストを下げる投資を、別枠で確保すること。</b>競争適合性の判定だけでは、既にロックインされた案件は永久に随意契約のままである。ドキュメント化・標準化への投資がなければ、来年も「他社が応札できない」という理由が、正当な理由として繰り返される。<br><b>③ 応札が割に合う市場を、発注側の行動で維持すること。</b>落選者へのデブリーフがなく、実際のベンダー交代が一度も起こらなければ、応札者は数年で市場から去り、Q2は満たせなくなる。<b>競争にかける権利は、応札してもらえるだけの信用の上にしか成立しない。</b>
+    </div>
+  </div>
+
+  <div class="nav">
+    <a href="01_Sole_Source_Market_Failure.html" data-ja="◀ 前へ：随意契約が8割を占める構造下で、何が起きるか" data-en="◀ Previous: What Happens When 80% of Contracts Are Sole-Sourced">◀ 前へ：随意契約が8割を占める構造下で、何が起きるか</a>
+    <span class="sp">─</span>
+  </div>
+</div>
+
+<script>
+function setLang(l){
+  document.querySelectorAll('[data-ja]').forEach(function(el){
+    var v = el.getAttribute('data-' + l);
+    if (v !== null) el.innerHTML = v;
+  });
+  document.documentElement.lang = l;
+  document.getElementById('btn-ja').classList.toggle('on', l === 'ja');
+  document.getElementById('btn-en').classList.toggle('on', l === 'en');
+}
+</script>
+</body>
+</html>

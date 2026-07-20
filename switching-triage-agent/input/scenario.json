@@ -1,0 +1,13 @@
+{
+  "scenario_name": "Base",
+  "lambda_risk": 0.5,
+  "beta_bundle": 1.15,
+  "lead_time_h_months": 3.0,
+  "budget_m": 20,
+  "safety_margin": 0.2,
+  "use_bundle": true,
+  "ext_threshold": 2,
+  "ext_penalty": 0.15,
+  "ext_penalty_cap": 0.6,
+  "as_of_date": "2026-04-01"
+}

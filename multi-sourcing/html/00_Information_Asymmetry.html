@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Information Asymmetry</title>
+<style>
+  :root{
+    --navy:#12305e; --ink:#1b2430; --gray:#5f6a77; --gray-l:#8b95a1;
+    --line:#d7dde5; --panel:#f5f7fa;
+    --pos:#2f6fc0; --pos-bg:#eef4fc; --pos-line:#a9c6e8;
+    --neg:#c2410c; --neg-bg:#fdf2ea; --neg-line:#eeb185;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; padding:26px 18px 44px; background:#eef1f5; color:var(--ink);
+    font-family:"Yu Gothic UI","Yu Gothic","Hiragino Kaku Gothic ProN","Meiryo","Segoe UI",sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  html[lang="en"] body{font-family:"Segoe UI","Helvetica Neue",Arial,sans-serif;}
+  .slide{
+    max-width:1240px; margin:0 auto; background:#fff; padding:34px 40px 36px;
+    box-shadow:0 2px 18px rgba(18,48,94,.10); border-top:5px solid var(--navy); position:relative;
+  }
+  .lang{position:absolute; top:16px; right:24px; display:flex; border:1px solid var(--line);}
+  .lang button{border:none; background:#fff; color:var(--gray); font:inherit; font-size:11px;
+    font-weight:700; letter-spacing:.06em; padding:5px 13px; cursor:pointer;}
+  .lang button+button{border-left:1px solid var(--line);}
+  .lang button.on{background:var(--navy); color:#fff;}
+  .lang button:focus-visible{outline:2px solid var(--neg); outline-offset:1px;}
+
+  .eyebrow{font-size:10.5px; font-weight:700; letter-spacing:.14em; color:var(--gray-l); margin-bottom:7px;}
+  h1{font-size:25px; margin:0 0 9px; color:var(--navy); font-weight:700; line-height:1.4; padding-right:130px;}
+  .lede{font-size:12.5px; color:var(--gray); line-height:1.8; margin:0 0 22px; padding-bottom:18px; border-bottom:1px solid var(--line);}
+  .lede b{color:var(--ink);}
+
+  .step{font-size:10.5px; font-weight:700; letter-spacing:.1em; color:#fff; background:var(--navy);
+    display:inline-block; padding:3px 11px; margin-bottom:12px;}
+  .step .n{opacity:.6; margin-right:6px;}
+
+  .def{border:1px solid var(--line); background:var(--panel); padding:18px 22px; margin-bottom:12px;}
+  .def .term{font-size:17px; font-weight:700; color:var(--navy); margin-bottom:6px;}
+  .def .term .sub{font-size:12px; color:var(--gray); font-weight:600; margin-left:8px;}
+  .def .body{font-size:12.5px; line-height:1.85;}
+  .def .body b{color:var(--neg);}
+  .def .src{font-size:10.5px; color:var(--gray-l); margin-top:9px; line-height:1.7;}
+
+  .keyeq{display:grid; grid-template-columns:1fr 1fr; gap:12px; margin:14px 0 30px;}
+  .eq{border:1px solid var(--line); padding:12px 16px;}
+  .eq.p{border-left:4px solid var(--pos); background:var(--pos-bg);}
+  .eq.n{border-left:4px solid var(--neg); background:var(--neg-bg);}
+  .eq .k{font-size:10.5px; font-weight:700; letter-spacing:.06em; margin-bottom:5px;}
+  .eq.p .k{color:var(--pos);} .eq.n .k{color:var(--neg);}
+  .eq .f{font-size:14px; font-weight:700; font-family:Georgia,serif; margin-bottom:4px;}
+  .eq .d{font-size:11px; color:var(--gray); line-height:1.65;}
+
+  table{width:100%; border-collapse:collapse; margin-bottom:30px;}
+  th,td{border:1px solid var(--line); padding:10px 13px; font-size:11.5px; line-height:1.7; vertical-align:top;}
+  th.rh{width:132px; background:var(--navy); color:#fff; font-weight:700; font-size:11px;
+    border-color:var(--navy); vertical-align:middle;}
+  th.ch{padding:11px 13px; font-size:13.5px; font-weight:700; color:#fff; text-align:left;}
+  th.ch.p{background:var(--pos); border-color:var(--pos);}
+  th.ch.n{background:var(--neg); border-color:var(--neg);}
+  th.ch .s{display:block; font-size:10.5px; font-weight:600; opacity:.85; margin-top:2px;}
+  td.p{background:#fbfdff;} td.n{background:#fffcfa;}
+  tr.hi td.p{background:var(--pos-bg); font-weight:700; color:var(--pos); font-size:13px;}
+  tr.hi td.n{background:var(--neg-bg); font-weight:700; color:var(--neg); font-size:13px;}
+  tr.hi th.rh{background:#2a4d84; border-color:#2a4d84;}
+  tr.rx th.rh{background:#2a4d84; border-color:#2a4d84;}
+  tr.rx td{font-weight:700; color:var(--navy); background:var(--panel);}
+  .ex{color:var(--gray); font-weight:400; font-size:11px;}
+
+  .commons{border:1px solid var(--line); margin-bottom:12px;}
+  .commons .ch2{background:var(--navy); color:#fff; padding:12px 20px; font-size:15px; font-weight:700;}
+  .commons .ch2 .sub{font-size:11px; opacity:.7; font-weight:600; margin-left:8px;}
+  .commons .cb{padding:18px 22px;}
+  .fable{font-size:12.5px; line-height:1.9; margin-bottom:14px;}
+  .fable b{color:var(--neg);}
+  .asym{display:grid; grid-template-columns:1fr 34px 1fr; align-items:center; margin-bottom:14px;}
+  .asym .box{border:1px solid var(--line); padding:11px 15px; background:var(--panel);}
+  .asym .box .k{font-size:10.5px; font-weight:700; color:var(--gray); margin-bottom:3px;}
+  .asym .box .v{font-size:13px; font-weight:700;}
+  .asym .box.a .v{color:var(--pos);} .asym .box.b .v{color:var(--neg);}
+  .asym .mid{text-align:center; font-size:13px; color:var(--gray-l); font-weight:700;}
+  .verdict{border-left:4px solid var(--neg); background:var(--neg-bg); padding:11px 16px;
+    font-size:12.5px; font-weight:700; color:#8a3708; line-height:1.7;}
+
+  .distinct{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:14px;}
+  .dcard{border:1px solid var(--line); padding:14px 17px;}
+  .dcard.n{border-left:4px solid var(--neg);} .dcard.p{border-left:4px solid var(--pos);}
+  .dcard .t{font-size:13px; font-weight:700; color:var(--navy); margin-bottom:5px;}
+  .dcard .t .sub{font-size:10px; color:var(--gray-l); font-weight:600; display:block; margin-top:1px;}
+  .dcard .d{font-size:11.5px; line-height:1.75; color:var(--gray);}
+  .dcard .d b{color:var(--ink);}
+  .joint{font-size:11.5px; line-height:1.8; color:var(--gray); margin:0 0 30px;
+    padding:11px 16px; background:var(--panel); border-left:4px solid var(--navy);}
+  .joint b{color:var(--ink);}
+
+  .rx-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:12px;}
+  .rx{border:1px solid var(--line);}
+  .rx .h{padding:9px 13px; background:var(--panel); border-bottom:1px solid var(--line);}
+  .rx .h .t{font-size:12.5px; font-weight:700; color:var(--navy);}
+  .rx .h .who{font-size:10px; color:var(--gray-l); margin-top:2px;}
+  .rx .b{padding:10px 13px; font-size:11px; line-height:1.7; color:var(--gray);}
+  .rx .b b{color:var(--ink);}
+  .tag{display:inline-block; font-size:9.5px; font-weight:700; padding:1px 6px; margin-bottom:6px; border:1px solid;}
+  .tag-n{color:var(--neg); border-color:var(--neg-line); background:var(--neg-bg);}
+  .tag-p{color:var(--pos); border-color:var(--pos-line); background:var(--pos-bg);}
+  .tag-b{color:var(--navy); border-color:#a8b6cc; background:var(--panel);}
+
+  .ostrom{margin-top:22px; border:2px solid var(--navy); padding:16px 20px; background:#fff;}
+  .ostrom .lbl{font-size:10px; font-weight:700; letter-spacing:.1em; color:#fff; background:var(--navy);
+    display:inline-block; padding:2px 9px; margin-bottom:9px;}
+  .ostrom .t{font-size:14px; font-weight:700; color:var(--navy); margin-bottom:7px; line-height:1.6;}
+  .ostrom .d{font-size:11.5px; line-height:1.85; color:var(--gray);}
+  .ostrom .d b{color:var(--ink);}
+  .ostrom ul{margin:8px 0 0; padding-left:1.2em; columns:2; column-gap:26px;}
+  .ostrom li{font-size:11px; line-height:1.7; margin-bottom:2px; color:var(--gray); break-inside:avoid;}
+
+  .refs{margin-top:24px; padding-top:14px; border-top:1px solid var(--line);
+    font-size:10px; color:var(--gray-l); line-height:1.85;}
+  .refs b{color:var(--gray); font-weight:700; letter-spacing:.06em;}
+
+  .nav{margin-top:22px; padding-top:14px; border-top:1px solid var(--line); display:flex; justify-content:space-between; font-size:11px;}
+  .nav a{color:var(--navy); text-decoration:none; font-weight:700;}
+  .nav a:hover{text-decoration:underline;}
+  .nav .sp{color:var(--gray-l); font-weight:400;}
+
+  @media(max-width:900px){
+    h1{padding-right:0; margin-top:38px;}
+    .keyeq,.distinct,.asym{grid-template-columns:1fr;}
+    .rx-grid{grid-template-columns:1fr 1fr;}
+    .ostrom ul{columns:1;}
+    table{display:block; overflow-x:auto;}
+  }
+  @media print{body{background:#fff; padding:0;} .slide{box-shadow:none; max-width:none;} .lang,.nav{display:none;}}
+</style>
+</head>
+<body>
+<div class="slide">
+  <div class="lang" role="group" aria-label="Language">
+    <button id="btn-ja" class="on" onclick="setLang('ja')">日本語</button>
+    <button id="btn-en" onclick="setLang('en')">English</button>
+  </div>
+
+  <div class="eyebrow">CONCEPTUAL FOUNDATION</div>
+  <h1 data-ja="情報の非対称性 ─ 市場が価格と品質を検証できなくなる条件"
+      data-en="Information Asymmetry: When a Market Can No Longer Verify Price or Quality">情報の非対称性 ─ 市場が価格と品質を検証できなくなる条件</h1>
+
+  <p class="lede"
+     data-ja="取引の当事者が持つ情報に差があるとき、市場は効率的な結果に到達しない。<br>これは交渉の巧拙や当事者の誠実さの問題ではなく、<b>情報構造から演繹される構造的帰結</b>である。この現象は「非対称情報の経済学」として半世紀にわたり研究され、その発生条件と処方箋は理論的・実証的に確立されている。"
+     data-en="When the parties to a transaction hold different information, the market does not reach an efficient outcome.<br>This is not a matter of bargaining skill or of anyone&#39;s honesty. It is a <b>structural consequence deduced from the information itself</b>. Economics has studied this for half a century under the heading of information asymmetry; its conditions and its remedies are both theoretically and empirically established.">
+    取引の当事者が持つ情報に差があるとき、市場は効率的な結果に到達しない。<br>これは交渉の巧拙や当事者の誠実さの問題ではなく、<b>情報構造から演繹される構造的帰結</b>である。この現象は「非対称情報の経済学」として半世紀にわたり研究され、その発生条件と処方箋は理論的・実証的に確立されている。
+  </p>
+
+  <div class="step"><span class="n">01</span><span data-ja="定義" data-en="DEFINITION">定義</span></div>
+  <div class="def">
+    <div class="term" data-ja="情報の非対称性<span class='sub'>Information Asymmetry</span>" data-en="Information Asymmetry<span class='sub'>情報の非対称性</span>">情報の非対称性<span class="sub">Information Asymmetry</span></div>
+    <div class="body"
+      data-ja="取引の一方の当事者だけが、財の真の品質・自らの真のコスト・自らの努力水準を知っている状態。相手はそれを<b>観測できない</b>ため、価格や契約条件に正しく反映させることができない。<br>本質は相手の不誠実さではなく<b>「観測できないこと」そのもの</b>である。情報を持つ側は自らに有利な情報だけを開示するが、それは合理的な行動であって、悪意ではない。"
+      data-en="Only one party to a transaction knows the true quality of the good, their own true cost, or their own level of effort. The other party <b>cannot observe it</b>, and therefore cannot reflect it correctly in the price or in the terms of the contract.<br>The core issue is not the other side&#39;s dishonesty but <b>the fact of unobservability itself</b>. The informed party discloses only what favours them — which is rational behaviour, not bad faith.">
+      取引の一方の当事者だけが、財の真の品質・自らの真のコスト・自らの努力水準を知っている状態。相手はそれを<b>観測できない</b>ため、価格や契約条件に正しく反映させることができない。<br>本質は相手の不誠実さではなく<b>「観測できないこと」そのもの</b>である。情報を持つ側は自らに有利な情報だけを開示するが、それは合理的な行動であって、悪意ではない。
+    </div>
+    <div class="src"
+      data-ja="G. Akerlof, M. Spence, J. Stiglitz の三名が、この分野の基礎を築いた功績により2001年ノーベル経済学賞を受賞。"
+      data-en="G. Akerlof, M. Spence and J. Stiglitz shared the 2001 Nobel Prize in Economics for laying the foundations of this field.">
+      G. Akerlof, M. Spence, J. Stiglitz の三名が、この分野の基礎を築いた功績により2001年ノーベル経済学賞を受賞。
+    </div>
+  </div>
+
+  <div class="keyeq">
+    <div class="eq p">
+      <div class="k" data-ja="契約前に情報が非対称な場合" data-en="ASYMMETRY BEFORE THE CONTRACT">契約前に情報が非対称な場合</div>
+      <div class="f" data-ja="相手の「型」が見えない" data-en="The other side&#39;s type is unobservable">相手の「型」が見えない</div>
+      <div class="d"
+        data-ja="買い手は平均的な品質しか想定できず、平均価格しか払えない。結果として優良な売り手が退出する（<b>逆選抜</b>）。"
+        data-en="The buyer can only assume average quality, and so can only pay an average price. The good sellers withdraw — <b>adverse selection</b>.">
+        買い手は平均的な品質しか想定できず、平均価格しか払えない。結果として優良な売り手が退出する（<b>逆選抜</b>）。
+      </div>
+    </div>
+    <div class="eq n">
+      <div class="k" data-ja="契約後に情報が非対称な場合" data-en="ASYMMETRY AFTER THE CONTRACT">契約後に情報が非対称な場合</div>
+      <div class="f" data-ja="相手の「行動」が見えない" data-en="The other side&#39;s effort is unobservable">相手の「行動」が見えない</div>
+      <div class="d"
+        data-ja="努力の水準が観測されないため、努力を高く保つ経済的誘因が働かない（<b>モラルハザード</b>）。"
+        data-en="Because effort is unobserved, there is no economic incentive to keep effort high — <b>moral hazard</b>.">
+        努力の水準が観測されないため、努力を高く保つ経済的誘因が働かない（<b>モラルハザード</b>）。
+      </div>
+    </div>
+  </div>
+
+  <div class="step"><span class="n">02</span><span data-ja="二つの型 ─ 隠された情報と隠された行動" data-en="TWO TYPES — HIDDEN INFORMATION AND HIDDEN ACTION">二つの型 ─ 隠された情報と隠された行動</span></div>
+  <table>
+    <tr>
+      <th class="rh"></th>
+      <th class="ch p" data-ja="隠された情報<span class='s'>Hidden Information ／ 契約「前」の非対称性</span>" data-en="Hidden Information<span class='s'>Asymmetry BEFORE the contract</span>">隠された情報<span class="s">Hidden Information ／ 契約「前」の非対称性</span></th>
+      <th class="ch n" data-ja="隠された行動<span class='s'>Hidden Action ／ 契約「後」の非対称性</span>" data-en="Hidden Action<span class='s'>Asymmetry AFTER the contract</span>">隠された行動<span class="s">Hidden Action ／ 契約「後」の非対称性</span></th>
+    </tr>
+    <tr>
+      <th class="rh" data-ja="典型例" data-en="Typical cases">典型例</th>
+      <td class="p" data-ja="中古車の品質、保険加入者の健康状態、借り手の返済能力、求職者の能力、応札者の真のコスト" data-en="Used-car quality, an applicant&#39;s health, a borrower&#39;s creditworthiness, a job candidate&#39;s ability, a bidder&#39;s true cost">中古車の品質、保険加入者の健康状態、借り手の返済能力、求職者の能力、応札者の真のコスト</td>
+      <td class="n" data-ja="被保険者の注意水準、従業員の勤勉さ、経営者の努力、受託者の作業品質" data-en="An insured party&#39;s carefulness, an employee&#39;s diligence, a manager&#39;s effort, a contractor&#39;s quality of work">被保険者の注意水準、従業員の勤勉さ、経営者の努力、受託者の作業品質</td>
+    </tr>
+    <tr>
+      <th class="rh" data-ja="情報を持たない側から<br>どう見えるか" data-en="How it appears to the<br>uninformed party">情報を持たない側から<br>どう見えるか</th>
+      <td class="p" data-ja="良いものと悪いものが<b>区別できない</b>。よって「平均」でしか値段をつけられない" data-en="Good and bad <b>cannot be told apart</b>. One can only price the average">良いものと悪いものが<b>区別できない</b>。よって「平均」でしか値段をつけられない</td>
+      <td class="n" data-ja="手を抜いたのか、不運だったのかが<b>区別できない</b>。よって結果を努力の証拠にできない" data-en="Shirking and bad luck <b>cannot be told apart</b>. The outcome is therefore no evidence of effort">手を抜いたのか、不運だったのかが<b>区別できない</b>。よって結果を努力の証拠にできない</td>
+    </tr>
+    <tr>
+      <th class="rh" data-ja="情報を持つ側の<br>合理的な帰結" data-en="The informed party&#39;s<br>rational response">情報を持つ側の<br>合理的な帰結</th>
+      <td class="p" data-ja="良い財の売り手は「見合わない」として退出する。悪い財の売り手だけが残る" data-en="Sellers of good goods withdraw — the price does not cover them. Only sellers of poor goods remain">良い財の売り手は「見合わない」として退出する。悪い財の売り手だけが残る</td>
+      <td class="n" data-ja="観測されないなら、努力は下げたほうが得である。よって努力は下がる" data-en="If effort is unobserved, lowering it pays. Effort therefore falls">観測されないなら、努力は下げたほうが得である。よって努力は下がる</td>
+    </tr>
+    <tr class="hi">
+      <th class="rh" data-ja="帰結" data-en="Outcome">帰結</th>
+      <td class="p" data-ja="逆選抜 ─ 良いものが市場から消える" data-en="Adverse selection — the good disappears from the market">逆選抜 ─ 良いものが市場から消える</td>
+      <td class="n" data-ja="モラルハザード ─ 品質・努力が下がり続ける" data-en="Moral hazard — quality and effort decay">モラルハザード ─ 品質・努力が下がり続ける</td>
+    </tr>
+    <tr class="rx">
+      <th class="rh" data-ja="古典的処方箋" data-en="Classical remedy">古典的処方箋</th>
+      <td data-ja="シグナリング／スクリーニング／競争メカニズム<br><span class='ex'>＝「選ぶ前に、見分ける仕組みを作る」</span>" data-en="Signalling / screening / competitive mechanisms<br><span class='ex'>= build a way to tell them apart before you choose</span>">シグナリング／スクリーニング／競争メカニズム<br><span class="ex">＝「選ぶ前に、見分ける仕組みを作る」</span></td>
+      <td data-ja="モニタリング／成果連動契約／繰り返し取引<br><span class='ex'>＝「選んだ後に、規律づける仕組みを作る」</span>" data-en="Monitoring / performance-linked contracts / repeated interaction<br><span class='ex'>= build a way to discipline them after you choose</span>">モニタリング／成果連動契約／繰り返し取引<br><span class="ex">＝「選んだ後に、規律づける仕組みを作る」</span></td>
+    </tr>
+  </table>
+
+  <div class="step"><span class="n">03</span><span data-ja="レモン市場 ─ 逆選抜の寓話" data-en="THE MARKET FOR LEMONS — THE PARABLE OF ADVERSE SELECTION">レモン市場 ─ 逆選抜の寓話</span></div>
+  <div class="commons">
+    <div class="ch2" data-ja="レモン市場<span class='sub'>The Market for Lemons ／ Akerlof (1970)</span>" data-en="The Market for Lemons<span class='sub'>Akerlof (1970)</span>">レモン市場<span class="sub">The Market for Lemons ／ Akerlof (1970)</span></div>
+    <div class="cb">
+      <div class="fable"
+        data-ja="中古車市場がある。売り手は自分の車が優良車か欠陥車（レモン）かを知っているが、買い手には見分けがつかない。<br>買い手は<b>平均的な品質を想定した価格しか払えない</b>。すると優良車の売り手にとってその価格は安すぎるため、<b>優良車が市場から退出する</b>。残るのは欠陥車の比率が高まった市場であり、買い手はさらに支払額を下げる──"
+        data-en="Consider a used-car market. The seller knows whether the car is sound or a lemon; the buyer cannot tell.<br>The buyer can therefore <b>only pay a price based on average quality</b>. That price is too low for the owners of sound cars, so <b>sound cars withdraw from the market</b>. What remains is a market with a higher share of lemons — so the buyer lowers the price again —">
+        中古車市場がある。売り手は自分の車が優良車か欠陥車（レモン）かを知っているが、買い手には見分けがつかない。<br>買い手は<b>平均的な品質を想定した価格しか払えない</b>。すると優良車の売り手にとってその価格は安すぎるため、<b>優良車が市場から退出する</b>。残るのは欠陥車の比率が高まった市場であり、買い手はさらに支払額を下げる──
+      </div>
+      <div class="asym">
+        <div class="box a">
+          <div class="k" data-ja="情　報" data-en="INFORMATION">情　報</div>
+          <div class="v" data-ja="売り手に私有化される" data-en="Privatised — held by the seller">売り手に私有化される</div>
+        </div>
+        <div class="mid">×</div>
+        <div class="box b">
+          <div class="k" data-ja="リスク" data-en="RISK">リスク</div>
+          <div class="v" data-ja="買い手が一方的に負う" data-en="Borne entirely by the buyer">買い手が一方的に負う</div>
+        </div>
+      </div>
+      <div class="verdict"
+        data-ja="したがって、誰も嘘をつかなくとも、市場は品質の低い財だけが残る状態へ収束する。<br>── 悪いのは売り手の道徳ではない。<b>「見分ける仕組みが存在しない」という構造そのもの</b>が、この結果を生んでいる。"
+        data-en="The market therefore converges on a state in which only the poor goods remain — even though nobody has lied.<br>— The fault does not lie with the seller&#39;s morals. It lies in the structure itself: <b>there is no mechanism for telling the two apart.</b>">
+        したがって、誰も嘘をつかなくとも、市場は品質の低い財だけが残る状態へ収束する。<br>── 悪いのは売り手の道徳ではない。<b>「見分ける仕組みが存在しない」という構造そのもの</b>が、この結果を生んでいる。
+      </div>
+    </div>
+  </div>
+
+  <div class="step"><span class="n">04</span><span data-ja="混同されやすい二つの現象" data-en="TWO PHENOMENA OFTEN CONFLATED">混同されやすい二つの現象</span></div>
+  <div class="distinct">
+    <div class="dcard p">
+      <div class="t" data-ja="逆選抜<span class='sub'>Adverse Selection ／ 契約「前」の問題</span>" data-en="Adverse Selection<span class='sub'>A problem BEFORE the contract</span>">逆選抜<span class="sub">Adverse Selection ／ 契約「前」の問題</span></div>
+      <div class="d"
+        data-ja="<b>相手の「型」が見えない。</b>誰と契約するかを決める段階で、良い相手と悪い相手を区別できない。結果として、選択そのものが歪む。<br>→ <b>誰を選ぶか</b>の問題"
+        data-en="<b>The other side&#39;s type is invisible.</b> At the moment of choosing whom to contract with, the good cannot be distinguished from the bad. The selection itself is therefore distorted.<br>→ A problem of <b>whom you choose</b>">
+        <b>相手の「型」が見えない。</b>誰と契約するかを決める段階で、良い相手と悪い相手を区別できない。結果として、選択そのものが歪む。<br>→ <b>誰を選ぶか</b>の問題
+      </div>
+    </div>
+    <div class="dcard n">
+      <div class="t" data-ja="モラルハザード<span class='sub'>Moral Hazard ／ 契約「後」の問題</span>" data-en="Moral Hazard<span class='sub'>A problem AFTER the contract</span>">モラルハザード<span class="sub">Moral Hazard ／ 契約「後」の問題</span></div>
+      <div class="d"
+        data-ja="<b>相手の「行動」が見えない。</b>契約した後、相手がどれだけ努力しているかを観測できない。観測されないものに報酬は連動しないため、努力は下がる。<br>→ <b>選んだ後にどう規律づけるか</b>の問題"
+        data-en="<b>The other side&#39;s conduct is invisible.</b> Once the contract is signed, one cannot observe how hard they are working. Reward cannot be tied to what is not observed, so effort declines.<br>→ A problem of <b>how you discipline them afterwards</b>">
+        <b>相手の「行動」が見えない。</b>契約した後、相手がどれだけ努力しているかを観測できない。観測されないものに報酬は連動しないため、努力は下がる。<br>→ <b>選んだ後にどう規律づけるか</b>の問題
+      </div>
+    </div>
+  </div>
+  <div class="joint"
+    data-ja="両者は「観測できないものは価格・契約に反映されない」という<b>同一の根から分岐した対の現象</b>である。前者は<b>誰と契約するかを誤る</b>問題、後者は<b>契約した相手が努力しなくなる</b>問題にあたる。<b>根が同じでも処方箋は異なる</b>点が重要である ── 前者には「選ぶ前に見分ける仕組み」が、後者には「選んだ後に規律づける仕組み」が要る。"
+    data-en="Both grow from the same root — <b>what cannot be observed cannot enter the price or the contract</b> — and form <b>a matched pair</b>. The first is the problem of <b>contracting with the wrong party</b>; the second, of <b>the contracted party ceasing to try</b>. The crucial point: <b>a shared root does not imply a shared remedy.</b> The first needs a way to tell parties apart before choosing; the second needs a way to discipline them after.">
+    両者は「観測できないものは価格・契約に反映されない」という<b>同一の根から分岐した対の現象</b>である。前者は<b>誰と契約するかを誤る</b>問題、後者は<b>契約した相手が努力しなくなる</b>問題にあたる。<b>根が同じでも処方箋は異なる</b>点が重要である ── 前者には「選ぶ前に見分ける仕組み」が、後者には「選んだ後に規律づける仕組み」が要る。
+  </div>
+
+  <div class="step"><span class="n">05</span><span data-ja="確立された処方箋" data-en="ESTABLISHED REMEDIES">確立された処方箋</span></div>
+  <div class="rx-grid">
+    <div class="rx">
+      <div class="h">
+        <div class="t" data-ja="シグナリング" data-en="Signalling">シグナリング</div>
+        <div class="who">Spence (1973)</div>
+      </div>
+      <div class="b"
+        data-ja="<span class='tag tag-p'>逆選抜</span>情報を<b>持つ側</b>が、低品質者には割に合わないコストを自ら払って型を証明する。学歴、品質保証、実績提示。<b>「相手に証明させる」</b>"
+        data-en="<span class='tag tag-p'>ADVERSE SELECTION</span>The <b>informed</b> party proves their type by bearing a cost that a low-quality type could not justify: education, warranties, a track record. <b>Let them prove it.</b>">
+        <span class="tag tag-p">逆選抜</span>情報を<b>持つ側</b>が、低品質者には割に合わないコストを自ら払って型を証明する。学歴、品質保証、実績提示。<b>「相手に証明させる」</b>
+      </div>
+    </div>
+    <div class="rx">
+      <div class="h">
+        <div class="t" data-ja="スクリーニング" data-en="Screening">スクリーニング</div>
+        <div class="who">Rothschild &amp; Stiglitz (1976)</div>
+      </div>
+      <div class="b"
+        data-ja="<span class='tag tag-p'>逆選抜</span>情報を<b>持たない側</b>が複数の選択肢を提示し、相手に自己選択させることで隠れた情報を引き出す。<b>「選ばせることで、見分ける」</b>"
+        data-en="<span class='tag tag-p'>ADVERSE SELECTION</span>The <b>uninformed</b> party offers a menu of options and lets the other self-select, drawing out the hidden information. <b>Make them choose, and you learn what they are.</b>">
+        <span class="tag tag-p">逆選抜</span>情報を<b>持たない側</b>が複数の選択肢を提示し、相手に自己選択させることで隠れた情報を引き出す。<b>「選ばせることで、見分ける」</b>
+      </div>
+    </div>
+    <div class="rx">
+      <div class="h">
+        <div class="t" data-ja="競争メカニズム" data-en="Competitive Mechanisms">競争メカニズム</div>
+        <div class="who">Vickrey (1961) / Myerson (1981)</div>
+      </div>
+      <div class="b"
+        data-ja="<span class='tag tag-p'>逆選抜</span>複数の主体を競わせることで、各自の私的情報（真のコスト）を<b>価格として顕示させる</b>。入札はこの装置である。<b>「競わせて、言わせる」</b>"
+        data-en="<span class='tag tag-p'>ADVERSE SELECTION</span>Put several parties in competition and their private information — their true cost — is <b>revealed as a price</b>. A tender is precisely this device. <b>Make them compete, and they tell you.</b>">
+        <span class="tag tag-p">逆選抜</span>複数の主体を競わせることで、各自の私的情報（真のコスト）を<b>価格として顕示させる</b>。入札はこの装置である。<b>「競わせて、言わせる」</b>
+      </div>
+    </div>
+    <div class="rx">
+      <div class="h">
+        <div class="t" data-ja="モニタリング・成果連動" data-en="Monitoring / Incentive Contracts">モニタリング・成果連動</div>
+        <div class="who">Holmström (1979)</div>
+      </div>
+      <div class="b"
+        data-ja="<span class='tag tag-n'>モラルハザード</span>観測可能な指標に報酬を連動させ、繰り返し取引の中で規律づける。SLA、成果報酬、監査。<b>「測って、報酬に繋ぐ」</b>"
+        data-en="<span class='tag tag-n'>MORAL HAZARD</span>Tie reward to observable indicators and discipline through repeated dealing: SLAs, performance-linked fees, audit. <b>Measure it, and pay on it.</b>">
+        <span class="tag tag-n">モラルハザード</span>観測可能な指標に報酬を連動させ、繰り返し取引の中で規律づける。SLA、成果報酬、監査。<b>「測って、報酬に繋ぐ」</b>
+      </div>
+    </div>
+  </div>
+
+  <div class="ostrom">
+    <span class="lbl" data-ja="重要な反証" data-en="AN IMPORTANT COUNTERPOINT">重要な反証</span>
+    <div class="t"
+      data-ja="競争させれば常に良くなる、わけではない ── Stiglitz &amp; Weiss (1981), Che (1993)"
+      data-en="Competition does not automatically improve outcomes — Stiglitz &amp; Weiss (1981), Che (1993)">
+      競争させれば常に良くなる、わけではない ── Stiglitz &amp; Weiss (1981), Che (1993)
+    </div>
+    <div class="d"
+      data-ja="<b>価格だけで競わせると、逆選抜はむしろ悪化する。</b>Stiglitz &amp; Weiss は信用市場において、金利を上げすぎると①優良な借り手が撤退し（逆選抜）、②残った借り手がより高リスクな行動に走る（モラルハザード）ため、<b>銀行があえて価格競争を止めることが合理的になる</b>ことを示した。同じ論理は、最低価格入札にそのまま当てはまる。<br>また Che (1993) は、価格と品質の双方を評価する調達において、<b>評価基準の設計次第で結果が歪む</b>ことを示した。<b>競争は装置であって、万能薬ではない</b>。機能するには成立条件がある："
+      data-en="<b>Competing on price alone makes adverse selection worse, not better.</b> Stiglitz &amp; Weiss showed that in credit markets, raising the interest rate too far causes (i) good borrowers to withdraw — adverse selection — and (ii) those who remain to take greater risks — moral hazard. It therefore becomes <b>rational for the bank to stop competing on price</b>. The same logic applies directly to lowest-price tendering.<br>Che (1993) further showed that where both price and quality are scored, <b>the design of the evaluation criteria itself distorts the outcome</b>. <b>Competition is a device, not a cure-all.</b> It works only where the following hold:">
+      <b>価格だけで競わせると、逆選抜はむしろ悪化する。</b>Stiglitz &amp; Weiss は信用市場において、金利を上げすぎると①優良な借り手が撤退し（逆選抜）、②残った借り手がより高リスクな行動に走る（モラルハザード）ため、<b>銀行があえて価格競争を止めることが合理的になる</b>ことを示した。同じ論理は、最低価格入札にそのまま当てはまる。<br>また Che (1993) は、価格と品質の双方を評価する調達において、<b>評価基準の設計次第で結果が歪む</b>ことを示した。<b>競争は装置であって、万能薬ではない</b>。機能するには成立条件がある：
+    </div>
+    <ul>
+      <li data-ja="<b>C1　評価基準が入札「前」に確定・公開されていること</b>" data-en="<b>C1. The evaluation criteria are fixed and published BEFORE the tender</b>"><b>C1　評価基準が入札「前」に確定・公開されていること</b></li>
+      <li data-ja="C2　評価者の裁量が事後的に動かせないこと" data-en="C2. The evaluators&#39; discretion cannot be exercised after the fact">C2　評価者の裁量が事後的に動かせないこと</li>
+      <li data-ja="<b>C3　実質的な応札者が複数存在すること（市場の厚み）</b>" data-en="<b>C3. Genuine bidders exist in more than one (thickness of the market)</b>"><b>C3　実質的な応札者が複数存在すること（市場の厚み）</b></li>
+      <li data-ja="C4　要件が第三者に伝達可能な形で記述できること" data-en="C4. Requirements can be written down and conveyed to a third party">C4　要件が第三者に伝達可能な形で記述できること</li>
+      <li data-ja="C5　切替コストが禁止的に高くないこと" data-en="C5. Switching costs are not prohibitive">C5　切替コストが禁止的に高くないこと</li>
+      <li data-ja="C6　価格のみではなく品質も評価対象であること" data-en="C6. Quality, not price alone, is part of the assessment">C6　価格のみではなく品質も評価対象であること</li>
+      <li data-ja="C7　契約後の履行が監視可能であること" data-en="C7. Performance after award can be monitored">C7　契約後の履行が監視可能であること</li>
+      <li data-ja="C8　応札に要する費用が便益に見合うこと" data-en="C8. The cost of bidding is proportionate to the benefit">C8　応札に要する費用が便益に見合うこと</li>
+    </ul>
+    <div class="d" style="margin-top:10px;"
+      data-ja="この8条件（C1〜C8）は、提言編（02）の各打ち手が、どの条件をどこまで担保するかを照合するためのチェックリストとして用いる。"
+      data-en="These eight conditions, C1&ndash;C8, serve as the checklist against which each measure in the Proposal (02) is verified &mdash; and how far.">
+      この8条件（C1〜C8）は、提言編（02）の各打ち手が、どの条件をどこまで担保するかを照合するためのチェックリストとして用いる。
+    </div>
+  </div>
+
+  <div class="refs">
+    <b data-ja="主要文献" data-en="KEY REFERENCES">主要文献</b>　Vickrey, W. (1961) "Counterspeculation, Auctions, and Competitive Sealed Tenders," <i>J. Finance</i>. ／ Akerlof, G. (1970) "The Market for Lemons," <i>QJE</i> 84. ／ Spence, M. (1973) "Job Market Signaling," <i>QJE</i> 87. ／ Rothschild, M. &amp; Stiglitz, J. (1976) "Equilibrium in Competitive Insurance Markets," <i>QJE</i> 90. ／ Holmström, B. (1979) "Moral Hazard and Observability," <i>Bell J. Econ.</i> ／ Myerson, R. (1981) "Optimal Auction Design," <i>Math. OR</i>. ／ Stiglitz, J. &amp; Weiss, A. (1981) "Credit Rationing in Markets with Imperfect Information," <i>AER</i> 71. ／ Che, Y-K. (1993) "Design Competition through Multidimensional Auctions," <i>RAND J. Econ.</i> ／ Asker, J. &amp; Cantillon, E. (2008) "Properties of Scoring Auctions," <i>RAND J. Econ.</i>
+  </div>
+
+  <div class="nav">
+    <span class="sp">─</span>
+    <a href="01_Sole_Source_Market_Failure.html" data-ja="次へ：随意契約が8割を占める構造下で、何が起きるか ▶" data-en="Next: What Happens When 80% of Contracts Are Sole-Sourced ▶">次へ：随意契約が8割を占める構造下で、何が起きるか ▶</a>
+  </div>
+</div>
+
+<script>
+function setLang(l){
+  document.querySelectorAll('[data-ja]').forEach(function(el){
+    var v = el.getAttribute('data-' + l);
+    if (v !== null) el.innerHTML = v;
+  });
+  document.documentElement.lang = l;
+  document.getElementById('btn-ja').classList.toggle('on', l === 'ja');
+  document.getElementById('btn-en').classList.toggle('on', l === 'en');
+}
+</script>
+</body>
+</html>

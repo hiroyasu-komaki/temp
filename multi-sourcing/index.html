@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Competitive Sourcing Framework</title>
+<style>
+  :root{--navy:#12305e; --ink:#1b2430; --gray:#5f6a77; --gray-l:#8b95a1; --line:#d7dde5;}
+  *{box-sizing:border-box;}
+  body{
+    margin:0; padding:60px 20px; background:#eef1f5;
+    font-family:"Yu Gothic UI","Yu Gothic","Hiragino Kaku Gothic ProN","Meiryo",sans-serif;
+    color:var(--ink);
+  }
+  html[lang="en"] body{font-family:"Segoe UI","Helvetica Neue",Arial,sans-serif;}
+  .wrap{max-width:620px; margin:0 auto; position:relative;}
+  .lang{display:flex; border:1px solid var(--line); position:absolute; top:-4px; right:0; background:#fff;}
+  .lang button{border:none; background:#fff; color:var(--gray); font:inherit; font-size:11px;
+    font-weight:700; letter-spacing:.06em; padding:5px 13px; cursor:pointer;}
+  .lang button+button{border-left:1px solid var(--line);}
+  .lang button.on{background:var(--navy); color:#fff;}
+  .eyebrow{font-size:10px; font-weight:700; letter-spacing:.14em; color:var(--gray-l); margin-bottom:6px;}
+  h1{font-size:19px; color:var(--navy); margin:0 0 8px; font-weight:700; line-height:1.5; padding-right:130px;}
+  .lede{font-size:12px; color:var(--gray); line-height:1.85; margin:0 0 24px;
+    padding-bottom:18px; border-bottom:1px solid var(--line);}
+  .lede b{color:var(--ink);}
+  ul{list-style:none; margin:0; padding:0;}
+  li{margin-bottom:10px;}
+  a{
+    display:block; padding:14px 18px; background:#fff; border:1px solid var(--line);
+    color:var(--navy); text-decoration:none; transition:border-color .15s;
+  }
+  a:hover{border-color:var(--navy);}
+  a .n{color:var(--gray-l); font-weight:600; margin-right:8px;}
+  a .t{font-size:14px; font-weight:700; line-height:1.5;}
+  a .s{display:block; font-size:11px; color:var(--gray); font-weight:400; margin-top:4px; line-height:1.6;}
+  .foot{margin-top:22px; padding-top:14px; border-top:1px solid var(--line);
+    font-size:10.5px; color:var(--gray-l); line-height:1.85;}
+  .foot b{color:var(--gray); font-weight:700;}
+  @media(max-width:600px){h1{padding-right:0; margin-top:34px;}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="lang" role="group" aria-label="Language">
+    <button id="btn-ja" class="on" onclick="setLang('ja')">日本語</button>
+    <button id="btn-en" onclick="setLang('en')">English</button>
+  </div>
+
+  <div class="eyebrow">IT PROCUREMENT GOVERNANCE</div>
+  <h1 data-ja="競争調達フレームワーク ─ 随意契約8割という構造をどう読み解くか"
+      data-en="The Competitive Sourcing Framework — Reading the Structure Behind 80% Sole-Sourcing">競争調達フレームワーク ─ 随意契約8割という構造をどう読み解くか</h1>
+  <p class="lede"
+     data-ja="本資料は、<b>非対称情報の経済学</b>を土台に、当社IT調達における随意契約の構造を診断し、競争方式の導入を制度として設計するものである。<br><b>ベンダーの誠実性も、担当者の能力も、ここでは問わない。</b>扱うのは「比較対象が存在しない」という構造的事実と、そこから必然的に導かれる帰結のみである。"
+     data-en="These pages diagnose the structure of sole-source contracting in our IT procurement through the lens of <b>the economics of asymmetric information</b>, and set out the introduction of competitive sourcing as an institutional design.<br><b>Neither vendor integrity nor individual capability is at issue here.</b> What is examined is a single structural fact — that no point of comparison exists — and the consequences that follow necessarily from it.">
+    本資料は、<b>非対称情報の経済学</b>を土台に、当社IT調達における随意契約の構造を診断し、競争方式の導入を制度として設計するものである。<br><b>ベンダーの誠実性も、担当者の能力も、ここでは問わない。</b>扱うのは「比較対象が存在しない」という構造的事実と、そこから必然的に導かれる帰結のみである。
+  </p>
+
+  <ul>
+    <li>
+      <a href="html/00_Information_Asymmetry.html">
+        <div class="t"><span class="n">00</span><span data-ja="情報の非対称性 ─ 市場が価格と品質を検証できなくなる条件" data-en="Information Asymmetry — When a Market Can No Longer Verify Price or Quality">情報の非対称性 ─ 市場が価格と品質を検証できなくなる条件</span></div>
+        <span class="s" data-ja="理論編。逆選抜とモラルハザード、レモン市場、確立された処方箋（シグナリング／スクリーニング／競争メカニズム）。そして「競争は万能ではない」という反証と、その成立条件。"
+              data-en="Theory. Adverse selection and moral hazard; the market for lemons; the established remedies — signalling, screening, competitive mechanisms. And the counterpoint: competition is not a cure-all, and the conditions under which it works.">理論編。逆選抜とモラルハザード、レモン市場、確立された処方箋（シグナリング／スクリーニング／競争メカニズム）。そして「競争は万能ではない」という反証と、その成立条件。</span>
+      </a>
+    </li>
+    <li>
+      <a href="html/01_Sole_Source_Market_Failure.html">
+        <div class="t"><span class="n">01</span><span data-ja="発注の8割が随意契約である構造下で、何が起きるか" data-en="What Happens When 80% of Contracts Are Sole-Sourced">発注の8割が随意契約である構造下で、何が起きるか</span></div>
+        <span class="s" data-ja="診断編。調達類型ごとの競争適合性を切り分けたうえで、構造から演繹される4つの症状（価格が検証できない／努力水準が低下する／依存が固定化する／市場情報が入らない）を示す。"
+              data-en="Diagnosis. Having separated the classes of procurement by their suitability for competition, it sets out the four symptoms that follow from the structure: price cannot be verified, effort declines, dependency hardens, market information never arrives.">診断編。調達類型ごとの競争適合性を切り分けたうえで、構造から演繹される4つの症状（価格が検証できない／努力水準が低下する／依存が固定化する／市場情報が入らない）を示す。</span>
+      </a>
+    </li>
+    <li>
+      <a href="html/02_Competitive_Sourcing_Proposal.html">
+        <div class="t"><span class="n">02</span><span data-ja="競争調達フレームワーク ─ 提言" data-en="The Competitive Sourcing Framework — Proposal">競争調達フレームワーク ─ 提言</span></div>
+        <span class="s" data-ja="提言編。調達方式判定の第3の軸「競争適合性」、VMOへの評価プロセス完全性の付与、挙証責任の反転、段階導入、そして「競争導入だけでは解けないもの」の明示。"
+              data-en="Proposal. A third axis for the sourcing decision — contestability; the VMO as owner of the integrity of the evaluation process; the reversal of the burden of proof; a phased rollout; and an honest account of what competition alone cannot fix.">提言編。調達方式判定の第3の軸「競争適合性」、VMOへの評価プロセス完全性の付与、挙証責任の反転、段階導入、そして「競争導入だけでは解けないもの」の明示。</span>
+      </a>
+    </li>
+  </ul>
+
+  <div class="foot"
+    data-ja="<b>本資料の立場</b>　競争方式の導入は<b>コスト削減施策ではない</b>。<b>価格と品質を検証可能にするための情報収集機構</b>である。「随意契約が8割である」という事実が意味するのは、我々が悪い取引をしているということではなく、<b>良い取引をしているかどうかを知る手段がない</b>、ということである。"
+    data-en="<b>The position taken here</b>　Introducing competitive sourcing is <b>not a cost-reduction programme</b>. It is <b>an instrument for making price and quality verifiable</b>. That 80% of our contracts are sole-sourced does not mean we are getting bad deals. It means <b>we have no way of knowing whether we are getting good ones</b>.">
+    <b>本資料の立場</b>　競争方式の導入は<b>コスト削減施策ではない</b>。<b>価格と品質を検証可能にするための情報収集機構</b>である。「随意契約が8割である」という事実が意味するのは、我々が悪い取引をしているということではなく、<b>良い取引をしているかどうかを知る手段がない</b>、ということである。
+  </div>
+</div>
+
+<script>
+function setLang(l){
+  document.querySelectorAll('[data-ja]').forEach(function(el){
+    var v = el.getAttribute('data-' + l);
+    if (v !== null) el.innerHTML = v;
+  });
+  document.documentElement.lang = l;
+  document.getElementById('btn-ja').classList.toggle('on', l === 'ja');
+  document.getElementById('btn-en').classList.toggle('on', l === 'en');
+}
+</script>
+</body>
+</html>

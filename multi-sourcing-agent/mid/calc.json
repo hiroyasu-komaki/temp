@@ -1,0 +1,98 @@
+[
+  {
+    "name": "既存システム保守運用費",
+    "spend": 2800.0,
+    "sole_source": 2240.0,
+    "competitive": 1232.0,
+    "reduction_conservative": 98.56,
+    "reduction_mid": 147.84,
+    "reduction_optimistic": 197.12,
+    "gross_reduction_by_year": {
+      "1": 49.28,
+      "2": 98.56,
+      "3": 147.84,
+      "4": 147.84,
+      "5": 147.84
+    }
+  },
+  {
+    "name": "システム構築・導入費",
+    "spend": 1600.0,
+    "sole_source": 1280.0,
+    "competitive": 832.0,
+    "reduction_conservative": 83.2,
+    "reduction_mid": 124.8,
+    "reduction_optimistic": 166.4,
+    "gross_reduction_by_year": {
+      "1": 124.8,
+      "2": 124.8,
+      "3": 124.8,
+      "4": 124.8,
+      "5": 124.8
+    }
+  },
+  {
+    "name": "ソフトウェアライセンス費",
+    "spend": 1200.0,
+    "sole_source": 960.0,
+    "competitive": 432.0,
+    "reduction_conservative": 21.6,
+    "reduction_mid": 34.56,
+    "reduction_optimistic": 51.839999999999996,
+    "gross_reduction_by_year": {
+      "1": 17.28,
+      "2": 34.56,
+      "3": 34.56,
+      "4": 34.56,
+      "5": 34.56
+    }
+  },
+  {
+    "name": "クラウド利用料",
+    "spend": 960.0,
+    "sole_source": 768.0,
+    "competitive": 307.20000000000005,
+    "reduction_conservative": 18.432000000000002,
+    "reduction_mid": 30.720000000000006,
+    "reduction_optimistic": 43.00800000000001,
+    "gross_reduction_by_year": {
+      "1": 30.720000000000006,
+      "2": 30.720000000000006,
+      "3": 30.720000000000006,
+      "4": 30.720000000000006,
+      "5": 30.720000000000006
+    }
+  },
+  {
+    "name": "ネットワーク機器・回線",
+    "spend": 800.0,
+    "sole_source": 640.0,
+    "competitive": 448.0,
+    "reduction_conservative": 40.32,
+    "reduction_mid": 62.720000000000006,
+    "reduction_optimistic": 80.64,
+    "gross_reduction_by_year": {
+      "1": 15.680000000000001,
+      "2": 31.360000000000003,
+      "3": 47.040000000000006,
+      "4": 62.720000000000006,
+      "5": 62.720000000000006
+    }
+  },
+  {
+    "name": "EUC(PC/スマホ)レンタル",
+    "spend": 640.0,
+    "sole_source": 512.0,
+    "competitive": 384.0,
+    "reduction_conservative": 26.880000000000003,
+    "reduction_mid": 42.24,
+    "reduction_optimistic": 57.599999999999994,
+    "gross_reduction_by_year": {
+      "1": 14.08,
+      "2": 28.16,
+      "3": 42.24,
+      "4": 42.24,
+      "5": 42.24
+    }
+  }
+]

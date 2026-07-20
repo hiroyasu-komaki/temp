@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Proposal — Revolving Budget, Decision Framework, Agent, Operation</title>
+<style>
+  :root{
+    --navy:#12305e; --ink:#1b2430; --gray:#5f6a77; --gray-l:#8b95a1;
+    --line:#d7dde5; --panel:#f5f7fa;
+    --pos:#2f6fc0; --pos-bg:#eef4fc; --pos-line:#a9c6e8;
+    --neg:#c2410c; --neg-bg:#fdf2ea; --neg-line:#eeb185;
+    --grn:#1f7a4d; --grn-bg:#edf7f1;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; padding:26px 18px 44px; background:#eef1f5; color:var(--ink);
+    font-family:"Yu Gothic UI","Yu Gothic","Hiragino Kaku Gothic ProN","Meiryo","Segoe UI",sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  html[lang="en"] body{font-family:"Segoe UI","Helvetica Neue",Arial,sans-serif;}
+  .slide{
+    max-width:1240px; margin:0 auto; background:#fff; padding:34px 40px 36px;
+    box-shadow:0 2px 18px rgba(18,48,94,.10); border-top:5px solid var(--navy); position:relative;
+  }
+  .lang{position:absolute; top:16px; right:24px; display:flex; border:1px solid var(--line);}
+  .lang button{border:none; background:#fff; color:var(--gray); font:inherit; font-size:11px;
+    font-weight:700; letter-spacing:.06em; padding:5px 13px; cursor:pointer;}
+  .lang button+button{border-left:1px solid var(--line);}
+  .lang button.on{background:var(--navy); color:#fff;}
+  .lang button:focus-visible{outline:2px solid var(--neg); outline-offset:1px;}
+
+  .eyebrow{font-size:10.5px; font-weight:700; letter-spacing:.14em; color:var(--gray-l); margin-bottom:7px;}
+  h1{font-size:24px; margin:0 0 9px; color:var(--navy); font-weight:700; line-height:1.4; padding-right:130px;}
+  .lede{font-size:12.5px; color:var(--gray); line-height:1.8; margin:0 0 20px; padding-bottom:18px; border-bottom:1px solid var(--line);}
+  .lede b{color:var(--ink);}
+
+  .toc{display:flex; flex-wrap:wrap; gap:8px; margin:0 0 26px;}
+  .toc a{font-size:11px; font-weight:700; color:var(--navy); text-decoration:none; border:1px solid var(--line);
+    background:var(--panel); padding:5px 11px;}
+  .toc a:hover{border-color:var(--navy);}
+  .toc a .nn{color:var(--gray-l); margin-right:5px;}
+
+  .step{font-size:11px; font-weight:700; letter-spacing:.08em; color:#fff; background:var(--navy);
+    display:inline-block; padding:4px 12px; margin:14px 0 12px;}
+  .step .n{opacity:.6; margin-right:6px;}
+  .secpart{font-size:10px; font-weight:700; letter-spacing:.14em; color:var(--gray-l); margin:30px 0 4px; padding-top:22px; border-top:2px solid var(--navy);}
+
+  p.body{font-size:12.5px; line-height:1.9; margin:0 0 14px;}
+  p.body b{color:var(--neg);}
+  p.body.mut{color:var(--gray);}
+  p.body.mut b{color:var(--ink);}
+
+  .def{border:1px solid var(--line); background:var(--panel); padding:16px 20px; margin-bottom:20px;}
+  .def .term{font-size:15px; font-weight:700; color:var(--navy); margin-bottom:6px;}
+  .def .term .sub{font-size:11.5px; color:var(--gray); font-weight:600; margin-left:8px;}
+  .def .body2{font-size:12px; line-height:1.85; color:var(--ink);}
+  .def .body2 b{color:var(--neg);}
+
+  ul.pts{list-style:none; margin:0 0 20px; padding:0;}
+  ul.pts li{position:relative; padding:8px 12px 8px 30px; border-left:3px solid var(--pos);
+    background:var(--pos-bg); margin-bottom:7px; font-size:12px; line-height:1.8;}
+  ul.pts li:before{content:"▸"; position:absolute; left:11px; top:8px; color:var(--pos); font-weight:700;}
+  ul.pts li b{color:var(--ink);}
+  ul.pts.n li{border-left-color:var(--gray-l); background:var(--panel);}
+  ul.pts.n li:before{color:var(--gray-l);}
+
+  .two{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin:2px 0 20px;}
+  .card{border:1px solid var(--line); padding:14px 17px;}
+  .card.p{border-left:4px solid var(--pos);} .card.n{border-left:4px solid var(--neg);}
+  .card.g{border-left:4px solid var(--grn);}
+  .card .t{font-size:13px; font-weight:700; color:var(--navy); margin-bottom:5px;}
+  .card .t .sub{font-size:10px; color:var(--gray-l); font-weight:600; display:block; margin-top:1px;}
+  .card .d{font-size:11.5px; line-height:1.8; color:var(--gray);}
+  .card .d b{color:var(--ink);}
+
+  .formula{border:1px solid var(--navy); background:var(--panel); padding:14px 18px; margin:0 0 8px;
+    font-family:Georgia,"Times New Roman",serif; font-size:16px; font-weight:700; color:var(--navy); text-align:center;}
+  .formula .op{color:var(--gray-l); margin:0 8px; font-weight:400;}
+  .fcap{font-size:11px; color:var(--gray-l); text-align:center; margin:0 0 20px;}
+
+  .flow{border:1px solid var(--line); background:#0f1b2d; color:#dfe7f2; padding:16px 20px; margin:0 0 20px;
+    font-family:"SFMono-Regular",Consolas,"Liberation Mono",monospace; font-size:11.5px; line-height:1.9; overflow-x:auto; white-space:pre;}
+  .flow .cm{color:#8fa8c8;}
+
+  table{width:100%; border-collapse:collapse; margin:2px 0 20px;}
+  th,td{border:1px solid var(--line); padding:9px 12px; font-size:11.5px; line-height:1.65; vertical-align:top;}
+  thead th{background:var(--navy); color:#fff; font-weight:700; border-color:var(--navy);}
+  th.rh{background:#f0f3f8; color:var(--navy); font-weight:700; text-align:left; white-space:nowrap;}
+  tbody tr:nth-child(even) td{background:#fafcfe;}
+  td b{color:var(--ink);} td .dn{color:var(--neg); font-weight:700;} td .up{color:var(--grn); font-weight:700;}
+
+  .verdict{border-left:4px solid var(--neg); background:var(--neg-bg); padding:12px 16px; margin-bottom:20px;
+    font-size:12.5px; font-weight:700; color:#8a3708; line-height:1.75;}
+  .keyfind{border-left:4px solid var(--grn); background:var(--grn-bg); padding:12px 16px; margin-bottom:20px;
+    font-size:12.5px; font-weight:700; color:#155035; line-height:1.75;}
+  .note{border-left:4px solid var(--navy); background:var(--panel); padding:11px 16px; margin-bottom:20px;
+    font-size:12px; line-height:1.85; color:var(--gray);}
+  .note b{color:var(--ink);}
+
+  .refs{margin-top:24px; padding-top:14px; border-top:1px solid var(--line); font-size:10.5px; color:var(--gray-l); line-height:1.85;}
+  .refs b{color:var(--gray); font-weight:700;}
+  .nav{margin-top:20px; padding-top:14px; border-top:1px solid var(--line); display:flex; justify-content:space-between; font-size:11px;}
+  .nav a{color:var(--navy); text-decoration:none; font-weight:700;}
+  .nav a:hover{text-decoration:underline;}
+
+  @media(max-width:900px){
+    h1{padding-right:0; margin-top:38px;}
+    .two{grid-template-columns:1fr;}
+    table{display:block; overflow-x:auto;}
+  }
+  @media print{body{background:#fff; padding:0;} .slide{box-shadow:none; max-width:none;} .lang,.nav,.toc{display:none;} .flow{background:#0f1b2d;-webkit-print-color-adjust:exact;print-color-adjust:exact;}}
+</style>
+</head>
+<body>
+<div class="slide">
+  <div class="lang" role="group" aria-label="Language">
+    <button id="btn-ja" class="on" onclick="setLang('ja')">日本語</button>
+    <button id="btn-en" onclick="setLang('en')">English</button>
+  </div>
+
+  <div class="eyebrow" data-ja="PROPOSAL ／ 制度・枠組み・エージェント・運用" data-en="PROPOSAL / INSTITUTION, FRAMEWORK, AGENT, OPERATION">PROPOSAL ／ 制度・枠組み・エージェント・運用</div>
+  <h1 data-ja="提言編 ─ リボルビング予算・意思決定枠組み・switching-triage-agent・運用"
+      data-en="The Proposal: Revolving Budget, Decision Framework, switching-triage-agent, Operation">提言編 ─ リボルビング予算・意思決定枠組み・switching-triage-agent・運用</h1>
+
+  <p class="lede"
+     data-ja="課題編（01）で定めた「信憑性のある交渉レバレッジ」を、実際に機能する制度へ落とし込む。骨子は二つ ── 第一に、移行コストを<b>リボルビング型の予算</b>として手当てし、原資はIT組織長が保持、VMOは初期20百万円の実績を根拠に都度引き出す。第二に、その配分判断を支える意思決定エージェント <b>switching-triage-agent</b> を導入し、各契約を<b>「満了という行使期限を持つオプション」</b>として、期待価値・緊急度・情報熟度の3因子で優先順位づけする。"
+     data-en="This chapter turns the &lsquo;credible negotiating lever&rsquo; set out in the Problem (01) into an institution that actually works. Two pillars: first, fund switching costs as <b>a revolving budget</b>, with the funds held by the IT organisation head and the VMO drawing down each time on the strength of results from an initial ¥20M; second, introduce the decision agent <b>switching-triage-agent</b>, which treats each contract as <b>&lsquo;an option whose exercise deadline is its expiry&rsquo;</b> and prioritises it on three factors — expected value, urgency, and information maturity.">
+    課題編（01）で定めた「信憑性のある交渉レバレッジ」を、実際に機能する制度へ落とし込む。骨子は二つ ── 第一に、移行コストを<b>リボルビング型の予算</b>として手当てし、原資はIT組織長が保持、VMOは初期20百万円の実績を根拠に都度引き出す。第二に、その配分判断を支える意思決定エージェント <b>switching-triage-agent</b> を導入し、各契約を<b>「満了という行使期限を持つオプション」</b>として、期待価値・緊急度・情報熟度の3因子で優先順位づけする。
+  </p>
+
+  <div class="toc">
+    <a href="#s1"><span class="nn">01</span><span data-ja="マンデートの再定義" data-en="Redefining the mandate">マンデートの再定義</span></a>
+    <a href="#s2"><span class="nn">02</span><span data-ja="リボルビング型予算" data-en="Revolving budget">リボルビング型予算</span></a>
+    <a href="#s3"><span class="nn">03</span><span data-ja="完了の定義とガバナンス" data-en="Completion &amp; governance">完了の定義とガバナンス</span></a>
+    <a href="#s4"><span class="nn">04</span><span data-ja="2層の意思決定枠組み" data-en="Two-layer framework">2層の意思決定枠組み</span></a>
+    <a href="#s5"><span class="nn">05</span><span data-ja="スコア V×U×R" data-en="Score V×U×R">スコア V×U×R</span></a>
+    <a href="#s6"><span class="nn">06</span><span data-ja="switching-triage-agent" data-en="switching-triage-agent">switching-triage-agent</span></a>
+    <a href="#s7"><span class="nn">07</span><span data-ja="運用と情報更新" data-en="Operation &amp; updates">運用と情報更新</span></a>
+  </div>
+
+  <!-- ============ PART A : BUDGET ============ -->
+  <div class="secpart" data-ja="PART A ─ 予算とマンデート（第2章）" data-en="PART A — BUDGET AND MANDATE (Chapter 2)">PART A ─ 予算とマンデート（第2章）</div>
+
+  <!-- 01 -->
+  <div class="step" id="s1"><span class="n">01</span><span data-ja="提案の性質 ─ 予算獲得ではなくマンデートの再定義" data-en="THE NATURE OF THE PROPOSAL — NOT A BUDGET GRAB BUT A REDEFINED MANDATE">提案の性質 ─ 予算獲得ではなくマンデートの再定義</span></div>
+  <p class="body"
+    data-ja="本提案は表面的には「移行コスト用の予算枠」だが、本質は<b>VMOの権限と責任（マンデート）の再定義</b>である。VMOはIT投資の意思決定プロセスへの関与を深めると同時に、その見返りに<b>コスト削減の実行責任を引き受ける</b>。IT組織長にとって、これは「予算を渡す」話ではない。<b>これまで誰も明確に負っていなかったベンダーコスト最適化の実行責任を、VMOが引き受ける</b>話である。"
+    data-en="On the surface this is &lsquo;a budget line for switching costs&rsquo;, but in essence it is <b>a redefinition of the VMO&rsquo;s authority and responsibility — its mandate</b>. The VMO deepens its involvement in IT-investment decisions and, in return, <b>takes on the responsibility for executing cost reduction</b>. For the IT organisation head this is not about &lsquo;handing over a budget&rsquo;. It is about <b>the VMO assuming the responsibility for vendor-cost optimisation that no one had clearly borne before</b>.">
+    本提案は表面的には「移行コスト用の予算枠」だが、本質は<b>VMOの権限と責任（マンデート）の再定義</b>である。VMOはIT投資の意思決定プロセスへの関与を深めると同時に、その見返りに<b>コスト削減の実行責任を引き受ける</b>。IT組織長にとって、これは「予算を渡す」話ではない。<b>これまで誰も明確に負っていなかったベンダーコスト最適化の実行責任を、VMOが引き受ける</b>話である。
+  </p>
+
+  <!-- 02 -->
+  <div class="step" id="s2"><span class="n">02</span><span data-ja="経費予算側のリボルビング型プール" data-en="A REVOLVING POOL ON THE OPERATING-EXPENSE SIDE">経費予算側のリボルビング型プール</span></div>
+  <p class="body mut"
+    data-ja="移行コストは本質的に、既存契約の維持費用構造を変えるための費用であり、VMOの活動は経費予算に紐づく。したがって投資予算の個別施策ROI比較に乗せるのではなく、<b>経費予算全体の最適化を実現するための呼び水原資</b>として位置づける。"
+    data-en="Switching costs are, at bottom, costs to change the structure of existing maintenance spend; the VMO&rsquo;s activity ties to the operating-expense budget. So rather than placing it in a per-project ROI comparison within the investment budget, we position it as <b>seed capital for optimising the operating-expense budget as a whole</b>.">
+    移行コストは本質的に、既存契約の維持費用構造を変えるための費用であり、VMOの活動は経費予算に紐づく。したがって投資予算の個別施策ROI比較に乗せるのではなく、<b>経費予算全体の最適化を実現するための呼び水原資</b>として位置づける。
+  </p>
+  <div class="two">
+    <div class="card p">
+      <div class="t" data-ja="リボルビング（回転資金）構造" data-en="Revolving-fund structure">リボルビング（回転資金）構造</div>
+      <div class="d"
+        data-ja="初期20百万円は準備支度金と実際の移行コストの総額。交渉により使わずに済んだ・余った分は次の準備支度金と移行コストに回す。全額消費を前提とせず、<b>構えていること自体が交渉レバレッジを生む（オプションプレミアム）</b>。"
+        data-en="The initial ¥20M is the total of set-up funds and actual migration costs. Whatever is saved or left over through negotiation rolls into the next set-up funds and migration costs. Full consumption is not assumed; <b>the mere posture of readiness generates leverage (the option premium)</b>.">
+        初期20百万円は準備支度金と実際の移行コストの総額。交渉により使わずに済んだ・余った分は次の準備支度金と移行コストに回す。全額消費を前提とせず、<b>構えていること自体が交渉レバレッジを生む（オプションプレミアム）</b>。
+      </div>
+    </div>
+    <div class="card g">
+      <div class="t" data-ja="引き出し構造" data-en="Drawdown structure">引き出し構造</div>
+      <div class="d"
+        data-ja="プール予算は<b>予算全体責任を持つIT組織長が保持</b>。VMOは初期20百万円を元手に実績を作り、その実績を根拠に次の費用を都度引き出す。移行対象も削減額も年度初めには確定できないため、<b>総額コミットはむしろ不誠実</b>。小さく賭けて成果を見てから追加する、リアルオプションの逐次行使。"
+        data-en="The pool is <b>held by the IT organisation head, who owns the whole budget</b>. The VMO builds a track record from the initial ¥20M and draws the next tranche each time on that record. Since neither targets nor savings can be fixed at the start of the year, <b>a total commitment would actually be dishonest</b>. Bet small, watch the result, then add — sequential exercise of a real option.">
+        プール予算は<b>予算全体責任を持つIT組織長が保持</b>。VMOは初期20百万円を元手に実績を作り、その実績を根拠に次の費用を都度引き出す。移行対象も削減額も年度初めには確定できないため、<b>総額コミットはむしろ不誠実</b>。小さく賭けて成果を見てから追加する、リアルオプションの逐次行使。
+      </div>
+    </div>
+  </div>
+  <ul class="pts">
+    <li data-ja="<b>越権批判が構造的に成立しない</b>：原資はIT組織長が握ったまま。VMOは執行権ではなく提案権と実行責任だけを持つ。引き出しの都度IT組織長との対話が発生することで、狙いだった意思決定への関与が逆に制度的に保証される。" data-en="<b>Overreach is structurally impossible</b>: the funds stay with the IT organisation head. The VMO holds not spending power but the right to propose plus execution responsibility. Because each drawdown triggers a dialogue with the head, the intended deepening of involvement is, conversely, institutionally guaranteed."><b>越権批判が構造的に成立しない</b>：原資はIT組織長が握ったまま。VMOは執行権ではなく提案権と実行責任だけを持つ。引き出しの都度IT組織長との対話が発生することで、狙いだった意思決定への関与が逆に制度的に保証される。</li>
+    <li data-ja="<b>検証可能なゲート</b>：20百万円という初期投資に絞ることで「見合った働き」というゲートを置ける。トラックレコードの積み上げが、VMOのマンデート拡大を宣言ではなく実績で正当化する。" data-en="<b>A verifiable gate</b>: confining it to a ¥20M initial investment sets a gate of &lsquo;work commensurate with the money&rsquo;. Accumulating a track record justifies expanding the VMO&rsquo;s mandate by results rather than by declaration."><b>検証可能なゲート</b>：20百万円という初期投資に絞ることで「見合った働き」というゲートを置ける。トラックレコードの積み上げが、VMOのマンデート拡大を宣言ではなく実績で正当化する。</li>
+  </ul>
+
+  <!-- 03 -->
+  <div class="step" id="s3"><span class="n">03</span><span data-ja="「完了」の定義とガバナンス" data-en="DEFINING &quot;COMPLETION&quot; AND GOVERNANCE">「完了」の定義とガバナンス</span></div>
+  <p class="body mut"
+    data-ja="回転資金である以上、「いつ仕事が完了したか」を握らないと評価できない。完了は成果の確度で段階定義する。"
+    data-en="Because it is a revolving fund, one cannot evaluate it without pinning down &lsquo;when the work is complete&rsquo;. Completion is defined in stages by the confidence of the result.">
+    回転資金である以上、「いつ仕事が完了したか」を握らないと評価できない。完了は成果の確度で段階定義する。
+  </p>
+  <div class="two">
+    <div class="card p">
+      <div class="t" data-ja="高確度" data-en="High confidence">高確度</div>
+      <div class="d" data-ja="新たな契約締結によりコスト削減が<b>はっきりした時点</b>。" data-en="The point at which a new contract makes the cost reduction <b>unambiguous</b>.">新たな契約締結によりコスト削減が<b>はっきりした時点</b>。</div>
+    </div>
+    <div class="card n">
+      <div class="t" data-ja="中確度" data-en="Medium confidence">中確度</div>
+      <div class="d" data-ja="現場担当者と実行プランを握りハンドオーバーした時点。ただし「握った」ではなく<b>「握り、かつ削減効果が予算・計画に織り込まれた」時点</b>とする。口頭合意でなく次年度以降の経費予算への反映に紐づけ、成果の帰属を明確にする。" data-en="The point of handover after agreeing an execution plan with the field — but defined not as &lsquo;agreed&rsquo; so much as <b>&lsquo;agreed, and the saving is written into the budget and plan&rsquo;</b>. Tied to reflection in future operating budgets rather than a verbal understanding, so that credit for the result is unambiguous.">現場担当者と実行プランを握りハンドオーバーした時点。ただし「握った」ではなく<b>「握り、かつ削減効果が予算・計画に織り込まれた」時点</b>とする。口頭合意でなく次年度以降の経費予算への反映に紐づけ、成果の帰属を明確にする。</div>
+    </div>
+  </div>
+  <div class="note"
+    data-ja="<b>三者構造で越権を防ぐ</b>　VMOは移行オプションの評価と発動提案の権限を持つが、実際の移行実務・リスクは業務所管部門やインフラ部門が負う。<b>一定金額以上の発動はIT組織長承認、実務遂行は所管部門との共同意思決定</b>とする三者構造を明示する。これにより「VMOが原資を握って独走する」批判を先に潰し、同時に「関与を強める」目的を制度として担保する。"
+    data-en="<b>A three-party structure prevents overreach</b>　The VMO holds the authority to evaluate switching options and propose their exercise, but the actual migration work and its risks fall to the business-owning and infrastructure departments. We make the three-party structure explicit: <b>exercise above a set amount requires the IT head&rsquo;s approval, and execution is a joint decision with the owning department</b>. This forecloses the &lsquo;VMO seizes the funds and runs&rsquo; criticism in advance, while institutionally securing the aim of deeper involvement.">
+    <b>三者構造で越権を防ぐ</b>　VMOは移行オプションの評価と発動提案の権限を持つが、実際の移行実務・リスクは業務所管部門やインフラ部門が負う。<b>一定金額以上の発動はIT組織長承認、実務遂行は所管部門との共同意思決定</b>とする三者構造を明示する。これにより「VMOが原資を握って独走する」批判を先に潰し、同時に「関与を強める」目的を制度として担保する。
+  </div>
+
+  <!-- ============ PART B : FRAMEWORK ============ -->
+  <div class="secpart" data-ja="PART B ─ 意思決定の枠組み（第3章）" data-en="PART B — THE DECISION FRAMEWORK (Chapter 3)">PART B ─ 意思決定の枠組み（第3章）</div>
+
+  <!-- 04 -->
+  <div class="step" id="s4"><span class="n">04</span><span data-ja="問題の正体と2層構造" data-en="WHAT THE PROBLEM REALLY IS, AND THE TWO-LAYER STRUCTURE">問題の正体と2層構造</span></div>
+  <p class="body"
+    data-ja="手元資金を「一件にベットするか、複数案件に分散するか」。一見、予算制約下の数理最適化（ナップサック問題）に見えるが、純粋な最適化として解くと本質を捨ててしまう。捨ててはならないのは、<b>①満了時期という時間軸、②リボルビング（資金が戻り容量が変動）、③実行確度が随時更新される</b>こと。つまりこれは静的最適化ではなく、<b>情報が更新されるたびに再判断する動的な資源配分</b>である。"
+    data-en="Whether to bet the funds on one contract or spread them across several looks, at first, like constrained mathematical optimisation (a knapsack problem). But solving it as pure optimisation throws away the essence. What must not be discarded: <b>(1) the time axis of expiry, (2) revolving (funds return and capacity varies), and (3) execution confidence that is updated continually</b>. This is therefore not static optimisation but <b>dynamic resource allocation, re-decided each time information updates</b>.">
+    手元資金を「一件にベットするか、複数案件に分散するか」。一見、予算制約下の数理最適化（ナップサック問題）に見えるが、純粋な最適化として解くと本質を捨ててしまう。捨ててはならないのは、<b>①満了時期という時間軸、②リボルビング（資金が戻り容量が変動）、③実行確度が随時更新される</b>こと。つまりこれは静的最適化ではなく、<b>情報が更新されるたびに再判断する動的な資源配分</b>である。
+  </p>
+  <div class="verdict"
+    data-ja="<b>なぜ純粋な最適化ではなくスコアリングか</b>　支配的な変数は切替コストやリターンの数値そのものではなく、<b>それらの数値の不確実性と、それが時間とともに解消していく速度</b>である。そして「いつでも説明できる」という要件は、最適解の一意性よりも<b>判断ロジックの一貫性と透明性</b>を要求する。ソルバーが吐いた最適解を「なぜこれか」と問われて「ソルバーがそう言った」では、避けたい説明不能の箱そのものになる。"
+    data-en="<b>Why scoring, not pure optimisation</b>　The dominant variables are not the switching-cost or return figures themselves but <b>their uncertainty, and the speed at which that uncertainty resolves over time</b>. And the requirement to &lsquo;explain at any time&rsquo; demands <b>consistency and transparency of the decision logic</b> more than the uniqueness of an optimum. Answering &lsquo;why this one?&rsquo; with &lsquo;the solver said so&rsquo; would be the very black box we want to avoid.">
+    <b>なぜ純粋な最適化ではなくスコアリングか</b>　支配的な変数は切替コストやリターンの数値そのものではなく、<b>それらの数値の不確実性と、それが時間とともに解消していく速度</b>である。そして「いつでも説明できる」という要件は、最適解の一意性よりも<b>判断ロジックの一貫性と透明性</b>を要求する。ソルバーが吐いた最適解を「なぜこれか」と問われて「ソルバーがそう言った」では、避けたい説明不能の箱そのものになる。
+  </div>
+  <div class="two">
+    <div class="card p">
+      <div class="t" data-ja="第1層：オプション評価<span class='sub'>いつやるか / 俎上に載せるか</span>" data-en="Layer 1: Option valuation<span class='sub'>When to act / whether to table it</span>">第1層：オプション評価<span class="sub">いつやるか / 俎上に載せるか</span></div>
+      <div class="d"
+        data-ja="各案件を「満了という行使期限を持つオプション」とみなし、今期着手か・情報を待って温存か・捨てるかに振り分ける。<b>残り時間が短い→今、判断する。長く不確実性が大きい→温存。期待価値が恒常的に負→捨てる。</b>"
+        data-en="Treat each contract as an option with an exercise deadline at expiry, and sort it into: act this period / hold and await information / drop. <b>Short time left → decide now. Long and highly uncertain → hold. Persistently negative expected value → drop.</b>">
+        各案件を「満了という行使期限を持つオプション」とみなし、今期着手か・情報を待って温存か・捨てるかに振り分ける。<b>残り時間が短い→今、判断する。長く不確実性が大きい→温存。期待価値が恒常的に負→捨てる。</b>
+      </div>
+    </div>
+    <div class="card n">
+      <div class="t" data-ja="第2層：予算制約下の選択<span class='sub'>限られた資金をどう張るか</span>" data-en="Layer 2: Choice under the budget<span class='sub'>How to place limited funds</span>">第2層：予算制約下の選択<span class="sub">限られた資金をどう張るか</span></div>
+      <div class="d"
+        data-ja="第1層で「今期着手候補」となった案件に、手元資金の制約下で選択する。2つの補正 ── <b>チャンス制約</b>（消費が予算を超える確率を一定以下に）と<b>リスク調整</b>（期待値からリスクをペナルティとして引く）。「一件集中か分散か」は勘ではなく λ とチャンス制約から<b>内生的に決まる</b>。"
+        data-en="Choose, under the budget, among the &lsquo;act-this-period&rsquo; candidates from Layer 1, with two corrections — a <b>chance constraint</b> (keep the probability of overspend below a threshold) and <b>risk adjustment</b> (subtract risk as a penalty from expected value). &lsquo;Concentrate or diversify&rsquo; is <b>settled endogenously</b> by λ and the chance constraint, not by instinct.">
+        第1層で「今期着手候補」となった案件に、手元資金の制約下で選択する。2つの補正 ── <b>チャンス制約</b>（消費が予算を超える確率を一定以下に）と<b>リスク調整</b>（期待値からリスクをペナルティとして引く）。「一件集中か分散か」は勘ではなく λ とチャンス制約から<b>内生的に決まる</b>。
+      </div>
+    </div>
+  </div>
+
+  <!-- 05 -->
+  <div class="step" id="s5"><span class="n">05</span><span data-ja="スコアの構造 ─ Score = V × U × R" data-en="THE STRUCTURE OF THE SCORE — Score = V × U × R">スコアの構造 ─ Score = V × U × R</span></div>
+  <div class="formula">Score <span class="op">=</span> V <span class="op">×</span> U <span class="op">×</span> R</div>
+  <div class="fcap" data-ja="各案件の優先度を、3因子の「積」で表す。" data-en="Each contract&rsquo;s priority is the product of three factors.">各案件の優先度を、3因子の「積」で表す。</div>
+  <table>
+    <thead>
+      <tr>
+        <th class="rh" data-ja="因子" data-en="Factor">因子</th>
+        <th data-ja="意味" data-en="Meaning">意味</th>
+        <th data-ja="設計意図" data-en="Design intent">設計意図</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td class="rh"><b>V</b><br><span style="font-size:10px;color:#5f6a77" data-ja="リスク調整期待価値" data-en="Risk-adj. value">リスク調整期待価値</span></td>
+        <td data-ja="期待ネットリターンを、実行確度 p と λ で調整した値。" data-en="Expected net return, adjusted by execution confidence p and λ.">期待ネットリターンを、実行確度 p と λ で調整した値。</td>
+        <td data-ja="金額の桁が大きい案件が常に上位に来ないよう、案件群の中で相対正規化する。" data-en="Normalised relatively within the set so that large-yen contracts do not always rise to the top.">金額の桁が大きい案件が常に上位に来ないよう、案件群の中で相対正規化する。</td></tr>
+      <tr><td class="rh"><b>U</b><br><span style="font-size:10px;color:#5f6a77" data-ja="緊急度" data-en="Urgency">緊急度</span></td>
+        <td data-ja="着手デッドラインまでの残り時間。締切超過ならゼロ。" data-en="Time left until the start-by deadline. Zero if past due.">着手デッドラインまでの残り時間。締切超過ならゼロ。</td>
+        <td data-ja="双曲型を採り「まだ先だが視野には入れておく」を表現。d&lt;0 は U=0 で取りこぼしを可視化。" data-en="Hyperbolic form expresses &lsquo;still ahead, but on the radar&rsquo;; d&lt;0 gives U=0, making missed contracts visible.">双曲型を採り「まだ先だが視野には入れておく」を表現。d&lt;0 は U=0 で取りこぼしを可視化。</td></tr>
+      <tr><td class="rh"><b>R</b><br><span style="font-size:10px;color:#5f6a77" data-ja="情報熟度" data-en="Info maturity">情報熟度</span></td>
+        <td data-ja="想定リターンの確からしさ。締切が迫れば不確実性ペナルティを緩める。" data-en="Reliability of the assumed return; the uncertainty penalty is relaxed as the deadline nears.">想定リターンの確からしさ。締切が迫れば不確実性ペナルティを緩める。</td>
+        <td data-ja="「待てば不確実性が解ける便益 vs 行使窓の消耗」のトレードオフのスコア上の表現。" data-en="The score-level expression of the trade-off &lsquo;benefit of waiting vs erosion of the exercise window&rsquo;.">「待てば不確実性が解ける便益 vs 行使窓の消耗」のトレードオフのスコア上の表現。</td></tr>
+    </tbody>
+  </table>
+  <div class="keyfind"
+    data-ja="<b>なぜ「積」なのか</b>　どれか一つでも決定的に欠けたら張るべきでないからである。<b>和では一因子がゼロでも他が高ければ立ってしまう。積は「すべての条件が揃って初めて高くなる」</b>という論理を自然に表現する。各案件の処遇が、期待価値・残り時間・不確実性という3つの解釈可能な軸に完全に分解され、「なぜこの案件に今張ったのか」を3軸の言葉で説明できる ── これが「いつでも説明できる」の中身である。"
+    data-en="<b>Why a product?</b>　Because if any one factor is decisively missing, one should not place the bet. <b>A sum would let a contract stand on strength elsewhere even with one factor at zero; a product is high only when every condition is met</b> — expressing the logic naturally. Each contract&rsquo;s treatment decomposes cleanly into three interpretable axes — expected value, time remaining, uncertainty — so that &lsquo;why we bet on this one now&rsquo; is explained in the language of the three axes. That is the substance of &lsquo;explainable at any time&rsquo;.">
+    <b>なぜ「積」なのか</b>　どれか一つでも決定的に欠けたら張るべきでないからである。<b>和では一因子がゼロでも他が高ければ立ってしまう。積は「すべての条件が揃って初めて高くなる」</b>という論理を自然に表現する。各案件の処遇が、期待価値・残り時間・不確実性という3つの解釈可能な軸に完全に分解され、「なぜこの案件に今張ったのか」を3軸の言葉で説明できる ── これが「いつでも説明できる」の中身である。
+  </div>
+  <div class="note" data-ja="数式の詳細は付録A（数理定式化）・付録B（スコア設計の全因子）を参照。" data-en="For the equations, see Appendix A (mathematical formulation) and Appendix B (all scoring factors).">数式の詳細は付録A（数理定式化）・付録B（スコア設計の全因子）を参照。</div>
+
+  <!-- ============ PART C : AGENT ============ -->
+  <div class="secpart" data-ja="PART C ─ switching-triage-agent（第4章）" data-en="PART C — switching-triage-agent (Chapter 4)">PART C ─ switching-triage-agent（第4章）</div>
+
+  <!-- 06 -->
+  <div class="step" id="s6"><span class="n">06</span><span data-ja="判断を自動化し、説明可能にする" data-en="AUTOMATING THE JUDGEMENT AND MAKING IT EXPLAINABLE">判断を自動化し、説明可能にする</span></div>
+  <p class="body"
+    data-ja="switching-triage-agent は、上記の枠組みを実装した意思決定支援エージェントである。契約データを入力すると、優先度スコアと予算配分を計算し、<b>いつでも説明できる形のレポート</b>を生成する。名称の「triage（トリアージ）」は、限られた資源を緊急度と見込みで選別する動きを表し、各案件を<b>「即着手 / 温存 / 人間判断 / 捨てる候補 / 失効」</b>に振り分けることが中核である。"
+    data-en="switching-triage-agent is a decision-support agent that implements the framework above. Given contract data, it computes priority scores and a budget allocation, and generates <b>a report in a form that can be explained at any time</b>. &lsquo;Triage&rsquo; names the act of sorting limited resources by urgency and prospect; at its core it sorts each contract into <b>&lsquo;act now / hold / human judgement / drop candidate / lapsed&rsquo;</b>.">
+    switching-triage-agent は、上記の枠組みを実装した意思決定支援エージェントである。契約データを入力すると、優先度スコアと予算配分を計算し、<b>いつでも説明できる形のレポート</b>を生成する。名称の「triage（トリアージ）」は、限られた資源を緊急度と見込みで選別する動きを表し、各案件を<b>「即着手 / 温存 / 人間判断 / 捨てる候補 / 失効」</b>に振り分けることが中核である。
+  </p>
+  <div class="flow" data-ja="input（契約CSV + シナリオJSON）
+  → 読み込み・検証（入力規律の強制）
+  → スコアリング（V×U×R と束ね評価）      → mid（中間データ）
+  → 予算配分（本コミット・予約枠・予算不足） → output（配分結果）
+  → 説明レポート生成                        → output（report.md）" data-en="input (contracts CSV + scenario JSON)
+  → load &amp; validate (enforce input discipline)
+  → scoring (V×U×R and bundle evaluation)      → mid (intermediate data)
+  → budget allocation (commit / reserve / short) → output (allocation)
+  → explanation report                          → output (report.md)">input（契約CSV + シナリオJSON）
+  → 読み込み・検証（入力規律の強制）
+  → スコアリング（V×U×R と束ね評価）      → mid（中間データ）
+  → 予算配分（本コミット・予約枠・予算不足） → output（配分結果）
+  → 説明レポート生成                        → output（report.md）</div>
+  <p class="body mut" data-ja="<b>出力に必ず含まれるもの</b>：①各案件の V・U・R を分解表示した優先度ランキングと判定ラベル、②同一ベンダー複数契約を束ねた場合と個別の有利判定とその根拠、③本コミット・予約枠・予算不足の3区分、④予算不足で着手できなかった上位案件の合計額と筆頭案件（＝次の資金引き出しの定量的根拠）。" data-en="<b>Always in the output</b>: (1) a priority ranking with V·U·R decomposed and a decision label; (2) whether bundling a vendor&rsquo;s multiple contracts beats handling them individually, with the reasoning; (3) the three buckets — commit / reserve / short of budget; (4) the total of high-priority contracts that could not be started for lack of funds, and the leading one — the quantitative basis for the next drawdown."><b>出力に必ず含まれるもの</b>：①各案件の V・U・R を分解表示した優先度ランキングと判定ラベル、②同一ベンダー複数契約を束ねた場合と個別の有利判定とその根拠、③本コミット・予約枠・予算不足の3区分、④予算不足で着手できなかった上位案件の合計額と筆頭案件（＝次の資金引き出しの定量的根拠）。</p>
+
+  <p class="body"><b data-ja="検証で判明した3つの実務的含意" data-en="Three practical implications found in validation">検証で判明した3つの実務的含意</b></p>
+  <div class="two" style="grid-template-columns:1fr 1fr 1fr;">
+    <div class="card p">
+      <div class="t" data-ja="① 初期20百万円は一件でほぼ使い切る" data-en="① ¥20M is nearly spent on one contract">① 初期20百万円は一件でほぼ使い切る</div>
+      <div class="d" data-ja="「一件集中か分散か」に、データは「初期額では分散する余裕はなく、最も確実な一件に集中せざるを得ない」と答えた。<b>リボルビング提案（実績を作って次を引き出す）と完全に整合する。</b>" data-en="To &lsquo;concentrate or diversify?&rsquo; the data answered: at the initial amount there is no room to spread — one must concentrate on the surest single contract. <b>This aligns perfectly with the revolving proposal (build a record, draw the next).</b>">「一件集中か分散か」に、データは「初期額では分散する余裕はなく、最も確実な一件に集中せざるを得ない」と答えた。<b>リボルビング提案（実績を作って次を引き出す）と完全に整合する。</b></div>
+    </div>
+    <div class="card g">
+      <div class="t" data-ja="② 「予算不足で着手不能」が明示される" data-en="② &lsquo;Short of budget&rsquo; is made explicit">② 「予算不足で着手不能」が明示される</div>
+      <div class="d" data-ja="優先度は高いが資金が届かない案件が可視化され、<b>これが追加資金引き出しの定量的根拠になる。</b>提案の核心が数字として立ち上がる。" data-en="High-priority contracts the funds cannot reach are made visible, and <b>this becomes the quantitative basis for drawing additional funds.</b> The heart of the proposal stands up as a number.">優先度は高いが資金が届かない案件が可視化され、<b>これが追加資金引き出しの定量的根拠になる。</b>提案の核心が数字として立ち上がる。</div>
+    </div>
+    <div class="card n">
+      <div class="t" data-ja="③ 束ねは諸刃" data-en="③ Bundling cuts both ways">③ 束ねは諸刃</div>
+      <div class="d" data-ja="同一ベンダーの一括交渉は総リターンを増やすが、<b>確度が下がり（オールオアナッシング性）</b>、予算配分では単独高確度案件に劣ることがある。束ねるべきかは交渉力の自己評価（束ねプレミアム β）次第。" data-en="Bundling a vendor&rsquo;s contracts raises total return but <b>lowers confidence (an all-or-nothing quality)</b>, and in allocation can lose to a single high-confidence contract. Whether to bundle depends on a self-assessment of bargaining power (the bundle premium β).">同一ベンダーの一括交渉は総リターンを増やすが、<b>確度が下がり（オールオアナッシング性）</b>、予算配分では単独高確度案件に劣ることがある。束ねるべきかは交渉力の自己評価（束ねプレミアム β）次第。</div>
+    </div>
+  </div>
+
+  <!-- ============ PART D : OPERATION ============ -->
+  <div class="secpart" data-ja="PART D ─ 運用と情報更新（第5章）" data-en="PART D — OPERATION AND INFORMATION UPDATES (Chapter 5)">PART D ─ 運用と情報更新（第5章）</div>
+
+  <!-- 07 -->
+  <div class="step" id="s7"><span class="n">07</span><span data-ja="確度をどう捉え、いつ更新するか" data-en="HOW TO SEE CONFIDENCE, AND WHEN TO UPDATE IT">確度をどう捉え、いつ更新するか</span></div>
+  <p class="body"
+    data-ja="実行確度 p を単一の数字として扱うと、性質の異なる2つの事象が潰れて見えなくなる。<b>p は本来、土俵成立の確率と実行しきる確率の積である</b>（理論編0.3）。情報ネットワークで捕捉するたびに、どちらを更新すべきかが変わる。だから分離する。"
+    data-en="Treating execution confidence p as a single number collapses two events of different natures. <b>p is, properly, the product of the probability that the arena forms and the probability of seeing it through</b> (Theory 0.3). Each time the information network catches something, which of the two to update changes — so they are kept separate.">
+    実行確度 p を単一の数字として扱うと、性質の異なる2つの事象が潰れて見えなくなる。<b>p は本来、土俵成立の確率と実行しきる確率の積である</b>（理論編0.3）。情報ネットワークで捕捉するたびに、どちらを更新すべきかが変わる。だから分離する。
+  </p>
+  <table>
+    <thead>
+      <tr>
+        <th class="rh" data-ja="事象" data-en="Event">事象</th>
+        <th data-ja="何が起きているか" data-en="What is happening">何が起きているか</th>
+        <th data-ja="更新する変数" data-en="Variable to update">更新する変数</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td class="rh" data-ja="切替先が現れない（今回のみ）" data-en="No alternative appears (this time only)">切替先が現れない（今回のみ）</td>
+        <td data-ja="土俵が今回立たなかった" data-en="The arena did not form this time">土俵が今回立たなかった</td>
+        <td data-ja="contestability<span class='dn'>↓</span>、想定リターン<span class='dn'>↓</span>、不確実性<span class='dn'>↓</span>" data-en="contestability<span class='dn'>↓</span>, assumed return<span class='dn'>↓</span>, uncertainty<span class='dn'>↓</span>">contestability<span class="dn">↓</span>、想定リターン<span class="dn">↓</span>、不確実性<span class="dn">↓</span></td></tr>
+      <tr><td class="rh" data-ja="切替先が構造的に不在（Single-source確定）" data-en="Structurally absent (single-source confirmed)">切替先が構造的に不在（Single-source確定）</td>
+        <td data-ja="土俵が原理的に立たない" data-en="The arena cannot form in principle">土俵が原理的に立たない</td>
+        <td data-ja="対象外へ（交渉トラックに移管）" data-en="Out of scope (move to negotiation track)">対象外へ（交渉トラックに移管）</td></tr>
+      <tr><td class="rh" data-ja="一時延長（初回）" data-en="Temporary extension (first time)">一時延長（初回）</td>
+        <td data-ja="判断が先送りされた" data-en="The decision was deferred">判断が先送りされた</td>
+        <td data-ja="満了時期を延長分だけ後ろへ、延長回数+1" data-en="Push expiry back by the extension, extension count +1">満了時期を延長分だけ後ろへ、延長回数+1</td></tr>
+      <tr><td class="rh" data-ja="繰り返し延長（閾値超え）" data-en="Repeated extension (over threshold)">繰り返し延長（閾値超え）</td>
+        <td data-ja="現場の実行意欲が構造的に低い" data-en="Structurally low will to execute in the field">現場の実行意欲が構造的に低い</td>
+        <td data-ja="満了時期更新 + execution へ自動ペナルティ" data-en="Update expiry + automatic penalty to execution">満了時期更新 + execution へ自動ペナルティ</td></tr>
+    </tbody>
+  </table>
+  <div class="two">
+    <div class="card p">
+      <div class="t" data-ja="ケース1：切替先が現れない" data-en="Case 1: No alternative appears">ケース1：切替先が現れない</div>
+      <div class="d"
+        data-ja="contestability を下げ、前提が崩れた想定リターンも下方修正する。重要なのは<b>このケースは不確実性を下げる方向にも働く</b>点 ── 「切替先がない」と判明したこと自体が情報の増加であり、案件はスコア上、静かに沈んで捨てる候補に落ちる。<b>「今回は現れなかった」（案件を残す）と「構造的に存在しない」（別トラックへ）は区別する。</b>"
+        data-en="Lower contestability, and mark down the assumed return whose premise has collapsed. Crucially, <b>this case also works to lower uncertainty</b> — learning &lsquo;there is no alternative&rsquo; is itself an increase in information, and the contract sinks quietly in the score into a drop candidate. <b>Distinguish &lsquo;did not appear this time&rsquo; (keep the contract) from &lsquo;structurally absent&rsquo; (move to another track).</b>">
+        contestability を下げ、前提が崩れた想定リターンも下方修正する。重要なのは<b>このケースは不確実性を下げる方向にも働く</b>点 ── 「切替先がない」と判明したこと自体が情報の増加であり、案件はスコア上、静かに沈んで捨てる候補に落ちる。<b>「今回は現れなかった」（案件を残す）と「構造的に存在しない」（別トラックへ）は区別する。</b>
+      </div>
+    </div>
+    <div class="card n">
+      <div class="t" data-ja="ケース2：現場判断で一時延長" data-en="Case 2: The field extends temporarily">ケース2：現場判断で一時延長</div>
+      <div class="d"
+        data-ja="起きているのは「実行確度が下がった」のではなく<b>着手デッドラインが先送りされた</b>こと。更新すべきは確度ではなく<b>満了時期そのもの</b>。これを確度低下として記録するとモデルは「実行されにくい」と誤学習する。ただし<b>繰り返し延長は警告シグナル</b>であり、二度目以降は execution も下げる二段構え。<b>延長で逃げ続ける案件こそ、VMOが実行責任を引き受ける対象そのもの。</b>"
+        data-en="What happens is not &lsquo;confidence fell&rsquo; but that <b>the start-by deadline was deferred</b>. Update not confidence but <b>the expiry itself</b>. Recording it as a confidence drop would mislead the model into &lsquo;hard to execute&rsquo;. But <b>repeated extension is a warning signal</b>: a two-stage rule lowers execution from the second time on. <b>The contracts that keep fleeing into extension are exactly what the VMO undertook to execute.</b>">
+        起きているのは「実行確度が下がった」のではなく<b>着手デッドラインが先送りされた</b>こと。更新すべきは確度ではなく<b>満了時期そのもの</b>。これを確度低下として記録するとモデルは「実行されにくい」と誤学習する。ただし<b>繰り返し延長は警告シグナル</b>であり、二度目以降は execution も下げる二段構え。<b>延長で逃げ続ける案件こそ、VMOが実行責任を引き受ける対象そのもの。</b>
+      </div>
+    </div>
+  </div>
+  <ul class="pts">
+    <li data-ja="<b>入力規律</b>：想定リターンの確からしさ（return_sigma）は最も入力を怠られやすいが、情報熟度 R の生命線。<b>想定リターンを一つ入れたら、その確からしさも必ずセットで入れる</b>。エージェントはこの空欄を機械的に弾く。3段階の粗い評価で構わない。" data-en="<b>Input discipline</b>: the reliability of the assumed return (return_sigma) is the most-neglected input but the lifeline of information maturity R. <b>Enter an assumed return, and always enter its reliability alongside.</b> The agent mechanically rejects the blank. A coarse three-level rating suffices."><b>入力規律</b>：想定リターンの確からしさ（return_sigma）は最も入力を怠られやすいが、情報熟度 R の生命線。<b>想定リターンを一つ入れたら、その確からしさも必ずセットで入れる</b>。エージェントはこの空欄を機械的に弾く。3段階の粗い評価で構わない。</li>
+    <li data-ja="<b>握るべき調整点 ① リスク回避度 λ</b>：手堅く行くか大きく取りに行くか。VMOとIT組織長で握る唯一の思想的パラメータ。「一件集中か分散か」という本来もめる論点を、λ という一つの合意事項に還元できる。" data-en="<b>Point to agree ① risk aversion λ</b>: play it safe or reach for the big win. The one philosophical parameter for the VMO and IT head to agree. It reduces the perennially contentious &lsquo;concentrate or diversify&rsquo; to a single agreed item, λ."><b>握るべき調整点 ① リスク回避度 λ</b>：手堅く行くか大きく取りに行くか。VMOとIT組織長で握る唯一の思想的パラメータ。「一件集中か分散か」という本来もめる論点を、λ という一つの合意事項に還元できる。</li>
+    <li data-ja="<b>握るべき調整点 ② 延長ペナルティの閾値</b>：現場の延長頻度に応じて調整する。延長が常態化している環境なら閾値を上げる。実データを何サイクルか回して体感と合わせる。" data-en="<b>Point to agree ② extension-penalty threshold</b>: tune it to the field&rsquo;s extension frequency; raise it where extension is the norm. Run real data for a few cycles and calibrate to felt experience."><b>握るべき調整点 ② 延長ペナルティの閾値</b>：現場の延長頻度に応じて調整する。延長が常態化している環境なら閾値を上げる。実データを何サイクルか回して体感と合わせる。</li>
+  </ul>
+
+  <div class="verdict"
+    data-ja="<b>この提案で決めていただきたいこと</b>　①経費予算の一部として、移行コストのリボルビング型プール（初期20百万円）をIT組織長の管理下に設けることの可否。②VMOが移行オプションの評価・発動提案の権限と、コスト削減の実行責任を負うことの承認。③リスク回避度 λ の初期設定を、VMOとIT組織長で握ること。"
+    data-en="<b>What we ask you to decide</b>　(1) Whether to establish, as part of the operating budget, a revolving pool for switching costs (¥20M to start) under the IT organisation head&rsquo;s control. (2) Approval for the VMO to hold the authority to evaluate and propose the exercise of switching options, and to bear the responsibility for executing cost reduction. (3) Agreement between the VMO and the IT head on the initial setting of the risk-aversion parameter λ.">
+    <b>この提案で決めていただきたいこと</b>　①経費予算の一部として、移行コストのリボルビング型プール（初期20百万円）をIT組織長の管理下に設けることの可否。②VMOが移行オプションの評価・発動提案の権限と、コスト削減の実行責任を負うことの承認。③リスク回避度 λ の初期設定を、VMOとIT組織長で握ること。
+  </div>
+
+  <div class="refs">
+    <b data-ja="関連資料" data-en="RELATED DOCUMENTS">関連資料</b>
+    <span data-ja="本文：chapters/02〜05 ／ 付録A（数理定式化）・付録B（スコア設計）・付録C（理論対応表） ／ 理論的背景：" data-en="Body: chapters/02–05 ／ Appendix A (mathematical formulation), B (scoring design), C (theory map) ／ Theoretical background: ">本文：chapters/02〜05 ／ 付録A（数理定式化）・付録B（スコア設計）・付録C（理論対応表） ／ 理論的背景：</span><a href="00_Theory.html" style="color:#12305e;font-weight:700" data-ja="理論編（00）" data-en="the Theory (00)">理論編（00）</a>
+  </div>
+
+  <div class="nav">
+    <a href="01_Problem.html" data-ja="◀ 前へ：課題編" data-en="◀ Previous: The Problem">◀ 前へ：課題編</a>
+    <a href="../index.html" data-ja="トップへ ▶" data-en="Home ▶">トップへ ▶</a>
+  </div>
+</div>
+
+<script>
+function setLang(l){
+  document.querySelectorAll('[data-ja]').forEach(function(el){
+    var v = el.getAttribute('data-' + l);
+    if (v !== null) el.innerHTML = v;
+  });
+  document.documentElement.lang = l;
+  document.getElementById('btn-ja').classList.toggle('on', l === 'ja');
+  document.getElementById('btn-en').classList.toggle('on', l === 'en');
+}
+</script>
+</body>
+</html>

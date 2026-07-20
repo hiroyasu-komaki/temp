@@ -1,0 +1,40 @@
+{
+  "budget_m": 20.0,
+  "available_m": 16.0,
+  "safety_margin": 0.2,
+  "committed_m": 12.0,
+  "reserved_m": 0.0,
+  "blocked_m": 22.0,
+  "committed_expected_net_m": 20.8,
+  "blocked_top": "Veeva Vault RA 保守",
+  "lines": [
+    {
+      "tag": "本コミット",
+      "name": "Veeva Vault QA 保守",
+      "cost_m": 12.0,
+      "score": 0.52,
+      "p": 0.801
+    },
+    {
+      "tag": "予算不足",
+      "name": "Veeva Vault RA 保守",
+      "cost_m": 9.0,
+      "score": 0.261,
+      "p": 0.748
+    },
+    {
+      "tag": "予算不足",
+      "name": "基幹保守 SIer委託",
+      "cost_m": 5.0,
+      "score": 0.102,
+      "p": 0.648
+    },
+    {
+      "tag": "予算不足",
+      "name": "Veeva Vault MA 保守",
+      "cost_m": 8.0,
+      "score": 0.074,
+      "p": 0.6
+    }
+  ]
+}

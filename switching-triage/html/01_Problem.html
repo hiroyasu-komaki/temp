@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Problem — Why Switching Never Happens</title>
+<style>
+  :root{
+    --navy:#12305e; --ink:#1b2430; --gray:#5f6a77; --gray-l:#8b95a1;
+    --line:#d7dde5; --panel:#f5f7fa;
+    --pos:#2f6fc0; --pos-bg:#eef4fc; --pos-line:#a9c6e8;
+    --neg:#c2410c; --neg-bg:#fdf2ea; --neg-line:#eeb185;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; padding:26px 18px 44px; background:#eef1f5; color:var(--ink);
+    font-family:"Yu Gothic UI","Yu Gothic","Hiragino Kaku Gothic ProN","Meiryo","Segoe UI",sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  html[lang="en"] body{font-family:"Segoe UI","Helvetica Neue",Arial,sans-serif;}
+  .slide{
+    max-width:1240px; margin:0 auto; background:#fff; padding:34px 40px 36px;
+    box-shadow:0 2px 18px rgba(18,48,94,.10); border-top:5px solid var(--navy); position:relative;
+  }
+  .lang{position:absolute; top:16px; right:24px; display:flex; border:1px solid var(--line);}
+  .lang button{border:none; background:#fff; color:var(--gray); font:inherit; font-size:11px;
+    font-weight:700; letter-spacing:.06em; padding:5px 13px; cursor:pointer;}
+  .lang button+button{border-left:1px solid var(--line);}
+  .lang button.on{background:var(--navy); color:#fff;}
+  .lang button:focus-visible{outline:2px solid var(--neg); outline-offset:1px;}
+
+  .eyebrow{font-size:10.5px; font-weight:700; letter-spacing:.14em; color:var(--gray-l); margin-bottom:7px;}
+  h1{font-size:25px; margin:0 0 9px; color:var(--navy); font-weight:700; line-height:1.4; padding-right:130px;}
+  .lede{font-size:12.5px; color:var(--gray); line-height:1.8; margin:0 0 22px; padding-bottom:18px; border-bottom:1px solid var(--line);}
+  .lede b{color:var(--ink);}
+
+  .step{font-size:10.5px; font-weight:700; letter-spacing:.1em; color:#fff; background:var(--navy);
+    display:inline-block; padding:3px 11px; margin-bottom:12px;}
+  .step .n{opacity:.6; margin-right:6px;}
+
+  p.body{font-size:12.5px; line-height:1.9; margin:0 0 14px; color:var(--ink);}
+  p.body b{color:var(--neg);}
+  p.body.mut{color:var(--gray);}
+  p.body.mut b{color:var(--ink);}
+
+  .sym{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin:2px 0 26px;}
+  .card{border:1px solid var(--line); padding:15px 18px;}
+  .card.n{border-left:4px solid var(--neg);} .card.p{border-left:4px solid var(--pos);}
+  .card .t{font-size:13.5px; font-weight:700; color:var(--navy); margin-bottom:6px;}
+  .card .t .sub{font-size:10px; color:var(--gray-l); font-weight:600; display:block; margin-top:2px;}
+  .card .d{font-size:11.5px; line-height:1.8; color:var(--gray);}
+  .card .d b{color:var(--ink);}
+
+  .asym{display:grid; grid-template-columns:1fr 40px 1fr; align-items:center; margin:2px 0 14px;}
+  .asym .box{border:1px solid var(--line); padding:12px 16px; background:var(--panel);}
+  .asym .box .k{font-size:10.5px; font-weight:700; color:var(--gray); margin-bottom:4px;}
+  .asym .box .v{font-size:13.5px; font-weight:700;}
+  .asym .box.a .v{color:var(--pos);} .asym .box.b .v{color:var(--neg);}
+  .asym .mid{text-align:center; font-size:15px; color:var(--gray-l); font-weight:700;}
+
+  .verdict{border-left:4px solid var(--neg); background:var(--neg-bg); padding:12px 16px; margin-bottom:26px;
+    font-size:12.5px; font-weight:700; color:#8a3708; line-height:1.75;}
+  .goal{border:2px solid var(--navy); background:#fff; padding:16px 20px; margin-bottom:26px;}
+  .goal .lbl{font-size:10px; font-weight:700; letter-spacing:.1em; color:#fff; background:var(--navy);
+    display:inline-block; padding:2px 9px; margin-bottom:9px;}
+  .goal .t{font-size:15px; font-weight:700; color:var(--navy); margin-bottom:7px; line-height:1.55;}
+  .goal .d{font-size:12px; line-height:1.85; color:var(--gray);}
+  .goal .d b{color:var(--ink);}
+
+  .note{border-left:4px solid var(--navy); background:var(--panel); padding:11px 16px; margin-bottom:26px;
+    font-size:12px; line-height:1.85; color:var(--gray);}
+  .note b{color:var(--ink);}
+
+  .nav{margin-top:22px; padding-top:14px; border-top:1px solid var(--line); display:flex; justify-content:space-between; font-size:11px;}
+  .nav a{color:var(--navy); text-decoration:none; font-weight:700;}
+  .nav a:hover{text-decoration:underline;}
+  .nav .sp{color:var(--gray-l); font-weight:400;}
+
+  @media(max-width:900px){
+    h1{padding-right:0; margin-top:38px;}
+    .sym,.asym{grid-template-columns:1fr;}
+    .asym .mid{display:none;}
+  }
+  @media print{body{background:#fff; padding:0;} .slide{box-shadow:none; max-width:none;} .lang,.nav{display:none;}}
+</style>
+</head>
+<body>
+<div class="slide">
+  <div class="lang" role="group" aria-label="Language">
+    <button id="btn-ja" class="on" onclick="setLang('ja')">日本語</button>
+    <button id="btn-en" onclick="setLang('en')">English</button>
+  </div>
+
+  <div class="eyebrow" data-ja="DIAGNOSIS ／ なぜ切替が進まないのか" data-en="DIAGNOSIS / WHY SWITCHING NEVER HAPPENS">DIAGNOSIS ／ なぜ切替が進まないのか</div>
+  <h1 data-ja="課題編 ─ 移行コストという障壁と、見せかけの競争"
+      data-en="The Problem: The Barrier of Switching Costs, and the Hollow Show of Competition">課題編 ─ 移行コストという障壁と、見せかけの競争</h1>
+
+  <p class="lede"
+     data-ja="VMOは契約満了を控えた保守・ライセンス契約について、条件改善をミッションとしてきた。既存延長線上の改善は一定の成果を上げている。しかし<b>延長線を超えた改善──別ベンダーへの切替──となると、移行コストが障壁となって選択肢が実質的に消える</b>。本章は、この障壁が単なる費用ではなく<b>権限と責任の不整合</b>であることを診断し、目指す状態を定める。"
+     data-en="The VMO&rsquo;s mission has been to improve the terms of maintenance and licence contracts approaching expiry. Improvement along the existing line has borne some fruit. But <b>the moment improvement must go beyond that line — switching to another vendor — the switching cost becomes a barrier and the option effectively disappears</b>. This chapter diagnoses that barrier not as a mere expense but as <b>a misalignment of authority and responsibility</b>, and sets the target state.">
+    VMOは契約満了を控えた保守・ライセンス契約について、条件改善をミッションとしてきた。既存延長線上の改善は一定の成果を上げている。しかし<b>延長線を超えた改善──別ベンダーへの切替──となると、移行コストが障壁となって選択肢が実質的に消える</b>。本章は、この障壁が単なる費用ではなく<b>権限と責任の不整合</b>であることを診断し、目指す状態を定める。
+  </p>
+
+  <!-- 1.1 -->
+  <div class="step"><span class="n">1.1</span><span data-ja="VMOの現状のミッションと限界" data-en="THE VMO&#39;S CURRENT MISSION AND ITS LIMIT">VMOの現状のミッションと限界</span></div>
+  <p class="body"
+    data-ja="VMOは、期中に契約満了を迎える保守・ライセンス契約について、満了までに継続か新たな契約先との比較検討を行い、契約金額やその他取引条件を有利にすることをミッションとしてきた。数年の推進を経て、<b>既存延長線上での条件改善は一定の成果を上げている</b>。"
+    data-en="The VMO&rsquo;s mission has been, for maintenance and licence contracts expiring within the period, to weigh continuation against an alternative supplier before expiry and to improve the price and other terms. After several years, <b>improvement along the existing line has produced results</b>.">
+    VMOは、期中に契約満了を迎える保守・ライセンス契約について、満了までに継続か新たな契約先との比較検討を行い、契約金額やその他取引条件を有利にすることをミッションとしてきた。数年の推進を経て、<b>既存延長線上での条件改善は一定の成果を上げている</b>。
+  </p>
+  <p class="body mut"
+    data-ja="しかし、既存の延長線上を超えた改善──たとえば保守契約を別のベンダーに切り替える──となると、<b>切替コストがボトルネックとなって選択肢が狭まる</b>。切替に前向きになれたとしても、移行コストによってリターンが矮小化される。"
+    data-en="But improvement beyond that line — switching a maintenance contract to a different vendor, say — runs into a bottleneck: <b>the switching cost narrows the options</b>. Even where one is willing to switch, the migration cost shrinks the return to nothing.">
+    しかし、既存の延長線上を超えた改善──たとえば保守契約を別のベンダーに切り替える──となると、<b>切替コストがボトルネックとなって選択肢が狭まる</b>。切替に前向きになれたとしても、移行コストによってリターンが矮小化される。
+  </p>
+
+  <!-- 1.2 -->
+  <div class="step"><span class="n">1.2</span><span data-ja="問題の経済的本質 ─ スイッチングコストによるロックイン" data-en="THE ECONOMIC ESSENCE — LOCK-IN BY SWITCHING COSTS">問題の経済的本質 ─ スイッチングコストによるロックイン</span></div>
+  <p class="body"
+    data-ja="表面的には「移行コストが高い」という費用の問題に見える。しかし本質は、<b>スイッチングコストによるベンダーロックインの内部化</b>である。既存ベンダーは、VMOが移行コストを負担できないことを知っている。だからこそ更新交渉で強気に出られる。"
+    data-en="On the surface this looks like a cost problem — &lsquo;migration is expensive&rsquo;. But the essence is <b>the internalisation of vendor lock-in through switching costs</b>. The incumbent knows the VMO cannot bear the switching cost. That is precisely why it can bargain hard at renewal.">
+    表面的には「移行コストが高い」という費用の問題に見える。しかし本質は、<b>スイッチングコストによるベンダーロックインの内部化</b>である。既存ベンダーは、VMOが移行コストを負担できないことを知っている。だからこそ更新交渉で強気に出られる。
+  </p>
+  <div class="asym">
+    <div class="box a">
+      <div class="k" data-ja="移行コストを負担できないこと" data-en="INABILITY TO FUND SWITCHING">移行コストを負担できないこと</div>
+      <div class="v" data-ja="既存ベンダーに見透かされている" data-en="Is plainly seen by the incumbent">既存ベンダーに見透かされている</div>
+    </div>
+    <div class="mid">→</div>
+    <div class="box b">
+      <div class="k" data-ja="更新交渉" data-en="RENEWAL NEGOTIATION">更新交渉</div>
+      <div class="v" data-ja="見せかけの競争に留まる" data-en="Remains a hollow show of competition">見せかけの競争に留まる</div>
+    </div>
+  </div>
+  <div class="verdict"
+    data-ja="移行コストが障壁である限り、VMOの競争的調達は「切り替える気がないことを相手も見透かした上での<b>見せかけの競争</b>」に留まる。<br>つまり問題の核心は、<b>VMOが「削減責任を負わされているのに、削減の武器を持っていない」</b>という権限と責任の不整合にある。"
+    data-en="As long as the switching cost is a barrier, the VMO&rsquo;s competitive sourcing remains <b>a hollow show of competition</b> — one whose emptiness the counterparty already sees through. The core of the problem is thus a misalignment of authority and responsibility: <b>the VMO is charged with cutting costs yet holds no weapon for cutting them</b>.">
+    移行コストが障壁である限り、VMOの競争的調達は「切り替える気がないことを相手も見透かした上での<b>見せかけの競争</b>」に留まる。<br>つまり問題の核心は、<b>VMOが「削減責任を負わされているのに、削減の武器を持っていない」</b>という権限と責任の不整合にある。
+  </div>
+
+  <!-- 1.3 -->
+  <div class="step"><span class="n">1.3</span><span data-ja="目指す状態 ─ 信憑性のある交渉レバレッジ" data-en="THE TARGET STATE — A CREDIBLE NEGOTIATING THREAT">目指す状態 ─ 信憑性のある交渉レバレッジ</span></div>
+  <p class="body"
+    data-ja="解決の方向は、移行コストを手当てすることで「いつでも切り替えられる」という<b>信憑性のある脅し（credible threat）</b>を獲得することである。"
+    data-en="The direction of the solution is to fund the switching cost and thereby acquire <b>a credible threat</b> — that we can switch at any time.">
+    解決の方向は、移行コストを手当てすることで「いつでも切り替えられる」という<b>信憑性のある脅し（credible threat）</b>を獲得することである。
+  </p>
+  <div class="sym">
+    <div class="card p">
+      <div class="t" data-ja="重要なのは、実行そのものではない<span class='sub'>Execution is not the point</span>" data-en="The point is not execution itself<span class='sub'>実行そのものではない</span>">重要なのは、実行そのものではない<span class="sub">Execution is not the point</span></div>
+      <div class="d"
+        data-ja="移行を必ず実行することが目的ではない。<b>実行可能性が担保されているだけで、更新交渉の価格が下がる</b>。これが最大のリターンである。実際に切り替えるのは少数でよく、大半は「切り替えられる状態にあること」が交渉力として効く。"
+        data-en="The aim is not to carry out the migration in every case. <b>Merely securing that it is feasible lowers the renewal price</b> — and that is the largest return. Only a few need actually be switched; for most, the state of being able to switch is what works as bargaining power.">
+        移行を必ず実行することが目的ではない。<b>実行可能性が担保されているだけで、更新交渉の価格が下がる</b>。これが最大のリターンである。実際に切り替えるのは少数でよく、大半は「切り替えられる状態にあること」が交渉力として効く。
+      </div>
+    </div>
+    <div class="card n">
+      <div class="t" data-ja="これはリアルオプションの価値である<span class='sub'>This is the value of a real option</span>" data-en="This is the value of a real option<span class='sub'>リアルオプションの価値</span>">これはリアルオプションの価値である<span class="sub">This is the value of a real option</span></div>
+      <div class="d"
+        data-ja="ファイナンス的には<b>リアルオプションの価値そのもの</b>である。使わずに済んでも、使える状態にあること自体が価値を生む。次章（提言編）の予算設計は、この論理をそのまま制度に落とし込む。"
+        data-en="In finance terms this <b>is the value of a real option itself</b>. Even if never used, the state of being usable generates value. The budget design in the next chapter (the Proposal) translates this logic directly into an institution.">
+        ファイナンス的には<b>リアルオプションの価値そのもの</b>である。使わずに済んでも、使える状態にあること自体が価値を生む。次章（提言編）の予算設計は、この論理をそのまま制度に落とし込む。
+      </div>
+    </div>
+  </div>
+  <div class="goal">
+    <span class="lbl" data-ja="目指す状態" data-en="THE TARGET STATE">目指す状態</span>
+    <div class="t"
+      data-ja="移行コストを手当てし、「いつでも切り替えられる」を信憑性のある交渉レバレッジに変える"
+      data-en="Fund the switching cost, and turn &ldquo;we can switch any time&rdquo; into a credible negotiating lever">
+      移行コストを手当てし、「いつでも切り替えられる」を信憑性のある交渉レバレッジに変える
+    </div>
+    <div class="d"
+      data-ja="削減責任を負うVMOに、削減の武器（信憑性のある切替可能性）を持たせる。実際の切替は少数でよく、大半は<b>「切り替えられる状態」そのもの</b>が更新価格を押し下げる。次章では、この状態を<b>リボルビング型の予算</b>と<b>説明可能な配分判断</b>として制度化する。"
+      data-en="Give the VMO — which bears the responsibility to cut costs — the weapon to do so: a credible ability to switch. Few switches need actually occur; for most, <b>the state of being able to switch</b> presses the renewal price down. The next chapter institutionalises this state as <b>a revolving budget</b> and <b>an explainable allocation decision</b>.">
+      削減責任を負うVMOに、削減の武器（信憑性のある切替可能性）を持たせる。実際の切替は少数でよく、大半は<b>「切り替えられる状態」そのもの</b>が更新価格を押し下げる。次章では、この状態を<b>リボルビング型の予算</b>と<b>説明可能な配分判断</b>として制度化する。
+    </div>
+  </div>
+
+  <div class="note"
+    data-ja="<b>理論編との対応</b>　本章の診断はすべて理論編（00）から演繹されている ── 「見せかけの競争」はスイッチングコストによる<b>事後独占</b>（0.1）の帰結であり、「使える状態にあること自体が価値」は<b>オプションプレミアム</b>（0.2）そのものである。"
+    data-en="<b>Correspondence with the Theory</b>　Every diagnosis in this chapter is deduced from the Theory (00): the &lsquo;hollow show of competition&rsquo; is the consequence of <b>ex-post monopoly</b> from switching costs (0.1), and &lsquo;the state of being usable is itself valuable&rsquo; is the <b>option premium</b> itself (0.2).">
+    <b>理論編との対応</b>　本章の診断はすべて理論編（00）から演繹されている ── 「見せかけの競争」はスイッチングコストによる<b>事後独占</b>（0.1）の帰結であり、「使える状態にあること自体が価値」は<b>オプションプレミアム</b>（0.2）そのものである。
+  </div>
+
+  <div class="nav">
+    <a href="00_Theory.html" data-ja="◀ 前へ：理論編" data-en="◀ Previous: Theory">◀ 前へ：理論編</a>
+    <a href="02_Proposal.html" data-ja="次へ：提言編 ─ 予算・枠組み・エージェント・運用 ▶" data-en="Next: The Proposal — Budget, Framework, Agent, Operation ▶">次へ：提言編 ─ 予算・枠組み・エージェント・運用 ▶</a>
+  </div>
+</div>
+
+<script>
+function setLang(l){
+  document.querySelectorAll('[data-ja]').forEach(function(el){
+    var v = el.getAttribute('data-' + l);
+    if (v !== null) el.innerHTML = v;
+  });
+  document.documentElement.lang = l;
+  document.getElementById('btn-ja').classList.toggle('on', l === 'ja');
+  document.getElementById('btn-en').classList.toggle('on', l === 'en');
+}
+</script>
+</body>
+</html>
