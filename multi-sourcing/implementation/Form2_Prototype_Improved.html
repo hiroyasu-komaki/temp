@@ -1,0 +1,610 @@
+<!DOCTYPE html><html lang="ja"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>【様式2】調達仕様書 — 改善プロトタイプ</title>
+<style>
+  :root{
+    --navy:#12305e; --navy2:#2a4d84; --ink:#1b2430; --gray:#5f6a77; --gray-l:#8b95a1;
+    --line:#d7dde5; --panel:#f5f7fa; --bg:#eef1f5;
+    --pos:#2f6fc0; --pos-bg:#eef4fc;
+    --neg:#c2410c; --neg-bg:#fdf2ea; --neg-line:#eeb185;
+    --ok:#0f7b6c; --ok-bg:#e9f5f2; --ok-line:#9ecfc5;
+    --warn:#b7791f; --warn-bg:#fdf6e7;
+    --ai:#5b4b9e; --ai-bg:#f1eefb; --ai-line:#c9bff0;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{margin:0; padding:0; background:var(--bg); color:var(--ink);
+    font-family:"Yu Gothic UI","Yu Gothic","Hiragino Kaku Gothic ProN","Meiryo","Segoe UI",sans-serif;
+    -webkit-font-smoothing:antialiased; font-size:13px; line-height:1.7;}
+  button{font:inherit; cursor:pointer;}
+
+  /* ---------- Top bar ---------- */
+  .bar{position:sticky; top:0; z-index:60; background:var(--navy); color:#fff;
+    padding:9px 20px; display:flex; align-items:center; gap:14px; flex-wrap:wrap;
+    box-shadow:0 2px 10px rgba(18,48,94,.18);}
+  .bar .ttl{font-size:13px; font-weight:700; letter-spacing:.03em;}
+  .bar .spacer{flex:1;}
+  .savest{font-size:11px; display:flex; align-items:center; gap:6px; opacity:.92;}
+  .savest .dot{width:7px; height:7px; border-radius:50%; background:#7fd6a6;}
+  .savest.saving .dot{background:#f2c14e; animation:pulse 1s infinite;}
+  @keyframes pulse{50%{opacity:.3;}}
+  .bar button{font-size:11px; font-weight:700; letter-spacing:.03em; background:#fff; color:var(--navy);
+    border:none; padding:6px 13px;}
+  .bar button.ghost{background:transparent; color:#fff; border:1px solid rgba(255,255,255,.45);}
+  .bar button:hover{opacity:.88;}
+
+  /* ---------- Resume banner ---------- */
+  .resume{display:none; background:var(--warn-bg); border-bottom:1px solid #e6d19b;
+    padding:10px 20px; font-size:12px; color:#7a5a12; align-items:center; gap:14px;}
+  .resume.show{display:flex;}
+  .resume b{color:#5a4310;}
+  .resume .sp{flex:1;}
+  .resume button{font-size:11px; font-weight:700; padding:5px 12px; border:1px solid;}
+  .resume .go{background:var(--navy); color:#fff; border-color:var(--navy);}
+  .resume .dc{background:#fff; color:var(--gray); border-color:var(--line);}
+
+  /* ---------- Progress strip ---------- */
+  .prog{background:#fff; border-bottom:1px solid var(--line); padding:8px 20px;
+    display:flex; align-items:center; gap:12px;}
+  .prog .lab{font-size:11px; color:var(--gray); white-space:nowrap; font-weight:700;}
+  .prog .track{flex:1; height:6px; background:var(--line); border-radius:3px; overflow:hidden;}
+  .prog .track i{display:block; height:100%; width:0; background:var(--ok); transition:width .3s;}
+  .prog .pct{font-size:11px; font-weight:700; color:var(--ok); white-space:nowrap;}
+
+  /* ---------- Layout ---------- */
+  .app{display:grid; grid-template-columns:230px 1fr; gap:0; max-width:1180px; margin:0 auto;
+    min-height:calc(100vh - 96px);}
+  .app.preview{grid-template-columns:1fr;}
+
+  /* ---------- Side nav ---------- */
+  nav.side{background:#fff; border-right:1px solid var(--line); padding:14px 0; }
+  .preview nav.side{display:none;}
+  nav.side .cap{font-size:9.5px; font-weight:700; letter-spacing:.12em; color:var(--gray-l);
+    padding:0 16px 8px;}
+  .navitem{display:flex; align-items:center; gap:9px; padding:8px 16px; font-size:12px;
+    color:var(--ink); border-left:3px solid transparent; width:100%; text-align:left;
+    background:transparent;}
+  .navitem:hover{background:var(--panel);}
+  .navitem.on{background:var(--pos-bg); border-left-color:var(--navy); font-weight:700; color:var(--navy);}
+  .navitem .nn{font-size:10px; font-weight:700; color:var(--gray-l); width:26px; flex:none;}
+  .navitem.on .nn{color:var(--navy);}
+  .navitem .nl{flex:1; line-height:1.35;}
+  .badge{width:9px; height:9px; border-radius:50%; flex:none; border:1.5px solid var(--gray-l); background:#fff;}
+  .badge.part{border-color:var(--warn); background:var(--warn);}
+  .badge.done{border-color:var(--ok); background:var(--ok);}
+  .badge.done::after{content:"✓"; color:#fff; font-size:7px; display:block; text-align:center; line-height:6px;}
+  .navhint{font-size:10px; color:var(--gray-l); padding:10px 16px 0; line-height:1.7;}
+
+  /* ---------- Main ---------- */
+  main{padding:24px 30px 90px; position:relative;}
+  .step{display:none;}
+  .step.on{display:block; animation:fade .2s;}
+  @keyframes fade{from{opacity:0; transform:translateY(4px);}}
+  .eyebrow{font-size:10px; font-weight:700; letter-spacing:.12em; color:var(--gray-l); margin-bottom:5px;}
+  h1.sttl{font-size:20px; color:var(--navy); margin:0 0 4px; font-weight:700;}
+  .purpose{font-size:11.5px; color:var(--gray); background:var(--panel); border-left:3px solid var(--navy2);
+    padding:8px 12px; margin:10px 0 18px; line-height:1.7;}
+  h3{font-size:13px; color:var(--navy); font-weight:700; margin:22px 0 9px; padding-bottom:5px;
+    border-bottom:1px solid var(--line);}
+  h3:first-of-type{margin-top:6px;}
+  label.fl{display:block; font-size:12px; font-weight:700; color:var(--ink); margin:14px 0 5px;}
+  label.fl .opt{font-weight:400; color:var(--gray-l); font-size:10.5px; margin-left:6px;}
+  label.fl .req{font-weight:700; color:var(--neg); font-size:10px; margin-left:6px;}
+  input[type=text],input[type=number],input[type=date],textarea,select{
+    font:inherit; font-size:12px; color:var(--ink); width:100%;
+    border:1px solid var(--line); background:#fff; padding:7px 9px;}
+  input:focus,textarea:focus,select:focus{outline:2px solid var(--pos); outline-offset:-1px; border-color:var(--pos);}
+  textarea{resize:vertical; min-height:100px; line-height:1.75;}
+  .hint{font-size:10.5px; color:var(--gray-l); margin-top:4px; line-height:1.6;}
+  .row2{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+  .inline{display:flex; align-items:center; gap:8px; flex-wrap:wrap;}
+
+  /* type table */
+  .typegrid{display:grid; grid-template-columns:repeat(2,1fr); gap:8px; margin-top:6px;}
+  .typecard{border:1px solid var(--line); padding:9px 11px; font-size:11.5px; background:#fff;
+    display:flex; align-items:center; gap:8px;}
+  .typecard:hover{border-color:var(--pos); background:var(--pos-bg);}
+  .typecard.on{border-color:var(--navy); background:var(--pos-bg); font-weight:700; color:var(--navy);
+    box-shadow:inset 0 0 0 1px var(--navy);}
+  .typecard .cd{font-family:Georgia,serif; font-weight:700; color:var(--gray); font-size:11px;}
+  .typecard.on .cd{color:var(--navy);}
+
+  /* checkbox pills */
+  label.ck{display:inline-flex; align-items:center; gap:6px; font-size:11.5px; margin:0 12px 6px 0; cursor:pointer;}
+  label.ck input{width:14px; height:14px; accent-color:var(--navy);}
+  .sub{margin:8px 0 0 4px; padding:10px 12px; background:var(--panel); border-left:3px solid var(--pos);
+    display:none;}
+  .sub.show{display:block;}
+
+  /* repeatable rows (SLA) */
+  table.rt{width:100%; border-collapse:collapse; margin-top:6px;}
+  table.rt th,table.rt td{border:1px solid var(--line); padding:5px 7px; font-size:11.5px; vertical-align:middle;}
+  table.rt th{background:var(--navy2); color:#fff; font-size:11px; font-weight:700; text-align:left;}
+  table.rt td input{border:1px solid transparent; padding:5px 6px;}
+  table.rt td input:focus{border-color:var(--pos);}
+  .xrow{background:transparent; color:var(--neg); border:1px solid var(--neg-line); font-size:11px;
+    padding:2px 8px; font-weight:700;}
+  .addrow{margin-top:7px; background:var(--pos-bg); color:var(--navy); border:1px solid #a9c6e8;
+    font-size:11px; font-weight:700; padding:6px 13px;}
+
+  /* budget */
+  .money{width:100%; border-collapse:collapse; margin-top:6px;}
+  .money td,.money th{border:1px solid var(--line); padding:6px 10px; font-size:11.5px;}
+  .money th{background:var(--navy2); color:#fff; text-align:left; font-weight:700;}
+  .money td.lbl{background:var(--panel); font-weight:700; width:40%;}
+  .money .yen{display:inline-flex; align-items:center; gap:5px;}
+  .money input{width:170px; text-align:right; border-color:var(--line);}
+  .money tfoot td{background:var(--ok-bg); font-weight:700; color:var(--navy);}
+
+  /* eval */
+  .evalsum{margin-top:8px; padding:8px 12px; font-size:12px; font-weight:700; border:1px solid;}
+  .evalsum.ok{background:var(--ok-bg); border-color:var(--ok-line); color:var(--ok);}
+  .evalsum.bad{background:var(--neg-bg); border-color:var(--neg-line); color:var(--neg);}
+
+  /* AI button + panel */
+  .aibtn{background:var(--ai-bg); color:var(--ai); border:1px solid var(--ai-line); font-size:11px;
+    font-weight:700; padding:6px 12px; margin-top:8px; display:inline-flex; align-items:center; gap:6px;}
+  .aibtn:hover{background:#e8e2f7;}
+  .aibtn .sp{font-size:13px;}
+  .aipanel{position:fixed; top:0; right:-420px; width:400px; height:100vh; background:#fff; z-index:80;
+    box-shadow:-6px 0 24px rgba(18,48,94,.18); transition:right .25s; display:flex; flex-direction:column;}
+  .aipanel.open{right:0;}
+  .aihead{background:var(--ai); color:#fff; padding:13px 16px; font-size:13px; font-weight:700;
+    display:flex; align-items:center; gap:8px;}
+  .aihead .x{margin-left:auto; background:transparent; color:#fff; border:none; font-size:18px;}
+  .aibody{flex:1; overflow:auto; padding:16px;}
+  .aibody .note{font-size:11px; color:var(--gray); background:var(--ai-bg); border-left:3px solid var(--ai);
+    padding:8px 11px; line-height:1.7; margin-bottom:12px;}
+  .airesult{border:1px solid var(--ai-line); background:#fbfaff; padding:12px; font-size:12px; line-height:1.8;
+    white-space:pre-wrap; min-height:80px; margin-top:10px;}
+  .aifoot{border-top:1px solid var(--line); padding:12px 16px; display:flex; gap:8px;}
+  .aifoot button{flex:1; font-size:11.5px; font-weight:700; padding:8px; border:1px solid;}
+  .aifoot .gen{background:var(--ai); color:#fff; border-color:var(--ai);}
+  .aifoot .apply{background:var(--ok-bg); color:var(--ok); border-color:var(--ok-line);}
+  .aifoot .apply:disabled{opacity:.4; cursor:not-allowed;}
+  .overlay{position:fixed; inset:0; background:rgba(18,48,94,.28); z-index:75; display:none;}
+  .overlay.show{display:block;}
+  .aitag{font-size:9.5px; font-weight:700; color:var(--ai); background:var(--ai-bg); border:1px solid var(--ai-line);
+    padding:1px 6px; margin-left:6px;}
+
+  /* self-check */
+  .check{border:1px solid var(--line); margin-top:10px;}
+  .check .row{display:flex; gap:10px; padding:9px 12px; border-top:1px solid var(--line); font-size:11.5px;}
+  .check .row:first-child{border-top:none;}
+  .check .st{width:16px; flex:none; font-weight:700;}
+  .check .st.ok{color:var(--ok);} .check .st.warn{color:var(--warn);}
+  .check .msg b{color:var(--ink);}
+
+  /* preview */
+  .pv{background:#fff; border:1px solid var(--line); padding:26px 32px; max-width:900px; margin:0 auto;
+    box-shadow:0 2px 18px rgba(18,48,94,.08);}
+  .pv h1{font-size:20px; color:var(--navy); border-top:4px solid var(--navy); padding-top:14px; margin:0 0 4px;}
+  .pv h2{font-size:14px; color:var(--navy); background:var(--panel); padding:7px 11px; margin:20px 0 8px;
+    border-left:3px solid var(--navy);}
+  .pv .kv{display:grid; grid-template-columns:180px 1fr; gap:2px 14px; font-size:12px; padding:3px 0;
+    border-bottom:1px dotted var(--line);}
+  .pv .kv .k{color:var(--gray); font-weight:700;}
+  .pv .kv .v{white-space:pre-wrap;}
+  .pv .empty{color:var(--gray-l); font-style:italic;}
+
+  /* footer nav */
+  .fnav{position:fixed; bottom:0; left:0; right:0; background:#fff; border-top:1px solid var(--line);
+    padding:11px 24px; display:flex; align-items:center; gap:12px; z-index:55;
+    box-shadow:0 -2px 12px rgba(18,48,94,.07);}
+  .preview .fnav .stepnav{display:none;}
+  .fnav .stepnav{display:flex; gap:10px; align-items:center;}
+  .fnav button{font-size:12px; font-weight:700; padding:8px 18px; border:1px solid;}
+  .fnav .prev{background:#fff; color:var(--gray); border-color:var(--line);}
+  .fnav .next{background:var(--navy); color:#fff; border-color:var(--navy);}
+  .fnav .stepcur{font-size:11px; color:var(--gray); margin:0 4px;}
+  .fnav .sp{flex:1;}
+  .fnav .save2{background:var(--pos-bg); color:var(--navy); border-color:#a9c6e8;}
+
+  .demo{font-size:10px; color:var(--gray-l); text-align:center; padding:6px; background:var(--panel);}
+  @media print{ .bar,.prog,nav.side,.fnav,.resume,.aibtn{display:none!important;} main{padding:0;} }
+</style>
+</head>
+<body>
+
+<div class="bar">
+  <span class="ttl">様式2　調達仕様書</span>
+  <span class="aitag" style="color:#fff;background:rgba(255,255,255,.15);border-color:rgba(255,255,255,.3)">改善プロトタイプ</span>
+  <span class="spacer"></span>
+  <span class="savest" id="saveSt"><span class="dot"></span><span id="saveTxt">下書きは自動保存されます</span></span>
+  <button class="ghost" id="btnSave">下書き保存</button>
+  <button class="ghost" id="btnPreview">全体プレビュー</button>
+</div>
+
+<div class="resume" id="resume">
+  <span>💾 前回の<b>下書き</b>が見つかりました（<span id="resumeTime"></span>）。続きから再開できます。</span>
+  <span class="sp"></span>
+  <button class="go" id="btnResume">続きから</button>
+  <button class="dc" id="btnDiscard">新規に始める</button>
+</div>
+
+<div class="prog">
+  <span class="lab">入力の進捗</span>
+  <span class="track"><i id="progBar"></i></span>
+  <span class="pct" id="progPct">0%</span>
+</div>
+
+<div class="app" id="app">
+  <nav class="side">
+    <div class="cap">記入すべきセクション</div>
+    <div id="navList"></div>
+    <div class="navhint" id="navHint">0-2 で契約類型を選ぶと、記入すべきステップだけがここに並びます。</div>
+  </nav>
+
+  <main id="main">
+    <!-- steps injected -->
+    <div id="steps"></div>
+    <!-- preview -->
+    <div id="pvWrap" style="display:none;"></div>
+  </main>
+</div>
+
+<div class="fnav">
+  <div class="stepnav">
+    <button class="prev" id="btnPrev">← 戻る</button>
+    <span class="stepcur" id="stepCur"></span>
+    <button class="next" id="btnNext">次へ →</button>
+  </div>
+  <span class="sp"></span>
+  <button class="save2" id="btnSave2" style="display:none;">下書き保存</button>
+  <button class="next" id="btnBackEdit" style="display:none;">← 入力に戻る</button>
+  <button class="prev" id="btnPrint" style="display:none;">印刷 / PDF</button>
+</div>
+
+<div class="overlay" id="overlay"></div>
+<div class="aipanel" id="aipanel">
+  <div class="aihead">🤖 AI 入力アシスタント <button class="x" id="aiX">×</button></div>
+  <div class="aibody">
+    <div class="note" id="aiNote"></div>
+    <label class="fl" style="margin-top:0">箇条書きのメモ・キーワード <span class="opt">整っていなくて構いません</span></label>
+    <textarea id="aiInput" style="min-height:90px" placeholder="例：受発注システム 2014年導入 サポート2027年3月終了 モバイル対応したい 4月に組織統合"></textarea>
+    <div class="airesult" id="aiResult">ここに下書きが生成されます。</div>
+  </div>
+  <div class="aifoot">
+    <button class="gen" id="aiGen">下書きを生成</button>
+    <button class="apply" id="aiApply" disabled>この内容を反映</button>
+  </div>
+</div>
+
+<div class="demo">これはUI/UXを「見て分かる」ためのプロトタイプです。保存はブラウザ内（localStorage）で擬似的に動作し、AI生成・セルフチェックはサンプル応答です。本番はバックエンド／DB／LLMと連携します。</div>
+
+<script>
+"use strict";
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const KEY="form2_proto_draft_v1";
+
+/* ---- contract types (subset of original CATS) ---- */
+const TYPES=[
+  ["A-2","SaaS利用（エンタープライズ）"],["A-1","IaaS/PaaS利用"],
+  ["C-1","システム開発委託（請負）"],["C-3","アジャイル開発"],
+  ["D-1","IT運用保守"],["D-2","マネージドサービス"],
+  ["B-2","サブスクリプションライセンス"],["G-2","SES"]
+];
+/* which steps apply per primary category (mirrors original RULES intent) */
+const RULES={A:["0","1","2","3","4","sla","5","11","review"],
+  C:["0","1","2","3","4","sla","5","11","review"],
+  D:["0","1","2","4","sla","5","11","review"],
+  B:["0","1","3","4","5","11","review"],
+  G:["0","1","3","5","11","review"]};
+
+/* step definitions */
+const STEPS={
+  "0":{no:"0",label:"案件情報・類型",purpose:"すべての起点。ここで契約類型を選ぶと、あなたが記入すべきステップだけに絞り込まれます。",
+    fields:["title","period","primary"]},
+  "1":{no:"1",label:"目的・背景",purpose:"応札者が提案の前提を置くための情報です。整った文章である必要はありません。",fields:["s1_text"]},
+  "2":{no:"2",label:"現行環境",purpose:"応札者が見積の土台にする現状。資料添付＋補足で構いません。",fields:["s2_text"]},
+  "3":{no:"3",label:"要求事項",purpose:"「何を」「なぜ」を書きます。「どうやって」は応札者が提案します。",fields:["s3_text"]},
+  "4":{no:"4",label:"非機能要件",purpose:"性能・可用性・セキュリティなど。該当をチェックし、値だけ入れれば整います。",fields:["nf_perf","nf_avail"]},
+  "sla":{no:"4-2",label:"SLA",purpose:"指標・目標・測定・未達措置を行で管理します。",fields:["sla"]},
+  "5":{no:"5",label:"制約・予算",purpose:"期限・予算・技術標準。予算は自動集計されます。",fields:["b_init"]},
+  "11":{no:"11",label:"評価項目と配点",purpose:"競争で何を評価するか。配点は合計100に。",fields:["eval"]},
+  "review":{no:"✓",label:"提出前チェック",purpose:"VMOが見る7項目を、提出前にAIがセルフチェックします。",fields:[]}
+};
+
+let state=loadRaw()||{};   // form values
+let order=["0"];           // active step keys
+let idx=0;                 // current step index
+let previewMode=false;
+
+/* ---------- persistence ---------- */
+function loadRaw(){try{const r=localStorage.getItem(KEY);return r?JSON.parse(r):null;}catch(e){return null;}}
+let saveTimer=null, hasDraftOnLoad=false;
+function scheduleSave(){
+  $("#saveSt").classList.add("saving"); $("#saveTxt").textContent="保存中…";
+  clearTimeout(saveTimer);
+  saveTimer=setTimeout(()=>{
+    state._t=Date.now();
+    try{localStorage.setItem(KEY,JSON.stringify(state));}catch(e){}
+    $("#saveSt").classList.remove("saving");
+    $("#saveTxt").textContent="保存しました（"+new Date().toLocaleTimeString('ja-JP',{hour:'2-digit',minute:'2-digit'})+"）";
+    refreshNav();
+  },700);
+}
+function val(k){return state[k]??"";}
+function set(k,v){state[k]=v; scheduleSave();}
+
+/* ---------- step status ---------- */
+function stepStatus(key){
+  const f=STEPS[key].fields;
+  if(key==="review") return "none";
+  if(key==="sla"){const a=state.sla||[];return a.some(r=>r&&r.metric)?"done":(a.length?"part":"none");}
+  if(key==="4"){const has=(state.nf_perf||state.nf_avail||state.nf_sec);return has?"done":"none";}
+  if(key==="11"){return (state.eval&&state.eval.some(x=>x))?"part":"none";}
+  const filled=f.filter(k=>String(val(k)).trim()).length;
+  if(filled===0) return "none";
+  if(filled===f.length) return "done"; return "part";
+}
+function refreshNav(){
+  const nav=$("#navList"); nav.innerHTML="";
+  order.forEach((k,i)=>{
+    const s=STEPS[k], st=stepStatus(k);
+    const b=document.createElement("button");
+    b.className="navitem"+(i===idx&&!previewMode?" on":"");
+    b.innerHTML=`<span class="nn">${s.no}</span><span class="nl">${s.label}</span><span class="badge ${st==='done'?'done':st==='part'?'part':''}"></span>`;
+    b.onclick=()=>{go(i);};
+    nav.appendChild(b);
+  });
+  // progress = done steps / (all but review)
+  const cnt=order.filter(k=>k!=="review");
+  const done=cnt.filter(k=>stepStatus(k)==="done").length;
+  const pct=cnt.length?Math.round(done/cnt.length*100):0;
+  $("#progBar").style.width=pct+"%"; $("#progPct").textContent=pct+"%";
+}
+
+/* ---------- render current step ---------- */
+function go(i){previewMode=false; $("#app").classList.remove("preview");
+  $("#pvWrap").style.display="none"; $("#steps").style.display="block";
+  $(".stepnav").style.display="flex"; $("#btnBackEdit").style.display="none"; $("#btnPrint").style.display="none"; $("#btnSave2").style.display="none";
+  idx=Math.max(0,Math.min(order.length-1,i)); render(); refreshNav(); scrollTop();}
+function scrollTop(){try{window.scrollTo(0,0);}catch(e){} const m=$("#main"); if(m&&m.scrollTo){try{m.scrollTo(0,0);}catch(e){}}}
+
+function render(){
+  const key=order[idx], s=STEPS[key];
+  $("#stepCur").textContent=`ステップ ${idx+1} / ${order.length}`;
+  $("#btnPrev").style.visibility=idx===0?"hidden":"visible";
+  $("#btnNext").textContent = idx===order.length-1?"完了":"次へ →";
+  let h=`<div class="step on"><div class="eyebrow">IT PROCUREMENT GOVERNANCE ／ 競争調達</div>
+    <h1 class="sttl">${s.no}. ${s.label}</h1><div class="purpose">${s.purpose}</div>`;
+  h+=BODY[key]?BODY[key]():"";
+  h+=`</div>`;
+  $("#steps").innerHTML=h;
+  bind(key);
+}
+
+/* ---------- per-step bodies ---------- */
+const BODY={
+  "0":()=>`
+    <label class="fl">件名<span class="req">必須</span></label>
+    <input type="text" data-k="title" value="${esc(val('title'))}" placeholder="例：受発注システム更改">
+    <label class="fl">契約予定期間</label>
+    <input type="text" data-k="period" value="${esc(val('period'))}" placeholder="例：2026年10月1日 〜 2029年9月30日">
+    <p class="hint">案件番号・作成部署・作成者・作成日は、本番ではシステムが自動付与します。</p>
+    <h3>0-2. 契約類型の選択 <span class="req" style="font-size:10px">主類型を1つ</span></h3>
+    <p class="hint">選ぶと、右のステップが「あなたに必要な分」だけに絞り込まれます（プログレッシブ開示）。</p>
+    <div class="typegrid">${TYPES.map(([cd,nm])=>`<button type="button" class="typecard${val('primary')===cd?' on':''}" data-type="${cd}"><span class="cd">${cd}</span><span>${nm}</span></button>`).join("")}</div>`,
+  "1":()=>textStep("s1_text","例：現行の受発注システムは2014年導入で、サポートが2027年3月に終了する。モバイル対応と基幹系連携を実現したい。2027年4月に組織統合予定。",true,
+    "目的・背景をAIで下書き","箇条書きのメモや添付資料から、目的・背景・課題の初稿を作ります。人が直す前提です。"),
+  "2":()=>textStep("s2_text","添付資料の補足や、資料に無い点を記述してください。",true,
+    "現状の補足をAIで整理","メモから現行環境の説明文を整えます。"),
+  "3":()=>`<p class="hint">手段ではなく<b>結果</b>で書きます。「◯◯画面を作る」→「◯◯ができる状態にする」。</p>
+    ${textStep("s3_text","【必須】外出先から在庫をリアルタイム照会できること\n【必須】発注承認をモバイルで実施できること\n【任意】受発注実績をグラフで確認できること",false,
+    "要求事項をAIで下書き","やりたいことのメモを、結果ベースの要求文へ変換します。")}`,
+  "4":()=>`
+    <p class="hint">まず<b>該当する観点だけ</b>チェック。チェックした項目にだけ入力欄が開きます（自由記述の負担を減らす例）。</p>
+    <label class="ck"><input type="checkbox" data-ck="perf"${state.ck_perf?' checked':''}> 性能</label>
+    <div class="sub${state.ck_perf?' show':''}" data-sub="perf">
+      <div class="inline"><span style="font-size:11.5px">画面応答</span>
+      <input type="number" data-k="nf_perf" value="${esc(val('nf_perf'))}" style="width:80px" placeholder="3"> 秒以内 ／
+      同時接続 <input type="number" data-k="nf_perf_u" value="${esc(val('nf_perf_u'))}" style="width:90px" placeholder="200"> ユーザー</div></div>
+    <label class="ck"><input type="checkbox" data-ck="avail"${state.ck_avail?' checked':''}> 可用性</label>
+    <div class="sub${state.ck_avail?' show':''}" data-sub="avail">
+      <div class="inline">稼働率 <input type="number" step="0.1" data-k="nf_avail" value="${esc(val('nf_avail'))}" style="width:80px" placeholder="99.5"> % 以上 ／
+      RTO <input type="number" data-k="nf_rto" value="${esc(val('nf_rto'))}" style="width:60px" placeholder="4">h ／
+      RPO <input type="number" data-k="nf_rpo" value="${esc(val('nf_rpo'))}" style="width:60px" placeholder="1">h</div></div>
+    <label class="ck"><input type="checkbox" data-ck="sec"${state.ck_sec?' checked':''}> セキュリティ</label>
+    <div class="sub${state.ck_sec?' show':''}" data-sub="sec">
+      <label class="ck"><input type="checkbox" data-k2="nf_sso"${state.nf_sso?' checked':''}> 社内認証基盤とのSSO必須</label>
+      <div class="inline">監査ログ保管 <input type="number" data-k="nf_log" value="${esc(val('nf_log'))}" style="width:60px" placeholder="5"> 年</div></div>
+    <label class="ck"><input type="checkbox" data-ck="reg"${state.ck_reg?' checked':''}> 規制・コンプライアンス</label>
+    <div class="sub${state.ck_reg?' show':''}" data-sub="reg">
+      <div class="ckgrid"><label class="ck"><input type="checkbox" data-k2="reg_gxp"${state.reg_gxp?' checked':''}> GxP/CSV</label>
+      <label class="ck"><input type="checkbox" data-k2="reg_pi"${state.reg_pi?' checked':''}> 個人情報保護法</label>
+      <label class="ck"><input type="checkbox" data-k2="reg_sox"${state.reg_sox?' checked':''}> J-SOX</label></div></div>
+    <label class="fl">補足（自由記述）<span class="opt">任意</span></label>
+    <textarea data-k="nf_note" placeholder="上の選択で拾えない事項があれば">${esc(val('nf_note'))}</textarea>`,
+  "sla":()=>{const rows=state.sla||[];
+    return `<p class="hint">1つの大きなテキスト欄ではなく、<b>行で追加</b>していきます。応札者も読みやすくなります。</p>
+    <table class="rt"><thead><tr><th>指標</th><th>目標値</th><th>測定方法</th><th>未達時の措置</th><th style="width:40px"></th></tr></thead>
+    <tbody id="slaBody">${rows.map((r,i)=>slaRow(r,i)).join("")||slaRow({},0)}</tbody></table>
+    <button class="addrow" id="slaAdd">＋ 行を追加</button>`;},
+  "5":()=>`
+    <h3>5-2. 予算</h3>
+    <p class="hint">金額は<b>自動で3桁区切り</b>・<b>合計を自動計算</b>します（電卓・手打ち集計が不要）。</p>
+    <table class="money"><thead><tr><th>費目</th><th>金額（税抜）</th></tr></thead>
+    <tbody>
+      <tr><td class="lbl">初期費用</td><td><span class="yen">￥<input type="text" class="mn" data-k="b_init" value="${esc(val('b_init'))}" placeholder="0"></span></td></tr>
+      <tr><td class="lbl">運用費用 ／ 年</td><td><span class="yen">￥<input type="text" class="mn" data-k="b_run" value="${esc(val('b_run'))}" placeholder="0"></span></td></tr>
+      <tr><td class="lbl">ライセンス費用</td><td><span class="yen">￥<input type="text" class="mn" data-k="b_lic" value="${esc(val('b_lic'))}" placeholder="0"></span></td></tr>
+    </tbody>
+    <tfoot><tr><td class="lbl">合計（概算）</td><td style="text-align:right">￥ <span id="bTotal">0</span></td></tr></tfoot></table>
+    <h3>5-3. 技術標準・制約</h3>
+    <label class="fl">期日 <span class="opt">日付ピッカー</span></label>
+    <div class="row2"><div><span class="hint">RFP発行</span><input type="date" data-k="d_rfp" value="${esc(val('d_rfp'))}"></div>
+    <div><span class="hint">稼働開始</span><input type="date" data-k="d_go" value="${esc(val('d_go'))}"></div></div>
+    <label class="fl">技術標準・逸脱の可否</label>
+    <textarea data-k="s5_text" placeholder="例：全社標準はAzure。SSOは必須（逸脱不可）。DBはPostgreSQL標準だが合理的理由あれば逸脱可。">${esc(val('s5_text'))}</textarea>`,
+  "11":()=>{const e=state.eval||[["技術・実現性",40,""],["コスト",30,""],["体制・実績",20,""],["提案の具体性",10,""]];
+    state.eval=e;
+    const sum=e.reduce((a,r)=>a+(+r[1]||0),0);
+    return `<p class="hint">配点は<b>合計100</b>にします。合計は自動チェックされ、VMO承認で凍結されます。</p>
+    <table class="rt"><thead><tr><th style="width:30px">#</th><th>評価項目</th><th style="width:90px">配点</th><th>評価の観点</th></tr></thead>
+    <tbody>${e.map((r,i)=>`<tr><td>${i+1}</td>
+      <td><input type="text" data-ev="${i}-0" value="${esc(r[0])}"></td>
+      <td><input type="number" data-ev="${i}-1" value="${esc(r[1])}" style="width:60px"></td>
+      <td><input type="text" data-ev="${i}-2" value="${esc(r[2])}" placeholder="何を見るか"></td></tr>`).join("")}</tbody></table>
+    <div class="evalsum ${sum===100?'ok':'bad'}" id="evalSum">合計：${sum} / 100 ${sum===100?'✓ 適正':'（100になっていません）'}</div>`;},
+  "review":()=>{return `<p class="hint">VMOが「第三者が見積リスクを織り込めるか」を判定する7項目を、提出前にAIがセルフチェックします。差戻しの往復を先回りで減らす狙いです。</p>
+    <button class="aibtn" id="runCheck"><span class="sp">🤖</span> AIでセルフチェックを実行</button>
+    <div class="check" id="checkOut" style="display:none"></div>
+    <div style="margin-top:18px"><button class="next" style="padding:9px 20px" id="btnPreview2">全体プレビュー／PDF出力へ →</button></div>`;}
+};
+function textStep(k,ph,tall,aiLabel,aiNote){
+  return `<textarea data-k="${k}" ${tall?'style="min-height:160px"':''} placeholder="${esc(ph)}">${esc(val(k))}</textarea>
+    <button class="aibtn" data-ai='${JSON.stringify({k,label:aiLabel,note:aiNote})}'><span class="sp">✨</span> ${aiLabel}</button>`;}
+function slaRow(r,i){return `<tr data-sla="${i}">
+  <td><input type="text" data-sf="${i}-metric" value="${esc(r.metric||'')}" placeholder="稼働率"></td>
+  <td><input type="text" data-sf="${i}-target" value="${esc(r.target||'')}" placeholder="99.5%以上"></td>
+  <td><input type="text" data-sf="${i}-measure" value="${esc(r.measure||'')}" placeholder="月次"></td>
+  <td><input type="text" data-sf="${i}-penalty" value="${esc(r.penalty||'')}" placeholder="月額10%減額"></td>
+  <td><button class="xrow" data-xrow="${i}">削除</button></td></tr>`;}
+function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+
+/* ---------- bind events for current step ---------- */
+function bind(key){
+  $$('#steps [data-k]').forEach(el=>{
+    const ev=el.type==="checkbox"?"change":"input";
+    el.addEventListener(ev,()=>{set(el.dataset.k, el.type==="checkbox"?el.checked:el.value); if(el.classList.contains("mn"))fmtMoney();});
+  });
+  $$('#steps [data-k2]').forEach(el=>el.addEventListener("change",()=>set(el.dataset.k2,el.checked)));
+  // type cards
+  $$('#steps [data-type]').forEach(c=>c.addEventListener("click",()=>{
+    set('primary',c.dataset.type); buildOrder(); render(); refreshNav();
+  }));
+  // nf checkboxes -> sub reveal
+  $$('#steps [data-ck]').forEach(c=>c.addEventListener("change",()=>{
+    set('ck_'+c.dataset.ck,c.checked);
+    const sub=$(`#steps [data-sub="${c.dataset.ck}"]`); if(sub)sub.classList.toggle("show",c.checked);
+  }));
+  // sla
+  const add=$("#slaAdd"); if(add)add.addEventListener("click",()=>{state.sla=state.sla||[];state.sla.push({});scheduleSave();render();});
+  $$('#steps [data-sf]').forEach(el=>el.addEventListener("input",()=>{
+    const[i,f]=el.dataset.sf.split("-");state.sla=state.sla||[];state.sla[i]=state.sla[i]||{};state.sla[i][f]=el.value;scheduleSave();refreshNav();}));
+  $$('#steps [data-xrow]').forEach(b=>b.addEventListener("click",()=>{state.sla.splice(+b.dataset.xrow,1);scheduleSave();render();}));
+  // eval
+  $$('#steps [data-ev]').forEach(el=>el.addEventListener("input",()=>{
+    const[i,j]=el.dataset.ev.split("-");state.eval[i][j]=j==1?(+el.value||0):el.value;scheduleSave();
+    if(j==1){const sum=state.eval.reduce((a,r)=>a+(+r[1]||0),0);const d=$("#evalSum");
+      d.className="evalsum "+(sum===100?'ok':'bad');d.textContent=`合計：${sum} / 100 ${sum===100?'✓ 適正':'（100になっていません）'}`;}
+  }));
+  // money init
+  if(key==="5")fmtMoney();
+  // AI buttons
+  $$('#steps [data-ai]').forEach(b=>b.addEventListener("click",()=>openAI(JSON.parse(b.dataset.ai))));
+  // review
+  const rc=$("#runCheck"); if(rc)rc.addEventListener("click",runSelfCheck);
+  const pv2=$("#btnPreview2"); if(pv2)pv2.addEventListener("click",showPreview);
+}
+function fmtMoney(){let tot=0;$$('#steps .mn').forEach(el=>{
+  let n=el.value.replace(/[^0-9]/g,"");tot+=(+n||0);
+  el.value=n?(+n).toLocaleString('ja-JP'):"";});
+  const t=$("#bTotal");if(t)t.textContent=tot.toLocaleString('ja-JP');}
+
+/* ---------- order from type ---------- */
+function buildOrder(){
+  const p=state.primary; const cat=p?p[0]:null;
+  if(cat&&RULES[cat]){order=RULES[cat].slice(); $("#navHint").textContent="類型「"+p+"」に必要なステップだけを表示中です。";}
+  else{order=["0"]; $("#navHint").textContent="0-2 で契約類型を選ぶと、記入すべきステップだけがここに並びます。";}
+  if(idx>=order.length)idx=order.length-1;
+}
+
+/* ---------- AI panel (mock) ---------- */
+let aiTarget=null;
+function openAI(cfg){aiTarget=cfg.k;$("#aiNote").textContent=cfg.note;$("#aiResult").textContent="ここに下書きが生成されます。";
+  $("#aiInput").value=state["_aimemo_"+cfg.k]||"";$("#aiApply").disabled=true;
+  $("#aipanel").classList.add("open");$("#overlay").classList.add("show");}
+function closeAI(){$("#aipanel").classList.remove("open");$("#overlay").classList.remove("show");}
+$("#aiX").onclick=closeAI;$("#overlay").onclick=closeAI;
+$("#aiGen").onclick=()=>{
+  const memo=$("#aiInput").value.trim();
+  const draft=mockDraft(aiTarget,memo);
+  const box=$("#aiResult");box.textContent="";let i=0;
+  const t=setInterval(()=>{box.textContent=draft.slice(0,i+=3);if(i>=draft.length){clearInterval(t);$("#aiApply").disabled=false;}box.scrollTop=box.scrollHeight;},12);
+};
+$("#aiApply").onclick=()=>{
+  const cur=state[aiTarget]?state[aiTarget]+"\n":"";
+  set(aiTarget,cur+$("#aiResult").textContent);
+  const ta=$(`#steps [data-k="${aiTarget}"]`);if(ta)ta.value=state[aiTarget];
+  closeAI();refreshNav();
+};
+function mockDraft(k,memo){
+  const m=memo||"（メモ未入力のためサンプルを生成）";
+  if(k==="s1_text")return `【目的】現行の受発注業務を、外出先からも滞りなく回せる状態にする。\n【背景・経緯】現行システムは2014年導入で2027年3月にサポート終了。更改の機会に懸案を解消したい。\n【解決したい課題】モバイル未対応で外出先の在庫確認・発注承認ができず、現場から改善要望が継続。\n【制度・組織の事情】2027年4月に組織統合を予定。統合後の拠点数は未確定。\n\n（AI下書き・要確認。メモ: ${m}）`;
+  if(k==="s2_text")return `現行はオンプレ構成の資料が2019年時点で残るのみ。以後インフラをクラウド移設済みだが最新構成図は未整備。バッチ仕様は文書化されておらず、ソースは提供可能だが設計意図の記述はない。\n\n（AI下書き・要確認。メモ: ${m}）`;
+  if(k==="s3_text")return `【必須】外出先から在庫数をリアルタイムに照会できること\n【必須】発注承認をモバイル端末で実施できること\n【必須】基幹系と受発注データを連携できること\n【任意】過去12ヶ月の受発注実績をグラフで確認できること\n\n（AI下書き・要確認。メモ: ${m}）`;
+  return `（AI下書き・要確認）\n${m}`;
+}
+
+/* ---------- self check (mock) ---------- */
+function runSelfCheck(){
+  const out=$("#checkOut");out.style.display="block";out.innerHTML='<div class="row"><span class="st">…</span><span class="msg">AIがチェック中…</span></div>';
+  setTimeout(()=>{
+    const items=[
+      ["目的・背景","s1_text","目的・背景・課題が具体的に記述されています。"],
+      ["現行環境","s2_text","規模（利用者数・データ量・件数）が未記載です。応札者が前提を置けるよう追記を推奨します。"],
+      ["要求事項","s3_text","必須／任意の別が明確です。"],
+      ["非機能要件","nf_avail","性能・可用性・セキュリティのいずれかが未入力です。"],
+      ["受入基準",null,"完了の定義が未記入です。「何をもって検収するか」を書くと評価軸が定まります。"],
+      ["前提と責任分界",null,"発注側提供物・責任分界が未記入です。"]
+    ];
+    out.innerHTML=items.map(([name,k,msg])=>{
+      const ok=k&&String(state[k]||"").trim();
+      return `<div class="row"><span class="st ${ok?'ok':'warn'}">${ok?'✓':'!'}</span><span class="msg"><b>${name}</b>：${ok?'記述あり。応札者が見積前提を置けます。':msg}</span></div>`;
+    }).join("");
+  },700);
+}
+
+/* ---------- preview ---------- */
+function showPreview(){previewMode=true;$("#app").classList.add("preview");
+  $("#steps").style.display="none";$("#pvWrap").style.display="block";
+  $("#btnBackEdit").style.display="inline-block";$("#btnPrint").style.display="inline-block";$("#btnSave2").style.display="none";
+  const rows=(state.sla||[]).filter(r=>r&&r.metric);
+  const ev=(state.eval||[]).map(r=>`${r[0]}：${r[1]}点`).join(" ／ ");
+  const g=(k,l)=>`<div class="kv"><span class="k">${l}</span><span class="v ${val(k)?'':'empty'}">${val(k)?esc(val(k)):'（未入力）'}</span></div>`;
+  $("#pvWrap").innerHTML=`<div class="pv">
+    <h1>【様式2】調達仕様書</h1><div class="hint">全体プレビュー（レビュー・PDF出力用の1枚表示）</div>
+    <h2>0. 案件情報</h2>${g('title','件名')}${g('period','契約期間')}
+    <div class="kv"><span class="k">契約類型</span><span class="v">${state.primary||'（未選択）'}</span></div>
+    <h2>1. 目的・背景</h2>${g('s1_text','')}
+    <h2>2. 現行環境</h2>${g('s2_text','')}
+    <h2>3. 要求事項</h2>${g('s3_text','')}
+    <h2>4. 非機能要件</h2>
+    <div class="kv"><span class="k">性能</span><span class="v">${state.nf_perf?`応答${state.nf_perf}秒 / 同時${state.nf_perf_u||'-'}`:'（未入力）'}</span></div>
+    <div class="kv"><span class="k">可用性</span><span class="v">${state.nf_avail?`稼働率${state.nf_avail}% RTO${state.nf_rto||'-'}h RPO${state.nf_rpo||'-'}h`:'（未入力）'}</span></div>
+    <h2>4-2. SLA</h2>${rows.length?rows.map(r=>`<div class="kv"><span class="k">${esc(r.metric)}</span><span class="v">${esc(r.target||'')} / ${esc(r.measure||'')} / ${esc(r.penalty||'')}</span></div>`).join(""):'<div class="empty" style="font-size:12px">（未入力）</div>'}
+    <h2>5. 制約・予算</h2>
+    <div class="kv"><span class="k">予算合計（概算）</span><span class="v">￥${['b_init','b_run','b_lic'].reduce((a,k)=>a+(+String(val(k)).replace(/[^0-9]/g,'')||0),0).toLocaleString('ja-JP')}</span></div>
+    ${g('s5_text','技術標準')}
+    <h2>11. 評価項目と配点</h2><div class="kv"><span class="k">配点</span><span class="v">${ev||'（未設定）'}</span></div>
+  </div>`;
+  refreshNav();scrollTop();
+}
+
+/* ---------- top controls ---------- */
+$("#btnPreview").onclick=showPreview;
+$("#btnBackEdit").onclick=()=>go(idx);
+$("#btnPrint").onclick=()=>window.print();
+$("#btnSave").onclick=()=>{state._t=Date.now();localStorage.setItem(KEY,JSON.stringify(state));
+  $("#saveTxt").textContent="下書きを保存しました ✓";};
+$("#btnPrev").onclick=()=>go(idx-1);
+$("#btnNext").onclick=()=>{if(idx===order.length-1){showPreview();}else go(idx+1);};
+
+/* ---------- resume banner ---------- */
+(function init(){
+  const raw=loadRaw();
+  if(raw&&raw._t){hasDraftOnLoad=true;
+    $("#resume").classList.add("show");
+    $("#resumeTime").textContent=new Date(raw._t).toLocaleString('ja-JP',{month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'});
+    // start clean until user chooses
+    state={};buildOrder();go(0);
+  }else{state={};buildOrder();go(0);}
+})();
+$("#btnResume").onclick=()=>{state=loadRaw()||{};$("#resume").classList.remove("show");buildOrder();go(0);refreshNav();
+  $("#saveTxt").textContent="下書きを復元しました ✓";};
+$("#btnDiscard").onclick=()=>{localStorage.removeItem(KEY);state={};$("#resume").classList.remove("show");buildOrder();go(0);};
+</script>
+</body></html>
