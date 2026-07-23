@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<!--
+  index.html — 予算要求 集計ダッシュボード。
+  表示データ（assets/js/data.js）は `python src/main.py run` 実行時に
+  src/modules/dashboard_sync.py が input/ から自動生成する（集計済み）。
+  JS の読み込み順は data → logic → ui → main（依存順）。JS は描画専念で集計しない。
+-->
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>予算要求 集計ダッシュボード</title>
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <p class="eyebrow" id="eyebrow">IT Budget Review</p>
+    <h1>予算要求 集計ダッシュボード</h1>
+    <p class="sub">各部門から提出された予算要求の全体像。投資（通常投資・POC）とBAU（継続コスト）を横断集計。</p>
+    <div class="datasrc">
+      <span id="srcdot" class="dot"></span><span id="srctext">データ読込中…</span>
+      <span id="audit-badge"></span>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+  <!-- KPI -->
+  <div class="kpi-grid">
+    <div class="kpi accent"><p class="label">要求総額（全体）</p><p class="val" id="k-total">–</p><p class="meta" id="k-total-m"></p></div>
+    <div class="kpi n"><p class="label">通常投資</p><p class="val" id="k-normal">–</p><p class="meta" id="k-normal-m"></p></div>
+    <div class="kpi p"><p class="label">POC（オプション取得）</p><p class="val" id="k-poc">–</p><p class="meta" id="k-poc-m"></p></div>
+    <div class="kpi b"><p class="label">BAU（継続コスト）</p><p class="val" id="k-bau">–</p><p class="meta" id="k-bau-m"></p></div>
+  </div>
+
+  <!-- 区分構成 + 部門別 -->
+  <section>
+    <div class="sec-head"><h2>全体構成</h2><span class="note">投資区分の内訳と、部門ごとの要求規模</span></div>
+    <div class="cols">
+      <div class="panel">
+        <h3>予算種別の構成</h3>
+        <p class="psub">要求総額を通常投資・POC・BAUに分解</p>
+        <div class="bars" id="bars-type"></div>
+        <div class="legend">
+          <span><i style="background:var(--normal)"></i>通常投資</span>
+          <span><i style="background:var(--poc)"></i>POC</span>
+          <span><i style="background:var(--bau)"></i>BAU</span>
+        </div>
+      </div>
+      <div class="panel">
+        <h3>部門別 要求額</h3>
+        <p class="psub">部門ごとの内訳（投資／BAUの積み上げ）</p>
+        <div class="bars" id="bars-dept"></div>
+        <div class="legend">
+          <span><i style="background:var(--normal)"></i>通常投資</span>
+          <span><i style="background:var(--poc)"></i>POC</span>
+          <span><i style="background:var(--bau)"></i>BAU</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- POCパイプライン + BAU増減 -->
+  <section>
+    <div class="sec-head"><h2>要点ビュー</h2><span class="note">「突然登場」を防ぐPOCパイプラインと、BAUの前年対比</span></div>
+    <div class="cols">
+      <div class="panel">
+        <h3>POCパイプライン（Gate2予定）</h3>
+        <p class="psub">本格投資判断の想定時期別。いつ投資判断が来るかの予定表</p>
+        <div class="bars" id="bars-gate2"></div>
+        <div class="legend"><span>件数と当年度POC要求額を時期別に集計</span></div>
+      </div>
+      <div class="panel">
+        <h3>BAU 前年対比</h3>
+        <p class="psub">コスト種別ごとの当年度要求額と増減</p>
+        <div class="bars" id="bars-bau"></div>
+        <div class="legend">
+          <span><i style="background:var(--up)"></i>増額</span>
+          <span><i style="background:var(--down)"></i>減額</span>
+          <span><i style="background:var(--flat)"></i>据置</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 月別ビュー -->
+  <section>
+    <div class="sec-head"><h2>月別推移</h2><span class="note">投資は実施期間で均等按分、BAUは通年で平準化した想定配分</span></div>
+    <div class="cols">
+      <div class="panel">
+        <h3>月別 予算種別 積み上げ</h3>
+        <p class="psub">各月の予算消化額を種別別に積み上げ（単位：百万円）</p>
+        <div id="chart-stack"></div>
+        <div class="legend">
+          <span><i style="background:var(--normal)"></i>通常投資</span>
+          <span><i style="background:var(--poc)"></i>POC</span>
+          <span><i style="background:var(--bau)"></i>BAU</span>
+        </div>
+      </div>
+      <div class="panel">
+        <h3>月別 予算種別 割合</h3>
+        <p class="psub">各月の種別構成比（100%積み上げ）</p>
+        <div id="chart-ratio"></div>
+        <div class="legend">
+          <span><i style="background:var(--normal)"></i>通常投資</span>
+          <span><i style="background:var(--poc)"></i>POC</span>
+          <span><i style="background:var(--bau)"></i>BAU</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 明細テーブル -->
+  <section>
+    <div class="sec-head"><h2>要求明細</h2><span class="note">絞り込み・並べ替え可能。列見出しクリックでソート</span></div>
+    <div class="controls">
+      <span class="lab">表示：</span>
+      <span class="tgl" id="tgl-scope">
+        <button data-scope="all" class="on">すべて</button>
+        <button data-scope="invest">投資のみ</button>
+        <button data-scope="bau">BAUのみ</button>
+        <button data-scope="flagged">要審査のみ</button>
+      </span>
+      <span class="lab" style="margin-left:8px">部門：</span>
+      <select id="sel-dept"><option value="">全部門</option></select>
+      <span class="lab" style="margin-left:8px">区分：</span>
+      <select id="sel-type"><option value="">全区分</option><option>通常投資</option><option>POC</option><option>BAU</option></select>
+    </div>
+    <div class="tbl-wrap">
+      <table id="tbl">
+        <thead><tr>
+          <th data-k="dept">部門</th>
+          <th data-k="category">区分</th>
+          <th data-k="name">案件・項目名</th>
+          <th data-k="vendor">ベンダー</th>
+          <th class="num" data-k="amount">当年度要求額</th>
+          <th class="num" data-k="delta">前年増減</th>
+          <th data-k="note">補足</th>
+        </tr></thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
+    <p class="rowcount" id="rowcount"></p>
+  </section>
+
+  <footer>
+    <div>集計対象：投資要求シート（通常投資・POC）／ BAU予算要求シート。金額は当年度要求額ベース。</div>
+    <div style="margin-top:4px">集計・審査は Python 側（src/）で確定。本画面は表示専用（査定確定前の要求値を表示）。</div>
+  </footer>
+</div>
+
+<!-- 依存順に読み込む: data（集計済み定数）→ logic（表示補助）→ ui（描画）→ main（結線） -->
+<script src="assets/js/data.js"></script>
+<script src="assets/js/logic.js"></script>
+<script src="assets/js/ui.js"></script>
+<script src="assets/js/main.js"></script>
+</body>
+</html>
