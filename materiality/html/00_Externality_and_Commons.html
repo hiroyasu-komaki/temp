@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Externalities and the Commons</title>
+<style>
+  :root{
+    --navy:#12305e; --ink:#1b2430; --gray:#5f6a77; --gray-l:#8b95a1;
+    --line:#d7dde5; --panel:#f5f7fa;
+    --pos:#2f6fc0; --pos-bg:#eef4fc; --pos-line:#a9c6e8;
+    --neg:#c2410c; --neg-bg:#fdf2ea; --neg-line:#eeb185;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; padding:26px 18px 44px; background:#eef1f5; color:var(--ink);
+    font-family:"Yu Gothic UI","Yu Gothic","Hiragino Kaku Gothic ProN","Meiryo","Segoe UI",sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  html[lang="en"] body{font-family:"Segoe UI","Helvetica Neue",Arial,sans-serif;}
+  .slide{
+    max-width:1240px; margin:0 auto; background:#fff; padding:34px 40px 36px;
+    box-shadow:0 2px 18px rgba(18,48,94,.10); border-top:5px solid var(--navy); position:relative;
+  }
+  .lang{position:absolute; top:16px; right:24px; display:flex; border:1px solid var(--line);}
+  .lang button{border:none; background:#fff; color:var(--gray); font:inherit; font-size:11px;
+    font-weight:700; letter-spacing:.06em; padding:5px 13px; cursor:pointer;}
+  .lang button+button{border-left:1px solid var(--line);}
+  .lang button.on{background:var(--navy); color:#fff;}
+  .lang button:focus-visible{outline:2px solid var(--neg); outline-offset:1px;}
+
+  .eyebrow{font-size:10.5px; font-weight:700; letter-spacing:.14em; color:var(--gray-l); margin-bottom:7px;}
+  h1{font-size:25px; margin:0 0 9px; color:var(--navy); font-weight:700; line-height:1.4; padding-right:130px;}
+  .lede{font-size:12.5px; color:var(--gray); line-height:1.8; margin:0 0 22px; padding-bottom:18px; border-bottom:1px solid var(--line);}
+  .lede b{color:var(--ink);}
+
+  .step{font-size:10.5px; font-weight:700; letter-spacing:.1em; color:#fff; background:var(--navy);
+    display:inline-block; padding:3px 11px; margin-bottom:12px;}
+  .step .n{opacity:.6; margin-right:6px;}
+
+  .def{border:1px solid var(--line); background:var(--panel); padding:18px 22px; margin-bottom:12px;}
+  .def .term{font-size:17px; font-weight:700; color:var(--navy); margin-bottom:6px;}
+  .def .term .sub{font-size:12px; color:var(--gray); font-weight:600; margin-left:8px;}
+  .def .body{font-size:12.5px; line-height:1.85;}
+  .def .body b{color:var(--neg);}
+  .def .src{font-size:10.5px; color:var(--gray-l); margin-top:9px; line-height:1.7;}
+
+  .keyeq{display:grid; grid-template-columns:1fr 1fr; gap:12px; margin:14px 0 30px;}
+  .eq{border:1px solid var(--line); padding:12px 16px;}
+  .eq.p{border-left:4px solid var(--pos); background:var(--pos-bg);}
+  .eq.n{border-left:4px solid var(--neg); background:var(--neg-bg);}
+  .eq .k{font-size:10.5px; font-weight:700; letter-spacing:.06em; margin-bottom:5px;}
+  .eq.p .k{color:var(--pos);} .eq.n .k{color:var(--neg);}
+  .eq .f{font-size:14px; font-weight:700; font-family:Georgia,serif; margin-bottom:4px;}
+  .eq .d{font-size:11px; color:var(--gray); line-height:1.65;}
+
+  table{width:100%; border-collapse:collapse; margin-bottom:30px;}
+  th,td{border:1px solid var(--line); padding:10px 13px; font-size:11.5px; line-height:1.7; vertical-align:top;}
+  th.rh{width:132px; background:var(--navy); color:#fff; font-weight:700; font-size:11px;
+    border-color:var(--navy); vertical-align:middle;}
+  th.ch{padding:11px 13px; font-size:13.5px; font-weight:700; color:#fff; text-align:left;}
+  th.ch.p{background:var(--pos); border-color:var(--pos);}
+  th.ch.n{background:var(--neg); border-color:var(--neg);}
+  th.ch .s{display:block; font-size:10.5px; font-weight:600; opacity:.85; margin-top:2px;}
+  td.p{background:#fbfdff;} td.n{background:#fffcfa;}
+  tr.hi td.p{background:var(--pos-bg); font-weight:700; color:var(--pos); font-size:13px;}
+  tr.hi td.n{background:var(--neg-bg); font-weight:700; color:var(--neg); font-size:13px;}
+  tr.hi th.rh{background:#2a4d84; border-color:#2a4d84;}
+  tr.rx th.rh{background:#2a4d84; border-color:#2a4d84;}
+  tr.rx td{font-weight:700; color:var(--navy); background:var(--panel);}
+  .ex{color:var(--gray); font-weight:400; font-size:11px;}
+
+  .commons{border:1px solid var(--line); margin-bottom:12px;}
+  .commons .ch2{background:var(--navy); color:#fff; padding:12px 20px; font-size:15px; font-weight:700;}
+  .commons .ch2 .sub{font-size:11px; opacity:.7; font-weight:600; margin-left:8px;}
+  .commons .cb{padding:18px 22px;}
+  .fable{font-size:12.5px; line-height:1.9; margin-bottom:14px;}
+  .fable b{color:var(--neg);}
+  .asym{display:grid; grid-template-columns:1fr 34px 1fr; align-items:center; margin-bottom:14px;}
+  .asym .box{border:1px solid var(--line); padding:11px 15px; background:var(--panel);}
+  .asym .box .k{font-size:10.5px; font-weight:700; color:var(--gray); margin-bottom:3px;}
+  .asym .box .v{font-size:13px; font-weight:700;}
+  .asym .box.a .v{color:var(--pos);} .asym .box.b .v{color:var(--neg);}
+  .asym .mid{text-align:center; font-size:13px; color:var(--gray-l); font-weight:700;}
+  .verdict{border-left:4px solid var(--neg); background:var(--neg-bg); padding:11px 16px;
+    font-size:12.5px; font-weight:700; color:#8a3708; line-height:1.7;}
+
+  .distinct{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:14px;}
+  .dcard{border:1px solid var(--line); padding:14px 17px;}
+  .dcard.n{border-left:4px solid var(--neg);} .dcard.p{border-left:4px solid var(--pos);}
+  .dcard .t{font-size:13px; font-weight:700; color:var(--navy); margin-bottom:5px;}
+  .dcard .t .sub{font-size:10px; color:var(--gray-l); font-weight:600; display:block; margin-top:1px;}
+  .dcard .d{font-size:11.5px; line-height:1.75; color:var(--gray);}
+  .dcard .d b{color:var(--ink);}
+  .joint{font-size:11.5px; line-height:1.8; color:var(--gray); margin:0 0 30px;
+    padding:11px 16px; background:var(--panel); border-left:4px solid var(--navy);}
+  .joint b{color:var(--ink);}
+
+  .rx-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:12px;}
+  .rx{border:1px solid var(--line);}
+  .rx .h{padding:9px 13px; background:var(--panel); border-bottom:1px solid var(--line);}
+  .rx .h .t{font-size:12.5px; font-weight:700; color:var(--navy);}
+  .rx .h .who{font-size:10px; color:var(--gray-l); margin-top:2px;}
+  .rx .b{padding:10px 13px; font-size:11px; line-height:1.7; color:var(--gray);}
+  .rx .b b{color:var(--ink);}
+  .tag{display:inline-block; font-size:9.5px; font-weight:700; padding:1px 6px; margin-bottom:6px; border:1px solid;}
+  .tag-n{color:var(--neg); border-color:var(--neg-line); background:var(--neg-bg);}
+  .tag-p{color:var(--pos); border-color:var(--pos-line); background:var(--pos-bg);}
+  .tag-b{color:var(--navy); border-color:#a8b6cc; background:var(--panel);}
+
+  .ostrom{margin-top:22px; border:2px solid var(--navy); padding:16px 20px; background:#fff;}
+  .ostrom .lbl{font-size:10px; font-weight:700; letter-spacing:.1em; color:#fff; background:var(--navy);
+    display:inline-block; padding:2px 9px; margin-bottom:9px;}
+  .ostrom .t{font-size:14px; font-weight:700; color:var(--navy); margin-bottom:7px; line-height:1.6;}
+  .ostrom .d{font-size:11.5px; line-height:1.85; color:var(--gray);}
+  .ostrom .d b{color:var(--ink);}
+  .ostrom ul{margin:8px 0 0; padding-left:1.2em; columns:2; column-gap:26px;}
+  .ostrom li{font-size:11px; line-height:1.7; margin-bottom:2px; color:var(--gray); break-inside:avoid;}
+
+  .refs{margin-top:24px; padding-top:14px; border-top:1px solid var(--line);
+    font-size:10px; color:var(--gray-l); line-height:1.85;}
+  .refs b{color:var(--gray); font-weight:700; letter-spacing:.06em;}
+
+  .pagenav{margin-top:26px; padding-top:16px; border-top:1px solid var(--line);
+    display:grid; grid-template-columns:1fr auto 1fr; align-items:stretch; gap:10px;}
+  .pagenav a{color:var(--navy); text-decoration:none; font-weight:700; font-size:11.5px;
+    padding:11px 16px; border:1px solid var(--line); background:#fff; display:block; line-height:1.5;}
+  .pagenav a:hover{border-color:var(--navy); background:var(--panel);}
+  .pagenav a .lbl{display:block; font-size:9px; font-weight:700; color:var(--gray-l); letter-spacing:.08em; margin-bottom:2px;}
+  .pagenav .prev a{text-align:left;}
+  .pagenav .next a{text-align:right;}
+  .pagenav .home{text-align:center;}
+  .pagenav .home a{color:var(--gray); font-weight:700; padding:11px 16px;}
+  .pagenav .empty{visibility:hidden;}
+
+  @media(max-width:900px){
+    h1{padding-right:0; margin-top:38px;}
+    .keyeq,.distinct,.asym{grid-template-columns:1fr;}
+    .rx-grid{grid-template-columns:1fr 1fr;}
+    .ostrom ul{columns:1;}
+    table{display:block; overflow-x:auto;}
+    .pagenav{grid-template-columns:1fr;}
+    .pagenav .prev a,.pagenav .next a{text-align:center;}
+    .pagenav .empty{display:none;}
+  }
+  @media print{body{background:#fff; padding:0;} .slide{box-shadow:none; max-width:none;} .lang{display:none;} .pagenav{display:none;}}
+</style>
+</head>
+<body>
+<div class="slide">
+  <div class="lang" role="group" aria-label="Language">
+    <button id="btn-ja" class="on" onclick="setLang('ja')">日本語</button>
+    <button id="btn-en" onclick="setLang('en')">English</button>
+  </div>
+
+  <div class="eyebrow">CONCEPTUAL FOUNDATION</div>
+  <h1 data-ja="外部性とコモンズの悲劇 ─ 市場の失敗に関する経済学的整理"
+      data-en="Externalities and the Tragedy of the Commons: A Review of Market Failure">外部性とコモンズの悲劇 ─ 市場の失敗に関する経済学的整理</h1>
+
+  <p class="lede"
+     data-ja="各主体が自らの視野の中で完全に合理的に判断しているにもかかわらず、全体としては望ましくない結果に至る。<br>この現象は<b>「市場の失敗（Market Failure）」</b>として100年以上にわたり研究され、その発生条件と処方箋は理論的・実証的に確立されている。"
+     data-en="Every actor decides rationally within their own field of vision, and yet the collective outcome is one that nobody wanted.<br>Economics has studied this under the heading of <b>market failure</b> for more than a century. Its conditions and its remedies are both theoretically and empirically established.">
+    各主体が自らの視野の中で完全に合理的に判断しているにもかかわらず、全体としては望ましくない結果に至る。<br>この現象は<b>「市場の失敗（Market Failure）」</b>として100年以上にわたり研究され、その発生条件と処方箋は理論的・実証的に確立されている。
+  </p>
+
+  <div class="step"><span class="n">01</span><span data-ja="定義" data-en="DEFINITION">定義</span></div>
+  <div class="def">
+    <div class="term" data-ja="外部性<span class='sub'>Externality</span>" data-en="Externality<span class='sub'>外部性</span>">外部性<span class="sub">Externality</span></div>
+    <div class="body"
+      data-ja="ある経済主体の行動が、<b>市場での取引を経由せずに</b>第三者の便益・費用に影響を与えること。影響が価格に反映されないため、意思決定者の計算に入らない。<br>本質は道徳の問題ではなく<b>計算の範囲の問題</b>である。各主体は自らに見える費用と便益だけを最適化しており、その意味では完全に合理的に振る舞っている。"
+      data-en="An externality arises when one actor&#39;s behaviour affects the costs or benefits of a third party <b>without passing through a market transaction</b>. Because the effect never enters a price, it never enters the decision-maker&#39;s calculation.<br>The core issue is not morality but <b>the boundary of the calculation</b>. Each actor optimises only over the costs and benefits visible to them — and in that sense behaves entirely rationally.">
+      ある経済主体の行動が、<b>市場での取引を経由せずに</b>第三者の便益・費用に影響を与えること。影響が価格に反映されないため、意思決定者の計算に入らない。<br>本質は道徳の問題ではなく<b>計算の範囲の問題</b>である。各主体は自らに見える費用と便益だけを最適化しており、その意味では完全に合理的に振る舞っている。
+    </div>
+    <div class="src"
+      data-ja="A. C. Pigou, <i>The Economics of Welfare</i> (1920) が体系化。先行して A. Marshall (1890) が外部経済の概念を提示。"
+      data-en="Systematised by A. C. Pigou, <i>The Economics of Welfare</i> (1920). The notion of external economies appears earlier in A. Marshall (1890).">
+      A. C. Pigou, <i>The Economics of Welfare</i> (1920) が体系化。先行して A. Marshall (1890) が外部経済の概念を提示。
+    </div>
+  </div>
+
+  <div class="keyeq">
+    <div class="eq p">
+      <div class="k" data-ja="正の外部性がある場合" data-en="WITH A POSITIVE EXTERNALITY">正の外部性がある場合</div>
+      <div class="f" data-ja="私的便益 ＜ 社会的便益" data-en="Private benefit &lt; Social benefit">私的便益 ＜ 社会的便益</div>
+      <div class="d"
+        data-ja="意思決定者は自分に返ってくる分しか計上しない。よって社会的に望ましい水準より供給が少なくなる（<b>過小供給</b>）。"
+        data-en="The decision-maker counts only the share that returns to them. Supply therefore falls short of the socially desirable level — <b>undersupply</b>.">
+        意思決定者は自分に返ってくる分しか計上しない。よって社会的に望ましい水準より供給が少なくなる（<b>過小供給</b>）。
+      </div>
+    </div>
+    <div class="eq n">
+      <div class="k" data-ja="負の外部性がある場合" data-en="WITH A NEGATIVE EXTERNALITY">負の外部性がある場合</div>
+      <div class="f" data-ja="私的費用 ＜ 社会的費用" data-en="Private cost &lt; Social cost">私的費用 ＜ 社会的費用</div>
+      <div class="d"
+        data-ja="意思決定者は自分が負う分しか計上しない。よって社会的に望ましい水準より活動が多くなる（<b>過剰発生</b>）。"
+        data-en="The decision-maker counts only the share they bear. Activity therefore exceeds the socially desirable level — <b>overproduction</b>.">
+        意思決定者は自分が負う分しか計上しない。よって社会的に望ましい水準より活動が多くなる（<b>過剰発生</b>）。
+      </div>
+    </div>
+  </div>
+
+  <div class="step"><span class="n">02</span><span data-ja="正の外部性と負の外部性" data-en="POSITIVE AND NEGATIVE EXTERNALITIES">正の外部性と負の外部性</span></div>
+  <table>
+    <tr>
+      <th class="rh"></th>
+      <th class="ch p" data-ja="正の外部性<span class='s'>Positive Externality ／ 便益が外部へ漏れる</span>" data-en="Positive Externality<span class='s'>Benefit spills outward</span>">正の外部性<span class="s">Positive Externality ／ 便益が外部へ漏れる</span></th>
+      <th class="ch n" data-ja="負の外部性<span class='s'>Negative Externality ／ 費用が外部へ漏れる</span>" data-en="Negative Externality<span class='s'>Cost spills outward</span>">負の外部性<span class="s">Negative Externality ／ 費用が外部へ漏れる</span></th>
+    </tr>
+    <tr>
+      <th class="rh" data-ja="典型例" data-en="Typical cases">典型例</th>
+      <td class="p" data-ja="教育、基礎研究、予防接種、養蜂（近隣果樹の受粉）、景観整備、オープンソース" data-en="Education, basic research, vaccination, beekeeping (pollinating neighbouring orchards), landscaping, open source software">教育、基礎研究、予防接種、養蜂（近隣果樹の受粉）、景観整備、オープンソース</td>
+      <td class="n" data-ja="公害、騒音、渋滞、乱獲、抗生物質の乱用、温室効果ガス排出" data-en="Pollution, noise, congestion, overfishing, antibiotic overuse, greenhouse gas emissions">公害、騒音、渋滞、乱獲、抗生物質の乱用、温室効果ガス排出</td>
+    </tr>
+    <tr>
+      <th class="rh" data-ja="意思決定者から<br>どう見えるか" data-en="How it appears to the<br>decision-maker">意思決定者から<br>どう見えるか</th>
+      <td class="p" data-ja="便益の一部が他者に流出するため、<b>実際の価値より小さく見える</b>" data-en="Part of the benefit leaks to others, so the investment <b>looks smaller than it truly is</b>">便益の一部が他者に流出するため、<b>実際の価値より小さく見える</b></td>
+      <td class="n" data-ja="費用の一部を他者が負うため、<b>実際の負担より軽く見える</b>" data-en="Part of the cost is borne by others, so the burden <b>looks lighter than it truly is</b>">費用の一部を他者が負うため、<b>実際の負担より軽く見える</b></td>
+    </tr>
+    <tr>
+      <th class="rh" data-ja="合理的な帰結" data-en="The rational response">合理的な帰結</th>
+      <td class="p" data-ja="やらない／小規模にとどめる" data-en="Do not act, or act only minimally">やらない／小規模にとどめる</td>
+      <td class="n" data-ja="やる／続ける／先送りする" data-en="Act, continue, or defer the fix">やる／続ける／先送りする</td>
+    </tr>
+    <tr class="hi">
+      <th class="rh" data-ja="帰結" data-en="Outcome">帰結</th>
+      <td class="p" data-ja="過小供給 ─ 望ましいものが生まれない" data-en="Undersupply — what is needed never appears">過小供給 ─ 望ましいものが生まれない</td>
+      <td class="n" data-ja="過剰発生 ─ 望ましくないものが止まらない" data-en="Overproduction — what is harmful never stops">過剰発生 ─ 望ましくないものが止まらない</td>
+    </tr>
+    <tr class="rx">
+      <th class="rh" data-ja="古典的処方箋" data-en="Classical remedy">古典的処方箋</th>
+      <td data-ja="補助金・公的供給（ピグー的補助金）<br><span class='ex'>＝「代わりに作る／作らせる」</span>" data-en="Subsidy or public provision (Pigouvian subsidy)<br><span class='ex'>= supply it on their behalf</span>">補助金・公的供給（ピグー的補助金）<br><span class="ex">＝「代わりに作る／作らせる」</span></td>
+      <td data-ja="課税・規制・排出権取引（ピグー税）<br><span class='ex'>＝「測って止める／値段をつける」</span>" data-en="Taxation, regulation, tradable permits (Pigouvian tax)<br><span class='ex'>= measure it and put a price on it</span>">課税・規制・排出権取引（ピグー税）<br><span class="ex">＝「測って止める／値段をつける」</span></td>
+    </tr>
+  </table>
+
+  <div class="step"><span class="n">03</span><span data-ja="コモンズの悲劇" data-en="THE TRAGEDY OF THE COMMONS">コモンズの悲劇</span></div>
+  <div class="commons">
+    <div class="ch2" data-ja="コモンズの悲劇<span class='sub'>The Tragedy of the Commons ／ Hardin (1968)</span>" data-en="The Tragedy of the Commons<span class='sub'>Hardin (1968)</span>">コモンズの悲劇<span class="sub">The Tragedy of the Commons ／ Hardin (1968)</span></div>
+    <div class="cb">
+      <div class="fable"
+        data-ja="村人が共有する牧草地がある。牧草の量には限りがある。ここで各村人が牛を1頭増やすと──<br><b>増加分の利益はすべて自分のものになる</b>一方、<b>牧草の消耗という損失は村人全員で分け合う</b>ことになる。"
+        data-en="A pasture is held in common by the villagers. The grass is finite. If a villager adds one more cow —<br><b>the entire gain accrues to that villager</b>, while <b>the loss from depleted grazing is shared among all the villagers</b>.">
+        村人が共有する牧草地がある。牧草の量には限りがある。ここで各村人が牛を1頭増やすと──<br><b>増加分の利益はすべて自分のものになる</b>一方、<b>牧草の消耗という損失は村人全員で分け合う</b>ことになる。
+      </div>
+      <div class="asym">
+        <div class="box a">
+          <div class="k" data-ja="利　益" data-en="GAIN">利　益</div>
+          <div class="v" data-ja="私有化される（自分のもの）" data-en="Privatised — kept by the actor">私有化される（自分のもの）</div>
+        </div>
+        <div class="mid">×</div>
+        <div class="box b">
+          <div class="k" data-ja="費　用" data-en="COST">費　用</div>
+          <div class="v" data-ja="共有化される（全員で分担）" data-en="Socialised — shared by all">共有化される（全員で分担）</div>
+        </div>
+      </div>
+      <div class="verdict"
+        data-ja="したがって各人にとって「牛を増やす」は合理的である。全員が同じ計算をする。結果として牧草地は枯渇し、全員が損をする。<br>── 誰も悪意を持たず、全員が正しく計算した結果として、全員が望まない破滅に至る。"
+        data-en="Adding a cow is therefore rational for every villager. Everyone performs the same calculation. The pasture is exhausted and everyone loses.<br>— No one acts in bad faith. Everyone calculates correctly. The result is a ruin that nobody wanted.">
+        したがって各人にとって「牛を増やす」は合理的である。全員が同じ計算をする。結果として牧草地は枯渇し、全員が損をする。<br>── 誰も悪意を持たず、全員が正しく計算した結果として、全員が望まない破滅に至る。
+      </div>
+    </div>
+  </div>
+
+  <div class="step"><span class="n">04</span><span data-ja="混同されやすい二つの現象" data-en="TWO PHENOMENA OFTEN CONFLATED">混同されやすい二つの現象</span></div>
+  <div class="distinct">
+    <div class="dcard n">
+      <div class="t" data-ja="コモンズの悲劇<span class='sub'>Tragedy of the Commons</span>" data-en="Tragedy of the Commons<span class='sub'>Overuse of a shared resource</span>">コモンズの悲劇<span class="sub">Tragedy of the Commons</span></div>
+      <div class="d"
+        data-ja="<b>共有資源が使い潰される。</b>資源は既に存在しており、競合性がある（誰かが使えば他者の取り分が減る）。負の外部性が共有資源に働いた特殊形。<br>→ <b>過剰利用</b>の問題"
+        data-en="<b>An existing shared resource is consumed to exhaustion.</b> The resource is rival: one party&#39;s use reduces what remains for others. A special case of a negative externality acting on a common-pool resource.<br>→ A problem of <b>overuse</b>">
+        <b>共有資源が使い潰される。</b>資源は既に存在しており、競合性がある（誰かが使えば他者の取り分が減る）。負の外部性が共有資源に働いた特殊形。<br>→ <b>過剰利用</b>の問題
+      </div>
+    </div>
+    <div class="dcard p">
+      <div class="t" data-ja="フリーライダー問題<span class='sub'>Free-rider Problem ／ 公共財の過小供給</span>" data-en="Free-rider Problem<span class='sub'>Undersupply of public goods</span>">フリーライダー問題<span class="sub">Free-rider Problem ／ 公共財の過小供給</span></div>
+      <div class="d"
+        data-ja="<b>そもそも資源が供給されない。</b>便益を排除できないため（非排除性）、誰もが他人の負担に「ただ乗り」しようとする。正の外部性の極限形。<br>→ <b>過小供給</b>の問題"
+        data-en="<b>The resource is never supplied in the first place.</b> Because benefits cannot be withheld (non-excludability), everyone prefers to ride free on someone else&#39;s contribution. The limiting case of a positive externality.<br>→ A problem of <b>undersupply</b>">
+        <b>そもそも資源が供給されない。</b>便益を排除できないため（非排除性）、誰もが他人の負担に「ただ乗り」しようとする。正の外部性の極限形。<br>→ <b>過小供給</b>の問題
+      </div>
+    </div>
+  </div>
+  <div class="joint"
+    data-ja="両者は「便益・費用が意思決定者の視野の外に出る」という<b>同一の根から分岐した対の現象</b>である。牧草地に喩えれば、前者は<b>牧草を食い尽くす</b>問題、後者は<b>そもそも誰も種を蒔かない</b>問題にあたる。<b>根が同じでも処方箋は異なる</b>点が重要である。"
+    data-en="Both grow from the same root — benefits or costs falling outside the decision-maker&#39;s field of vision — and form <b>a matched pair</b>. In the pasture metaphor, the first is <b>eating the grass to the ground</b>; the second is <b>nobody ever sowing the seed</b>. The crucial point: <b>a shared root does not imply a shared remedy.</b>">
+    両者は「便益・費用が意思決定者の視野の外に出る」という<b>同一の根から分岐した対の現象</b>である。牧草地に喩えれば、前者は<b>牧草を食い尽くす</b>問題、後者は<b>そもそも誰も種を蒔かない</b>問題にあたる。<b>根が同じでも処方箋は異なる</b>点が重要である。
+  </div>
+
+  <div class="step"><span class="n">05</span><span data-ja="確立された処方箋" data-en="ESTABLISHED REMEDIES">確立された処方箋</span></div>
+  <div class="rx-grid">
+    <div class="rx">
+      <div class="h">
+        <div class="t" data-ja="ピグー税・課税" data-en="Pigouvian Tax">ピグー税・課税</div>
+        <div class="who">Pigou (1920)</div>
+      </div>
+      <div class="b"
+        data-ja="<span class='tag tag-n'>負の外部性</span>外部費用を価格に内部化する。汚染への課税、排出権取引など。<b>「測って値段をつける」</b>"
+        data-en="<span class='tag tag-n'>NEGATIVE</span>Internalise the external cost into the price: pollution taxes, tradable emission permits. <b>Measure it, then price it.</b>">
+        <span class="tag tag-n">負の外部性</span>外部費用を価格に内部化する。汚染への課税、排出権取引など。<b>「測って値段をつける」</b>
+      </div>
+    </div>
+    <div class="rx">
+      <div class="h">
+        <div class="t" data-ja="補助金・公的供給" data-en="Subsidy / Public Provision">補助金・公的供給</div>
+        <div class="who">Pigou / Samuelson (1954)</div>
+      </div>
+      <div class="b"
+        data-ja="<span class='tag tag-p'>正の外部性</span>外部便益の分を補填するか、公的主体が直接供給する。<b>「代わりに作る」</b>"
+        data-en="<span class='tag tag-p'>POSITIVE</span>Compensate for the spilled benefit, or have a public body supply the good directly. <b>Build it on their behalf.</b>">
+        <span class="tag tag-p">正の外部性</span>外部便益の分を補填するか、公的主体が直接供給する。<b>「代わりに作る」</b>
+      </div>
+    </div>
+    <div class="rx">
+      <div class="h">
+        <div class="t" data-ja="所有権の設定と交渉" data-en="Property Rights and Bargaining">所有権の設定と交渉</div>
+        <div class="who">Coase (1960)</div>
+      </div>
+      <div class="b"
+        data-ja="<span class='tag tag-b'>両方</span>権利の所在が明確で取引費用が十分低ければ、当事者間の交渉で効率的解に到達しうる。<b>逆に言えば、取引費用が高ければ失敗する。</b>"
+        data-en="<span class='tag tag-b'>BOTH</span>Where rights are clearly assigned and transaction costs are low enough, private bargaining can reach an efficient outcome. <b>Conversely, high transaction costs make it fail.</b>">
+        <span class="tag tag-b">両方</span>権利の所在が明確で取引費用が十分低ければ、当事者間の交渉で効率的解に到達しうる。<b>逆に言えば、取引費用が高ければ失敗する。</b>
+      </div>
+    </div>
+    <div class="rx">
+      <div class="h">
+        <div class="t" data-ja="自主的統治" data-en="Self-Governance">自主的統治</div>
+        <div class="who">Ostrom (1990)</div>
+      </div>
+      <div class="b"
+        data-ja="<span class='tag tag-b'>両方</span>国家でも市場でもなく、当事者集団が自らルールを設計・運用する。<b>ただし成立条件がある（下記）。</b>"
+        data-en="<span class='tag tag-b'>BOTH</span>Neither state nor market: the users themselves design and enforce the rules. <b>But only under specific conditions (below).</b>">
+        <span class="tag tag-b">両方</span>国家でも市場でもなく、当事者集団が自らルールを設計・運用する。<b>ただし成立条件がある（下記）。</b>
+      </div>
+    </div>
+  </div>
+
+  <div class="ostrom">
+    <span class="lbl" data-ja="重要な反証" data-en="AN IMPORTANT COUNTERPOINT">重要な反証</span>
+    <div class="t"
+      data-ja="コモンズは必ず悲劇に終わるわけではない ── Elinor Ostrom（1990／2009年ノーベル経済学賞）"
+      data-en="The commons need not end in tragedy — Elinor Ostrom (1990; Nobel Prize in Economics, 2009)">
+      コモンズは必ず悲劇に終わるわけではない ── Elinor Ostrom（1990／2009年ノーベル経済学賞）
+    </div>
+    <div class="d"
+      data-ja="Hardin の寓話は、当事者が孤立し、相互に監視も交渉もできないという強い前提に立っている。Ostrom は世界各地の入会地・漁場・灌漑組合の<b>実証研究</b>を通じ、共有資源が長期にわたり持続的に管理されてきた多数の事例を示した。<br>すなわち<b>私有化か国家管理かの二択ではない</b>。ただし自主的統治が機能するには、経験的に次の条件が観察されている："
+      data-en="Hardin&#39;s parable rests on a strong assumption: that users are isolated, unable to monitor one another or to bargain. Through <b>empirical study</b> of common pastures, fisheries and irrigation associations worldwide, Ostrom documented many resources governed sustainably over long periods.<br>The choice is therefore <b>not simply privatisation or state control</b>. But self-governance works only where the following conditions hold:">
+      Hardin の寓話は、当事者が孤立し、相互に監視も交渉もできないという強い前提に立っている。Ostrom は世界各地の入会地・漁場・灌漑組合の<b>実証研究</b>を通じ、共有資源が長期にわたり持続的に管理されてきた多数の事例を示した。<br>すなわち<b>私有化か国家管理かの二択ではない</b>。ただし自主的統治が機能するには、経験的に次の条件が観察されている：
+    </div>
+    <ul>
+      <li data-ja="資源の範囲と利用者の境界が明確であること" data-en="Clearly defined boundaries of both the resource and its users">資源の範囲と利用者の境界が明確であること</li>
+      <li data-ja="ルールが現地の条件に適合していること" data-en="Rules matched to local conditions">ルールが現地の条件に適合していること</li>
+      <li data-ja="影響を受ける当事者がルール設計に参加できること" data-en="Those affected can take part in setting the rules">影響を受ける当事者がルール設計に参加できること</li>
+      <li data-ja="<b>利用状況が監視され、可視化されていること</b>" data-en="<b>Use is monitored and made visible</b>"><b>利用状況が監視され、可視化されていること</b></li>
+      <li data-ja="違反に対する段階的な制裁があること" data-en="Graduated sanctions for violations">違反に対する段階的な制裁があること</li>
+      <li data-ja="低コストの紛争解決手段が存在すること" data-en="Low-cost conflict-resolution mechanisms exist">低コストの紛争解決手段が存在すること</li>
+      <li data-ja="自ら統治する権利が外部から承認されていること" data-en="The right to self-organise is recognised by outside authorities">自ら統治する権利が外部から承認されていること</li>
+      <li data-ja="大規模な場合、統治が入れ子構造をなしていること" data-en="For large systems, governance is nested in layers">大規模な場合、統治が入れ子構造をなしていること</li>
+    </ul>
+  </div>
+
+  <div class="refs">
+    <b data-ja="主要文献" data-en="KEY REFERENCES">主要文献</b>　Marshall, A. (1890) <i>Principles of Economics</i>. ／ Pigou, A. C. (1920) <i>The Economics of Welfare</i>. ／ Samuelson, P. A. (1954) "The Pure Theory of Public Expenditure," <i>RES</i>. ／ Coase, R. H. (1960) "The Problem of Social Cost," <i>JLE</i>. ／ Hardin, G. (1968) "The Tragedy of the Commons," <i>Science</i> 162. ／ Ostrom, E. (1990) <i>Governing the Commons</i>, Cambridge University Press.
+  </div>
+
+  <div class="pagenav">
+    <div class="prev empty"><a href="#" tabindex="-1">&nbsp;</a></div>
+    <div class="home"><a href="../index.html" data-ja="一覧に戻る" data-en="Back to Index">一覧に戻る</a></div>
+    <div class="next"><a href="01_IT_Investment_Market_Failure.html"
+        data-ja="<span class='lbl'>次へ</span>IT投資の市場の失敗 ▶"
+        data-en="<span class='lbl'>NEXT</span>IT Investment Market Failure ▶"><span class="lbl">次へ</span>IT投資の市場の失敗 ▶</a></div>
+  </div>
+</div>
+
+<script>
+function setLang(l){
+  document.querySelectorAll('[data-ja]').forEach(function(el){
+    var v = el.getAttribute('data-' + l);
+    if (v !== null) el.innerHTML = v;
+  });
+  document.documentElement.lang = l;
+  document.getElementById('btn-ja').classList.toggle('on', l === 'ja');
+  document.getElementById('btn-en').classList.toggle('on', l === 'en');
+}
+</script>
+</body>
+</html>

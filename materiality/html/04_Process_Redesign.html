@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>投資委員会プロセス改善企画 ─ AIエージェントによる次世代事務局の構想</title>
+<link rel="stylesheet" href="base.css">
+</head>
+<body>
+<div class="slide">
+
+  <div class="eyebrow">DESIGN ② ─ OPERATING PROCESS</div>
+  <h1>投資委員会プロセス改善企画<br><span style="font-size:16px; color:var(--gray); font-weight:700;">── AIエージェントによる次世代事務局の構想</span></h1>
+
+  <p class="lede">
+    本書は、投資委員会の審議プロセスを<b>非同期・文書駆動</b>へ再設計し、CMS（案件管理システム）とAIエージェントを事務局機能へ導入する構想をまとめたものである。まず現行運営の問題点を列挙し、提案するガバナンスモデルとその問題解決の仕組みを示す。続いて技術的変革としてCMSとAIエージェントの導入効果を述べ、最後に、AIエージェント導入に伴う有用性・限界・内在リスクを問題提起として記載する。
+  </p>
+
+  <table>
+    <tbody>
+      <tr><th class="rh">宛先</th><td>投資委員会 事務局メンバー・管理者 ／ 投資委員会メンバー</td></tr>
+      <tr><th class="rh">文書区分</th><td>プロセス改善に関する企画提案（内部審議用）</td></tr>
+      <tr><th class="rh">目的</th><td>現行審議プロセスの構造的問題の解消と、CMS・AIエージェント導入によるガバナンスモデルの提示</td></tr>
+      <tr><th class="rh">診断の出典</th><td><a href="02_Committee_Structural_Analysis.html" style="color:var(--navy); font-weight:700;">審議機構の構造分析</a>（分析層）で導いた4症状に対する応答として設計されている</td></tr>
+    </tbody>
+  </table>
+
+  <!-- 1 -->
+  <div class="sec">
+    <div class="step"><span class="n">1</span>現在の問題点</div>
+    <p>現行の投資委員会は会議主義で運営されているが、その会議が本来の機能を果たせていない。運営の実態から、次の4つの構造的な問題が確認されている。</p>
+    <table>
+      <thead><tr><th style="width:60px">#</th><th style="width:210px">問題</th><th>内容</th></tr></thead>
+      <tbody>
+        <tr><td class="c"><b>P1</b></td><td><b>会議が機能していない</b></td><td>会議主義で運営されているにもかかわらず、審議の場が実質的に機能しておらず、意思決定の質・スピードにつながっていない。</td></tr>
+        <tr><td class="c"><b>P2</b></td><td><b>事前資料の作成負荷</b></td><td>会議の要否にかかわらず、起案者が事前に用意すべき資料の作成負荷が重い。この不満は起案者からもれなく上がっている。</td></tr>
+        <tr><td class="c"><b>P3</b></td><td><b>承認可否の回答が遅い</b></td><td>会議の開催頻度が高くないため、承認可否の回答を得られるまでの時間が長すぎる。案件のスピードが会議日程に律速されている。</td></tr>
+        <tr><td class="c"><b>P4</b></td><td><b>承認後の空白</b></td><td>投資委員会は審議結果を伝えるのみで、その後の具体的なサポートやフォローアップがない。承認された案件が成果に結びつくかを見届ける仕組みがない。</td></tr>
+      </tbody>
+    </table>
+    <div class="note">これらは個別の運用改善で解けるものではなく、「<b>会議に依存した同期的プロセス</b>」と「<b>裁定して終わりという役割設計</b>」という構造そのものに起因する。したがって本企画は、部分最適ではなく審議プロセスの抜本的な再設計を提案する。<br><span class="lbl">構造的な成立メカニズムは</span><a href="02_Committee_Structural_Analysis.html" style="color:var(--navy); font-weight:700;">分析層の該当頁</a>に譲る。</div>
+  </div>
+
+  <!-- 2 -->
+  <div class="sec">
+    <div class="step"><span class="n">2</span>提案するガバナンスモデル</div>
+    <p>提案の骨子は、審議を会議依存の同期プロセスから、<b>CMSを介した非同期・文書駆動プロセス</b>へ転換し、あわせて<b>承認後の伴走機能</b>と、<b>権限が特定主体に集中しない役割分離</b>を組み込むことである。</p>
+
+    <figure>
+      <img src="../企画書/図1_ガバナンスモデル.png" alt="ガバナンスモデル全体像">
+      <figcaption><b>図1</b>　ガバナンスモデル全体像 ── 役割の分離と、承認後の伴走・エスカレーション</figcaption>
+    </figure>
+
+    <h2 class="sub">2.1　プロセスの4ステップ</h2>
+    <div class="flow">
+      <div class="fs">
+        <div class="n">1</div><div class="who">事務局</div>
+        <div class="t">事前の論点整理</div>
+        <div class="d">事務局が論点整理書を作成する。起案者に求めるのは「事実」であって分析・スコアではない。起案者は疑義・意見を任意の回数だけ表明でき、確認完了をもって次工程へ進む。</div>
+      </div>
+      <div class="fs">
+        <div class="n">2</div><div class="who">投資委員会</div>
+        <div class="t">委員会からの結果回答</div>
+        <div class="d">委員会が審議・判定し、事務局が回答書を作成する。回答書は委員会自身が内容（論点の網羅性）を確認したうえで確定し、起案者へ通知する。</div>
+      </div>
+      <div class="fs">
+        <div class="n">3</div><div class="who">例外時のみ</div>
+        <div class="t">会議による直接協議</div>
+        <div class="d">起案者・委員会のいずれかが疑義を表明した場合に限り開催する。会議は既定ではなく例外に位置づけ、本当に協議が必要な案件に集中させる。</div>
+      </div>
+      <div class="fs">
+        <div class="n">4</div><div class="who">PPM</div>
+        <div class="t">承認後のフォローアップ・伴走</div>
+        <div class="d">ポートフォリオ管理（PPM）が承認案件を引き受け、承認条件の実装支援・定期チェックイン・レビューゲートに向けた証跡整備を担う。条件不履行や重大なドリフトを検知した場合は、委員会へエスカレーションしてゲートを前倒す権限を持つ。</div>
+      </div>
+    </div>
+
+    <h2 class="sub">2.2　権限分離の設計原則</h2>
+    <p>本モデルの要は、<b>論点設定・事実認定・スコアリング・裁定・伴走</b>という機能を、単一の主体に集中させないことである。各機能の担当と、それに対するチェックを次のとおり配置する。</p>
+    <table>
+      <thead><tr><th style="width:190px">機能</th><th style="width:290px">担当</th><th>チェック（牽制）</th></tr></thead>
+      <tbody>
+        <tr><td><b>論点整理（framing）</b></td><td>事務局（二者体制）</td><td>起案者の疑義・意見ループ（Step1）</td></tr>
+        <tr><td><b>事実認定</b></td><td>起案者＝事実提出 ／ 事務局＝整理</td><td>事実と評価の分離（申請者は事実のみ）</td></tr>
+        <tr><td><b>スコアリング</b></td><td>事務局が素点、委員会が確定・重み</td><td>二者による共同署名・委員会レビュー</td></tr>
+        <tr><td><b>裁定</b></td><td>投資委員会</td><td>回答書の内容確認ゲート（Step2）</td></tr>
+        <tr><td><b>承認後の伴走</b></td><td>ポートフォリオ管理（PPM）</td><td>裁定主体と分離＋委員会へのエスカレーション権限</td></tr>
+      </tbody>
+    </table>
+    <div class="grid2">
+      <div class="card b">
+        <div class="t">二者体制</div>
+        <div class="d">事務局はIT部門側と起案側から1名ずつを任命する。起案側にもIT企画を担当する者がおり、任命に違和感は生じない。論点整理の<b>中立性（framing）</b>と、<b>外形上の公正さ（optics）</b>の双方を担保する。ただし、起案側の担当が自部門を起案者とする案件を扱う場合は相反となるため、当該案件では担当を差し替える回避ルールを設ける。</div>
+      </div>
+      <div class="card b">
+        <div class="t">理論の位置づけ</div>
+        <div class="d">本モデルの論点整理は、外部性等の経済学的フレームワークを運用ルールとして参照する。ただしそれは<b>あくまで事務局内部の運用規律</b>であり、回答書等の対外文書では前面に出さず、平易な業務言語で記述する。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3 -->
+  <div class="sec">
+    <div class="step"><span class="n">3</span>問題点をどのように解決するか</div>
+    <p>第1章で挙げた4つの問題に対し、本モデルがどの機構で応えるかを対応づける。</p>
+    <table>
+      <thead><tr><th style="width:210px">問題</th><th>新モデルの打ち手</th><th style="width:290px">効果</th></tr></thead>
+      <tbody>
+        <tr><td><b>P1</b> 会議が機能していない</td><td>非同期・文書駆動へ転換し、Step3（会議）を疑義時のみの例外とする</td><td>会議は本当に協議が要る案件に限定され、場が機能する</td></tr>
+        <tr><td><b>P2</b> 事前資料の作成負荷</td><td>論点整理を事務局が担い、起案者に求めるのは事実のみ（事実と評価の分離）</td><td>起案者の分析 framing 負荷が構造的に消える</td></tr>
+        <tr><td><b>P3</b> 回答が遅い</td><td>CMS駆動で会議開催を待たずに承認可否が進む。各ステップにSLA（期限）を設定</td><td>回答速度が会議頻度から切り離される</td></tr>
+        <tr><td><b>P4</b> 承認後の空白</td><td>Step4でPPMが伴走（条件実装支援・定期チェックイン・エスカレーション）</td><td>「裁定して終わり」から「成果まで伴走」へ転換</td></tr>
+      </tbody>
+    </table>
+    <div class="grid2">
+      <div class="card n">
+        <div class="t">補足 ── SLAの埋め込み</div>
+        <div class="d">非同期化は放置すると別の遅延を生む。「事務局は◯営業日以内に論点整理」「委員会確認は◯営業日以内」といった期限を各ステップに<b>制度として</b>組み込み、速度を担保する。</div>
+      </div>
+      <div class="card n">
+        <div class="t">補足 ── 伴走と裁定の分離</div>
+        <div class="d">承認後の伴走は、裁定を下した委員会・事務局ではなく<b>PPM</b>が担う。採点者と伴走者を別主体とすることで、起案者にとって受け入れやすい支援関係になる。両者はCMSを共有ハブとして連結される。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4 -->
+  <div class="sec">
+    <div class="step"><span class="n">4</span>技術的変革</div>
+
+    <h2 class="sub">4.1　CMS（案件管理システム）の導入とその効果</h2>
+    <p>CMSは、全ステップを非同期で成立させる基盤である。提出・通知・登録・確認がシステム上で完結し、審議が会議日程から独立する。</p>
+    <div class="grid4">
+      <div class="card p"><div class="t">回答速度の向上</div><div class="d">承認可否が次回会議の開催を待たずに進む（<b>P3への直接の解</b>）。</div></div>
+      <div class="card p"><div class="t">透明性・監査可能性</div><div class="d">誰が・いつ・何を判断したかが記録として残り、後から検証できる。</div></div>
+      <div class="card p"><div class="t">伴走のハンドオフ</div><div class="d">CMSはPPMとも共有され、承認案件・承認条件をStep4へ引き渡す共有ハブとなる。</div></div>
+      <div class="card p"><div class="t">台帳の初版化</div><div class="d">蓄積された申請書（事実）の束が、そのまま資産・依存関係を把握する台帳の初版になる。</div></div>
+    </div>
+
+    <h2 class="sub">4.2　AIエージェントの導入とその効果</h2>
+    <p>本企画の中核として、事務局機能（<b>トリアージ・論点整理・スコア素案</b>）をまずAIエージェントが担い、人間はその結果を検証・管理する体制を想定する。人間は、明らかな誤りがないか、そして<b>エージェント自体が正しく機能しているか</b>を管理する役割を負う。</p>
+    <div class="grid3">
+      <div class="card p"><div class="t">キャパシティの解消</div><div class="d">二者体制の人間だけでは、論点整理・スコア支援・台帳保持・伴走・トリアージのすべては担いきれない。投資案件は1日1件程度であり、エージェントが初動を担えば人間のレビューは十分に回る。</div></div>
+      <div class="card p"><div class="t">一貫性</div><div class="d">案件ごとの恣意・贔屓が疑われにくく、これはむしろ公正さ（optics）にプラスに働く。</div></div>
+      <div class="card p"><div class="t">初動の網羅性</div><div class="d">フレームワークを機械的に参照するため、論点の洗い出しに漏れが生じにくい。</div></div>
+    </div>
+    <div class="note"><span class="lbl">分析層との接続　</span>ここでAIエージェントが担うのは、単なる省力化ではない。<a href="02_Committee_Structural_Analysis.html" style="color:var(--navy); font-weight:700;">分析層</a>が示したとおり、<b>論点整理は公共財であり、費用を単独で負う事務局にとって過小供給が均衡になる</b>。供給主体を立てるだけでは足りず、供給能力そのものを制度的に与える必要がある。エージェントはその<b>供給能力</b>にあたる。</div>
+    <p>ただしこの体制は、人間の役割を「<b>量の確認</b>」から「<b>深さ＝検証可能性（reviewability）の担保</b>」へと再定義することを前提とする。詳細は第5章で問題提起として述べる。</p>
+  </div>
+
+  <!-- 5 -->
+  <div class="sec">
+    <div class="step"><span class="n">5</span>問題提起 ── AIエージェント事務局の有用性・限界・内在リスク</div>
+    <p>以下は導入を止めるための論点ではなく、<b>導入を成功させるために、あらかじめ設計へ織り込むべき論点</b>である。AIエージェントの有用性は前章のとおりだが、それと表裏の限界とリスクを直視しておく。</p>
+
+    <figure>
+      <img src="../企画書/図2_AIエージェント.png" alt="AIエージェント層の有用性と失敗・緩和策">
+      <figcaption><b>図2</b>　AIエージェント層の有用性と、人間監督が捕捉すべき失敗・緩和策</figcaption>
+    </figure>
+
+    <h2 class="sub">5.1　有用性の要約</h2>
+    <p><b>速度</b>（会議・人手に律速されない）、<b>一貫性</b>（恣意の排除）、<b>初動の網羅性</b>（フレームワーク参照）。これらは第1章の問題 P1〜P4 の解消を、人的キャパシティの制約なしに実現するための前提となる。</p>
+
+    <h2 class="sub">5.2　限界と内在リスク</h2>
+    <table>
+      <thead><tr><th style="width:180px">リスク</th><th>内容</th><th style="width:300px">緩和策</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><b>R1</b> 裁量の上流移動</td>
+          <td>二者体制は外形上の裁量を中立化するが、真の裁量はエージェントの設定（ルール・閾値・プロンプト）へ移る。「AIが判定した」が正統性の“ロンダリング”になりうる。</td>
+          <td>設定の所有を二者＋委員会の承認事項とし、変更を可視化する</td>
+        </tr>
+        <tr>
+          <td><b>R2</b> 除外の非検知</td>
+          <td>エージェントの失敗は流暢で完結して見える出力に宿る。「明らかな誤り」を探す軽いレビューは、抜け落ちた論点を通してしまう（論点7型の漏れ）。</td>
+          <td>「検討したが落としたもの／なぜ立てなかったか」の開示を必須化し、人間レビューを網羅性の敵対的検証に校正</td>
+        </tr>
+        <tr>
+          <td><b>R3</b> 誤トリアージの不可視</td>
+          <td>外部性の高い案件が軽レーンへ誤送されると、その案件は誰の目にも触れないまま通過する。最も結果が重く、最も観測されない誤差。</td>
+          <td>軽レーンのサンプリング監査、または起案者による安価な異議申立て経路</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="keybox">
+      <div class="lbl">誤差の非対称性</div>
+      <div class="d">人間の誤りはランダムで、だからこそ捕まる。エージェントの誤りは<b>相関する</b> ── 同じ盲点で毎回同じように間違え、しかも見えない。一貫性は利点だが、その裏面として<b>系統誤差は系統的に不可視になる</b>。したがって「エージェントが正しく機能しているか」の確認は、案件ごとのレビューの傍らで済ませるものではなく、決定パターンを定期的に棚卸しし再較正する<b>“メタ監査”</b>として、明示の工程に乗せる必要がある。</div>
+    </div>
+
+    <h2 class="sub">5.3　意思決定を要する未解決の設計論点</h2>
+    <p>本モデルを「なぜ納得すべきか」を理屈ではなく<b>構造</b>で示せる状態にするため、導入前に次の2点を確定させる必要がある。</p>
+    <div class="grid2">
+      <div class="card n">
+        <div class="t">Q1. 設定の所有</div>
+        <div class="d">エージェントの設定（ルール・閾値・プロンプト）を<b>誰が所有し、その変更に誰の承認を要するか</b>。ここが未定義であれば、二者体制は“見えている裁量”を中立化しただけで、“見えない裁量”はなお特定主体の手に残る。</div>
+      </div>
+      <div class="card n">
+        <div class="t">Q2. 軽レーンの監査</div>
+        <div class="d">トリアージで軽レーンへ振り分けた案件を、<b>どうサンプリング監査するか</b>、または起案者の<b>異議申立てをどう制度化するか</b>。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6 -->
+  <div class="sec">
+    <div class="step"><span class="n">6</span>結び</div>
+    <p>現行がこれほど機能不全である以上、本提案がもたらすトレードオフは概ねポジティブと考えられる。速度・負荷・承認後の伴走・事務局の外形的公正さは、本モデルで構造的に解ける。</p>
+    <p>残る主眼は、<b>AIエージェント層に集約された裁量と、それに対する人間監督の校正</b>に絞られる。第5章の設計論点（とりわけ Q1・Q2）を確定させることが、抜本改革を安全に着地させるための要件である。まずは<b>外部性の明確な旗艦案件</b>から段階的に適用し、CMSに蓄積される実績を根拠に、対象範囲とガバナンスを拡張していくことを推奨する。</p>
+  </div>
+
+  <!-- 付録 -->
+  <div class="sec">
+    <div class="step">付録　審議プロセス 詳細シーケンス図</div>
+    <p>Step1〜Step4の全メッセージフローを示す。各主体（起案者・事務局・投資委員会メンバー・PPM）とCMSの間の登録・通知・確認の往復、および今回追加した「<b>回答書の内容確認ゲート（Step2）</b>」と「<b>PPMによる承認後の伴走・エスカレーション（Step4）</b>」を含む。</p>
+    <figure>
+      <img src="../企画書/審議プロセス_シーケンス図_full.png" alt="投資委員会 審議プロセス シーケンス図">
+      <figcaption><b>図3</b>　投資委員会 審議プロセス（Step1〜Step4）　─　Mermaidソース：<a href="../practice/投資委員会_審議プロセス.md" style="color:var(--navy); font-weight:700;">投資委員会_審議プロセス.md</a></figcaption>
+    </figure>
+  </div>
+
+  <div class="refs">
+    <b>原本</b>　<a href="../企画書/投資委員会プロセス改善企画.docx" style="color:var(--gray); font-weight:700;">投資委員会プロセス改善企画.docx</a>（配布用・Word形式）　／　本頁が正本、docx は副本として同内容を保持する。
+  </div>
+
+  <div class="pagenav">
+    <div class="prev"><a href="03_IT_Materiality_Proposal.html"><span class="lbl">前へ</span>◀ IT Materiality フレームワーク</a></div>
+    <div class="home"><a href="../index.html">一覧に戻る</a></div>
+    <div class="next"><a href="05_Practice_Operations.html"><span class="lbl">次へ</span>実践 ─ 申請プロセスと審議文書 ▶</a></div>
+  </div>
+</div>
+</body>
+</html>
