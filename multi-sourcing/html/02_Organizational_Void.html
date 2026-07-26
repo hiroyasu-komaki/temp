@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Organizational Void — Who Is Supposed to Do This?</title>
+<style>
+  :root{
+    --navy:#12305e; --navy2:#2a4d84; --ink:#1b2430; --gray:#5f6a77; --gray-l:#8b95a1;
+    --line:#d7dde5; --panel:#f5f7fa;
+    --pos:#2f6fc0; --pos-bg:#eef4fc; --pos-line:#a9c6e8;
+    --neg:#c2410c; --neg-bg:#fdf2ea; --neg-line:#eeb185;
+    --com:#7c3f9e; --com-bg:#f4eefa; --com-line:#c9aede;
+    --inf:#0f7b6c; --inf-bg:#e9f5f2; --inf-line:#9ccfc4;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; padding:26px 18px 44px; background:#eef1f5; color:var(--ink);
+    font-family:"Yu Gothic UI","Yu Gothic","Hiragino Kaku Gothic ProN","Meiryo","Segoe UI",sans-serif;
+    -webkit-font-smoothing:antialiased;}
+  html[lang="en"] body{font-family:"Segoe UI","Helvetica Neue",Arial,sans-serif;}
+  .slide{max-width:1240px; margin:0 auto; background:#fff; padding:34px 40px 36px;
+    box-shadow:0 2px 18px rgba(18,48,94,.10); border-top:5px solid var(--navy); position:relative;}
+  .lang{position:absolute; top:16px; right:24px; display:flex; border:1px solid var(--line);}
+  .lang button{border:none; background:#fff; color:var(--gray); font:inherit; font-size:11px;
+    font-weight:700; letter-spacing:.06em; padding:5px 13px; cursor:pointer;}
+  .lang button+button{border-left:1px solid var(--line);}
+  .lang button.on{background:var(--navy); color:#fff;}
+  .lang button:focus-visible{outline:2px solid var(--neg); outline-offset:1px;}
+
+  .eyebrow{font-size:10.5px; font-weight:700; letter-spacing:.14em; color:var(--gray-l); margin-bottom:7px;}
+  h1{font-size:25px; margin:0 0 9px; color:var(--navy); font-weight:700; line-height:1.42; padding-right:130px;}
+  .lede{font-size:12.5px; color:var(--gray); line-height:1.8; margin:0 0 20px; padding-bottom:18px; border-bottom:1px solid var(--line);}
+  .lede b{color:var(--ink);}
+
+  .step{font-size:10.5px; font-weight:700; letter-spacing:.1em; color:#fff; background:var(--navy);
+    display:inline-block; padding:3px 11px; margin-bottom:12px;}
+  .step .n{opacity:.6; margin-right:6px;}
+  .mb30{margin-bottom:30px;}
+
+  .lead2{font-size:12px; line-height:1.9; color:var(--gray); margin:0 0 16px;}
+  .lead2 b{color:var(--ink);}
+
+  /* 欠落した二機能 */
+  .gap{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:16px;}
+  .gcard{border:1px solid var(--line); background:#fff; display:flex; flex-direction:column;}
+  .gcard .gh{padding:10px 15px; color:#fff; font-size:13.5px; font-weight:700; line-height:1.5;}
+  .gcard .gh .cls{display:block; font-size:10px; font-weight:600; opacity:.85; margin-top:2px;}
+  .gcard.a .gh{background:var(--neg);} .gcard.b .gh{background:var(--com);}
+  .gcard .gb{padding:13px 16px; flex:1; font-size:11.5px; line-height:1.85; color:var(--gray);}
+  .gcard .gb b{color:var(--ink);}
+  .gcard.a .gb em{color:var(--neg); font-style:normal; font-weight:700;}
+  .gcard.b .gb em{color:var(--com); font-style:normal; font-weight:700;}
+  .gcard .go{padding:8px 12px; font-size:11.5px; font-weight:700; line-height:1.6;}
+  .gcard.a .go{background:var(--neg-bg); color:var(--neg);}
+  .gcard.b .go{background:var(--com-bg); color:var(--com);}
+
+  /* 空白地帯：三者の理由 */
+  .who{display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; margin-bottom:16px;}
+  .wc{border:1px solid var(--line); background:var(--panel); padding:13px 16px;}
+  .wc .t{font-size:12.5px; font-weight:700; color:var(--navy); margin-bottom:6px;}
+  .wc .d{font-size:11px; line-height:1.8; color:var(--gray);}
+  .wc .d b{color:var(--ink);}
+  .wc.void{background:var(--neg-bg); border-color:var(--neg-line);}
+  .wc.void .t{color:var(--neg);}
+
+  .void-note{border-left:5px solid var(--neg); background:var(--neg-bg); padding:14px 19px; margin-bottom:30px;}
+  .void-note .t{font-size:13px; font-weight:700; color:var(--neg); margin-bottom:6px; line-height:1.6;}
+  .void-note .d{font-size:11.5px; line-height:1.9; color:var(--gray);}
+  .void-note .d b{color:var(--ink);}
+
+  /* RACI */
+  .pair{display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:14px;}
+  .ptitle{font-size:12px; font-weight:700; margin-bottom:7px; padding:4px 10px; color:#fff; display:inline-block;}
+  .ptitle.as{background:var(--neg);} .ptitle.to{background:var(--pos);}
+  table{width:100%; border-collapse:collapse;}
+  .raci th{background:var(--navy); color:#fff; font-size:10.5px; font-weight:700; padding:7px 6px;
+    text-align:center; border:1px solid var(--navy); line-height:1.4;}
+  .raci th:first-child{text-align:left;}
+  .raci td{border:1px solid var(--line); padding:6px 7px; font-size:10.5px; line-height:1.5;
+    text-align:center; vertical-align:middle;}
+  .raci td:first-child{text-align:left; font-size:10.5px; color:var(--ink);}
+  .raci td.ar{font-weight:700; color:var(--navy);}
+  .raci td.vd{font-weight:700; color:var(--neg); background:var(--neg-bg);}
+  .raci td.vn{font-weight:700; color:var(--com); background:var(--com-bg);}
+  .raci td.nw{font-weight:700; color:var(--pos); background:var(--pos-bg);}
+  .raci tr:nth-child(even) td:first-child{background:#fafbfd;}
+  .legend{font-size:10.5px; color:var(--gray-l); line-height:1.7; margin-bottom:12px;}
+  .legend b{color:var(--gray);}
+  .pnote{font-size:11px; line-height:1.8; color:var(--gray); margin-top:8px;}
+  .pnote b{color:var(--ink);}
+
+  /* フロー */
+  .flow{border:1px solid var(--line); background:#fff;}
+  .flow .fh{padding:8px 14px; color:#fff; font-size:12.5px; font-weight:700;}
+  .flow.as .fh{background:var(--neg);} .flow.to .fh{background:var(--pos);}
+  .flow .fb{padding:12px 14px;}
+  .frow{display:flex; gap:10px; align-items:flex-start; margin-bottom:8px;}
+  .frow:last-child{margin-bottom:0;}
+  .fac{flex:0 0 78px; font-size:9.5px; font-weight:700; letter-spacing:.04em; padding:3px 6px;
+    text-align:center; border:1px solid; line-height:1.4;}
+  .fac.field{color:var(--navy); border-color:var(--line); background:var(--panel);}
+  .fac.proc{color:var(--inf); border-color:var(--inf-line); background:var(--inf-bg);}
+  .fac.vend{color:var(--neg); border-color:var(--neg-line); background:var(--neg-bg);}
+  .fac.vmo{color:var(--pos); border-color:var(--pos-line); background:var(--pos-bg);}
+  .ftx{flex:1; font-size:11px; line-height:1.7; color:var(--gray); padding-top:1px;}
+  .ftx b{color:var(--ink);}
+  .fgap{font-size:10.5px; font-weight:700; color:var(--neg); background:var(--neg-bg);
+    border:1px dashed var(--neg-line); padding:5px 9px; margin:6px 0 8px; line-height:1.6;}
+
+  .close{margin-top:26px; border-left:5px solid var(--navy); background:var(--panel); padding:15px 20px;}
+  .close .t{font-size:13.5px; font-weight:700; color:var(--navy); margin-bottom:7px; line-height:1.6;}
+  .close .d{font-size:11.5px; line-height:1.9; color:var(--gray);}
+  .close .d b{color:var(--ink);}
+
+  .nav{margin-top:22px; padding-top:14px; border-top:1px solid var(--line); display:flex; justify-content:space-between; font-size:11px;}
+  .nav a{color:var(--navy); text-decoration:none; font-weight:700;}
+  .nav a:hover{text-decoration:underline;}
+
+  @media(max-width:900px){
+    h1{padding-right:0; margin-top:38px;}
+    .gap,.who,.pair{grid-template-columns:1fr;}
+    table{display:block; overflow-x:auto;}
+  }
+  @media print{body{background:#fff; padding:0;} .slide{box-shadow:none; max-width:none;} .lang,.nav{display:none;}}
+</style>
+</head>
+<body>
+<div class="slide">
+  <div class="lang" role="group" aria-label="Language">
+    <button id="btn-ja" class="on" onclick="setLang('ja')">日本語</button>
+    <button id="btn-en" onclick="setLang('en')">English</button>
+  </div>
+
+  <div class="eyebrow" data-ja="ORGANIZATIONAL DIAGNOSIS ／ 誰が担っているのか" data-en="ORGANIZATIONAL DIAGNOSIS / WHO IS ACTUALLY DOING THIS">ORGANIZATIONAL DIAGNOSIS ／ 誰が担っているのか</div>
+  <h1 data-ja="なぜ、既存のどの部門にも解けないのか ─ 組織の空白地帯"
+      data-en="Why No Existing Function Can Solve This — The Organizational Void">なぜ、既存のどの部門にも解けないのか ─ 組織の空白地帯</h1>
+  <p class="lede"
+     data-ja="前頁までに、4つの症状が「比較対象が存在しない」という構造から演繹されることを確認した。ここで問うのは、次の一点である ── <b>比較対象を作るという仕事を、いま組織の誰が担っているのか。</b><br>結論を先に述べる。<b>誰も担っていない。</b>これは怠慢ではなく、どの部門の職掌にも割り当てられていないという、配置の問題である。"
+     data-en="The preceding pages established that the four symptoms follow from a structure in which no point of comparison exists. The question here is narrower — <b>who, within the organization, is currently responsible for creating that point of comparison?</b><br>The answer, stated up front: <b>no one is</b>. This is not negligence. It is a question of assignment: the work has never been placed within any function's remit.">
+    前頁までに、4つの症状が「比較対象が存在しない」という構造から演繹されることを確認した。ここで問うのは、次の一点である ── <b>比較対象を作るという仕事を、いま組織の誰が担っているのか。</b><br>結論を先に述べる。<b>誰も担っていない。</b>これは怠慢ではなく、どの部門の職掌にも割り当てられていないという、配置の問題である。
+  </p>
+
+  <!-- 01 -->
+  <div class="step"><span class="n">01</span><span data-ja="正確に言えば、何が欠けているのか" data-en="WHAT, PRECISELY, IS MISSING">正確に言えば、何が欠けているのか</span></div>
+  <p class="lead2"
+    data-ja="はじめに、事実を正確に置く。<b>現場は価格を検証していない、という指摘は正しくない。</b>ベンダーは松竹梅型の複数プランと複数年契約のディスカウントを提示し、現場は「同一サービスなら安い方が合理的」という判断で低価格プランを選択している。すなわち<b>単一ベンダーの提案の内側での価格最適化 ── 縦の最適化 ── は、すでに行われている</b>。<br>欠けているのは、その外側にある二つの機能である。"
+    data-en="Begin by stating the facts accurately. <b>It is not correct to say that the business does not scrutinize price.</b> Vendors present tiered plans and multi-year discounts; the business selects the cheaper plan on the entirely reasonable ground that, for the same service, cheaper is better. In other words, <b>price optimization within a single vendor's own proposal — vertical optimization — is already happening</b>.<br>What is missing lies outside that boundary. Two functions.">
+    はじめに、事実を正確に置く。<b>現場は価格を検証していない、という指摘は正しくない。</b>ベンダーは松竹梅型の複数プランと複数年契約のディスカウントを提示し、現場は「同一サービスなら安い方が合理的」という判断で低価格プランを選択している。すなわち<b>単一ベンダーの提案の内側での価格最適化 ── 縦の最適化 ── は、すでに行われている</b>。<br>欠けているのは、その外側にある二つの機能である。
+  </p>
+
+  <div class="gap">
+    <div class="gcard a">
+      <div class="gh" data-ja="欠落① ベンダー間の競争を設計・遂行する機能<span class='cls'>横の最適化 ／ 症状①②④に対応</span>"
+           data-en="MISSING (1) Designing and running competition between vendors<span class='cls'>Horizontal optimization / addresses symptoms 1, 2 and 4</span>">欠落① ベンダー間の競争を設計・遂行する機能<span class="cls">横の最適化 ／ 症状①②④に対応</span></div>
+      <div class="gb"
+        data-ja="松竹梅の比較は、<em>同一ベンダー内の縦の比較にすぎない</em>。そのベンダーの提示価格が市場水準に照らして妥当かどうかは、依然として検証されていない。<br>複数ベンダーを競わせる土俵 ── <b>ロングリスト、RFP設計、評価基準の策定</b> ── を作る主体が、組織のどこにも存在しない。したがって市場との比較は、意志の問題ではなく<b>構造として成立していない</b>。"
+        data-en="Comparing tiers is <em>a vertical comparison inside a single vendor</em>. Whether that vendor's price is reasonable against the market remains unverified.<br>No function anywhere in the organization builds the ground on which several vendors could compete — <b>the long list, the RFP design, the evaluation criteria</b>. Comparison against the market therefore fails not as a matter of will but <b>as a matter of structure</b>.">
+        松竹梅の比較は、<em>同一ベンダー内の縦の比較にすぎない</em>。そのベンダーの提示価格が市場水準に照らして妥当かどうかは、依然として検証されていない。<br>複数ベンダーを競わせる土俵 ── <b>ロングリスト、RFP設計、評価基準の策定</b> ── を作る主体が、組織のどこにも存在しない。したがって市場との比較は、意志の問題ではなく<b>構造として成立していない</b>。
+      </div>
+      <div class="go" data-ja="→ 価格が市場水準にあるかを、原理的に判定できない"
+           data-en="→ Whether the price sits at market level cannot, in principle, be determined">→ 価格が市場水準にあるかを、原理的に判定できない</div>
+    </div>
+
+    <div class="gcard b">
+      <div class="gh" data-ja="欠落② 契約条件を能動的に統制する機能<span class='cls'>契約防御 ／ 症状②③に対応</span>"
+           data-en="MISSING (2) Actively controlling contractual terms<span class='cls'>Contract defence / addresses symptoms 2 and 3</span>">欠落② 契約条件を能動的に統制する機能<span class="cls">契約防御 ／ 症状②③に対応</span></div>
+      <div class="gb"
+        data-ja="当社では契約実務をIT部門の現場が担っているが、契約に関する専門性を持たないため、実態は<em>ベンダーが提示する契約書雛形を受動的にチェックするにとどまる</em>。<br>その結果、価格だけでなく<b>責任範囲・SLA・価格改定条項・解約条項・知的財産の帰属</b>といった条件も、ベンダー主導で組成されている可能性が高い。契約条件は、価格とは別軸で、毎年の交渉力そのものを規定する。"
+        data-en="Contracting is handled by the IT business functions, which hold no contractual specialism. In practice this means <em>reviewing, passively, the template the vendor supplies</em>.<br>As a result not only price but <b>scope of liability, SLAs, price-revision clauses, termination rights and IP ownership</b> are likely to have been shaped by the vendor. Contractual terms determine, on an axis separate from price, our bargaining position in every subsequent year.">
+        当社では契約実務をIT部門の現場が担っているが、契約に関する専門性を持たないため、実態は<em>ベンダーが提示する契約書雛形を受動的にチェックするにとどまる</em>。<br>その結果、価格だけでなく<b>責任範囲・SLA・価格改定条項・解約条項・知的財産の帰属</b>といった条件も、ベンダー主導で組成されている可能性が高い。契約条件は、価格とは別軸で、毎年の交渉力そのものを規定する。
+      </div>
+      <div class="go" data-ja="→ 今年の契約が、来年の選択肢を狭めていく"
+           data-en="→ This year's contract narrows next year's options">→ 今年の契約が、来年の選択肢を狭めていく</div>
+    </div>
+  </div>
+
+  <p class="lead2 mb30"
+    data-ja="この二つの欠落は、価格の妥当性を検証する仕組みの不在であると同時に、<b>調達ガバナンス上の統制欠陥</b>でもある。内部監査・外部監査の観点から見れば、「競争性のない発注」と「ベンダー雛形の受動受諾」は、いずれも指摘リスクを抱えた状態である。<b>本フレームワークは、指摘される前にこの欠陥を能動的に是正する、自浄的な取り組みでもある。</b>"
+    data-en="These two gaps constitute not only the absence of a mechanism for verifying price, but <b>a control deficiency in procurement governance</b>. From an internal or external audit perspective, &quot;awards made without competition&quot; and &quot;passive acceptance of the vendor's template&quot; are both exposures. <b>This framework is also, therefore, a self-corrective measure — remedying the deficiency before it is raised for us.</b>">
+    この二つの欠落は、価格の妥当性を検証する仕組みの不在であると同時に、<b>調達ガバナンス上の統制欠陥</b>でもある。内部監査・外部監査の観点から見れば、「競争性のない発注」と「ベンダー雛形の受動受諾」は、いずれも指摘リスクを抱えた状態である。<b>本フレームワークは、指摘される前にこの欠陥を能動的に是正する、自浄的な取り組みでもある。</b>
+  </p>
+
+  <!-- 02 -->
+  <div class="step"><span class="n">02</span><span data-ja="なぜ空白のままなのか ─ 三者それぞれの合理性" data-en="WHY THE VOID PERSISTS — EACH PARTY IS ACTING RATIONALLY">なぜ空白のままなのか ─ 三者それぞれの合理性</span></div>
+  <p class="lead2"
+    data-ja="競争プロセスの中核工程 ── <b>要件定義の標準化、ベンダーロングリストの作成、RFP設計・評価基準の策定、技術・価格交渉、契約条件の審査</b> ── は、いずれも専門性と相応の工数を要する。ところが当社では、これらのタスクが<b>どの部門の職掌にも明確に割り当てられていない</b>。"
+    data-en="The core steps of a competitive process — <b>standardizing requirements, building the vendor long list, designing the RFP and its evaluation criteria, negotiating on technology and price, reviewing contractual terms</b> — each demand specialist skill and material effort. In our organization, none of them has been <b>clearly assigned to any function's remit</b>.">
+    競争プロセスの中核工程 ── <b>要件定義の標準化、ベンダーロングリストの作成、RFP設計・評価基準の策定、技術・価格交渉、契約条件の審査</b> ── は、いずれも専門性と相応の工数を要する。ところが当社では、これらのタスクが<b>どの部門の職掌にも明確に割り当てられていない</b>。
+  </p>
+
+  <div class="who">
+    <div class="wc">
+      <div class="t" data-ja="調達部門" data-en="Procurement">調達部門</div>
+      <div class="d"
+        data-ja="制度上はRFPや相見積もりの購買手続きに関与するルールだが、<b>IT領域の専門性を持たない</b>。一般購買業務の延長としてIT購買を扱っており、要件定義やロングリスト作成、技術的観点での交渉は職掌にも能力にも含まれない。実際に関与できているのは、残り20%を占める数件の大型契約の購買手続きに限られる。契約実務についても調達のルールに規定がない。"
+        data-en="By rule, procurement is involved in RFPs and multi-vendor quotations. But it <b>holds no IT specialism</b>; IT purchasing is handled as an extension of general purchasing. Defining requirements, building long lists and negotiating on technical grounds fall outside both its remit and its capability. In practice its involvement is confined to the purchasing formalities on the handful of large contracts making up the other 20%. Contracting itself is not covered by procurement's rules at all.">
+        制度上はRFPや相見積もりの購買手続きに関与するルールだが、<b>IT領域の専門性を持たない</b>。一般購買業務の延長としてIT購買を扱っており、要件定義やロングリスト作成、技術的観点での交渉は職掌にも能力にも含まれない。実際に関与できているのは、残り20%を占める数件の大型契約の購買手続きに限られる。契約実務についても調達のルールに規定がない。
+      </div>
+    </div>
+    <div class="wc">
+      <div class="t" data-ja="現場（IT部門）" data-en="The business (IT functions)">現場（IT部門）</div>
+      <div class="d"
+        data-ja="限られた工数の中で<b>システムを安定稼働させることに手一杯</b>であり、市場を俯瞰したロングリスト作成や競争設計にまで手が回らない。結果として、ベンダーが提示する複数プランの中から選ぶところで実務が完結する。加えて現場は、<b>運用の安定を理由に既存ベンダーを選好しうる当事者</b>でもある ── これは利害であって、怠慢ではない。"
+        data-en="With finite capacity, the business is <b>fully occupied keeping systems running</b>. Surveying the market, building long lists and designing competitions do not fit. Practice therefore ends at choosing among the plans the incumbent has presented. The business is also <b>an interested party</b>: it has legitimate reason to prefer the incumbent on stability grounds. That is an interest, not negligence.">
+        限られた工数の中で<b>システムを安定稼働させることに手一杯</b>であり、市場を俯瞰したロングリスト作成や競争設計にまで手が回らない。結果として、ベンダーが提示する複数プランの中から選ぶところで実務が完結する。加えて現場は、<b>運用の安定を理由に既存ベンダーを選好しうる当事者</b>でもある ── これは利害であって、怠慢ではない。
+      </div>
+    </div>
+    <div class="wc void">
+      <div class="t" data-ja="── 誰も担っていない領域" data-en="── The unassigned territory">── 誰も担っていない領域</div>
+      <div class="d"
+        data-ja="ロングリスト作成／RFP設計／評価基準の策定と事前固定／技術・価格交渉／契約条件の審査／応札結果と随契理由の記録。<br><b>いずれも「やらなくても今日は困らない」工程である。</b>だからこそ、忙しい組織では最後まで空白に残る。"
+        data-en="Long-listing / RFP design / setting and freezing evaluation criteria / technical and commercial negotiation / contract review / recording bid outcomes and sole-source justifications.<br><b>None of these causes any problem today if left undone.</b> Which is precisely why, in a busy organization, they are the last things to be assigned.">
+        ロングリスト作成／RFP設計／評価基準の策定と事前固定／技術・価格交渉／契約条件の審査／応札結果と随契理由の記録。<br><b>いずれも「やらなくても今日は困らない」工程である。</b>だからこそ、忙しい組織では最後まで空白に残る。
+      </div>
+    </div>
+  </div>
+
+  <div class="void-note">
+    <div class="t" data-ja="空白に落ちたタスクの主導権は、必然的にベンダー側が握る"
+         data-en="Whatever falls into the void is necessarily led by the vendor">空白に落ちたタスクの主導権は、必然的にベンダー側が握る</div>
+    <div class="d"
+      data-ja="誰も担わない工程は、消えてなくなるわけではない。<b>それを担う動機と能力を持つ唯一の当事者 ── ベンダー ── によって埋められる。</b>提案書の型（松竹梅）も、契約書の雛形も、こちらが用意していない以上、ベンダーが用意するものを起点にせざるを得ない。<br>したがって、この状態は「現場が甘い」のではなく、<b>組織が担い手を置いていないことの、当然の帰結</b>である。解決策は号令ではありえない。<b>空白を埋める専門機能を、組織として置くこと</b>でなければならない。"
+      data-en="A step that no one owns does not disappear. <b>It is filled by the only party with both the motive and the capability to fill it — the vendor.</b> The shape of the proposal and the shape of the contract both originate with the vendor, because we supply neither.<br>This state of affairs is therefore not evidence that the business is lax. It is <b>the natural consequence of having placed no one in the role</b>. The remedy cannot be exhortation. It must be <b>the institution of a specialist function to occupy the void</b>.">
+      誰も担わない工程は、消えてなくなるわけではない。<b>それを担う動機と能力を持つ唯一の当事者 ── ベンダー ── によって埋められる。</b>提案書の型（松竹梅）も、契約書の雛形も、こちらが用意していない以上、ベンダーが用意するものを起点にせざるを得ない。<br>したがって、この状態は「現場が甘い」のではなく、<b>組織が担い手を置いていないことの、当然の帰結</b>である。解決策は号令ではありえない。<b>空白を埋める専門機能を、組織として置くこと</b>でなければならない。
+    </div>
+  </div>
+
+  <!-- 03 -->
+  <div class="step"><span class="n">03</span><span data-ja="責任の所在 ─ As-Is / To-Be" data-en="WHERE RESPONSIBILITY SITS — AS-IS / TO-BE">責任の所在 ─ As-Is / To-Be</span></div>
+  <div class="legend"
+    data-ja="<b>A</b>＝最終責任　<b>R</b>＝実行責任　<b>C</b>＝協議先　<b>I</b>＝報告先　<b>―</b>＝担い手不在（空白地帯）"
+    data-en="<b>A</b> = accountable　<b>R</b> = responsible　<b>C</b> = consulted　<b>I</b> = informed　<b>―</b> = no owner (the void)">
+    <b>A</b>＝最終責任　<b>R</b>＝実行責任　<b>C</b>＝協議先　<b>I</b>＝報告先　<b>―</b>＝担い手不在（空白地帯）
+  </div>
+
+  <div class="pair">
+    <div>
+      <div class="ptitle as" data-ja="As-Is ── 現状" data-en="AS-IS — TODAY">As-Is ── 現状</div>
+      <table class="raci">
+        <tr>
+          <th data-ja="工程" data-en="Step">工程</th>
+          <th data-ja="現場" data-en="Business">現場</th>
+          <th data-ja="調達" data-en="Proc.">調達</th>
+          <th data-ja="VMO" data-en="VMO">VMO</th>
+          <th data-ja="ベンダー" data-en="Vendor">ベンダー</th>
+        </tr>
+        <tr><td data-ja="IT要件定義・仕様策定" data-en="Requirements / specification">IT要件定義・仕様策定</td><td class="ar">A/R</td><td></td><td class="vd">―</td><td class="vn" data-ja="C(主導)" data-en="C (leads)">C(主導)</td></tr>
+        <tr><td data-ja="ベンダーロングリスト作成" data-en="Vendor long list">ベンダーロングリスト作成</td><td class="vd">―</td><td class="vd">―</td><td class="vd">―</td><td class="vd">―</td></tr>
+        <tr><td data-ja="RFP設計・評価基準策定" data-en="RFP design / criteria">RFP設計・評価基準策定</td><td class="vd">―</td><td class="vd">―</td><td class="vd">―</td><td class="vd">―</td></tr>
+        <tr><td data-ja="RFP発行・相見積（大型のみ）" data-en="Issue RFP (large only)">RFP発行・相見積（大型のみ）</td><td>C</td><td class="ar">A/R</td><td class="vd">―</td><td>I</td></tr>
+        <tr><td data-ja="RFP発行・相見積（大型以外）" data-en="Issue RFP (all others)">RFP発行・相見積（大型以外）</td><td class="vd">―</td><td class="vd">―</td><td class="vd">―</td><td class="vd">―</td></tr>
+        <tr><td data-ja="ベンダー交渉（技術・価格）" data-en="Vendor negotiation">ベンダー交渉（技術・価格）</td><td data-ja="A/R(弱)" data-en="A/R (weak)">A/R(弱)</td><td data-ja="C(大型時)" data-en="C (large)">C(大型時)</td><td class="vd">―</td><td class="vn" data-ja="C(主導)" data-en="C (leads)">C(主導)</td></tr>
+        <tr><td data-ja="契約条件審査・交渉" data-en="Contract review">契約条件審査・交渉</td><td data-ja="A/R(受動)" data-en="A/R (passive)">A/R(受動)</td><td></td><td class="vd">―</td><td class="vn" data-ja="R(雛形主導)" data-en="R (owns template)">R(雛形主導)</td></tr>
+        <tr><td data-ja="契約締結手続き" data-en="Contract execution">契約締結手続き</td><td class="ar">A/R</td><td></td><td class="vd">―</td><td>I</td></tr>
+        <tr><td data-ja="実績測定・ガバナンス" data-en="Measurement / governance">実績測定・ガバナンス</td><td class="vd">―</td><td class="vd">―</td><td class="vd">―</td><td class="vd">―</td></tr>
+      </table>
+      <p class="pnote"
+        data-ja="最終責任（A）は現場に偏在する一方、実質的な実行（R）の多くを<b>ベンダーが握っている</b>。要件以降の競争・評価・記録の工程は「―」で埋まっており、<b>この空白の多さが、そのまま統制欠陥の可視化である</b>。"
+        data-en="Accountability (A) is concentrated in the business, while much of the actual execution (R) <b>sits with the vendor</b>. Everything downstream of requirements — competition, evaluation, record-keeping — reads &quot;―&quot;. <b>The extent of that emptiness is the control deficiency, made visible.</b>">
+        最終責任（A）は現場に偏在する一方、実質的な実行（R）の多くを<b>ベンダーが握っている</b>。要件以降の競争・評価・記録の工程は「―」で埋まっており、<b>この空白の多さが、そのまま統制欠陥の可視化である</b>。
+      </p>
+    </div>
+
+    <div>
+      <div class="ptitle to" data-ja="To-Be ── VMO設置後" data-en="TO-BE — WITH THE VMO IN PLACE">To-Be ── VMO設置後</div>
+      <table class="raci">
+        <tr>
+          <th data-ja="工程" data-en="Step">工程</th>
+          <th data-ja="現場" data-en="Business">現場</th>
+          <th data-ja="調達" data-en="Proc.">調達</th>
+          <th data-ja="VMO" data-en="VMO">VMO</th>
+          <th data-ja="ベンダー" data-en="Vendor">ベンダー</th>
+        </tr>
+        <tr><td data-ja="IT要件定義・仕様策定" data-en="Requirements / specification">IT要件定義・仕様策定</td><td class="ar">A/R</td><td></td><td class="nw" data-ja="R(標準化支援)" data-en="R (standards)">R(標準化支援)</td><td>I</td></tr>
+        <tr><td data-ja="ベンダーロングリスト作成" data-en="Vendor long list">ベンダーロングリスト作成</td><td>C</td><td>I</td><td class="nw">A/R</td><td></td></tr>
+        <tr><td data-ja="RFP設計・評価基準策定" data-en="RFP design / criteria">RFP設計・評価基準策定</td><td>C</td><td>I</td><td class="nw">A/R</td><td></td></tr>
+        <tr><td data-ja="RFP発行・相見積取得" data-en="Issue RFP / obtain bids">RFP発行・相見積取得</td><td>I</td><td class="ar" data-ja="A/R(手続)" data-en="A/R (process)">A/R(手続)</td><td class="nw" data-ja="C(中身設計)" data-en="C (content)">C(中身設計)</td><td>I</td></tr>
+        <tr><td data-ja="ベンダー交渉（技術・価格）" data-en="Vendor negotiation">ベンダー交渉（技術・価格）</td><td>C</td><td data-ja="C(契約条件)" data-en="C (terms)">C(契約条件)</td><td class="nw">A/R</td><td></td></tr>
+        <tr><td data-ja="契約条件審査・交渉" data-en="Contract review">契約条件審査・交渉</td><td>C</td><td>I</td><td class="nw" data-ja="A/R(標準・審査)" data-en="A/R (standards)">A/R(標準・審査)</td><td>I</td></tr>
+        <tr><td data-ja="契約締結手続き" data-en="Contract execution">契約締結手続き</td><td class="ar">R</td><td>I</td><td class="nw" data-ja="A/C(雛形供給)" data-en="A/C (template)">A/C(雛形供給)</td><td>I</td></tr>
+        <tr><td data-ja="実績測定・ガバナンス" data-en="Measurement / governance">実績測定・ガバナンス</td><td>I</td><td>I</td><td class="nw">A/R</td><td></td></tr>
+      </table>
+      <p class="pnote"
+        data-ja="空白（―）が消え、VMOが<b>競争の頭脳工程と契約防御工程</b>を最終責任として引き受ける。調達は本来機能している購買手続きに専念し、現場は要件と締結に責任を保持する。<b>ベンダーが握っていた実行主導権（提案設計・契約雛形）を、組織側に取り戻す構図である。</b>"
+        data-en="The void closes. The VMO takes accountability for <b>the intellectual work of competition and the defence of contractual terms</b>. Procurement concentrates on the purchasing formalities it already performs well; the business retains requirements and execution. <b>The initiative the vendor held — over proposal design and contract templates — returns to the organization.</b>">
+        空白（―）が消え、VMOが<b>競争の頭脳工程と契約防御工程</b>を最終責任として引き受ける。調達は本来機能している購買手続きに専念し、現場は要件と締結に責任を保持する。<b>ベンダーが握っていた実行主導権（提案設計・契約雛形）を、組織側に取り戻す構図である。</b>
+      </p>
+    </div>
+  </div>
+
+  <!-- 04 -->
+  <div class="step" style="margin-top:16px;"><span class="n">04</span><span data-ja="同じ変化を、処理フローで見る" data-en="THE SAME CHANGE, SEEN AS A PROCESS FLOW">同じ変化を、処理フローで見る</span></div>
+  <div class="pair mb30">
+    <div class="flow as">
+      <div class="fh" data-ja="As-Is ── ベンダー主導・受動フロー" data-en="AS-IS — vendor-led, reactive">As-Is ── ベンダー主導・受動フロー</div>
+      <div class="fb">
+        <div class="frow"><div class="fac field" data-ja="現場" data-en="Business">現場</div><div class="ftx" data-ja="要件を口頭・属人的にベンダーへ伝達する" data-en="Conveys requirements verbally and informally to the vendor">要件を口頭・属人的にベンダーへ伝達する</div></div>
+        <div class="frow"><div class="fac vend" data-ja="ベンダー" data-en="Vendor">ベンダー</div><div class="ftx" data-ja="<b>松竹梅型の複数年提案書を提示する</b>（提案の型はベンダーが決める）" data-en="<b>Presents a tiered, multi-year proposal</b> — the shape of the proposal is the vendor's to choose">松竹梅型の複数年提案書を提示する（提案の型はベンダーが決める）</div></div>
+        <div class="frow"><div class="fac field" data-ja="現場" data-en="Business">現場</div><div class="ftx" data-ja="同一サービスなら安い方を選択する（＝縦の最適化）" data-en="Selects the cheaper plan for the same service (vertical optimization)">同一サービスなら安い方を選択する（＝縦の最適化）</div></div>
+        <div class="fgap" data-ja="ここに、横の競争比較の工程が存在しない ── 誰も担っていない" data-en="No step for horizontal comparison exists here — no one owns it">ここに、横の競争比較の工程が存在しない ── 誰も担っていない</div>
+        <div class="frow"><div class="fac proc" data-ja="調達" data-en="Proc.">調達</div><div class="ftx" data-ja="大型契約のみRFPを発行する（一般購買手続きとして／IT専門性なし）。大多数は関与せず随意で発注される" data-en="Issues RFPs for large contracts only, as a general purchasing formality and without IT specialism. The majority proceeds sole-sourced, with no involvement">大型契約のみRFPを発行する（一般購買手続きとして／IT専門性なし）。大多数は関与せず随意で発注される</div></div>
+        <div class="frow"><div class="fac vend" data-ja="ベンダー" data-en="Vendor">ベンダー</div><div class="ftx" data-ja="<b>契約書雛形を提示する</b>（契約の型もベンダーが決める）" data-en="<b>Supplies the contract template</b> — the shape of the contract is also the vendor's to choose">契約書雛形を提示する（契約の型もベンダーが決める）</div></div>
+        <div class="frow"><div class="fac field" data-ja="現場" data-en="Business">現場</div><div class="ftx" data-ja="雛形を受動的にチェックし、締結する" data-en="Reviews the template passively and executes">雛形を受動的にチェックし、締結する</div></div>
+        <div class="fgap" data-ja="応札価格も随契理由も記録されない ── 次年度の判断材料が組織に残らない" data-en="Neither bid prices nor sole-source reasons are recorded — nothing remains to inform next year">応札価格も随契理由も記録されない ── 次年度の判断材料が組織に残らない</div>
+      </div>
+    </div>
+
+    <div class="flow to">
+      <div class="fh" data-ja="To-Be ── VMO主導・競争設計フロー" data-en="TO-BE — VMO-led, competition by design">To-Be ── VMO主導・競争設計フロー</div>
+      <div class="fb">
+        <div class="frow"><div class="fac field" data-ja="現場" data-en="Business">現場</div><div class="ftx" data-ja="契約更新の到来を起票し、事実項目を提出する（意見ではなく事実のみ）" data-en="Raises the upcoming renewal and submits the factual items — facts only, not opinions">契約更新の到来を起票し、事実項目を提出する（意見ではなく事実のみ）</div></div>
+        <div class="frow"><div class="fac vmo" data-ja="VMO" data-en="VMO">VMO</div><div class="ftx" data-ja="<b>競争適合性を判定する</b>（次頁の第3の軸）" data-en="<b>Determines contestability</b> — the third axis, set out on the next page">競争適合性を判定する（次頁の第3の軸）</div></div>
+        <div class="frow"><div class="fac vmo" data-ja="VMO" data-en="VMO">VMO</div><div class="ftx" data-ja="要件定義を標準化し、<b>ロングリストを作成し、RFPと評価基準を設計する</b>" data-en="Standardizes the requirement, <b>builds the long list, designs the RFP and its evaluation criteria</b>">要件定義を標準化し、ロングリストを作成し、RFPと評価基準を設計する</div></div>
+        <div class="frow"><div class="fac proc" data-ja="調達" data-en="Proc.">調達</div><div class="ftx" data-ja="RFPを発行し、提案を集約する（購買手続きゲートとして本来機能）" data-en="Issues the RFP and collates the responses — the purchasing gate it already performs well">RFPを発行し、提案を集約する（購買手続きゲートとして本来機能）</div></div>
+        <div class="frow"><div class="fac vmo" data-ja="VMO" data-en="VMO">VMO</div><div class="ftx" data-ja="技術・価格・TCOを交渉する。<b>採点は事業・技術部門が行い、VMOは基準どおりかを監督する</b>" data-en="Negotiates on technology, price and TCO. <b>Scoring is done by the business and technical functions; the VMO polices adherence to the criteria</b>">技術・価格・TCOを交渉する。採点は事業・技術部門が行い、VMOは基準どおりかを監督する</div></div>
+        <div class="frow"><div class="fac vmo" data-ja="VMO" data-en="VMO">VMO</div><div class="ftx" data-ja="<b>契約標準条項に基づき条件を交渉する</b>（SLA・価格改定・成果物所有権）" data-en="<b>Negotiates terms against the contract standards</b> — SLAs, price revision, ownership of deliverables">契約標準条項に基づき条件を交渉する（SLA・価格改定・成果物所有権）</div></div>
+        <div class="frow"><div class="fac field" data-ja="現場" data-en="Business">現場</div><div class="ftx" data-ja="VMOが供給する標準雛形を用いて締結する" data-en="Executes using the standard template supplied by the VMO">VMOが供給する標準雛形を用いて締結する</div></div>
+        <div class="frow"><div class="fac vmo" data-ja="VMO" data-en="VMO">VMO</div><div class="ftx" data-ja="<b>応札価格と随契理由を、落札の可否にかかわらず全件台帳に記録する</b>" data-en="<b>Records every bid price and every sole-source justification in the register, won or lost</b>">応札価格と随契理由を、落札の可否にかかわらず全件台帳に記録する</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="close">
+    <div class="t" data-ja="VMOは、既存部門の仕事を奪わない。誰も担っていなかった空白を埋める。"
+         data-en="The VMO takes no one's work away. It occupies a space no one was in.">VMOは、既存部門の仕事を奪わない。誰も担っていなかった空白を埋める。</div>
+    <div class="d"
+      data-ja="二つの図は、同じ構造を静と動の二面から示している。RACIは<b>責任の所在の穴</b>を、フローは<b>主導権の流れ</b>を示す。並べると、As-Isの本質が見える ── <b>RACIで「―」と空いている工程を、フローではベンダーが自らの提案書と契約雛形で埋めている。</b>すなわち空白地帯にベンダーが流れ込む構造である。<br>To-Beは、その空白にVMOを挿入するにすぎない。<b>調達からIT専門性を新たに要求することはなく、現場の負荷はむしろ軽減される</b>（ロングリスト作成もRFP設計も、これまで現場が担えていなかった工程である）。<br>次頁は、この空白を埋めるVMOが、具体的に何をどう判定する機能なのか ── その制度設計である。"
+      data-en="The two exhibits show the same structure from two angles: the RACI shows <b>the holes in accountability</b>, the flow shows <b>where initiative travels</b>. Set side by side, the essence of the as-is becomes visible — <b>the steps that read &quot;―&quot; in the RACI are precisely the steps the vendor fills, in the flow, with its own proposal and its own contract template.</b> The void draws the vendor in.<br>The to-be does no more than insert the VMO into that void. <b>It asks no new IT specialism of procurement, and it reduces rather than adds to the load on the business</b> — long-listing and RFP design were never steps the business was performing.<br>The next page sets out what this function actually decides, and how — the institutional design itself.">
+      二つの図は、同じ構造を静と動の二面から示している。RACIは<b>責任の所在の穴</b>を、フローは<b>主導権の流れ</b>を示す。並べると、As-Isの本質が見える ── <b>RACIで「―」と空いている工程を、フローではベンダーが自らの提案書と契約雛形で埋めている。</b>すなわち空白地帯にベンダーが流れ込む構造である。<br>To-Beは、その空白にVMOを挿入するにすぎない。<b>調達からIT専門性を新たに要求することはなく、現場の負荷はむしろ軽減される</b>（ロングリスト作成もRFP設計も、これまで現場が担えていなかった工程である）。<br>次頁は、この空白を埋めるVMOが、具体的に何をどう判定する機能なのか ── その制度設計である。
+    </div>
+  </div>
+
+  <div class="nav">
+    <a href="01_Sole_Source_Market_Failure.html" data-ja="◀ 前へ：随意契約8割の構造下で何が起きるか" data-en="◀ Previous: What happens when 80% is sole-sourced">◀ 前へ：随意契約8割の構造下で何が起きるか</a>
+    <a href="03_Competitive_Sourcing_Proposal.html" data-ja="次へ：競争調達フレームワーク ─ 提言 ▶" data-en="Next: The Competitive Sourcing Framework — Proposal ▶">次へ：競争調達フレームワーク ─ 提言 ▶</a>
+  </div>
+</div>
+
+<script>
+function setLang(l){
+  document.querySelectorAll('[data-ja]').forEach(function(el){
+    var v = el.getAttribute('data-' + l);
+    if (v !== null) el.innerHTML = v;
+  });
+  document.documentElement.lang = l;
+  document.getElementById('btn-ja').classList.toggle('on', l === 'ja');
+  document.getElementById('btn-en').classList.toggle('on', l === 'en');
+}
+</script>
+</body>
+</html>

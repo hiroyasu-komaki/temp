@@ -7,7 +7,5 @@
   "safety_margin": 0.2,
   "use_bundle": true,
   "ext_threshold": 2,
-  "ext_penalty": 0.15,
-  "ext_penalty_cap": 0.6,
   "as_of_date": "2026-04-01"
 }

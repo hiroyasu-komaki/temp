@@ -5,9 +5,11 @@ Main.py — VMO ベンダー切替投資エージェントのエントリポイ�
   input/contracts.csv + input/scenario.json
     -> [loader]     読み込み・検証
     -> [scoring]    V×U×R と束ね評価 -> mid/scored.json
-    -> [allocation] 予算配分         -> output/allocation.json
     -> [reporter]   説明レポート     -> output/report.md
     -> [dashboard_sync] index.html用データ同期 -> assets/js/data.js
+
+予算配分の工程は持たない。出すのは優先順位とその根拠であって、
+手元資金をどう割り付けるかではない（原則8）。
 
 使い方:
   python src/Main.py
@@ -23,7 +25,7 @@ from pathlib import Path
 SRC_DIR = Path(__file__).resolve().parent
 sys.path.insert(0, str(SRC_DIR))
 
-from modules import loader, scoring, allocation, reporter, dashboard_sync  # noqa: E402
+from modules import loader, scoring, reporter, dashboard_sync  # noqa: E402
 
 ROOT = SRC_DIR.parent
 INPUT_DIR = ROOT / "input"
@@ -62,19 +64,12 @@ def main() -> int:
     print(f"スコアリング完了: 候補 {len(scored['candidates'])} 件（即着手 {n_act} 件）"
           f" -> mid/scored.json")
 
-    # 3) 予算配分 -> output/allocation.json
-    alloc = allocation.allocate(scored)
-    (OUTPUT_DIR / "allocation.json").write_text(
-        json.dumps(alloc, ensure_ascii=False, indent=2), encoding="utf-8")
-    print(f"予算配分完了: 本コミット {alloc['committed_m']}M / "
-          f"予算不足 {alloc['blocked_m']}M -> output/allocation.json")
-
-    # 4) レポート -> output/report.md
-    report = reporter.build_report(scored, alloc)
+    # 3) レポート -> output/report.md
+    report = reporter.build_report(scored)
     (OUTPUT_DIR / "report.md").write_text(report, encoding="utf-8")
     print("レポート生成完了 -> output/report.md")
 
-    # 5) ダッシュボード用データを同期 -> assets/js/data.js
+    # 4) ダッシュボード用データを同期 -> assets/js/data.js
     data_js_path = dashboard_sync.sync(contracts_d, scenario, ROOT)
     print(f"ダッシュボードデータ同期完了 -> {data_js_path.relative_to(ROOT)}")
 

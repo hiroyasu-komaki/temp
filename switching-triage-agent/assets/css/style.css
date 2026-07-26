@@ -60,6 +60,7 @@ tr.inactive-row{opacity:.55}
   font-weight:600;white-space:nowrap;color:#fff}
 .v-act{background:var(--act)} .v-hold{background:var(--hold)} .v-judge{background:var(--judge)}
 .v-drop{background:var(--drop)} .v-lapse{background:var(--lapse)} .v-check{background:#5a6472}
+.v-escalate{background:#8a4b9c}
 
 /* V・U・R を縦3段の横棒グラフ + スコアの併記で見せる */
 .factor-score{display:flex;align-items:center;gap:10px}

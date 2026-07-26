@@ -18,9 +18,7 @@ const selectedIds = new Set(); // チェックした案件のid（文字列化�
 function applyExtLevel(level) {
   const preset = EXT_PRESETS[level];
   currentParams.extThreshold = preset.threshold;
-  currentParams.extPenalty = preset.penalty;
-  currentParams.extPenaltyCap = preset.cap;
-  $("lExtLevel").textContent = `${preset.label}（延長${preset.threshold}回目から、1回${Math.round(preset.penalty * 100)}%減、上限${Math.round(preset.cap * 100)}%）`;
+  $("lExtLevel").textContent = `${preset.label}（延長${preset.threshold}回目から「VMO主導候補」として浮上）`;
 }
 
 function updateKpis() {

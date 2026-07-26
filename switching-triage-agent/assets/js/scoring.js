@@ -10,37 +10,28 @@
  * （効果の説明が難しいため。詳細は input/scenario.json 参照）。
  */
 
-// ---- 実行確度 p の解決（延長ペナルティ込み）------------------------------
+// ---- 実行確度 p の解決 -----------------------------------------------------
 //
 // contestProb と execProb が両方あればその積を使う（後方互換で単独値へフォールバック）。
-// extCount が extThreshold 以上なら execProb を割り引く。
+//
+// 繰り返し延長は p を割り引かない（重要）。
+// 延長を確度の低下として扱うと、締切が近く実行意欲だけが低い案件がスコア上
+// 「捨てる候補」へ沈む。しかしそれは方法論 §3.5 の意図と逆であり、現場任せでは
+// 切り替わらない案件こそ VMO が実行主導すべき対象として名指しされねばならない。
+// したがって延長は独立フラグとして扱い、判定ラベル側で浮上させる（verdictOf）。
 function effectiveP(item, params) {
   const contest = item.contestProb;
   const execP = item.execProb;
   const ext = item.extCount || 0;
 
-  const extThreshold = params.extThreshold;
-  const extPenalty = params.extPenalty;
-  const extCap = params.extPenaltyCap;
-
-  let penalty = 0;
-  let penalized = false;
-  if (execP != null && ext >= extThreshold) {
-    const over = ext - extThreshold + 1;
-    penalty = Math.min(extPenalty * over, extCap);
-    penalized = true;
-  }
-
   let p, pContest, pExecEff, splitUsed;
   if (contest != null && execP != null) {
-    pExecEff = execP * (1 - penalty);
-    p = contest * pExecEff;
+    pExecEff = execP;
+    p = contest * execP;
     pContest = contest;
     splitUsed = true;
   } else {
-    const base = item.execProbability;
-    p = ext >= extThreshold ? base * (1 - penalty) : base;
-    penalized = ext >= extThreshold && penalty > 0;
+    p = item.execProbability;
     pContest = null;
     pExecEff = null;
     splitUsed = false;
@@ -51,8 +42,7 @@ function effectiveP(item, params) {
     pContest,
     pExecEffective: pExecEff,
     extCount: ext,
-    extPenalized: penalized,
-    extPenalty: Math.round(penalty * 1000) / 1000,
+    extEscalated: ext >= params.extThreshold,
     pSplitUsed: splitUsed,
   };
 }
@@ -142,7 +132,9 @@ function buildBundles(activeContracts, params) {
       execProbability: p,
       contestProb: null,
       execProb: null,
-      extCount: 0,
+      // 延長回数は構成契約の最大を引き継ぐ。1件でも延長常習なら
+      // 束ねても現場任せでは動かないため、シグナルを消してはならない。
+      extCount: Math.max(...members.map((m) => m.extCount || 0)),
       active: 1,
       isBundle: true,
       members: members.map((m) => m.id),
@@ -163,17 +155,21 @@ function factorsForBundle(bundle, params) {
   let U = d_i < 0 ? 0 : 1 / (1 + d_i / h);
   const g = Math.min(Math.max(d_i, 0) / h, 1);
   const R = 1 - bundle.retSigma * g;
+  const ext = bundle.extCount || 0;
   return {
     net, Vraw, d_i, U, R, pEffective: p,
-    pContest: null, pExecEffective: null, extCount: 0,
-    extPenalized: false, extPenalty: 0, pSplitUsed: false,
+    pContest: null, pExecEffective: null, extCount: ext,
+    extEscalated: ext >= params.extThreshold, pSplitUsed: false,
   };
 }
 
 // ---- 判定ラベル ------------------------------------------------------------
-function verdictOf(d_i, score, Vn, U, R) {
+function verdictOf(d_i, score, Vn, U, R, escalated) {
   if (d_i < 0) return { key: "失効", cls: "v-lapse" };
   if (score >= 0.25) return { key: "即着手", cls: "v-act" };
+  // 繰り返し延長は、確度を割り引くのではなくここで浮上させる。
+  // 「現場任せでは切り替わらない」という事実は、沈めるのではなく名指しする。
+  if (escalated) return { key: "VMO主導候補", cls: "v-escalate" };
   if (U >= 0.5 && R < 0.7) return { key: "人間判断", cls: "v-judge" };
   if (Vn > 0.3 && U < 0.4) return { key: "温存", cls: "v-hold" };
   if (Vn < 0.1) return { key: "捨てる候補", cls: "v-drop" };
@@ -200,11 +196,12 @@ function scoreAll(params) {
     return { ...c, ...f };
   });
 
+  // 下限を定数で切らない（ゼロ除算だけ避ける）。src/modules/scoring.py と同基準。
   const maxV = Math.max(1e-9, ...candidates.map((c) => Math.max(c.Vraw, 0)));
   candidates.forEach((c) => {
     c.Vn = Math.max(c.Vraw, 0) / maxV;
     c.score = c.Vn * c.U * c.R;
-    c.verdict = verdictOf(c.d_i, c.score, c.Vn, c.U, c.R);
+    c.verdict = verdictOf(c.d_i, c.score, c.Vn, c.U, c.R, !!c.extEscalated);
   });
   candidates.sort((a, b) => b.score - a.score);
 

@@ -5,15 +5,15 @@
 const $ = (id) => document.getElementById(id);
 const fmt = (n) => (Math.round(n * 10) / 10).toLocaleString("ja-JP");
 
-// ---- 延長ペナルティ「厳しさ」プリセット ------------------------------------
-// scenario.json の既定値（threshold=2, penalty=0.15, cap=0.6）を
-// レベル50（標準）にちょうど一致させてある。
+// ---- 「先延ばしへの厳しさ」プリセット ---------------------------------------
+// 延長は確度を割り引かない。何回目の延長から「VMO主導候補」として浮上させるか、
+// その閾値だけを動かす（scenario.json の ext_threshold=2 がレベル50に一致）。
 const EXT_PRESETS = {
-  0:   { threshold: 4, penalty: 0.08, cap: 0.30, label: "甘い" },
-  25:  { threshold: 3, penalty: 0.12, cap: 0.45, label: "やや甘い" },
-  50:  { threshold: 2, penalty: 0.15, cap: 0.60, label: "標準" },
-  75:  { threshold: 2, penalty: 0.22, cap: 0.75, label: "やや厳しい" },
-  100: { threshold: 1, penalty: 0.30, cap: 0.90, label: "厳しい" },
+  0:   { threshold: 4, label: "甘い" },
+  25:  { threshold: 3, label: "やや甘い" },
+  50:  { threshold: 2, label: "標準" },
+  75:  { threshold: 2, label: "やや厳しい" },
+  100: { threshold: 1, label: "厳しい" },
 };
 
 function renderControls(params) {
@@ -57,17 +57,16 @@ function ragForResidual(d_i) {
 
 function extCell(r) {
   if (!r.extCount) return `<span class="ext-none">–</span>`;
-  const cls = r.extPenalized ? "ext-bad" : "ext-ok";
-  const title = r.extPenalized
-    ? `延長${r.extCount}回でexecution_probを${Math.round(r.extPenalty * 100)}%割引`
-    : `延長${r.extCount}回（ペナルティ未発動）`;
+  const cls = r.extEscalated ? "ext-bad" : "ext-ok";
+  const title = r.extEscalated
+    ? `延長${r.extCount}回。現場任せでは切り替わらない兆候として「VMO主導候補」に浮上`
+    : `延長${r.extCount}回（閾値未達）`;
   return `<span class="ext-badge ${cls}" title="${title}">⚠×${r.extCount}</span>`;
 }
 
 function pCellTitle(r) {
   if (r.pSplitUsed) {
-    const extNote = r.extPenalized ? `（延長ペナルティ${Math.round(r.extPenalty * 100)}%適用後）` : "";
-    return `契約可能性${r.pContest.toFixed(2)} × 実行確度${r.pExecEffective.toFixed(2)}${extNote}`;
+    return `土俵成立${r.pContest.toFixed(2)} × 実行${r.pExecEffective.toFixed(2)}`;
   }
   return `exec_probability ${r.pEffective.toFixed(2)}（単独値）`;
 }

@@ -5,36 +5,45 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Competitive Sourcing Framework</title>
 <style>
-  :root{--navy:#12305e; --ink:#1b2430; --gray:#5f6a77; --gray-l:#8b95a1; --line:#d7dde5;}
+  :root{--navy:#12305e; --ink:#1b2430; --gray:#5f6a77; --gray-l:#8b95a1; --line:#d7dde5; --panel:#f5f7fa;}
   *{box-sizing:border-box;}
   body{
-    margin:0; padding:60px 20px; background:#eef1f5;
+    margin:0; padding:56px 20px; background:#eef1f5;
     font-family:"Yu Gothic UI","Yu Gothic","Hiragino Kaku Gothic ProN","Meiryo",sans-serif;
     color:var(--ink);
   }
   html[lang="en"] body{font-family:"Segoe UI","Helvetica Neue",Arial,sans-serif;}
-  .wrap{max-width:620px; margin:0 auto; position:relative;}
+  .wrap{max-width:660px; margin:0 auto; position:relative;}
   .lang{display:flex; border:1px solid var(--line); position:absolute; top:-4px; right:0; background:#fff;}
   .lang button{border:none; background:#fff; color:var(--gray); font:inherit; font-size:11px;
     font-weight:700; letter-spacing:.06em; padding:5px 13px; cursor:pointer;}
   .lang button+button{border-left:1px solid var(--line);}
   .lang button.on{background:var(--navy); color:#fff;}
   .eyebrow{font-size:10px; font-weight:700; letter-spacing:.14em; color:var(--gray-l); margin-bottom:6px;}
-  h1{font-size:19px; color:var(--navy); margin:0 0 8px; font-weight:700; line-height:1.5; padding-right:130px;}
-  .lede{font-size:12px; color:var(--gray); line-height:1.85; margin:0 0 24px;
-    padding-bottom:18px; border-bottom:1px solid var(--line);}
+  h1{font-size:19px; color:var(--navy); margin:0 0 10px; font-weight:700; line-height:1.5; padding-right:130px;}
+  .claim{font-size:13px; line-height:1.85; color:var(--ink); font-weight:700;
+    border-left:4px solid var(--navy); padding:12px 0 12px 15px; margin:0 0 16px;}
+  .lede{font-size:12px; color:var(--gray); line-height:1.85; margin:0 0 18px;}
   .lede b{color:var(--ink);}
+  .ask{border:1px solid var(--line); background:#fff; padding:14px 18px; margin:0 0 26px;}
+  .ask .k{font-size:10px; font-weight:700; letter-spacing:.12em; color:var(--gray-l); margin-bottom:6px;}
+  .ask .v{font-size:12.5px; line-height:1.85; color:var(--ink);}
+  .ask .v b{color:var(--navy);}
+  .ask .n{font-size:11px; line-height:1.8; color:var(--gray); margin-top:8px; padding-top:8px; border-top:1px dashed var(--line);}
+  .rd{font-size:10px; font-weight:700; letter-spacing:.12em; color:var(--gray-l);
+    margin:0 0 10px; padding-bottom:6px; border-bottom:1px solid var(--line);}
   ul{list-style:none; margin:0; padding:0;}
   li{margin-bottom:10px;}
-  a{
+  a.card{
     display:block; padding:14px 18px; background:#fff; border:1px solid var(--line);
     color:var(--navy); text-decoration:none; transition:border-color .15s;
   }
-  a:hover{border-color:var(--navy);}
-  a .n{color:var(--gray-l); font-weight:600; margin-right:8px;}
-  a .t{font-size:14px; font-weight:700; line-height:1.5;}
-  a .s{display:block; font-size:11px; color:var(--gray); font-weight:400; margin-top:4px; line-height:1.6;}
-  .foot{margin-top:22px; padding-top:14px; border-top:1px solid var(--line);
+  a.card:hover{border-color:var(--navy);}
+  a.card .n{color:var(--gray-l); font-weight:600; margin-right:8px;}
+  a.card .t{font-size:14px; font-weight:700; line-height:1.5;}
+  a.card .q{display:block; font-size:11.5px; color:var(--ink); font-weight:700; margin-top:5px; line-height:1.6;}
+  a.card .s{display:block; font-size:11px; color:var(--gray); font-weight:400; margin-top:3px; line-height:1.7;}
+  .foot{margin-top:24px; padding-top:14px; border-top:1px solid var(--line);
     font-size:10.5px; color:var(--gray-l); line-height:1.85;}
   .foot b{color:var(--gray); font-weight:700;}
   @media(max-width:600px){h1{padding-right:0; margin-top:34px;}}
@@ -50,40 +59,74 @@
   <div class="eyebrow">IT PROCUREMENT GOVERNANCE</div>
   <h1 data-ja="競争調達フレームワーク ─ 随意契約8割という構造をどう読み解くか"
       data-en="The Competitive Sourcing Framework — Reading the Structure Behind 80% Sole-Sourcing">競争調達フレームワーク ─ 随意契約8割という構造をどう読み解くか</h1>
+
+  <p class="claim"
+     data-ja="我々は発注の8割について、良い取引かどうかを知る手段を持っていない。<br>これは交渉の問題ではないので、交渉では直らない。直すには、比較対象を作る制度と、それを所有する主体が要る。"
+     data-en="For 80% of what we buy, we have no means of knowing whether the deal is a good one.<br>This is not a problem of negotiation, so negotiation will not fix it. Fixing it requires an institution that creates a point of comparison — and someone to own it.">
+    我々は発注の8割について、良い取引かどうかを知る手段を持っていない。<br>これは交渉の問題ではないので、交渉では直らない。直すには、比較対象を作る制度と、それを所有する主体が要る。
+  </p>
+
   <p class="lede"
      data-ja="本資料は、<b>非対称情報の経済学</b>を土台に、当社IT調達における随意契約の構造を診断し、競争方式の導入を制度として設計するものである。<br><b>ベンダーの誠実性も、担当者の能力も、ここでは問わない。</b>扱うのは「比較対象が存在しない」という構造的事実と、そこから必然的に導かれる帰結のみである。"
      data-en="These pages diagnose the structure of sole-source contracting in our IT procurement through the lens of <b>the economics of asymmetric information</b>, and set out the introduction of competitive sourcing as an institutional design.<br><b>Neither vendor integrity nor individual capability is at issue here.</b> What is examined is a single structural fact — that no point of comparison exists — and the consequences that follow necessarily from it.">
     本資料は、<b>非対称情報の経済学</b>を土台に、当社IT調達における随意契約の構造を診断し、競争方式の導入を制度として設計するものである。<br><b>ベンダーの誠実性も、担当者の能力も、ここでは問わない。</b>扱うのは「比較対象が存在しない」という構造的事実と、そこから必然的に導かれる帰結のみである。
   </p>
 
+  <div class="ask">
+    <div class="k" data-ja="本資料が提起すること" data-en="WHAT THIS DOCUMENT PUTS FORWARD">本資料が提起すること</div>
+    <div class="v"
+      data-ja="調達方式の判定には、第3の軸「<b>競争適合性</b>」が要る。そして、その判定と<b>評価プロセスの完全性</b>を所有する主体が要る。"
+      data-en="The sourcing decision needs a third axis — <b>contestability</b>. And it needs a body that owns both that test and <b>the integrity of the evaluation process</b>.">
+      調達方式の判定には、第3の軸「<b>競争適合性</b>」が要る。そして、その判定と<b>評価プロセスの完全性</b>を所有する主体が要る。
+    </div>
+    <div class="n"
+      data-ja="扱うのは制度の設計 ── 何を判定し、誰が何を所有するか ── に限る。随意契約の比率目標（8割→X割）は掲げない。<b>判定を回せば、比率は結果として動く。</b>"
+      data-en="The scope is the design of the institution — what is tested, and who owns what. No target ratio is set (&quot;from 80% down to X%&quot;). <b>Run the test, and the ratio moves as a by-product.</b>">
+      扱うのは制度の設計 ── 何を判定し、誰が何を所有するか ── に限る。随意契約の比率目標（8割→X割）は掲げない。<b>判定を回せば、比率は結果として動く。</b>
+    </div>
+  </div>
+
+  <div class="rd" data-ja="論の運び ── 4つの問いに順に答える" data-en="THE ARGUMENT — FOUR QUESTIONS, IN ORDER">論の運び ── 4つの問いに順に答える</div>
+
   <ul>
     <li>
-      <a href="html/00_Information_Asymmetry.html">
-        <div class="t"><span class="n">00</span><span data-ja="情報の非対称性 ─ 市場が価格と品質を検証できなくなる条件" data-en="Information Asymmetry — When a Market Can No Longer Verify Price or Quality">情報の非対称性 ─ 市場が価格と品質を検証できなくなる条件</span></div>
+      <a class="card" href="html/00_Information_Asymmetry.html">
+        <div class="t"><span class="n">00</span><span data-ja="情報の非対称性" data-en="Information Asymmetry">情報の非対称性</span></div>
+        <span class="q" data-ja="なぜこれは、人の問題ではないのか" data-en="Why is this not a problem of people?">なぜこれは、人の問題ではないのか</span>
         <span class="s" data-ja="理論編。逆選抜とモラルハザード、レモン市場、確立された処方箋（シグナリング／スクリーニング／競争メカニズム）。そして「競争は万能ではない」という反証と、その成立条件。"
               data-en="Theory. Adverse selection and moral hazard; the market for lemons; the established remedies — signalling, screening, competitive mechanisms. And the counterpoint: competition is not a cure-all, and the conditions under which it works.">理論編。逆選抜とモラルハザード、レモン市場、確立された処方箋（シグナリング／スクリーニング／競争メカニズム）。そして「競争は万能ではない」という反証と、その成立条件。</span>
       </a>
     </li>
     <li>
-      <a href="html/01_Sole_Source_Market_Failure.html">
-        <div class="t"><span class="n">01</span><span data-ja="発注の8割が随意契約である構造下で、何が起きるか" data-en="What Happens When 80% of Contracts Are Sole-Sourced">発注の8割が随意契約である構造下で、何が起きるか</span></div>
+      <a class="card" href="html/01_Sole_Source_Market_Failure.html">
+        <div class="t"><span class="n">01</span><span data-ja="随意契約8割の構造下で起きること" data-en="What Happens When 80% Is Sole-Sourced">随意契約8割の構造下で起きること</span></div>
+        <span class="q" data-ja="では、我々に何が起きているのか" data-en="So what is happening to us?">では、我々に何が起きているのか</span>
         <span class="s" data-ja="診断編。調達類型ごとの競争適合性を切り分けたうえで、構造から演繹される4つの症状（価格が検証できない／努力水準が低下する／依存が固定化する／市場情報が入らない）を示す。"
               data-en="Diagnosis. Having separated the classes of procurement by their suitability for competition, it sets out the four symptoms that follow from the structure: price cannot be verified, effort declines, dependency hardens, market information never arrives.">診断編。調達類型ごとの競争適合性を切り分けたうえで、構造から演繹される4つの症状（価格が検証できない／努力水準が低下する／依存が固定化する／市場情報が入らない）を示す。</span>
       </a>
     </li>
     <li>
-      <a href="html/02_Competitive_Sourcing_Proposal.html">
-        <div class="t"><span class="n">02</span><span data-ja="競争調達フレームワーク ─ 提言" data-en="The Competitive Sourcing Framework — Proposal">競争調達フレームワーク ─ 提言</span></div>
-        <span class="s" data-ja="提言編。調達方式判定の第3の軸「競争適合性」、VMOへの評価プロセス完全性の付与、挙証責任の反転、段階導入、そして「競争導入だけでは解けないもの」の明示。"
-              data-en="Proposal. A third axis for the sourcing decision — contestability; the VMO as owner of the integrity of the evaluation process; the reversal of the burden of proof; a phased rollout; and an honest account of what competition alone cannot fix.">提言編。調達方式判定の第3の軸「競争適合性」、VMOへの評価プロセス完全性の付与、挙証責任の反転、段階導入、そして「競争導入だけでは解けないもの」の明示。</span>
+      <a class="card" href="html/02_Organizational_Void.html">
+        <div class="t"><span class="n">02</span><span data-ja="組織の空白地帯" data-en="The Organizational Void">組織の空白地帯</span></div>
+        <span class="q" data-ja="なぜ、既存のどの部門にも解けないのか" data-en="Why can no existing function solve it?">なぜ、既存のどの部門にも解けないのか</span>
+        <span class="s" data-ja="組織編。縦の最適化は行われている ── 欠けているのは横の競争比較と契約防御である。この二つがどの部門の職掌にも落ちておらず、空白の主導権はベンダーが握る。責任分担（RACI）と処理フローの前後比較。"
+              data-en="Organization. Vertical optimization is already happening; what is missing is horizontal comparison and the defence of contractual terms. Neither sits in any function&#39;s remit — and the vendor leads whatever falls into the void. Shown as a before-and-after of accountability (RACI) and process flow.">組織編。縦の最適化は行われている ── 欠けているのは横の競争比較と契約防御である。この二つがどの部門の職掌にも落ちておらず、空白の主導権はベンダーが握る。責任分担（RACI）と処理フローの前後比較。</span>
+      </a>
+    </li>
+    <li>
+      <a class="card" href="html/03_Competitive_Sourcing_Proposal.html">
+        <div class="t"><span class="n">03</span><span data-ja="競争調達フレームワーク ─ 提言" data-en="The Competitive Sourcing Framework — Proposal">競争調達フレームワーク ─ 提言</span></div>
+        <span class="q" data-ja="だから、何を変えるべきか" data-en="So what needs to change?">だから、何を変えるべきか</span>
+        <span class="s" data-ja="提言編。調達方式判定の第3の軸「競争適合性」、挙証責任の反転、VMOへの評価プロセス完全性の付与、判定結果の三分岐、段階導入、そして「競争導入だけでは解けないもの」の明示。様式1・2を含む。"
+              data-en="Proposal. A third axis for the sourcing decision — contestability; the reversal of the burden of proof; the VMO as owner of the integrity of the evaluation process; three outcomes rather than two; a phased rollout; and an honest account of what competition alone cannot fix. Includes Forms 1 and 2.">提言編。調達方式判定の第3の軸「競争適合性」、挙証責任の反転、VMOへの評価プロセス完全性の付与、判定結果の三分岐、段階導入、そして「競争導入だけでは解けないもの」の明示。様式1・2を含む。</span>
       </a>
     </li>
   </ul>
 
   <div class="foot"
-    data-ja="<b>本資料の立場</b>　競争方式の導入は<b>コスト削減施策ではない</b>。<b>価格と品質を検証可能にするための情報収集機構</b>である。「随意契約が8割である」という事実が意味するのは、我々が悪い取引をしているということではなく、<b>良い取引をしているかどうかを知る手段がない</b>、ということである。"
-    data-en="<b>The position taken here</b>　Introducing competitive sourcing is <b>not a cost-reduction programme</b>. It is <b>an instrument for making price and quality verifiable</b>. That 80% of our contracts are sole-sourced does not mean we are getting bad deals. It means <b>we have no way of knowing whether we are getting good ones</b>.">
-    <b>本資料の立場</b>　競争方式の導入は<b>コスト削減施策ではない</b>。<b>価格と品質を検証可能にするための情報収集機構</b>である。「随意契約が8割である」という事実が意味するのは、我々が悪い取引をしているということではなく、<b>良い取引をしているかどうかを知る手段がない</b>、ということである。
+    data-ja="<b>本資料の立場</b>　競争方式の導入は<b>コスト削減施策ではない</b>。<b>価格と品質を検証可能にするための情報収集機構</b>である。目的をコスト削減だと宣言すれば、競争は必ず「値切り交渉の別名」に変質する。「随意契約が8割である」という事実が意味するのは、我々が悪い取引をしているということではなく、<b>良い取引をしているかどうかを知る手段がない</b>、ということである。"
+    data-en="<b>The position taken here</b>　Introducing competitive sourcing is <b>not a cost-reduction programme</b>. It is <b>an instrument for making price and quality verifiable</b>. Declare cost reduction to be the purpose and competition will invariably degenerate into another word for haggling. That 80% of our contracts are sole-sourced does not mean we are getting bad deals. It means <b>we have no way of knowing whether we are getting good ones</b>.">
+    <b>本資料の立場</b>　競争方式の導入は<b>コスト削減施策ではない</b>。<b>価格と品質を検証可能にするための情報収集機構</b>である。目的をコスト削減だと宣言すれば、競争は必ず「値切り交渉の別名」に変質する。「随意契約が8割である」という事実が意味するのは、我々が悪い取引をしているということではなく、<b>良い取引をしているかどうかを知る手段がない</b>、ということである。
   </div>
 </div>
 

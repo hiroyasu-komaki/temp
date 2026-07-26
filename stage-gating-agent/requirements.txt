@@ -1,1 +1,0 @@
-# stage-gating-agent は Python 標準ライブラリのみで動作します（外部依存なし）。

@@ -14,8 +14,6 @@ const DEFAULT_PARAMS = {
   "useBundle": true,
   "betaBundle": 1.15,
   "extThreshold": 2,
-  "extPenalty": 0.15,
-  "extPenaltyCap": 0.6,
   "asOfDate": "2026-04-01"
 };
 const CONTRACTS = [

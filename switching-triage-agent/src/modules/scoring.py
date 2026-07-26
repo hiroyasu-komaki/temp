@@ -16,44 +16,34 @@ def effective_p(item: dict, scenario: dict) -> dict:
     実行確度 p_i を解決する。
     - contestability_prob と execution_prob が両方あれば積を使う。
       なければ exec_probability 単独にフォールバック（後方互換）。
-    - 繰り返し延長（extension_count >= 閾値）なら execution_prob を割り引く。
     返り値に内訳を残す（説明可能性）。
+
+    繰り返し延長は p を割り引かない（重要）。
+    延長を確度の低下として扱うと、締切が近く実行意欲だけが低い案件が
+    スコア上「捨てる候補」へ沈む。しかしそれは方法論 §3.5 の意図と逆である
+    ── 現場任せでは切り替わらない案件こそ、VMOが実行主導すべき対象として
+    名指しされねばならない。したがって延長は独立したフラグとして扱い、
+    判定ラベル側で浮上させる（escalate_of を参照）。
     """
     contest = item.get("contestability_prob")
     exec_p = item.get("execution_prob")
     ext = int(item.get("extension_count") or 0)
 
-    ext_threshold = int(scenario.get("ext_threshold", 2))
-    ext_penalty = float(scenario.get("ext_penalty", 0.15))
-    ext_cap = float(scenario.get("ext_penalty_cap", 0.6))
-
-    penalty = 0.0
-    penalized = False
-    if exec_p is not None and ext >= ext_threshold:
-        over = ext - ext_threshold + 1
-        penalty = min(ext_penalty * over, ext_cap)
-        penalized = True
-
     if contest is not None and exec_p is not None:
-        exec_eff = exec_p * (1 - penalty)
-        p = contest * exec_eff
+        p = contest * exec_p
         split_used = True
     else:
-        # フォールバック: exec_probability 単独。延長ペナルティは単独値に適用。
-        base = item["exec_probability"]
-        p = base * (1 - penalty) if ext >= ext_threshold else base
-        penalized = ext >= ext_threshold and penalty > 0
+        p = item["exec_probability"]
         contest = None
-        exec_eff = None
+        exec_p = None
         split_used = False
 
     return {
         "p": max(0.0, min(1.0, p)),
         "p_contest": contest,
-        "p_exec_effective": exec_eff,
+        "p_exec_effective": exec_p,
         "ext_count": ext,
-        "ext_penalized": penalized,
-        "ext_penalty": round(penalty, 3),
+        "ext_escalated": ext >= int(scenario.get("ext_threshold", 2)),
         "p_split_used": split_used,
     }
 
@@ -123,7 +113,9 @@ def build_bundles(contracts: list[dict], scenario: dict) -> list[dict]:
             "est_return_m": ret,
             "return_sigma": sigma,
             "exec_probability": p,          # 束ねは合成済み確度をそのまま p として持つ
-            "extension_count": 0,           # 束ねは延長カウントを持たない
+            # 延長回数は構成契約の最大を引き継ぐ。1件でも延長常習なら
+            # 束ねても現場任せでは動かないため、シグナルを消してはならない。
+            "extension_count": max(int(m.get("extension_count") or 0) for m in members),
             "is_bundle": True,
             "members": [m["contract_id"] for m in members],
         })
@@ -132,11 +124,16 @@ def build_bundles(contracts: list[dict], scenario: dict) -> list[dict]:
 
 # ---- 判定ラベル ----------------------------------------------------------
 
-def verdict_of(d_i: float, score: float, Vn: float, U: float, R: float) -> str:
+def verdict_of(d_i: float, score: float, Vn: float, U: float, R: float,
+               escalated: bool = False) -> str:
     if d_i < 0:
         return "失効"
     if score >= 0.25:
         return "即着手"
+    # 繰り返し延長は、確度を割り引くのではなくここで浮上させる。
+    # 「現場任せでは切り替わらない」という事実は、沈めるのではなく名指しする。
+    if escalated:
+        return "VMO主導候補"
     if U >= 0.5 and R < 0.7:
         return "人間判断"
     if Vn > 0.3 and U < 0.4:
@@ -144,6 +141,7 @@ def verdict_of(d_i: float, score: float, Vn: float, U: float, R: float) -> str:
     if Vn < 0.1:
         return "捨てる候補"
     return "検討"
+
 
 
 # ---- メイン: 候補集合を構築してスコアリング ------------------------------
@@ -187,11 +185,15 @@ def score_all(contracts: list[dict], scenario: dict) -> dict:
         c.update(factors(c, scenario))
 
     # V の相対正規化（金額の桁で押し切らせない）
-    max_V = max([max(c["V_raw"], 0.0) for c in candidates] + [1.0])
+    # 下限を定数で切らない。切ると案件群の絶対金額がスコアに漏れ込み、
+    # 小規模な案件群だけ一律に低スコアへ沈む（＝相対化の意図に反する）。
+    # ゼロ除算だけを避ける。assets/js/scoring.js と同じ基準。
+    max_V = max([max(c["V_raw"], 0.0) for c in candidates] + [1e-9])
     for c in candidates:
         c["Vn"] = max(c["V_raw"], 0.0) / max_V
         c["score"] = c["Vn"] * c["U"] * c["R"]
-        c["verdict"] = verdict_of(c["d_i"], c["score"], c["Vn"], c["U"], c["R"])
+        c["verdict"] = verdict_of(c["d_i"], c["score"], c["Vn"], c["U"], c["R"],
+                                  escalated=bool(c.get("ext_escalated")))
 
     candidates.sort(key=lambda x: x["score"], reverse=True)
 

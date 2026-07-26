@@ -3,38 +3,52 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Switching-Triage — Vendor Switching Investment Governance</title>
+<title>Switching-Triage — Holding the Ability to Switch</title>
 <style>
-  :root{--navy:#12305e; --ink:#1b2430; --gray:#5f6a77; --gray-l:#8b95a1; --line:#d7dde5;}
+  :root{--navy:#12305e; --ink:#1b2430; --gray:#5f6a77; --gray-l:#8b95a1; --line:#d7dde5; --panel:#f5f7fa;}
   *{box-sizing:border-box;}
   body{
-    margin:0; padding:60px 20px; background:#eef1f5;
+    margin:0; padding:56px 20px; background:#eef1f5;
     font-family:"Yu Gothic UI","Yu Gothic","Hiragino Kaku Gothic ProN","Meiryo",sans-serif;
     color:var(--ink);
   }
   html[lang="en"] body{font-family:"Segoe UI","Helvetica Neue",Arial,sans-serif;}
-  .wrap{max-width:640px; margin:0 auto; position:relative;}
+  .wrap{max-width:660px; margin:0 auto; position:relative;}
   .lang{display:flex; border:1px solid var(--line); position:absolute; top:-4px; right:0; background:#fff;}
   .lang button{border:none; background:#fff; color:var(--gray); font:inherit; font-size:11px;
     font-weight:700; letter-spacing:.06em; padding:5px 13px; cursor:pointer;}
   .lang button+button{border-left:1px solid var(--line);}
   .lang button.on{background:var(--navy); color:#fff;}
   .eyebrow{font-size:10px; font-weight:700; letter-spacing:.14em; color:var(--gray-l); margin-bottom:6px;}
-  h1{font-size:19px; color:var(--navy); margin:0 0 8px; font-weight:700; line-height:1.5; padding-right:130px;}
-  .lede{font-size:12px; color:var(--gray); line-height:1.85; margin:0 0 24px;
-    padding-bottom:18px; border-bottom:1px solid var(--line);}
+  h1{font-size:19px; color:var(--navy); margin:0 0 10px; font-weight:700; line-height:1.5; padding-right:130px;}
+  .claim{font-size:13px; line-height:1.85; color:var(--ink); font-weight:700;
+    border-left:4px solid var(--navy); padding:12px 0 12px 15px; margin:0 0 16px;}
+  .origin{font-size:11px; line-height:1.85; color:var(--gray); background:var(--panel);
+    border:1px solid var(--line); padding:11px 15px; margin:0 0 16px;}
+  .origin .k{font-size:9.5px; font-weight:700; letter-spacing:.12em; color:var(--gray-l); display:block; margin-bottom:5px;}
+  .origin q{color:var(--ink); font-style:normal;}
+  .origin b{color:var(--ink);}
+  .lede{font-size:12px; color:var(--gray); line-height:1.85; margin:0 0 18px;}
   .lede b{color:var(--ink);}
+  .ask{border:1px solid var(--line); background:#fff; padding:14px 18px; margin:0 0 26px;}
+  .ask .k{font-size:10px; font-weight:700; letter-spacing:.12em; color:var(--gray-l); margin-bottom:6px;}
+  .ask .v{font-size:12.5px; line-height:1.85; color:var(--ink);}
+  .ask .v b{color:var(--navy);}
+  .ask .n{font-size:11px; line-height:1.8; color:var(--gray); margin-top:8px; padding-top:8px; border-top:1px dashed var(--line);}
+  .rd{font-size:10px; font-weight:700; letter-spacing:.12em; color:var(--gray-l);
+    margin:0 0 10px; padding-bottom:6px; border-bottom:1px solid var(--line);}
   ul{list-style:none; margin:0; padding:0;}
   li{margin-bottom:10px;}
-  a{
+  a.card{
     display:block; padding:14px 18px; background:#fff; border:1px solid var(--line);
     color:var(--navy); text-decoration:none; transition:border-color .15s;
   }
-  a:hover{border-color:var(--navy);}
-  a .n{color:var(--gray-l); font-weight:600; margin-right:8px;}
-  a .t{font-size:14px; font-weight:700; line-height:1.5;}
-  a .s{display:block; font-size:11px; color:var(--gray); font-weight:400; margin-top:4px; line-height:1.6;}
-  .foot{margin-top:22px; padding-top:14px; border-top:1px solid var(--line);
+  a.card:hover{border-color:var(--navy);}
+  a.card .n{color:var(--gray-l); font-weight:600; margin-right:8px;}
+  a.card .t{font-size:14px; font-weight:700; line-height:1.5;}
+  a.card .q{display:block; font-size:11.5px; color:var(--ink); font-weight:700; margin-top:5px; line-height:1.6;}
+  a.card .s{display:block; font-size:11px; color:var(--gray); font-weight:400; margin-top:3px; line-height:1.7;}
+  .foot{margin-top:24px; padding-top:14px; border-top:1px solid var(--line);
     font-size:10.5px; color:var(--gray-l); line-height:1.85;}
   .foot b{color:var(--gray); font-weight:700;}
   @media(max-width:600px){h1{padding-right:0; margin-top:34px;}}
@@ -47,43 +61,83 @@
     <button id="btn-en" onclick="setLang('en')">English</button>
   </div>
 
-  <div class="eyebrow">VENDOR SWITCHING INVESTMENT GOVERNANCE</div>
-  <h1 data-ja="switching-triage ─ 「いつでも切り替えられる」を制度にする"
-      data-en="Switching-Triage — Making &ldquo;We Can Switch Any Time&rdquo; an Institution">switching-triage ─ 「いつでも切り替えられる」を制度にする</h1>
-  <p class="lede"
-     data-ja="本資料は、<b>リアルオプションと情報の非対称性の経済学</b>を土台に、保守・ライセンス契約の更新交渉が「見せかけの競争」に留まる構造を診断し、移行コストを<b>リボルビング型の予算</b>として手当てする制度を設計するものである。<br><b>実際に切り替えることが目的ではない。</b>扱うのは「切り替えられる状態にあること自体が更新価格を下げる」という構造的事実と、その状態を<b>いつでも説明できる形で</b>維持する仕組みである。"
-     data-en="Grounded in <b>the economics of real options and asymmetric information</b>, these pages diagnose why renewal negotiations for maintenance and licence contracts remain a hollow show of competition, and set out the design of a <b>revolving budget</b> that funds switching costs.<br><b>Actually switching is not the goal.</b> What is examined is a single structural fact — that merely being able to switch lowers the renewal price — and the machinery for holding that state <b>in a form that can be explained at any time</b>.">
-    本資料は、<b>リアルオプションと情報の非対称性の経済学</b>を土台に、保守・ライセンス契約の更新交渉が「見せかけの競争」に留まる構造を診断し、移行コストを<b>リボルビング型の予算</b>として手当てする制度を設計するものである。<br><b>実際に切り替えることが目的ではない。</b>扱うのは「切り替えられる状態にあること自体が更新価格を下げる」という構造的事実と、その状態を<b>いつでも説明できる形で</b>維持する仕組みである。
+  <div class="eyebrow">VENDOR SWITCHING GOVERNANCE</div>
+  <h1 data-ja="switching-triage ─ 「いつでも切り替えられる」を制度として持つ"
+      data-en="Switching-Triage — Holding the Ability to Switch, as an Institution">switching-triage ─ 「いつでも切り替えられる」を制度として持つ</h1>
+
+  <p class="claim"
+     data-ja="我々には「切り替えられる」と言う資格がない。そしてそれを、相手は知っている。<br>だから交渉が効かない。必要なのは切替の実行ではなく、<b>切替可能性の保有</b>である。そしてそれは意志では持てない。"
+     data-en="We are not entitled to say we could switch — and the other side knows it.<br>That is why negotiation fails. What is needed is not the act of switching but <b>possession of the ability to switch</b>. And that cannot be held by intention.">
+    我々には「切り替えられる」と言う資格がない。そしてそれを、相手は知っている。<br>だから交渉が効かない。必要なのは切替の実行ではなく、<b>切替可能性の保有</b>である。そしてそれは意志では持てない。
   </p>
+
+  <div class="origin"
+    data-ja="<span class='k'>WHERE THIS COMES FROM</span>本資料は、<b>競争調達フレームワーク</b>が自ら認めた穴の内側を扱う ── <q>切替コストを下げる取り組みを、別枠で手当てすること。競争適合性の判定だけでは、既にロックインされた案件は永久に随意契約のままである。ドキュメント化・標準化の手当てがなければ、来年も「他社が応札できない」という理由が、正当な理由として繰り返される。</q><br><b>その「別枠の手当て」が、具体的にどういう形であるべきかを述べる。</b>"
+    data-en="<span class='k'>WHERE THIS COMES FROM</span>These pages take up the gap that the <b>competitive sourcing framework</b> acknowledged in itself — <q>Provision separately for lowering switching costs. The contestability test alone leaves every already-locked-in case sole-sourced for ever. Without provision for documentation and standardisation, &quot;no one else can bid&quot; will recur next year — and it will be a legitimate reason.</q><br><b>What follows sets out the form that separate provision has to take.</b>">
+    <span class="k">WHERE THIS COMES FROM</span>本資料は、<b>競争調達フレームワーク</b>が自ら認めた穴の内側を扱う ── <q>切替コストを下げる取り組みを、別枠で手当てすること。競争適合性の判定だけでは、既にロックインされた案件は永久に随意契約のままである。ドキュメント化・標準化の手当てがなければ、来年も「他社が応札できない」という理由が、正当な理由として繰り返される。</q><br><b>その「別枠の手当て」が、具体的にどういう形であるべきかを述べる。</b>
+  </div>
+
+  <p class="lede"
+     data-ja="本資料は、<b>スイッチングコストによる事後独占</b>と<b>リアルオプション</b>の二つの理論を土台に、保守・ライセンス契約の更新交渉が「見せかけの競争」に留まる構造を診断し、切替コストを手当てする原資の形を設計するものである。<br><b>ベンダーの誠実性も、現場の意欲も、ここでは問わない。</b>扱うのは「切替コストを負担できず、それを見透かされている」という構造的事実と、そこから必然的に導かれる帰結のみである。"
+     data-en="Working from two theories — <b>ex-post monopoly created by switching costs</b> and <b>real options</b> — these pages diagnose the structure in which renewal negotiations on maintenance and licence contracts amount to no more than the appearance of competition, and set out the form a fund for switching costs must take.<br><b>Neither vendor integrity nor the appetite of the teams is at issue here.</b> What is examined is a single structural fact — that we cannot bear the cost of switching and are seen not to be able to — and the consequences that follow from it.">
+    本資料は、<b>スイッチングコストによる事後独占</b>と<b>リアルオプション</b>の二つの理論を土台に、保守・ライセンス契約の更新交渉が「見せかけの競争」に留まる構造を診断し、切替コストを手当てする原資の形を設計するものである。<br><b>ベンダーの誠実性も、現場の意欲も、ここでは問わない。</b>扱うのは「切替コストを負担できず、それを見透かされている」という構造的事実と、そこから必然的に導かれる帰結のみである。
+  </p>
+
+  <div class="ask">
+    <div class="k" data-ja="本資料が提起すること" data-en="WHAT THIS DOCUMENT PUTS FORWARD">本資料が提起すること</div>
+    <div class="v"
+      data-ja="切替コストを手当てする原資は、<b>使い切る予算ではなく、構えている回転資金</b>でなければならない。そして<b>それをどこに張るかは、いつでも説明できる形</b>で決まらなければならない。"
+      data-en="A fund for switching costs must be <b>a revolving fund held in readiness, not a budget to be spent down</b>. And <b>where it is placed must be decided in a form that can be explained at any time</b>.">
+      切替コストを手当てする原資は、<b>使い切る予算ではなく、構えている回転資金</b>でなければならない。そして<b>それをどこに張るかは、いつでも説明できる形</b>で決まらなければならない。
+    </div>
+    <div class="n"
+      data-ja="扱うのは制度の設計 ── 原資がどういう形を持つべきか、判断が何に分解されるべきか ── に限る。金額・効果試算・投資指標は扱わない。また、切替件数の目標も掲げない。<b>大半は使わずに済む。それが正常な姿である。</b>"
+      data-en="The scope is the design of the institution — what form the fund must take, and into what the judgement must decompose. No monetary figures, savings estimates or investment metrics appear, and no target number of switches is set. <b>Most of it will go unspent. That is the normal case.</b>">
+      扱うのは制度の設計 ── 原資がどういう形を持つべきか、判断が何に分解されるべきか ── に限る。金額・効果試算・投資指標は扱わない。また、切替件数の目標も掲げない。<b>大半は使わずに済む。それが正常な姿である。</b>
+    </div>
+  </div>
+
+  <div class="rd" data-ja="論の運び ── 4つの問いに順に答える" data-en="THE ARGUMENT — FOUR QUESTIONS, IN ORDER">論の運び ── 4つの問いに順に答える</div>
 
   <ul>
     <li>
-      <a href="html/00_Theory.html">
-        <div class="t"><span class="n">00</span><span data-ja="理論編 ─ 切替をめぐる意思決定を支える経済理論" data-en="Theory — The Economics Behind the Switching Decision">理論編 ─ 切替をめぐる意思決定を支える経済理論</span></div>
-        <span class="s" data-ja="スイッチングコストによるロックイン（病理）、リアルオプション（予算の価値）、コンテスタビリティと情報の非対称性（土俵の成否）、メカニズムデザイン（引き出し設計）、ポートフォリオ理論（配分）、権限と責任の整合（ガバナンス）。"
-              data-en="Switching-cost lock-in as the disease; real options as the value of the budget; contestability and asymmetric information as the test of a viable arena; mechanism design for staged drawdown; portfolio theory for allocation; the alignment of authority and responsibility.">スイッチングコストによるロックイン（病理）、リアルオプション（予算の価値）、コンテスタビリティと情報の非対称性（土俵の成否）、メカニズムデザイン（引き出し設計）、ポートフォリオ理論（配分）、権限と責任の整合（ガバナンス）。</span>
+      <a class="card" href="html/00_Theory.html">
+        <div class="t"><span class="n">00</span><span data-ja="理論編 ─ 事後独占とオプションプレミアム" data-en="Theory — Ex-post Monopoly and the Option Premium">理論編 ─ 事後独占とオプションプレミアム</span></div>
+        <span class="q" data-ja="なぜ交渉は効かず、なぜ使わない原資に価値があるのか" data-en="Why does negotiation fail, and why does an unspent fund have value?">なぜ交渉は効かず、なぜ使わない原資に価値があるのか</span>
+        <span class="s" data-ja="二つの理論だけを扱う。スイッチングコストによる事後独占（なぜ交渉が効かないのか）と、リアルオプション（なぜ全額を使わない原資に価値があるのか）。両者は同じ一点の裏表である。"
+              data-en="Two theories only. Ex-post monopoly created by switching costs — why negotiation fails; and real options — why a fund that is never fully spent has value. The two are faces of a single point.">二つの理論だけを扱う。スイッチングコストによる事後独占（なぜ交渉が効かないのか）と、リアルオプション（なぜ全額を使わない原資に価値があるのか）。両者は同じ一点の裏表である。</span>
       </a>
     </li>
     <li>
-      <a href="html/01_Problem.html">
-        <div class="t"><span class="n">01</span><span data-ja="課題編 ─ なぜ切替が進まないのか" data-en="The Problem — Why Switching Never Happens">課題編 ─ なぜ切替が進まないのか</span></div>
-        <span class="s" data-ja="診断編。移行コストが障壁となり切替が選択肢から実質的に外れる構造。既存ベンダーがそれを見透かした「見せかけの競争」。権限と責任の不整合。そして目指す状態＝信憑性のある交渉レバレッジ。"
-              data-en="Diagnosis. Switching costs remove switching from the menu; the incumbent, seeing this, offers only a hollow show of competition; authority and responsibility fall out of alignment. And the target state: a credible negotiating threat.">診断編。移行コストが障壁となり切替が選択肢から実質的に外れる構造。既存ベンダーがそれを見透かした「見せかけの競争」。権限と責任の不整合。そして目指す状態＝信憑性のある交渉レバレッジ。</span>
+      <a class="card" href="html/01_Problem.html">
+        <div class="t"><span class="n">01</span><span data-ja="課題編 ─ 見せかけの競争" data-en="The Problem — The Appearance of Competition">課題編 ─ 見せかけの競争</span></div>
+        <span class="q" data-ja="では、我々に何が起きているのか" data-en="So what is happening to us?">では、我々に何が起きているのか</span>
+        <span class="s" data-ja="診断編。移行コストが障壁となり切替が選択肢から実質的に外れる構造。既存ベンダーがそれを見透かした「見せかけの競争」。削減責任を負いながら削減の武器を持たない不整合。そして放置すれば障壁が自己強化すること。"
+              data-en="Diagnosis. A structure in which the cost of migration removes switching as an option; the appearance of competition, with the incumbent able to see through it; accountability for reduction without the instrument for it; and a barrier that reinforces itself if left alone.">診断編。移行コストが障壁となり切替が選択肢から実質的に外れる構造。既存ベンダーがそれを見透かした「見せかけの競争」。削減責任を負いながら削減の武器を持たない不整合。そして放置すれば障壁が自己強化すること。</span>
       </a>
     </li>
     <li>
-      <a href="html/02_Proposal.html">
-        <div class="t"><span class="n">02</span><span data-ja="提言編 ─ リボルビング予算・意思決定枠組み・エージェント・運用" data-en="The Proposal — Revolving Budget, Decision Framework, Agent, Operation">提言編 ─ リボルビング予算・意思決定枠組み・エージェント・運用</span></div>
-        <span class="s" data-ja="提言編。マンデートの再定義とリボルビング型予算（初期20百万円）、2層の意思決定枠組みとスコア（Score=V×U×R）、判断を自動化し説明可能にする switching-triage-agent、確度の分解と情報更新の運用。"
-              data-en="Proposal. A redefinition of the mandate and a revolving budget (¥20M to start); a two-layer decision framework and score (V×U×R); the switching-triage-agent that automates and explains the judgement; and the operation of confidence decomposition and information updates.">提言編。マンデートの再定義とリボルビング型予算（初期20百万円）、2層の意思決定枠組みとスコア（Score=V×U×R）、判断を自動化し説明可能にする switching-triage-agent、確度の分解と情報更新の運用。</span>
+      <a class="card" href="html/02_Revolving_Fund.html">
+        <div class="t"><span class="n">02</span><span data-ja="制度編 ─ 構えている原資" data-en="The Instrument — A Fund Held in Readiness">制度編 ─ 構えている原資</span></div>
+        <span class="q" data-ja="何を持てば「切り替えられる」と言えるのか" data-en="What must we hold to be entitled to say it?">何を持てば「切り替えられる」と言えるのか</span>
+        <span class="s" data-ja="制度編。これは原資の話ではなくマンデートの話である。回転すること、全額消費を前提としないこと、総額をコミットせず実績で引き出すこと、保持者を動かさないこと ── この四つが揃って初めて信憑性が生まれる。"
+              data-en="The instrument. This is not about money but about the mandate. That it revolves; that full consumption is not assumed; that no total is committed and each tranche is drawn against results; that it never leaves its holder — credibility requires all four.">制度編。これは原資の話ではなくマンデートの話である。回転すること、全額消費を前提としないこと、総額をコミットせず実績で引き出すこと、保持者を動かさないこと ── この四つが揃って初めて信憑性が生まれる。</span>
+      </a>
+    </li>
+    <li>
+      <a class="card" href="html/03_Triage.html">
+        <div class="t"><span class="n">03</span><span data-ja="判断編 ─ triage と Score = V × U × R" data-en="The Judgement — Triage and Score = V × U × R">判断編 ─ triage と Score = V × U × R</span></div>
+        <span class="q" data-ja="その原資を、どこに張るのか。どう説明するのか" data-en="Where is the fund placed, and how is that explained?">その原資を、どこに張るのか。どう説明するのか</span>
+        <span class="s" data-ja="判断編。静的最適化ではない理由、ソルバーではなくスコアリングを採る理由、2層構造、期待価値・緊急度・情報熟度の積、triageの五分類、確度の分解（土俵成立×実行）と情報更新則。そして「この枠組みで解けないこと」。"
+              data-en="The judgement. Why this is not a static optimisation; why scoring rather than a solver; the two layers; the product of expected value, urgency and information maturity; the five dispositions of triage; the decomposition of probability into contestability and execution, and the rules for revising it. And what the framework does not solve.">判断編。静的最適化ではない理由、ソルバーではなくスコアリングを採る理由、2層構造、期待価値・緊急度・情報熟度の積、triageの五分類、確度の分解（土俵成立×実行）と情報更新則。そして「この枠組みで解けないこと」。</span>
       </a>
     </li>
   </ul>
 
   <div class="foot"
-    data-ja="<b>本資料の立場</b>　移行コストのプールは<b>コスト削減の実行予算ではない</b>。<b>「いつでも切り替えられる」という信憑性を制度として保有し、更新価格を下げるための情報・レバレッジ機構</b>である。切替が8割起きないことが問題なのではなく、<b>切り替えられる状態にあるかどうかを、我々が制度として保証できていない</b>ことが問題なのである。"
-    data-en="<b>The position taken here</b>　The pool for switching costs is <b>not an execution budget for cost reduction</b>. It is <b>an instrument of information and leverage — holding, as an institution, the credible ability to switch, in order to lower the renewal price</b>. The problem is not that switching fails to happen 80% of the time; it is that <b>we have no institutional guarantee that switching remains possible at all</b>.">
-    <b>本資料の立場</b>　移行コストのプールは<b>コスト削減の実行予算ではない</b>。<b>「いつでも切り替えられる」という信憑性を制度として保有し、更新価格を下げるための情報・レバレッジ機構</b>である。切替が8割起きないことが問題なのではなく、<b>切り替えられる状態にあるかどうかを、我々が制度として保証できていない</b>ことが問題なのである。
+    data-ja="<b>本資料の立場</b>　切替コストの原資は<b>コスト削減の実行予算ではない</b>。<b>「いつでも切り替えられる」という信憑性を制度として保有し、更新価格を下げるための情報・レバレッジ機構</b>である。切替が大半で起きないことが問題なのではない。<b>切り替えられる状態にあるかどうかを、我々が制度として保証できていない</b>ことが問題なのである。"
+    data-en="<b>The position taken here</b>　A fund for switching costs is <b>not an execution budget for cost reduction</b>. It is <b>an instrument for holding, institutionally, the credibility of being able to switch at any time — and thereby lowering the renewal price</b>. That switching does not occur in most cases is not the problem. The problem is that <b>we have no institutional means of guaranteeing whether we are in a position to switch at all</b>.">
+    <b>本資料の立場</b>　切替コストの原資は<b>コスト削減の実行予算ではない</b>。<b>「いつでも切り替えられる」という信憑性を制度として保有し、更新価格を下げるための情報・レバレッジ機構</b>である。切替が大半で起きないことが問題なのではない。<b>切り替えられる状態にあるかどうかを、我々が制度として保証できていない</b>ことが問題なのである。
   </div>
 </div>
 

@@ -54,15 +54,26 @@ class InputError(Exception):
 def load_scenario(path: Path) -> dict:
     with open(path, encoding="utf-8") as f:
         s = json.load(f)
+    # budget_m / safety_margin は必須キーではない。本体パイプラインは予算配分を
+    # 行わないため、これらはダッシュボード（index.html）の初期値としてのみ使う。
     required = ["lambda_risk", "beta_bundle", "lead_time_h_months",
-                "budget_m", "safety_margin", "use_bundle", "as_of_date"]
+                "use_bundle", "as_of_date"]
     missing = [k for k in required if k not in s]
     if missing:
         raise InputError(f"scenario.json に必須キーがありません: {missing}")
-    if not (0 <= s["safety_margin"] < 1):
-        raise InputError("safety_margin は 0 以上 1 未満で指定してください。")
+    if "safety_margin" in s and not (0 <= s["safety_margin"] < 1):
+        raise InputError("safety_margin は 0 以上 1 未満で指定してください"
+                         "（ダッシュボード用の初期値）。")
     if s["beta_bundle"] < 1:
         raise InputError("beta_bundle は 1 以上（束ねプレミアム）で指定してください。")
+    # λ は 0..1。1 を超えると V_raw = p·net·(1 - λ(1-p)) の係数が負に転じ、
+    # 期待ネットが負の案件（切替コスト > リターン）の V が正になって上位へ浮上する。
+    # リスク回避度を上げたはずが、最も避けたい案件を選ぶ挙動になる。
+    if not (0 <= s["lambda_risk"] <= 1):
+        raise InputError(
+            f"lambda_risk は 0 以上 1 以下で指定してください（現在: {s['lambda_risk']}）。"
+            f"1 を超えるとリスク調整の符号が反転し、期待ネットが負の案件が上位に来ます。"
+        )
     return s
 
 

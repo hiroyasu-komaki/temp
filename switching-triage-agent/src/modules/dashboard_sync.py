@@ -44,14 +44,14 @@ def sync(contracts_d: list[dict], scenario: dict, root: Path) -> Path:
         "lambdaRisk": scenario["lambda_risk"],
         "leadTimeHMonths": scenario["lead_time_h_months"],
     }
+    # budgetM / safetyMargin はダッシュボード専用の初期値。本体パイプラインは
+    # 予算配分を行わないため、scenario.json に無ければ既定値で埋める。
     defaults = {
-        "budgetM": scenario["budget_m"],
-        "safetyMargin": scenario["safety_margin"],
+        "budgetM": scenario.get("budget_m", 20),
+        "safetyMargin": scenario.get("safety_margin", 0.2),
         "useBundle": scenario["use_bundle"],
         "betaBundle": scenario["beta_bundle"],
         "extThreshold": scenario["ext_threshold"],
-        "extPenalty": scenario["ext_penalty"],
-        "extPenaltyCap": scenario["ext_penalty_cap"],
         "asOfDate": scenario["as_of_date"],
     }
     contracts_js = [_contract_to_js(c) for c in contracts_d]
