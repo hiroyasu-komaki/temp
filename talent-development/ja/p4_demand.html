@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>第IV部 目標 ── 目標線の引き方</title>
+<link rel="stylesheet" href="../assets/base.css">
+<script src="../assets/site.js" defer></script>
+</head>
+<body>
+<div class="slide">
+
+  <div class="eyebrow">第IV部　目標</div>
+  <h1>目標線の引き方 ── 需要をどの単位で書くか</h1>
+
+  <p class="lede">
+    必要ケイパビリティ（オレンジの線）を引く手順である。<br>
+    <b>この線は1本ではなく3本ある。</b>「機能×拠点×ロールで必要人数を記入する」という様式は、<b>基層にしか適用できない。</b>
+  </p>
+
+  <!-- 20 -->
+  <div class="sec" id="c20">
+    <div class="step"><span class="n">20</span>需要の単位は、層によって異なる</div>
+
+    <p>三層構造は供給側の測定単位として導入されたが、<b>需要側でも同じ分割が必要になる。単位が層ごとに違うためである。</b></p>
+
+    <table>
+      <thead><tr><th style="width:180px">層</th><th style="width:200px">対象</th><th style="width:160px">需要の単位</th><th>記入形式</th></tr></thead>
+      <tbody>
+        <tr><th class="rh" style="width:180px">基層<br><span class="ex">R2・R3・R5</span></th><td>技術遂行</td><td><b>人数</b></td><td>機能×拠点×ロールで必要人数を記入</td></tr>
+        <tr><th class="rh">付加層A<br><span class="ex">R4</span></th><td>ベンダー統制</td><td><b>カバレッジ</b></td><td>領域ごとに <b>充足／未充足</b> の2値</td></tr>
+        <tr><th class="rh">付加層B</th><td>経緯知識</td><td><b>冗長性</b></td><td>システムごとに <b>保有者数</b>（1名か、2名以上か）</td></tr>
+      </tbody>
+    </table>
+
+    <h2 class="sub">なぜ付加層Aは人数で書けないのか</h2>
+
+    <p>R4 が問うているのは「外部の見積・成果物の当否を、根拠を伴って判断できるか」である。<b>この能力は、当該領域に0人か1人以上かで意味が変わり、1人と3人の間では意味がほとんど変わらない。</b></p>
+
+    <div class="note"><b>評価水準さえ確保すれば、遂行の冗長性は外部から買える。</b>すなわち R4 は<b>遂行量に比例しない。</b>案件が10件でも100件でも、判断できる者がいるかいないかが問題である。ここに「必要人数 3名」と記入させれば、<b>遂行量から機械的に按分された、意味のない数字が入る。</b></div>
+
+    <h2 class="sub">なぜ付加層Bは需要ですらないのか</h2>
+
+    <p>経緯知識は、<b>育成でも採用でも外部調達でも作れない。</b>過去にしか存在しないためである。</p>
+
+    <div class="verdict">需要表に付加層Bの行を作れば、埋められない需要が毎年出力され続ける。付加層Bで書けるのは「必要な保有者数」ではなく「現在の保有者数」であり、これは需要ではなく供給側の観測値である。</div>
+  </div>
+
+  <!-- 21 -->
+  <div class="sec" id="c21">
+    <div class="step"><span class="n">21</span>需要表は、1枚では書けない</div>
+
+    <table>
+      <thead><tr><th style="width:200px">様式</th><th style="width:210px">対象</th><th style="width:240px">記入内容</th><th>記入者</th></tr></thead>
+      <tbody>
+        <tr><th class="rh" style="width:200px">需要-基層</th><td>機能×拠点×ロール</td><td>必要人数（<b>時点付き</b>）</td><td>拠点IT組織長</td></tr>
+        <tr><th class="rh">需要-付加層A</th><td>機能×拠点</td><td>充足／未充足</td><td>拠点IT組織長</td></tr>
+        <tr><th class="rh">需要-付加層B</th><td>システム単位</td><td>保有者数と氏名</td><td>各システム所管</td></tr>
+      </tbody>
+    </table>
+
+    <div class="note"><b>需要-付加層B は、記録照会シートの「経緯照会可能者数」欄と同一の情報である。</b>二重に持たず、記録照会シートの列を需要側からも参照する形とする。</div>
+  </div>
+
+  <!-- 22 -->
+  <div class="sec" id="c22">
+    <div class="step"><span class="n">22</span>拠点ごとに、需要の導出根拠が異なる</div>
+
+    <p>第II部の原則1を需要側に適用する ── <b>共通とするのは尺度の定義であり、共通としないのは目標値と適用範囲である。</b></p>
+
+    <div class="verdict">需要は「目標値」にあたる。したがって拠点間で揃えない。揃えるのは記入様式と単位だけである。</div>
+
+    <div class="sym">
+      <div class="sh"><div class="t">日本 ── 業務量から積み上げてはならない</div><div class="cls">Stage 5。バリューチェーン全域に人員が配置されている</div></div>
+      <div class="sb">
+        <p>素直に業務量から必要人数を積み上げれば、<b>現員を大きく上回る数字が出る。</b>しかしこれは実行できない。「全領域をカバーできるほどの人材がいない」という状態は、増員によって解消される見込みが立っていないためである。</p>
+        <p><b>したがってこれは解くべき課題ではなく、あらゆる施策が従うべき制約条件として扱う。</b>制約条件を無視した需要は、毎年「増員が必要」という実行不能な差分を出力し続ける装置になる。<b>一度そうなれば、需給差分そのものが読まれなくなる。</b></p>
+        <p>したがって日本の需要は、業務量ではなく <b>「外部に出せない範囲」</b> から書き起こす。</p>
+        <table>
+          <thead><tr><th style="width:300px">分類</th><th style="width:200px">内製で持つ必要</th><th>需要に計上するか</th></tr></thead>
+          <tbody>
+            <tr><td><b>①場所拘束</b><br><span class="ex">現地規制、GxP、現場立会い</span></td><td>あり</td><td><b>計上する</b></td></tr>
+            <tr><td><b>③場所自由・移転不能</b><br><span class="ex">組織固有の経緯を要する</span></td><td>あり。<b>外部も経緯を知らないため出せない</b></td><td><b>計上する</b></td></tr>
+            <tr><td><b>②場所自由・移転可能</b><br><span class="ex">標準化・文書化済み</span></td><td>選択。<b>原則として内製</b>（→ <a class="xref" href="p5_structure.html#c32">第V部32章</a>）</td><td><b>計上する</b><br>方針依存であることを明記</td></tr>
+            <tr><td>上記以外</td><td>なし</td><td><b>計上しない。</b>外部で持つ</td></tr>
+          </tbody>
+        </table>
+        <div class="verdict">この書き方であれば、需要は増員要求にならない。出力されるのは「内製で持つと決めた範囲に対して、遂行できる人員が足りているか」という、判断可能な差分になる。</div>
+        <p>そして日本の場合、<b>最も重要な出力は基層ではなく付加層Aの充足状況である。</b>外部に出した領域について評価できる者がいなければ、外部依存は制御されていない。</p>
+      </div>
+    </div>
+
+    <div class="sym p">
+      <div class="sh"><div class="t">北米 ── 唯一、期日から逆算できる</div><div class="cls">Stage 3→4。製造拠点を新設中（2027年稼働目標）</div></div>
+      <div class="sb">
+        <p><b>3拠点のうち、需要が期日を持つのは北米だけである。</b></p>
+        <div class="formula">北米の需要 ＝ 稼働に必要な定常人員 n<sub>N</sub>′ ＋ 相互カバー分 Σ (n<sub>N</sub>′ − n<sub>N</sub>) × α</div>
+        <p>α は「②場所自由・移転可能に分類される割合」であり、<b>②は原則内製という決定により、追加の経営判断を待たずに分類作業だけで確定する。</b></p>
+        <div class="note"><b>②の特定 ＝ α の確定 ＝ 北米の需要数値の確定</b>（→ <a class="xref" href="p5_structure.html#c32">第V部32章</a>）</div>
+        <div class="verdict">ただし前提がある ── 定着していない組織に、遂行水準は積み上がらない。北米では短サイクルでの人員入れ替えが生じており、需要を確定させても定着が解決しない限り供給は積み上がらない。需要表には数字が入るが、それは達成可能な目標ではない。</div>
+      </div>
+    </div>
+
+    <div class="sym p">
+      <div class="sh"><div class="t">欧州 ── 人数を書かせてはならない</div><div class="cls">Stage 2〜3。IT組織として独立させるべきかという段階</div></div>
+      <div class="sb">
+        <p>機能×拠点×ロールの表に欧州の列を作れば、記入者は <b>ゼロと書くか、無理に数字を入れるか</b> のいずれかを選ぶことになる。<b>どちらも実態を表さない。</b>したがって欧州については、人数の前に一段置く。</p>
+        <table>
+          <thead><tr><th style="width:360px">問い</th><th>出力</th></tr></thead>
+          <tbody>
+            <tr><td><b>当該機能を、欧州に持つべきか</b></td><td>保有する／保有せず日本または外部から供給する</td></tr>
+            <tr><td>（保有する場合のみ）必要人数</td><td>人数</td></tr>
+          </tbody>
+        </table>
+        <div class="verdict">保有しないという回答は、欠落ではなく設計である。これを需要ゼロとして記録すれば、翌年以降「未充足」として繰り返し出力される。保有しない旨を明示的に記録する欄が要る。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 23 -->
+  <div class="sec" id="c23">
+    <div class="step"><span class="n">23</span>需要が、供給の測定範囲を決める</div>
+
+    <p>見落とされやすいが、<b>順序として需要が先にある。</b></p>
+
+    <p>欧州について「同じ枠組みで測っても、全員が『所管しているのみ』に張り付くだけで情報量がない」と述べた。これは測定設計の問題として書かれているが、<b>原因は需要側にある。</b>需要が定義されていない機能を測れば、供給がゼロに見えるのは当然である。<b>そこに需要がないことが記録されていないため、欠落として出力される。</b></p>
+
+    <div class="keybox">
+      <span class="lbl">運用上の帰結</span>
+      <div class="t">需要のない機能×拠点は、測定しない。</div>
+      <div class="d">供給側の測定範囲は、需要表が確定して初めて決まる。これは工数の面でも効く ── <b>3拠点×5機能×5ロールを全数測れば75セルになるが、需要のあるセルはその一部である。</b></div>
+    </div>
+
+    <h2 class="sub">時点 ── 定常需要と期日付き需要</h2>
+
+    <table>
+      <thead><tr><th style="width:120px">拠点</th><th style="width:340px">需要の型</th><th>時点</th></tr></thead>
+      <tbody>
+        <tr><th class="rh" style="width:120px">日本</th><td><b>定常。</b>既存システム群の維持と、内製範囲の決定に従う</td><td>年次。大きく動かない</td></tr>
+        <tr><th class="rh">北米</th><td><b>期日付き。</b>製造稼働に向けて増加する</td><td><b>2027年稼働目標から逆算</b></td></tr>
+        <tr><th class="rh">欧州</th><td>保有判断が先。保有する場合のみ定常</td><td>保有判断の時点</td></tr>
+      </tbody>
+    </table>
+
+    <div class="verdict">同一の表に3拠点を並べる場合、列は「現在」ではなく「基準時点」でなければならない。北米だけが時間軸上を動くため、現在時点で比較すれば北米は常に大幅な不足として出力される。それは不足ではなく、移行期であることの表示にすぎない。</div>
+  </div>
+
+  <!-- 24 -->
+  <div class="sec" id="c24">
+    <div class="step"><span class="n">24</span>差分の読み方 ──「育成／採用／配置」は基層にしか当たらない</div>
+
+    <table>
+      <thead><tr><th style="width:200px">層</th><th>差分を埋める手段</th><th style="width:300px">埋まらない手段</th></tr></thead>
+      <tbody>
+        <tr><th class="rh" style="width:200px">基層<br><span class="ex">技術遂行</span></th><td>育成・採用・配置・<b>外部委託</b></td><td>─</td></tr>
+        <tr><th class="rh">付加層A<br><span class="ex">ベンダー統制</span></th><td>業務プロセスと様式の改訂（→ <a class="xref" href="p6_execute.html#c34">第VI部34章</a>）。<b>遂行知識の維持が前提</b></td><td><b>外部委託。</b>評価者を外部化すれば評価が成立しない</td></tr>
+        <tr><th class="rh">付加層B<br><span class="ex">経緯知識</span></th><td><b>保有者が在籍する間の移転のみ</b></td><td>育成・採用・配置・外部委託の<b>すべて</b></td></tr>
+      </tbody>
+    </table>
+
+    <div class="verdict">差分は一種類ではない。層ごとに、埋め方も、埋まらない手段も異なる。需要表を1枚にまとめ、差分を1つの数字で出力すれば、この区別が消える。</div>
+
+    <p>とりわけ付加層Bについては、<b>差分が出た時点で既に選択肢が限られている。保有者が在籍しているかどうかだけが変数である。</b></p>
+
+    <h2 class="sub">誰が書き、誰が較正するのか</h2>
+
+    <p>需要の数値を書くのは<b>拠点IT組織長</b>である。機能ライン長ではない（人事権・予算は拠点に残るため。→ <a class="xref" href="p5_structure.html#c27">第V部27章</a>）。</p>
+
+    <p>ただし数値だけでなく語彙・単位・粒度まで拠点が持てば、<b>3拠点が別々の粒度で需要を書く。</b>「アプリケーション 5名」と「基幹系保守 2名／Web 1名／データ連携 1名」を横に並べても、合算も比較もできない。<b>これは供給側で既に起きていること（C4）と構造的に同一の問題である。</b></p>
+
+    <table>
+      <thead><tr><th style="width:250px"></th><th>需要側</th><th>供給側</th></tr></thead>
+      <tbody>
+        <tr><th class="rh" style="width:250px">様式・語彙・単位・粒度</th><td><b>機能ライン長</b></td><td>機能ライン長（定義権）</td></tr>
+        <tr><th class="rh">数値・判断</th><td><b>拠点IT組織長</b></td><td>拠点（人事権・予算）</td></tr>
+        <tr><th class="rh">拠点間の整合確認</th><td><b>機能ライン長</b></td><td>機能ライン長（較正）</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="pagenav">
+    <div class="prev"><a href="p3_measure.html"><span class="lbl">PREV</span>第III部 ─ 測定</a></div>
+    <div class="home"><a href="../index.html?lang=ja"><span class="lbl">INDEX</span>フレームワーク地図へ</a></div>
+    <div class="next"><a href="p5_structure.html"><span class="lbl">NEXT</span>第V部 ─ 構造</a></div>
+  </div>
+
+</div>
+</body>
+</html>

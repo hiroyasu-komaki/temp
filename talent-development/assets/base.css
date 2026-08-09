@@ -199,3 +199,173 @@ a.doc.md:hover .t{color:var(--navy);}
   .layer .lh{flex-wrap:wrap;}
   .layer .lh .q{margin-left:0; text-align:left; width:100%;}
 }
+
+/* ─ 数式ブロック（07・10 で使用） ─ */
+.formula{font-family:"SF Mono",Consolas,"Courier New",monospace; background:var(--panel);
+  border:1px solid var(--line); padding:14px 20px; margin:0 0 14px; font-size:12px;
+  line-height:1.9; color:var(--ink); white-space:pre-wrap; overflow-x:auto;}
+
+/* ─ 本体HTMLとの不整合を示す警告ボックス（06・07・10 で使用） ─ */
+.warn{border:2px solid var(--neg); background:var(--neg-bg); padding:15px 20px; margin:0 0 16px;}
+.warn .lbl{font-size:10px; font-weight:700; letter-spacing:.1em; color:#fff; background:var(--neg);
+  display:inline-block; padding:2px 9px; margin-bottom:9px;}
+.warn .t{font-size:13.5px; font-weight:700; color:#8a3708; margin-bottom:7px; line-height:1.6;}
+.warn .d{font-size:11.5px; line-height:1.85; color:var(--gray);}
+.warn .d b{color:var(--ink);}
+.warn table{margin-top:10px;}
+
+
+/* ══════════════ Site Chrome v2 ── 固定ヘッダー／TOC／進捗表示／密度緩和 ══════════════ */
+
+html{scroll-behavior:smooth;}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto;}}
+
+body.has-topbar{padding-top:84px;}
+
+#site-topbar{
+  position:fixed; top:0; left:0; right:0; height:52px; z-index:200;
+  background:rgba(255,255,255,.97); -webkit-backdrop-filter:blur(6px); backdrop-filter:blur(6px);
+  border-bottom:1px solid var(--line); box-shadow:0 1px 10px rgba(18,48,94,.07);
+  display:flex; align-items:center; gap:14px; padding:0 22px;
+}
+.tb-home{display:flex; align-items:center; gap:8px; text-decoration:none; flex:none;}
+.tb-logo{font-size:10px; font-weight:700; letter-spacing:.08em; color:#fff; background:var(--navy); padding:3px 6px;}
+.tb-home-label{font-size:11.5px; font-weight:700; color:var(--navy); white-space:nowrap;}
+.tb-sep{color:var(--line); font-size:12px; flex:none;}
+.tb-meta{min-width:0; flex:1; line-height:1.3;}
+.tb-eyebrow{font-size:9px; font-weight:700; letter-spacing:.1em; color:var(--gray-l);}
+.tb-title{font-size:12.5px; font-weight:700; color:var(--ink); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+.tb-pos{font-size:9.5px; font-weight:700; color:var(--gray-l); border:1px solid var(--line); padding:3px 9px; white-space:nowrap; flex:none;}
+.tb-time{font-size:9.5px; color:var(--gray-l); border:1px solid var(--line); padding:3px 9px; white-space:nowrap; flex:none;}
+.tb-nav{display:flex; gap:6px; flex:none;}
+.tb-nav a,.tb-nav span{display:flex; align-items:center; justify-content:center; width:28px; height:28px; border:1px solid var(--line); color:var(--navy); text-decoration:none; font-size:13px; font-weight:700; background:#fff;}
+.tb-nav a:hover{border-color:var(--navy); background:var(--panel);}
+.tb-nav .off{opacity:.25; pointer-events:none;}
+
+#tb-progress{position:fixed; top:52px; left:0; right:0; height:3px; background:transparent; z-index:200;}
+#tb-progress-fill{height:100%; width:0; background:linear-gradient(90deg,var(--pos),var(--navy)); transition:width .1s linear;}
+
+#site-toc{position:fixed; top:90px; right:26px; width:216px; max-height:calc(100vh - 120px); overflow-y:auto; z-index:150;}
+.toc-label{font-size:9.5px; font-weight:700; letter-spacing:.12em; color:var(--gray-l); margin-bottom:9px;}
+#site-toc ul{list-style:none; margin:0; padding:0; border-left:2px solid var(--line);}
+#site-toc li{margin:0;}
+#site-toc a{display:block; font-size:11px; line-height:1.6; color:var(--gray); text-decoration:none; padding:6px 0 6px 13px; border-left:2px solid transparent; margin-left:-2px; transition:all .15s;}
+#site-toc a:hover{color:var(--navy);}
+#site-toc a.active{color:var(--navy); font-weight:700; border-left-color:var(--navy);}
+
+@media(max-width:1680px){#site-toc{display:none;}}
+
+.doc-chipnav{display:flex; flex-wrap:wrap; gap:8px; margin:0 0 28px;}
+.doc-chipnav .chip{display:inline-flex; align-items:center; gap:7px; font-size:11px; font-weight:700; color:var(--gray); text-decoration:none; border:1px solid var(--line); background:#fff; padding:6px 13px 6px 7px; transition:all .15s;}
+.doc-chipnav .chip:hover{border-color:var(--navy); color:var(--navy); background:var(--panel); transform:translateY(-1px);}
+.doc-chipnav .chip .chip-n{display:inline-flex; align-items:center; justify-content:center; width:18px; height:18px; background:var(--navy); color:#fff; font-size:9px; font-weight:700; border-radius:50%; flex:none;}
+
+#tb-top{-webkit-appearance:none; appearance:none; position:fixed; right:24px; bottom:24px; width:42px; height:42px; border-radius:50%; border:1px solid var(--line);
+  background:#fff; color:var(--navy); font-size:16px; font-weight:700; font-family:inherit; cursor:pointer; box-shadow:0 2px 12px rgba(18,48,94,.16);
+  opacity:0; pointer-events:none; transition:opacity .2s, transform .2s; z-index:150;}
+#tb-top.show{opacity:1; pointer-events:auto;}
+#tb-top:hover{background:var(--navy); color:#fff; transform:translateY(-2px);}
+
+body.has-topbar .slide > .eyebrow{display:none;}
+
+@media(max-width:760px){
+  #site-topbar{gap:8px; padding:0 12px;}
+  .tb-eyebrow,.tb-time,.tb-home-label,.tb-pos{display:none;}
+  .tb-logo{padding:4px 7px;}
+  body.has-topbar{padding-top:68px;}
+  #tb-progress{top:44px;}
+}
+
+@media print{
+  #site-topbar,#tb-progress,#site-toc,#tb-top,.doc-chipnav{display:none !important;}
+  body.has-topbar{padding-top:26px;}
+}
+
+/* ─ 密度緩和・可読性向上 ─ */
+.lede{font-size:13px; color:var(--ink); line-height:1.95; margin:0 0 22px; padding:16px 20px; background:var(--panel); border:none; border-left:4px solid var(--navy);}
+.lede b{color:var(--navy);}
+.sec{margin-bottom:38px; scroll-margin-top:90px;}
+tbody tr:not(.rx):nth-child(even) td{background:#fafbfd;}
+.card,a.doc,.sym,.keybox{transition:box-shadow .15s, border-color .15s, transform .15s;}
+.card:hover{box-shadow:0 3px 14px rgba(18,48,94,.08); transform:translateY(-1px);}
+a.doc:hover{box-shadow:0 3px 14px rgba(18,48,94,.08); transform:translateY(-2px);}
+
+
+/* ══════════════ 2026-08 改訂：本体／検討の二部構成に伴う追加 ══════════════ */
+
+/* ─ 相互参照リンク（本文中の → 参照をすべてリンク化するために使用） ─ */
+a.xref{
+  color:var(--pos); text-decoration:none; font-weight:700;
+  border-bottom:1px solid var(--pos-line); padding-bottom:1px;
+  white-space:nowrap;
+}
+a.xref:hover{background:var(--pos-bg); border-bottom-color:var(--pos);}
+
+/* ─ 推定バッジ（本体復元時に文脈から補った箇所に付す） ─ */
+.est{
+  display:inline-block; font-size:9px; font-weight:700; letter-spacing:.06em;
+  color:var(--neg); background:var(--neg-bg); border:1px solid var(--neg-line);
+  padding:1px 6px; margin-left:6px; vertical-align:2px; white-space:nowrap;
+}
+.estbox{
+  border:1px dashed var(--neg-line); background:var(--neg-bg);
+  padding:11px 16px; margin:0 0 16px; font-size:11.5px; line-height:1.8; color:#8a3708;
+}
+.estbox .lbl{font-weight:700; letter-spacing:.04em;}
+.estbox b{color:#6d2c06;}
+
+/* ─ 決定待ちバッジ ─ */
+.pend{
+  display:inline-block; font-size:9px; font-weight:700; letter-spacing:.06em;
+  color:var(--grn); background:var(--grn-bg); border:1px solid var(--grn-line);
+  padding:1px 6px; margin-left:6px; vertical-align:2px; white-space:nowrap;
+}
+
+/* ─ 部（本体／検討）を示すヘッダ帯 ─ */
+.partbar{
+  display:inline-flex; align-items:center; gap:8px;
+  font-size:10px; font-weight:700; letter-spacing:.12em;
+  color:#fff; background:var(--navy); padding:4px 12px; margin-bottom:10px;
+}
+.partbar.note{background:var(--gray);}
+.partbar.ref{background:var(--gray-l);}
+
+/* ─ 2枚並べる図 ─ */
+.figrow{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:18px;}
+.figrow figure{margin:0;}
+@media(max-width:900px){.figrow{grid-template-columns:1fr;}}
+
+/* ─ ASCII 図（依存関係・コンポーネント構造） ─ */
+pre.ascii, pre.tree{
+  font-family:"SFMono-Regular",Consolas,"Liberation Mono",Menlo,"Yu Gothic","Hiragino Kaku Gothic ProN",monospace;
+  font-size:11px; line-height:1.65; color:var(--ink);
+  background:var(--panel); border:1px solid var(--line); border-left:4px solid var(--navy);
+  padding:16px 18px; margin:0 0 16px; overflow-x:auto; white-space:pre;
+}
+
+/* ─ 言語切替（固定ヘッダー内） ─ */
+.tb-lang{display:flex; align-items:stretch; flex:none; border:1px solid var(--line); overflow:hidden;}
+.tb-lang a,.tb-lang .on{
+  display:flex; align-items:center; font-size:9.5px; font-weight:700; letter-spacing:.06em;
+  padding:0 9px; height:26px; text-decoration:none; white-space:nowrap;
+}
+.tb-lang .on{background:var(--navy); color:#fff;}
+.tb-lang a{background:#fff; color:var(--gray);}
+.tb-lang a:hover{background:var(--panel); color:var(--navy);}
+@media(max-width:760px){ .tb-lang a,.tb-lang .on{padding:0 6px; height:24px;} }
+
+/* ─ 言語切替（index 用・大きめ） ─ */
+.langbar{display:flex; align-items:center; justify-content:flex-end; gap:0; margin:0 0 14px;}
+.langbar .lg{display:flex; border:1px solid var(--line);}
+.langbar a,.langbar .lang-btn{font-family:inherit; font-size:11px; font-weight:700; letter-spacing:.06em;
+  padding:7px 16px; text-decoration:none; line-height:1.4; border:none; cursor:pointer;
+  background:#fff; color:var(--navy); -webkit-appearance:none; appearance:none;}
+.langbar a:hover,.langbar .lang-btn:hover{background:var(--panel);}
+.langbar .lang-btn.on{background:var(--navy); color:#fff;}
+.langbar .lang-btn + .lang-btn{border-left:1px solid var(--line);}
+
+/* ─ 英語ページの字送り調整 ─ */
+html[lang="en"] p,html[lang="en"] .card .d,html[lang="en"] .note,
+html[lang="en"] .keybox .d,html[lang="en"] .sym .sb p{line-height:1.75;}
+html[lang="en"] th,html[lang="en"] td{line-height:1.6;}
+html[lang="en"] .chip{font-size:10px;}

@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>第III部 測定 ── 現状線の引き方</title>
+<link rel="stylesheet" href="../assets/base.css">
+<script src="../assets/site.js" defer></script>
+</head>
+<body>
+<div class="slide">
+
+  <div class="eyebrow">第III部　測定</div>
+  <h1>現状線の引き方 ── 三層、3水準、A1〜A5、証拠</h1>
+
+  <p class="lede">
+    <b>問いを「できるか」から「したか」へ変える。</b>能力は本人の内側にしか答えがないが、行動には記録・成果物という外形が残る。<br>
+    測定は目的ではない。<b>戦略Bの起点を確定させる作業である。</b>
+  </p>
+
+  <!-- 11 -->
+  <div class="sec" id="c11">
+    <div class="step"><span class="n">11</span>三層構造</div>
+
+    <p>一般的なスキル管理は、能力を単一のタクソノミーで表現する。当社も5年間この形で運用してきた。しかしこの形は破綻する ── <b>社員が実際に担ってきた能力が、標準タクソノミーに存在しないためである。</b></p>
+
+    <table>
+      <thead><tr><th style="width:230px">道</th><th>帰結</th></tr></thead>
+      <tbody>
+        <tr><td>標準タクソノミーを自社で拡張し、<br>1本の体系にすべてを載せる</td><td>タクソノミーの自社設計が始まる。<b>製品既定の体系を借りられなくなり、版の追随も自社負担になる。</b>加えて、性質の違う能力が同じ尺度で並ぶ</td></tr>
+        <tr class="rx"><td><b>層に分け、層ごとに別の扱いをする</b></td><td>標準体系はそのまま借りられる。<b>自社設計の範囲が、標準体系に存在しない部分だけに限定される</b></td></tr>
+      </tbody>
+    </table>
+
+    <p><b>後者を採る。</b></p>
+
+    <table>
+      <thead><tr><th style="width:150px">層</th><th style="width:200px">対象</th><th>内容</th></tr></thead>
+      <tbody>
+        <tr><th class="rh" style="width:150px">基層<br><span class="ex">R2・R3・R5</span></th><td>技術遂行<br><span class="ex">開発、基盤、運用等</span></td><td>自ら手を動かして設計・構築・運用する能力。<b>標準タクソノミー（DSS・iCD 等）がそのまま使える領域</b></td></tr>
+        <tr><th class="rh">付加層A<br><span class="ex">R4</span></th><td>ベンダー統制</td><td>外部の見積・成果物の当否を、根拠を伴って判断する能力。<b>標準体系に項目が存在しない。当社固有カテゴリとして自社定義する</b></td></tr>
+        <tr><th class="rh">付加層B</th><td>経緯知識</td><td>なぜこのシステムがこう作られているかを説明できる能力。<b>そもそもスキルではなく、特定個人に属する事実の保有である</b></td></tr>
+      </tbody>
+    </table>
+
+    <h2 class="sub">層を分けることの実質 ── 分けた瞬間に、扱いが分かれる</h2>
+
+    <table>
+      <thead><tr><th style="width:140px"></th><th>基層</th><th>付加層A（R4）</th><th>付加層B（経緯知識）</th></tr></thead>
+      <tbody>
+        <tr><th class="rh" style="width:140px">タクソノミー</th><td><b>製品既定を借りる</b></td><td colspan="2"><b>自社固有カテゴリとして定義する</b></td></tr>
+        <tr><th class="rh">尺度</th><td>製品既定の<b>5段階のまま</b></td><td><b>3水準</b><br><span class="ex">遂行できる／評価できる／所管しているのみ</span></td><td><b>保有者数</b><br><span class="ex">1名か、2名以上か</span></td></tr>
+        <tr><th class="rh">測り方</th><td>自己申告＋ピア可視化＋アセスメント</td><td><b>ライン長による記録照会</b></td><td>氏名と人数を書き出す。<b>判定は不要</b></td></tr>
+        <tr><th class="rh">支配的な誤差</th><td>類型①②<br><span class="ex">補正される</span></td><td colspan="2"><b>類型③（構造的誤差）</b><br><span class="ex">集計でもピア可視化でも補正されない</span></td></tr>
+        <tr><th class="rh">SaaS製品に載せるか</th><td><b>載せる</b></td><td colspan="2"><b>載せない</b>（表計算で扱う）</td></tr>
+        <tr><th class="rh">需要の単位</th><td><b>人数</b></td><td><b>カバレッジ</b><br><span class="ex">充足／未充足の2値</span></td><td><b>冗長性</b><br><span class="ex">保有者数</span></td></tr>
+        <tr><th class="rh">打ち手</th><td>育成・採用・配置・<b>外部委託</b></td><td>業務プロセスと様式の改訂</td><td><b>保有者が在籍する間の移転のみ</b></td></tr>
+        <tr><th class="rh">外部委託の可否</th><td><b>可能</b></td><td><b>不可。</b>評価者を外部化すれば評価が成立しない</td><td><b>不可。</b>外部も経緯を知らない</td></tr>
+        <tr class="rx"><th class="rh">失われたときの回復</th><td>回復可能</td><td>回復可能</td><td><b>不可逆</b></td></tr>
+      </tbody>
+    </table>
+
+    <div class="verdict">この表の最下段が、優先順位を決めている。基層と付加層Aは回復可能であり、付加層Bだけが不可逆である。</div>
+  </div>
+
+  <!-- 12 -->
+  <div class="sec" id="c12">
+    <div class="step"><span class="n">12</span>タクソノミーは二本立てとする</div>
+
+    <table>
+      <thead><tr><th style="width:200px"></th><th>内容</th><th style="width:200px">出所</th></tr></thead>
+      <tbody>
+        <tr><th class="rh" style="width:200px">標準タクソノミー<br><span class="ex">基層に対応</span></th><td>技術スキル（開発言語、基盤技術、ソフトウェア等）</td><td><b>製品既定を借りる。</b><br>自社で設計しない</td></tr>
+        <tr><th class="rh">自社固有カテゴリ<br><span class="ex">付加層A・Bに対応</span></th><td><b>統合・評価・ドメイン知</b><br>要件翻訳／受入判断／工数妥当性の検証／経緯知識</td><td><b>自社定義</b><br>（カスタムカテゴリ）</td></tr>
+      </tbody>
+    </table>
+
+    <div class="keybox">
+      <span class="lbl">見落としてはならない点</span>
+      <div class="t">標準タクソノミーで「測れない」項目群は、測れないから価値がないのではない。</div>
+      <div class="d">数十年にわたり外部を使って事業を止めずに回してきたのは、この能力が存在したからである。<b>すなわちこれらは、当社の実質的な競争力そのものである可能性が高い。</b></div>
+    </div>
+
+    <p>タクソノミーが二本立てである以上、<b>尺度も二本立てになる。</b>基層は製品既定の5段階、付加層Aは3水準である。1つの尺度に統一しようとすれば、統一のために片方を歪めることになる。</p>
+  </div>
+
+  <!-- 13 -->
+  <div class="sec" id="c13">
+    <div class="step"><span class="n">13</span>3水準</div>
+
+    <p>初級／中級／上級という一次元スケールでは、当社で支配的な誤差を分離できない。<b>分離できる尺度を用意しなければ、分離した回答は返ってこない。</b></p>
+
+    <table>
+      <thead><tr><th style="width:190px">水準</th><th>行動としての定義</th></tr></thead>
+      <tbody>
+        <tr><th class="rh" style="width:190px">遂行できる</th><td>当該領域で、<b>自ら手を動かして設計・構築・運用を完了させた実績がある</b></td></tr>
+        <tr class="rx"><th class="rh">評価できる</th><td>遂行の実績はないが、<b>外部の成果物・見積に対して、根拠を伴う差し戻し・修正要求・代替案提示を行った実績がある</b></td></tr>
+        <tr><th class="rh">所管しているのみ</th><td>責任は負っているが、<b>上記いずれの実績も存在しない</b></td></tr>
+      </tbody>
+    </table>
+
+    <div class="keybox">
+      <span class="lbl">中間の水準が中核である</span>
+      <div class="t">「評価できる」は、長期の外部依存下における中核能力である。</div>
+      <div class="d">外部から買い続けるためにも、買ったものの当否を判断できる者が要る。判断できなければ、それは調達ではなく委任である。<b>これは吸収能力の実務的な定義そのものにあたる</b>（→ <a class="xref" href="p1_premise.html#c5">第I部5章</a>）。</div>
+    </div>
+
+    <p>そして<b>検出すべきは3番目である。</b>「所管しているのみ」がどこに分布しているかが、<b>どこで組織が止まるかを示す。</b>台帳の目的は、良い値を集めることではない。</p>
+
+    <div class="note"><b>とりわけ「代替案の提示」が強い指標になる。</b>差し戻しや修正要求は「求められたから応じた」でも起こりうるが、代替案の提示は <b>求められていないのに自ら行う行動</b> であり、外部の提案を独立に評価できていなければ発生しない。</div>
+  </div>
+
+  <!-- 14 -->
+  <div class="sec" id="c14">
+    <div class="step"><span class="n">14</span>問いの転換 ──「できるか」から「したか」へ</div>
+
+    <table>
+      <thead><tr><th style="width:290px">従来の問い</th><th>本書の問い</th></tr></thead>
+      <tbody>
+        <tr><td>「この領域のスキルレベルは？」</td><td><b>「直近3年に、何をしたか？」</b></td></tr>
+        <tr><td>能力を問う。<b>本人の内側にしか答えがない</b></td><td>行動を問う。<b>記録・成果物という外形が残る</b></td></tr>
+      </tbody>
+    </table>
+
+    <p>自己申告であっても、<b>行動の申告は能力の申告よりはるかに信頼できる。</b>「私は上級だ」は検証できないが、「私はこの見積を差し戻した」は検証できる。</p>
+
+    <div class="note">これは人事評価研究において確立された考え方（行動基準評定尺度／BARS 等）と同型である。評定者に抽象的な優劣ではなく具体的な行動事例を参照させることで、尺度解釈のばらつきを抑える。</div>
+
+    <p>この問いの立て方は、<b>打ち手の形を一意に決めてしまう。</b></p>
+
+    <table>
+      <thead><tr><th style="width:290px">測定が問うもの</th><th>打ち手が変えるもの</th></tr></thead>
+      <tbody>
+        <tr><td>能力（できるか）</td><td>→ 人（訓練する）</td></tr>
+        <tr class="rx"><td><b>行動（したか）</b></td><td><b>→ 仕事（させる）</b></td></tr>
+      </tbody>
+    </table>
+
+    <p>本書は後者を採る。この帰結は <a class="xref" href="p6_execute.html#c33">第VI部33章</a> で展開する。</p>
+  </div>
+
+  <!-- 15 -->
+  <div class="sec" id="c15">
+    <div class="step"><span class="n">15</span>A1〜A5 ── 仲介機能の5項目</div>
+
+    <p>付加層A（ベンダー統制）を構成する行動を5つに分解する。<b>これが照会する痕跡の種類を決める。</b></p>
+
+    <table>
+      <thead><tr><th style="width:180px">項目</th><th style="width:300px">問う行動</th><th>照会する痕跡</th></tr></thead>
+      <tbody>
+        <tr><th class="rh" style="width:180px">A1 要件の翻訳</th><td>事業部門の要望を仕様の言葉に置き換えたか</td><td>要件定義書・RFP・仕様書の<b>執筆者欄</b></td></tr>
+        <tr><th class="rh">A2 工数妥当性の検証</th><td>ベンダー見積とは独立に自ら積算したか</td><td>稟議・予算における<b>工数積算の主体</b></td></tr>
+        <tr><th class="rh">A3 成果物の受入判断</th><td>何を確認し、差し戻すか否かを判断したか</td><td>検収記録／<b>差し戻し・修正要求の記録</b></td></tr>
+        <tr class="rx"><th class="rh">A4 代替案の提示</th><td>ベンダー提案とは別の選択肢を自ら出したか</td><td>設計方針の検討記録・<b>比較検討資料</b></td></tr>
+        <tr><th class="rh">A5 障害時の切り分け</th><td>エスカレーション前に自ら仮説を立てたか</td><td>インシデント記録における<b>一次切り分けの実施者</b></td></tr>
+      </tbody>
+    </table>
+
+    <div class="note"><b>A4 が5項目の中で最も強い証拠である。</b>A1〜A3 は「求められたから応じた」でも成立するが、代替案の提示は求められていないのに自ら行う行動である。したがって<b>制度が要求しなければ発生しない。逆に、制度が要求すれば発生する。</b></div>
+
+    <h2 class="sub">A1〜A5 は、予測と結果の対でできている</h2>
+
+    <p>5項目はいずれも<b>予測を記録させる</b>ものであり、<b>後から結果が判明する</b>種類の記録である。したがって突合の工程が必要になる（→ <a class="xref" href="p6_execute.html#c35">第VI部35章</a>）。</p>
+
+    <table>
+      <thead><tr><th style="width:110px"></th><th style="width:250px">予測（行動時に記録）</th><th style="width:250px">結果（後から判明）</th><th>突合の時点</th></tr></thead>
+      <tbody>
+        <tr><th class="rh" style="width:110px">A1</th><td>自ら書いた要件</td><td>実装段階の手戻り・仕様変更</td><td>検収時</td></tr>
+        <tr><th class="rh">A2</th><td>自社積算値</td><td>ベンダー見積／<b>実績工数</b></td><td>見積受領時／案件完了時</td></tr>
+        <tr><th class="rh">A3</th><td>差し戻す／差し戻さない判断と、その理由</td><td>稼働後の障害・不具合</td><td>稼働3か月後</td></tr>
+        <tr><th class="rh">A4</th><td>提示した選択肢</td><td>採否と、その理由</td><td>決裁時</td></tr>
+        <tr><th class="rh">A5</th><td>一次切り分け仮説</td><td>確定した原因</td><td>復旧時</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 16 -->
+  <div class="sec" id="c16">
+    <div class="step"><span class="n">16</span>誤差の3類型と、証拠の三段階</div>
+
+    <p>層ごとに測り方を変える根拠は、<b>層によって支配的な誤差の種類が違う</b>ことにある。</p>
+
+    <table>
+      <thead><tr><th style="width:200px">類型</th><th>内容</th><th style="width:130px">集計で<br>打ち消されるか</th><th style="width:150px">ピア可視化で<br>補正されるか</th></tr></thead>
+      <tbody>
+        <tr><th class="rh" style="width:200px">① ランダム誤差</th><td>個人差による揺れ（几帳面な人は控えめ、大胆な人は高めに付ける）</td><td class="c"><b>される</b></td><td class="c">─</td></tr>
+        <tr><th class="rh">② 動機づけられた誤差</th><td>意図的な誇張。評価や処遇への影響を意識した申告</td><td class="c">されない</td><td class="c"><b>される</b></td></tr>
+        <tr class="rx"><th class="rh">③ 構造的誤差</th><td><b>組織全体が同じ枠組みで誤認している。</b>悪意も虚偽もない</td><td class="c"><b>されない</b></td><td class="c"><b>されない</b></td></tr>
+      </tbody>
+    </table>
+
+    <p>ピア可視化は②に対して強力に働く。誇張は同僚が見れば分かるからである。<b>しかし③には無力である。同僚も同じ枠組みを共有しているためである。</b></p>
+
+    <div class="note">「15年そのシステムを担当してきた人は、その領域に詳しい」── これは組織の全員が共有している認識であり、<b>誰も異議を唱えない。</b>しかしその「詳しい」の内実が「実装できる」なのか「所管している」なのかは、<b>本人にも同僚にも区別できない。</b></div>
+
+    <p><b>当社の5年間で届かなかった部分は、まさに③である。</b>したがって「自己評価だから不十分」なのではなく、<b>「自己評価は③に対して無力であり、当社の誤診は③だった」</b>というのが正確な記述になる。</p>
+
+    <div class="verdict">これは特定製品の弱点ではない。DSS 準拠の標準タクソノミーであっても、習熟度を一次元スケールで自己申告させる限り、類型③はそのまま通過する。製品選定は付加層Aの取りこぼしを解決しない。解決するのは測定プロトコルである。</div>
+
+    <p>そして類型③は付加層A・Bに集中している。<b>基層で支配的なのは類型①②であり、これらは集計とピア可視化で補正される。したがって基層は製品既定の5段階のまま、自己申告で運用してよい。補強が必要なのは付加層だけである。</b></p>
+
+    <h2 class="sub">証拠の三段階</h2>
+
+    <p>自己申告は、確定手段ではなく<b>補助情報に格下げする。</b></p>
+
+    <table>
+      <thead><tr><th style="width:200px">証拠の段階</th><th>内容</th></tr></thead>
+      <tbody>
+        <tr><th class="rh" style="width:200px">一次（記録）</th><td>本番権限、稟議の工数積算主体、変更・検収記録 ── <b>本人に聞かずに確認できる</b></td></tr>
+        <tr><th class="rh">二次（成果物）</th><td>自ら執筆した設計書・比較検討資料、<b>突合記録</b> ── <b>事後に作れない</b></td></tr>
+        <tr><th class="rh">三次（自己申告）</th><td><b>単独では水準を確定させない。</b>一次・二次が無い場合の補助のみ</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 17 -->
+  <div class="sec" id="c17">
+    <div class="step"><span class="n">17</span>未検証フラグと、出力の読み方</div>
+
+    <p>一次・二次の証拠が存在せず判定できない領域は、<b>「水準が低い」ではなく「未検証」として区別して出力する。</b>台帳上は空欄で表現する。</p>
+
+    <div class="keybox">
+      <span class="lbl">出力の読み方に関する規則</span>
+      <div class="t">初回の測定では、「所管しているのみ」と「未検証」が大量に出るのが正常である。</div>
+      <div class="d">それが出ることこそが、測定が機能したという証拠である。<b>判定基準は値の良さではなく、値の正しさである。</b>台帳の値が良くなることを目標に置けば、測定は5年前と同じ失敗を繰り返す。</div>
+    </div>
+
+    <h2 class="sub">誤読への備え（C11 への対処）</h2>
+
+    <p>出力はそのまま提示すれば誤読される。<b>誤読の型はあらかじめ特定できるため、提示の側で対処する。</b></p>
+
+    <table>
+      <thead><tr><th style="width:260px">予測される誤読</th><th>提示側の対処</th></tr></thead>
+      <tbody>
+        <tr><td><b>発展段階の差を、能力差と読む</b></td><td>拠点を横並びにしない。拠点ごとに測る範囲が異なることを、出力に明示する</td></tr>
+        <tr><td><b>ベテランの低評価と読む</b></td><td>「所管しているのみ」は個人の資質評価ではなく、<b>その領域で組織がどこまで自走できるかの表示</b>であることを併記する。数十年支えてきたベテランが低く出るのは<b>測定の失敗であって、その人の評価ではない</b></td></tr>
+        <tr><td><b>コスト削減施策と読む</b></td><td>下記の通り、付加層A先行の理由を統制ではなく<b>認識の問題</b>として述べる</td></tr>
+        <tr><td><b>処遇に接続されると読む</b></td><td>接続しないことを<b>規程または通達として明文化する</b>（→ <a class="xref" href="p5_structure.html#c29">第V部29章</a>）</td></tr>
+      </tbody>
+    </table>
+
+    <div class="keybox">
+      <span class="lbl">付加層A（R4）先行の理由 ── 述べ直し</span>
+      <div class="t">R4を先に測るのは、統制のためではなく、知覚を回復するためである。</div>
+      <div class="d">R4 の水準が上がれば見積が締まり、差し戻しが増え、不要な機能が落ちる ── <b>財務効果が直接的で、測定可能で、早い。</b>一方、遂行能力の向上は効果が拡散的で遅い。<b>この非対称は避けられない。</b>したがって意図にかかわらず、R4先行はコスト削減施策として読まれる可能性が高い。<br>
+      しかし R4 が「所管のみ」であるとき、組織は外部成果物の当否を判断できない。<b>これは支出の問題である以前に、組織が自らの状態を知覚できないという問題である。</b>5年間、R4 は測定項目に存在せず、一度も判定されていない ── <b>知覚が欠けていたのは、まさにこの領域であった。</b></div>
+    </div>
+  </div>
+
+  <!-- 18 -->
+  <div class="sec" id="c18">
+    <div class="step"><span class="n">18</span>アンカー事例による較正</div>
+
+    <p>語彙と判定基準を統一しても、それだけでは拠点間の判定は揃わない。<b>基準文の解釈が拠点ごとに動くためである。</b></p>
+
+    <p>したがって抽象的な基準文ではなく、<b>実在の案件・成果物を「これが評価水準である」と定義し、全拠点で共有する。</b>判定に迷ったら基準文ではなくアンカーと比較する。</p>
+
+    <table>
+      <thead><tr><th style="width:250px">項目</th><th>規則</th></tr></thead>
+      <tbody>
+        <tr><th class="rh" style="width:250px">選定・改定の権限</th><td><b>機能ライン長</b>（→ <a class="xref" href="p5_structure.html#c28">第V部28章</a>）</td></tr>
+        <tr><th class="rh">改定履歴</th><td><b>必須。</b>これがなければ拠点長は判定を受け入れない。較正の恣意性に対する唯一の歯止めである</td></tr>
+        <tr><th class="rh">拠点間差異の扱い</th><td>検出し、解消した経緯を記録する。<b>この記録の有無が、ライン長自身の水準判定になる</b></td></tr>
+      </tbody>
+    </table>
+
+    <div class="note"><b>アンカーは、拠点間で同じ仕事を実際に引き取らせることでも生成できる。</b>交換の記録（変更記録・成果物・レビュー記録）は一次証拠・二次証拠そのものであり、<b>較正のための追加作業ではなく、測定運用の一部として組み込める</b>（→ <a class="xref" href="p5_structure.html#c31">第V部31章</a>）。</div>
+  </div>
+
+  <!-- 19 -->
+  <div class="sec" id="c19">
+    <div class="step"><span class="n">19</span>測定の範囲と、拠点別の適用</div>
+
+    <p>初回の測定対象は <b>付加層A（R4）に絞る。</b>仕事の分類を待たずに実行でき、判定が2値で軽いためである。</p>
+
+    <table>
+      <thead><tr><th style="width:290px">契機</th><th>対象</th></tr></thead>
+      <tbody>
+        <tr><th class="rh" style="width:290px">初年度</th><td><b>R4 のみ。</b>加えて記録照会シートに付加層B（経緯照会可能者数）の列を置く</td></tr>
+        <tr><th class="rh">初年度末<br><span class="ex">R4パイロット完了時点</span></th><td>R2・R3 へ測定項目を拡張。<b>様式は変えない。変わるのは測定項目だけである</b></td></tr>
+        <tr><th class="rh">2年目の測定</th><td>R5 を追加し、5ロールを揃える</td></tr>
+      </tbody>
+    </table>
+
+    <h2 class="sub">R4 に限定し続けることはできない</h2>
+
+    <p>A2（工数の妥当性判断）と A4（代替案の提示）は、<b>技術的判断を要求する。</b>設計の代替案は、設計を知らなければ出せない。見積の当否は、作業内容を知らなければ判断できない。</p>
+
+    <div class="verdict">「評価できる」は独立した能力ではない。残存する遂行知識の上に成立している。基層を放置して R4 だけに投資すれば、遅れて R4 も落ちる。R4 のみを維持する定常状態は、存在しない。</div>
+
+    <h2 class="sub">拠点別の適用</h2>
+
+    <table>
+      <thead><tr><th style="width:120px">拠点</th><th>測定の主眼</th></tr></thead>
+      <tbody>
+        <tr><th class="rh" style="width:120px">日本</th><td>上記の構造がそのまま当てはまる。<b>どの領域が「所管しているのみ」に落ちているかの特定</b>が主眼</td></tr>
+        <tr><th class="rh">北米</th><td>これから能力を配置する側である。<b>日本と同じ轍を踏むかどうかが、まだ決まっていない段階</b>にある。ただし製造IT領域は自ら標準を整備しており、<b>標準を作れる組織はその領域を遂行できる</b></td></tr>
+        <tr><th class="rh">欧州</th><td>セールスサポート寄りの人材構成であり、<b>IT能力の供給主体として同質でない。</b>同じ物差しを当てても全員が「所管しているのみ」に張り付くだけで情報量がない。<b>需要の有無を先に確定させる</b>（→ <a class="xref" href="p4_demand.html#c23">第IV部23章</a>）</td></tr>
+      </tbody>
+    </table>
+
+    <div class="verdict">測る対象として同質でないから、同じ物差しを当てない。これは第II部の原則1の、測定における具体化である。</div>
+  </div>
+
+  <div class="pagenav">
+    <div class="prev"><a href="p2_position.html"><span class="lbl">PREV</span>第II部 ─ 現在地</a></div>
+    <div class="home"><a href="../index.html?lang=ja"><span class="lbl">INDEX</span>フレームワーク地図へ</a></div>
+    <div class="next"><a href="p4_demand.html"><span class="lbl">NEXT</span>第IV部 ─ 目標</a></div>
+  </div>
+
+</div>
+</body>
+</html>

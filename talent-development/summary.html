@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>スキルマネジメント・フレームワーク ─ サマリー / Summary</title>
+<link rel="stylesheet" href="assets/base.css">
+<style>
+  body{padding-top:0;}
+  .slide{max-width:1180px; padding:30px 40px 34px;}
+
+  .topbar{display:flex; align-items:center; margin-bottom:18px;}
+  .topbar a{font-size:11px; font-weight:700; color:var(--navy); text-decoration:none; border:1px solid var(--line); padding:6px 13px; background:#fff;}
+  .topbar a:hover{background:var(--panel); border-color:var(--navy);}
+
+  .head{border-bottom:2px solid var(--navy); padding-bottom:14px; margin-bottom:18px;}
+  .head .eb{font-size:9.5px; font-weight:700; letter-spacing:.14em; color:var(--gray-l); margin-bottom:6px;}
+  .head h1{font-size:19px; margin:0 0 4px; color:var(--navy); font-weight:700; line-height:1.4;}
+  .head .sub{font-size:11px; color:var(--gray); line-height:1.6;}
+
+  .cols{display:grid; grid-template-columns:1fr 1fr; column-gap:26px;}
+  .col{border-left:none;}
+  .col.en{border-left:1px solid var(--line); padding-left:26px;}
+  .col .lg{font-size:9px; font-weight:700; letter-spacing:.14em; color:#fff; background:var(--navy); display:inline-block; padding:2px 9px; margin-bottom:14px;}
+
+  .block{margin-bottom:16px; padding-bottom:14px; border-bottom:1px solid var(--line); break-inside:avoid;}
+  .block:last-child{border-bottom:none; margin-bottom:0; padding-bottom:0;}
+  .block h2{font-size:12.5px; font-weight:700; color:var(--navy); margin:0 0 10px;}
+  .block p{font-size:10.8px; line-height:1.72; color:var(--ink); margin:0 0 6px;}
+  .block p b{color:var(--navy);}
+  .block .num{color:var(--pos); font-weight:700;}
+
+  .conclusion{background:var(--panel); border-left:4px solid var(--navy); padding:12px 16px; margin-bottom:14px;}
+  .conclusion p{font-size:11.2px;}
+
+  /* 根本課題ブロック（base.css の .sym を、二段組み用に圧縮） */
+  .sym{margin-bottom:12px; break-inside:avoid;}
+  .sym:last-child{margin-bottom:0;}
+  .sym .sh{padding:8px 13px 7px;}
+  .sym .sh .t{font-size:12px; line-height:1.5;}
+  .sym .sh .cls{font-size:9px; margin-top:3px;}
+  .sym .sb{padding:10px 13px 3px;}
+  .sym .sb p{font-size:10.3px; line-height:1.66; margin:0 0 7px; color:var(--ink);}
+  .sym .sb .lbl{font-weight:700; color:var(--navy); font-size:9.5px; letter-spacing:.02em;}
+  .sym .sb .lbl.r{color:#8a3708;}
+  .sym .sb a.xref{font-size:9.5px;}
+  .sym .sb ul.obs{margin:0 0 8px; padding-left:1.05em;}
+  .sym .sb ul.obs li{font-size:9.7px; line-height:1.58; color:var(--ink); margin-bottom:3px;}
+  .sym .sb ul.obs li b{color:var(--navy);}
+
+  .ppt-cat{margin-bottom:13px; break-inside:avoid;}
+  .ppt-cat:last-of-type{margin-bottom:14px;}
+  .ppt-hd{display:flex; align-items:baseline; gap:8px; padding:5px 10px; background:var(--panel); border-left:4px solid var(--navy); margin-bottom:8px;}
+  .ppt-hd .pn{font-size:11px; font-weight:700; color:var(--navy);}
+  .ppt-hd .pe{font-size:8.5px; color:var(--gray-l); letter-spacing:.06em;}
+  .ppt-cat.people .ppt-hd{border-left-color:var(--pos);}
+  .ppt-cat.process .ppt-hd{border-left-color:var(--grn);}
+  .ppt-cat.tech .ppt-hd{border-left-color:var(--neg);}
+
+  .actions{margin:0;}
+  .action{margin-bottom:9px; padding-bottom:9px; border-bottom:1px solid var(--line); break-inside:avoid;}
+  .action:last-child{border-bottom:none; margin-bottom:0; padding-bottom:0;}
+  .action .at{font-size:10.8px; font-weight:700; color:var(--navy); margin-bottom:3px; line-height:1.5;}
+  .action .at .an{display:inline-flex; align-items:center; justify-content:center; min-width:34px; height:15px; padding:0 5px; background:var(--navy); color:#fff; font-size:8px; font-weight:700; letter-spacing:.03em; border-radius:8px; margin-right:6px; flex:none;}
+  .ppt-cat.people .an{background:var(--pos);}
+  .ppt-cat.process .an{background:var(--grn);}
+  .ppt-cat.tech .an{background:var(--neg);}
+  table.maptable td.id{font-weight:700; white-space:nowrap; letter-spacing:.02em;}
+  table.maptable td.id.people{color:var(--pos);}
+  table.maptable td.id.process{color:var(--grn);}
+  table.maptable td.id.tech{color:var(--neg);}
+  table.maptable td.na{color:var(--gray-l);}
+  .mapnote{font-size:9px; line-height:1.6; color:var(--gray); margin:-10px 0 14px;}
+  .action p{font-size:10.1px; line-height:1.62; color:var(--ink); margin:0;}
+
+  .pptnote{font-size:9.8px; line-height:1.6; color:#8a3708; background:var(--neg-bg); border-left:3px solid var(--neg-line); padding:8px 12px; margin:0 0 14px;}
+  .pptnote b{color:#6d2c06;}
+
+  table.maptable{width:100%; border-collapse:collapse; margin:4px 0 14px; font-size:9.3px;}
+  table.maptable th,table.maptable td{border:1px solid var(--line); padding:5px 7px; text-align:center; vertical-align:middle; font-size:9.3px; line-height:1.4;}
+  table.maptable thead th{background:var(--navy); color:#fff; font-weight:700; font-size:9px;}
+  table.maptable td.name{text-align:left; font-weight:700; color:var(--ink);}
+  table.maptable td.dot{color:var(--pos); font-weight:700; font-size:12px;}
+  .maplbl{font-size:9px; font-weight:700; letter-spacing:.08em; color:var(--gray-l); margin:0 0 5px;}
+
+  .decide{border:1px solid var(--neg-line); background:var(--neg-bg); padding:10px 14px;}
+  .decide p{margin-bottom:5px;}
+  .decide .today{margin-top:10px; padding-top:9px; border-top:1px dashed var(--neg-line); font-weight:700; color:#8a3708;}
+
+  .declist{margin:0 0 4px;}
+  .decitem{display:flex; gap:9px; align-items:flex-start; margin-bottom:8px; padding-bottom:8px; border-bottom:1px dashed var(--neg-line);}
+  .decitem:last-child{margin-bottom:0; padding-bottom:0; border-bottom:none;}
+  .decitem .dn{flex:none; width:16px; height:16px; border-radius:50%; background:var(--navy); color:#fff; font-size:8.5px; font-weight:700; display:inline-flex; align-items:center; justify-content:center; margin-top:1px;}
+  .decitem .db{flex:1; min-width:0;}
+  .decitem .dt{font-size:10.6px; font-weight:700; color:var(--ink); line-height:1.5; margin-bottom:3px;}
+  .decitem .dr{font-size:9.6px; color:#8a3708; line-height:1.55; margin-bottom:4px;}
+  .decitem .dr b{color:#6d2c06;}
+  .decitem .dtag{display:inline-flex; gap:4px; flex-wrap:wrap;}
+  .decitem .dtag span{font-size:8px; font-weight:700; padding:1px 6px; border-radius:8px; color:#fff; white-space:nowrap;}
+  .decitem .dtag .people{background:var(--pos);}
+  .decitem .dtag .process{background:var(--grn);}
+
+  .foot{margin-top:16px; padding-top:10px; border-top:1px solid var(--line); font-size:9px; color:var(--gray-l); line-height:1.7; text-align:center;}
+
+  @media(max-width:900px){
+    .cols{grid-template-columns:1fr;}
+    .col.en{border-left:none; padding-left:0; margin-top:20px; padding-top:20px; border-top:2px solid var(--line);}
+  }
+
+</style>
+</head>
+<body>
+<div class="slide">
+
+  <div class="topbar">
+    <a href="index.html">← フレームワーク地図へ / Back to framework map</a>
+  </div>
+
+  <div class="head">
+    <div class="eb">IT ORGANIZATION ─ TALENT DEVELOPMENT ─ SUMMARY</div>
+    <h1>スキルマネジメント・フレームワーク ── 戦略Bの実行指針 / Skill Management Framework — Executing Strategy B</h1>
+    <div class="sub">対象：3拠点（日本・北米・欧州、計約200名）のIT組織　│　Scope: the IT organisation across three sites — Japan, North America, Europe — roughly 200 people in total.</div>
+  </div>
+
+  <div class="cols">
+
+    <!-- ================= 日本語 ================= -->
+    <div class="col ja">
+      <span class="lg">日本語</span>
+
+      <div class="conclusion">
+        <p><b>戦略B（内部蓄積）は、戦略A（外部依存）の代替案ではない。戦略Aを成立させ続けるための前提条件である。</b>外部から買い続けるためにも、買ったものの当否を判断できる者が社内に要る。判断できなければ、それは調達ではなく委任である。当社は数十年にわたり戦略Aを実行し、それは正しく機能してきた。いま問うべきは、その戦略Aが買い続けてきた時間を、我々が何に使ってきたのかである。</p>
+      </div>
+
+      <div class="block">
+        <h2>WHY ── 3つの根本課題</h2>
+
+        <div class="sym p">
+          <div class="sh"><div class="t">① 組織は、自分の状態を知覚できていない</div><div class="cls">回復可能</div></div>
+          <div class="sb">
+            <p><span class="lbl">背景 ── </span>5年前から単一のタクソノミーで運用してきたが、社員が実際に担ってきた仕事──要件翻訳、受入判断、工数の妥当性検証、経緯知識、社内調整──は、標準タクソノミーに存在しない。逆に、標準タクソノミーが持つ実装・設計・構築の能力は、長期のベンダー依存によって社内に保有されていない可能性が高い。測定項目と実態が、二重にずれている。</p>
+            <p><span class="lbl">現状 ── </span>「15年この領域を担当してきた」という事実から、悪意も虚偽もなく「遂行できる」が導かれてしまう。組織全員が同じ認識枠組みを共有しているため、自己申告のバイアスとは違い、ピア可視化でも補正されない。集計でもピアレビューでも打ち消されない種類の誤差である。</p>
+            <p><span class="lbl r">放置した場合のリスク ── </span>スキル台帳が、最も知りたいこと──その領域は自社で遂行できるのか、外部がいなければ止まるのか──を隠したまま運用され続ける。可視化はしているが、可視化の対象そのものが違う。外部依存の当否を判断できないまま、調達のつもりが実質的な委任へすり替わっていく。</p>
+            <p><span class="lbl">検知する指標 ── </span>「評価できる」（外部の見積・成果物を、根拠を伴って差し戻し・修正要求・代替案提示した実績）の充足率。とりわけ、求められずに自ら行う「代替案の提示」の発生件数が強い指標になる。逆説的だが、初回測定で「所管しているのみ」「未検証」が大量に出ることこそ、測定が機能している証拠である。</p>
+            <a class="xref" href="ja/p2_position.html#c9">→ 詳細：第II部9章</a>
+          </div>
+        </div>
+
+        <div class="sym g">
+          <div class="sh"><div class="t">② 揃える動機が、どの職掌からも生じない</div><div class="cls">回復可能</div></div>
+          <div class="sb">
+            <p><span class="lbl">背景 ── </span>3拠点それぞれにIT組織長がおり、各人が自拠点のIT戦略・人材採用・ケイパビリティ戦略を独自に策定してきた。これは制度設計上の当然の帰結であり、誰かの怠慢ではない。</p>
+            <p><span class="lbl">現状 ── </span>3人の組織長は全員、自分の職掌を正しく果たしている。にもかかわらず尺度（語彙・粒度・判定基準）は拠点ごとに異なる。「誰もやっていない」のではなく「全員が別々にやっている」状態であり、5年間のタレント開発活動は、実質1つではなく3つの並行した別活動だった。</p>
+            <p><span class="lbl r">放置した場合のリスク ── </span>拠点を超えた人材の比較・活用が、意志の問題ではなく原理的に判定不能なまま固定化する。横串の委員会を置いても、規程で統一を義務づけても、揃わなくても日常業務は止まらないため、実質的な効果を持たない。</p>
+            <p><span class="lbl">検知する指標 ── </span>3拠点の現行スキル定義を並べたとき、同一ラベル（例：「中級」）が指す内容が一致しない具体例の件数。定義権が単一の主体に属しているか（現状は3分割）。拠点間の判定差異が検出され、解消された記録の有無。</p>
+            <a class="xref" href="ja/p2_position.html#c9">→ 詳細：第II部9章</a>
+          </div>
+        </div>
+
+        <div class="sym">
+          <div class="sh"><div class="t">③ 経緯知識の喪失に、期限がある</div><div class="cls">不可逆</div></div>
+          <div class="sb">
+            <p><span class="lbl">背景 ── </span>なぜこのシステムがこう作られているかという経緯知識は、多くの領域で特定の1名のみが保有している。日本拠点が数十年、外部依存下で事業を止めずに回してこられたのは、この経緯知識に部分的に支えられてきたためである。</p>
+            <p><span class="lbl">現状 ── </span>現時点で、誰が何を単独保有しているかのリストすら存在しない。①②とは異なり、この知識は育成・採用・配置・外部調達のいずれによっても再生できない。過去にしか存在しないためである。</p>
+            <p><span class="lbl r">放置した場合のリスク ── </span>保有者が退職した瞬間、その知識は組織から永久に失われる。①②は制度を変えれば回復に向かうが、③だけは事後の対応が一切効かない。緊急性が低く見える課題だが、実際には最も緊急性が高い。</p>
+            <p><span class="lbl">検知する指標 ── </span>システムごとの経緯照会可能者数（1名か、2名以上か）。単独保有の箇所の件数と、保有者の在籍見込みに基づく切迫度。リスト作成の所要は半日と見積もられている──指標を取ること自体が、ほぼ唯一の初動になる。</p>
+            <a class="xref" href="ja/p2_position.html#c9">→ 詳細：第II部9章</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="block">
+        <h2>WHAT ── 何をすべきか（人・仕組み・道具）</h2>
+
+        <div class="ppt-cat people">
+          <div class="ppt-hd"><span class="pn">人</span><span class="pe">PEOPLE ── 権限と当事者性の設計</span></div>
+          <div class="actions">
+            <div class="action">
+              <div class="at"><span class="an">PPL-1</span>定義権の一部移管とアンカー較正</div>
+              <p>語彙・判定基準・アンカー事例の定義権だけを機能ライン長へ移し、人事権・予算・日常の業務指示は拠点に残す（統合役割であり、マトリクス組織ではない）。加えて、抽象的な基準文ではなく実在の案件・成果物を評価水準のアンカーとして全拠点で共有し、改定履歴を必須にする。</p>
+            </div>
+            <div class="action">
+              <div class="at"><span class="an">PPL-2</span>相互カバー</div>
+              <p>標準化・文書化された仕事の一部を、日本と北米が実際に交換して引き取る。単なる冗長性の確保ではなく、「同じ仕事を引き取れるか」という実務を通じて拠点間の水準を検証し、同時に日本に蓄積された経緯知識を北米へ移す制度的な経路として使う。</p>
+            </div>
+            <div class="action">
+              <div class="at"><span class="an">PPL-3</span>経緯知識保有者リストと移転計画</div>
+              <p>まず、システムごとに経緯を説明できる社員の氏名を書き出す（所要半日）。単独保有（1名）の箇所を特定し、保有者の在籍見込みに基づいて優先順位をつけ、移転を業務として時間を確保し、本人の不利益にならないことを保証したうえで実行する。</p>
+            </div>
+            <div class="action">
+              <div class="at"><span class="an">PPL-4</span>処遇との非連動の明文化</div>
+              <p>測定結果を等級・報酬に接続しないことを、規程または通達として明文化する。これがなければ、実態どおりに申告するほど不利益を被るという構造が残り、拠点長にも部下を守る立場から抵抗する合理的な理由が生じる。</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="ppt-cat process">
+          <div class="ppt-hd"><span class="pn">仕組み</span><span class="pe">PROCESS ── 測定・記録・需要の設計</span></div>
+          <div class="actions">
+            <div class="action">
+              <div class="at"><span class="an">PRC-1</span>測定の再設計</div>
+              <p>能力を三層（技術遂行／ベンダー統制／経緯知識）に分け、層ごとに違う尺度で測る。技術遂行は標準タクソノミーの5段階のまま自己申告＋ピア可視化で運用し、ベンダー統制は「遂行できる／評価できる／所管しているのみ」の3水準、経緯知識は保有者数で測る。根拠は記録を一次証拠、成果物を二次証拠とし、自己申告は補助情報に格下げする。</p>
+            </div>
+            <div class="action">
+              <div class="at"><span class="an">PRC-2</span>業務様式の改訂と突合</div>
+              <p>稟議に「自社積算」欄、検収に「差し戻し検討」欄、決裁に「代替案の提示」欄、インシデント記録に「一次切り分け」欄を1つずつ追加する。いずれも様式の改訂であり、追加費用はほぼ発生しない。これらは記録した時点では「予測」でしかないため、後から結果が判明した時点で予測と結果を突き合わせる欄を設け、外れた理由を記録させる。</p>
+            </div>
+            <div class="action">
+              <div class="at"><span class="an">PRC-3</span>需要の定義</div>
+              <p>「必要人数」を1枚の様式に書かせるのではなく、層ごとに異なる単位（技術遂行＝人数、ベンダー統制＝充足／未充足、経緯知識＝保有者数）で3枚に分けて書く。拠点ごとの導出論理も揃えない ── 日本は「外部に出せない範囲」から、北米は「稼働時期からの逆算」から、欧州は「持つべきかどうか」から書き起こす。</p>
+            </div>
+            <div class="action">
+              <div class="at"><span class="an">PRC-4</span>作動条件の整備</div>
+              <p>①機会の配分（誰にどの案件を割り当てるか）②失敗の許容（差し戻し・代替案の提示が評価を下げないことの明文化）③時間の確保（追加工数を誰の予算から取るか）④移転の動機（経緯を渡すことが本人の不利益にならない保証）の4条件を、事前に業務設計・予算配分の中に明記する。これが欠ければ、様式を変えても行動は生まれない。</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="ppt-cat tech">
+          <div class="ppt-hd"><span class="pn">道具</span><span class="pe">TECHNOLOGY ── 最後に、最小限に</span></div>
+          <div class="actions">
+            <div class="action">
+              <div class="at"><span class="an">TEC-1</span>ツール選定は測定設計の後に置く</div>
+              <p>付加層A（ベンダー統制）を製品のタクソノミーに乗せない、という規則さえ守れば、あとは基層の使い勝手で選んでよい。測定設計より先にツールを選べば、ツールが測れるものだけを測ることになる。</p>
+            </div>
+          </div>
+          <div class="pptnote"><b>9つのうち、道具に属するのは1つだけであり、しかもその内容は「後回しにする」という規律である。</b>人（権限）と仕組み（測定・記録）が整っていない段階で技術を先に入れても、可視化されるのは元々測れるものだけであり、①②③のいずれも動かない。</div>
+        </div>
+
+        <div class="maplbl">対応関係マッピング</div>
+        <table class="maptable">
+          <thead><tr><th style="width:46px">ID</th><th style="text-align:left">打ち手</th><th style="width:26px">①</th><th style="width:26px">②</th><th style="width:26px">③</th></tr></thead>
+          <tbody>
+            <tr><td class="id people">PPL-1</td><td class="name">定義権の移管とアンカー較正</td><td></td><td class="dot">●</td><td></td></tr>
+            <tr><td class="id people">PPL-2</td><td class="name">相互カバー</td><td></td><td class="dot">●</td><td class="dot">●</td></tr>
+            <tr><td class="id people">PPL-3</td><td class="name">経緯知識保有者リストと移転計画</td><td></td><td></td><td class="dot">●</td></tr>
+            <tr><td class="id people">PPL-4</td><td class="name">処遇との非連動の明文化</td><td class="dot">●</td><td class="dot">●</td><td></td></tr>
+            <tr><td class="id process">PRC-1</td><td class="name">測定の再設計</td><td class="dot">●</td><td></td><td></td></tr>
+            <tr><td class="id process">PRC-2</td><td class="name">業務様式の改訂と突合</td><td class="dot">●</td><td></td><td></td></tr>
+            <tr><td class="id process">PRC-3</td><td class="name">需要の定義</td><td class="dot">●</td><td class="dot">●</td><td></td></tr>
+            <tr><td class="id process">PRC-4</td><td class="name">作動条件の整備</td><td class="dot">●</td><td></td><td class="dot">●</td></tr>
+            <tr><td class="id tech">TEC-1</td><td class="name">ツール選定は測定設計の後に置く</td><td class="na">─</td><td class="na">─</td><td class="na">─</td></tr>
+          </tbody>
+        </table>
+        <p class="mapnote">TEC-1（─）は①②③のいずれにも直接は対応しない。特定の課題を解く打ち手ではなく、人と仕組みが整うまで着手しないという順序の規律だからである。</p>
+      </div>
+
+      <div class="block">
+        <h2>HOW ── 指標を検知する仕組み</h2>
+
+        <div class="sym p">
+          <div class="sh"><div class="t">① の指標を検知する</div><div class="cls">対象：「評価できる」充足率、代替案提示の件数</div></div>
+          <div class="sb">
+            <p><span class="lbl">主体 ── </span>機能ライン長が、稟議・検収・決裁・インシデント記録を照会する（記録照会シート）。</p>
+            <p><span class="lbl">調査項目 ── </span></p>
+            <ul class="obs">
+              <li>対象（氏名／拠点／機能ライン／ロール）</li>
+              <li>A1 要件翻訳 ── 要件定義書・RFP・仕様書の初稿執筆者</li>
+              <li>A2 工数妥当性検証 ── 稟議上の自社積算の有無、積算主体、ベンダー見積との差分とその理由</li>
+              <li>A3 受入判断 ── 検収記録の差し戻し検討欄の有無、判断者と理由</li>
+              <li><b>A4 代替案の提示</b> ── 決裁記録における提示の有無、提示者、提示内容と採否（求められずに自発的に行う行動であり、5項目中もっとも強い証拠）</li>
+              <li>A5 障害時切り分け ── インシデント記録の一次切り分け実施者、仮説の内容</li>
+              <li><b>突合結果</b> ── 上記の予測（積算・仮説・判断）と、後日判明した実績との差分、差分理由の記述有無</li>
+              <li><b>証拠の種別</b> ── 一次（記録）／二次（成果物）／三次（自己申告）のいずれに基づく判定か</li>
+            </ul>
+            <p><span class="lbl">判定順位 ── </span>記録（一次証拠）→成果物（二次証拠）→自己申告（補助のみ）の順で確認する。初年度は付加層A（ベンダー統制）のみを対象とし、翌年度以降に技術遂行（R2・R3・R5）へ広げる。</p>
+            <p><span class="lbl">出力と読み方 ── </span>証拠がない領域は「所管しているのみ」ではなく「未検証」として区別する。初回の測定でこの2つが大量に出ることは失敗ではなく、測定が機能している証拠として扱う。拠点間を横並びで比較しない、ベテランの低評価と読まない、という提示規則をあわせて運用する。</p>
+          </div>
+        </div>
+
+        <div class="sym g">
+          <div class="sh"><div class="t">② の指標を検知する</div><div class="cls">対象：拠点間の定義不一致件数、差異の検出・解消記録</div></div>
+          <div class="sb">
+            <p><span class="lbl">主体 ── </span>機能ライン長。ライン長自身の水準は、ライン長同士の相互判定で確認する ── 枠組みを共有しない者同士だからこそ、この判定は成立する。</p>
+            <p><span class="lbl">調査項目 ── </span></p>
+            <ul class="obs">
+              <li>拠点名／機能ライン名</li>
+              <li>同一ラベル（例：「中級」）に対する、各拠点の現行の定義文言（語彙・粒度・判定基準）</li>
+              <li>3拠点の定義文言を並べたときの不一致の有無と具体例</li>
+              <li>アンカー事例（実在の案件・成果物）の名称、選定者、選定日</li>
+              <li><b>アンカーの改定履歴</b> ── 改定日、改定者、改定理由（較正の恣意性に対する唯一の歯止め）</li>
+              <li><b>拠点間差異の検出・解消記録</b> ── 検出日、検出者、内容、解消方法、確認者</li>
+              <li>相互カバーの実施記録 ── 実施日、対象業務、引き取り側、成否</li>
+              <li>ライン長自身の判定と、その根拠となる記録の有無</li>
+            </ul>
+            <p><span class="lbl">判定基準 ── </span>遂行できる＝自らアンカーを選定・改定し拠点間差異を検出・解消した。評価できる＝アンカーは維持しているが差異の検出は他者に依存。所管しているのみ＝改定履歴も検出記録も存在しない。</p>
+            <p><span class="lbl">出力と限界 ── </span>検出した差異と解消の経緯を記録し、その記録の有無がライン長自身の水準判定になる。ただし拠点IT組織長がライン長を兼務する場合、自拠点に有利な較正を行っていないかを防ぐ歯止めは、この改定履歴以外にない。</p>
+          </div>
+        </div>
+
+        <div class="sym">
+          <div class="sh"><div class="t">③ の指標を検知する</div><div class="cls">対象：経緯照会可能者数、単独保有件数、切迫度</div></div>
+          <div class="sb">
+            <p><span class="lbl">主体 ── </span>各部門。</p>
+            <p><span class="lbl">調査項目 ── </span></p>
+            <ul class="obs">
+              <li>システム名／領域名</li>
+              <li><b>経緯照会可能な社員の氏名</b>（複数可）</li>
+              <li><b>保有者数</b>（1名か、2名以上か ── これが唯一の判定基準）</li>
+              <li><b>各保有者の在籍見込み</b>（定年・異動予定・契約期限等 ── 優先順位を決める唯一の変数）</li>
+              <li>単独保有（1名）フラグ</li>
+              <li>優先順位（切迫度による並び）</li>
+              <li>移転計画の有無（担当・開始予定時期）、移転完了フラグ</li>
+            </ul>
+            <p><span class="lbl">出力と所要 ── </span>判定は不要で、氏名と人数を書くだけでよい。所要半日。</p>
+            <p><span class="lbl">運用 ── </span>このリストはそのまま需要側の「保有者数」の値になるため、二重に作らず一本化する。判定を要する①②と異なり、存在の有無を確認するだけでよい点が、この指標を3つの中で最も着手しやすいものにしている。一度作って終わりにせず、退職・異動のたびに更新する。</p>
+          </div>
+        </div>
+
+        <p style="font-size:9.8px; color:var(--gray-l); line-height:1.6; margin:10px 0 0;">個別の打ち手（WHAT）をどう実行するかの詳細計画は、優先順位が決まった後、打ち手ごとに策定する。</p>
+      </div>
+
+      <div class="block decide">
+        <h2>今、決めるべきこと</h2>
+
+        <div class="declist">
+          <div class="decitem">
+            <span class="dn">1</span>
+            <div class="db">
+              <div class="dt">定義権を機能ライン長へ移すか</div>
+              <div class="dr"><b>決めないと ── </b>拠点横断の判定が原理的に不可能なまま残る。</div>
+              <div class="dtag"><span class="people">PPL-1</span></div>
+            </div>
+          </div>
+          <div class="decitem">
+            <span class="dn">2</span>
+            <div class="db">
+              <div class="dt">測定結果を処遇に接続しないことを明文化するか</div>
+              <div class="dr"><b>決めないと ── </b>正直な申告が担保されず、拠点長の抵抗が正当化される。</div>
+              <div class="dtag"><span class="people">PPL-4</span></div>
+            </div>
+          </div>
+          <div class="decitem">
+            <span class="dn">3</span>
+            <div class="db">
+              <div class="dt">標準化された業務（②）を原則内製とするか</div>
+              <div class="dr"><b>決めないと ── </b>α（相互カバーの対象割合）が確定せず、北米の必要人員数そのものが出せない。</div>
+              <div class="dtag"><span class="people">PPL-2</span><span class="process">PRC-3</span></div>
+            </div>
+          </div>
+          <div class="decitem">
+            <span class="dn">4</span>
+            <div class="db">
+              <div class="dt">評価行動（A2・A4）にあてる工数を誰の予算から確保するか</div>
+              <div class="dr"><b>決めないと ── </b>様式を変えても行動は生まれず、痕跡のない記録だけが残る。</div>
+              <div class="dtag"><span class="process">PRC-4</span></div>
+            </div>
+          </div>
+          <div class="decitem">
+            <span class="dn">5</span>
+            <div class="db">
+              <div class="dt">経緯知識の移転が本人の不利益にならないことを担保するか</div>
+              <div class="dr"><b>決めないと ── </b>移転の動機が生まれず、③はいつまでも実行されない。</div>
+              <div class="dtag"><span class="people">PPL-3</span></div>
+            </div>
+          </div>
+        </div>
+
+        <p class="today">これらの決裁を一切待たずに今日から始められる作業が1件ある ── 各部門で、経緯を説明できる社員の氏名を書き出すこと。所要は半日。唯一、実在する期限を持つのはこれだけであり、最優先で着手すべきである。</p>
+      </div>
+    </div>
+
+    <!-- ================= English ================= -->
+    <div class="col en">
+      <span class="lg">EN</span>
+
+      <div class="conclusion">
+        <p><b>Strategy B (internal accumulation) is not an alternative to Strategy A (external dependence). It is the precondition that keeps Strategy A working.</b> To keep buying capability from outside, someone inside must be able to judge whether what was bought is sound — without that judgement, it is not procurement but delegation. We have run Strategy A for decades, and it has worked. The question now is what we did with the time it bought us.</p>
+      </div>
+
+      <div class="block">
+        <h2>WHY ── three root problems</h2>
+
+        <div class="sym p">
+          <div class="sh"><div class="t">① The organisation cannot perceive its own state</div><div class="cls">Recoverable</div></div>
+          <div class="sb">
+            <p><span class="lbl">Background — </span>The organisation has run on a single taxonomy for five years, but what people actually did — translating requirements, judging acceptance, validating cost estimates, holding design-rationale knowledge, internal coordination — isn't captured by it. Conversely, the implementation, design and build skills the standard taxonomy does track are likely under-held internally after decades of vendor dependence. The measurement is off in both directions at once.</p>
+            <p><span class="lbl">Current state — </span>"Handled this area for fifteen years" quietly becomes "can execute this," with no bad faith and no lying involved. Because everyone shares the same frame of reference, this isn't caught even by peer visibility, which normally corrects for exaggeration — it survives both aggregation and peer review.</p>
+            <p><span class="lbl r">Risk if left unaddressed — </span>The skills ledger keeps hiding the one thing worth knowing: whether a given area can actually be executed in-house, or grinds to a halt without the vendor. This precedes "measurement stalls at visibility" — the thing made visible is simply the wrong thing. Without a way to judge whether the vendor's work is sound, procurement quietly becomes delegation.</p>
+            <p><span class="lbl">Detection metric — </span>The coverage rate of "can evaluate" — a track record of sending back or challenging a vendor estimate or deliverable with cause. The strongest single signal is the rate of unprompted alternative proposals, since nobody has to ask for those. Counter-intuitively, a first measurement dominated by "holds the role only" and "unverified" is evidence the measurement is working, not that people are underperforming.</p>
+            <a class="xref" href="en/p2_position.html#c9">→ See Part II, Ch. 9</a>
+          </div>
+        </div>
+
+        <div class="sym g">
+          <div class="sh"><div class="t">② No role has an incentive to align standards</div><div class="cls">Recoverable</div></div>
+          <div class="sb">
+            <p><span class="lbl">Background — </span>Each of the three sites has its own IT head, who has independently built that site's IT strategy, hiring and capability plans. That is simply what the current structure produces — it isn't anyone's failure to act.</p>
+            <p><span class="lbl">Current state — </span>All three site heads are doing their jobs correctly, and yet vocabulary, granularity and judging criteria never converge across sites. This isn't "nobody owns it" — it's "everyone owns a different version of it." Five years of talent-development work turned out to be three parallel, unconnected efforts rather than one.</p>
+            <p><span class="lbl r">Risk if left unaddressed — </span>Comparing or redeploying people across sites becomes structurally undecidable, not just a matter of willingness. A cross-site committee or a policy mandating alignment doesn't fix this — nobody's daily work breaks when standards stay unaligned, so nothing actually changes.</p>
+            <p><span class="lbl">Detection metric — </span>The number of concrete cases where the same label (e.g. "intermediate") means different things at different sites, once the three definitions are placed side by side. Whether definitional authority sits with one accountable owner (currently split three ways). Whether cross-site discrepancies are ever detected, resolved, and put on record.</p>
+            <a class="xref" href="en/p2_position.html#c9">→ See Part II, Ch. 9</a>
+          </div>
+        </div>
+
+        <div class="sym">
+          <div class="sh"><div class="t">③ Loss of design-rationale knowledge has a real deadline</div><div class="cls">Irreversible</div></div>
+          <div class="sb">
+            <p><span class="lbl">Background — </span>The knowledge of why a system was built the way it was is held, in many areas, by exactly one person. Part of how the Japan site has kept the business running under decades of vendor dependence is this knowledge.</p>
+            <p><span class="lbl">Current state — </span>No list even exists today of who holds this knowledge, or for what. Unlike ① and ②, it cannot be rebuilt through training, hiring, or an outside vendor — it exists only in the past.</p>
+            <p><span class="lbl r">Risk if left unaddressed — </span>The moment the holder leaves, that knowledge is gone for good. ① and ② can still be recovered once the underlying process changes; ③ cannot be recovered after the fact, under any circumstance. It looks like the least urgent problem and is in fact the most urgent one.</p>
+            <p><span class="lbl">Detection metric — </span>The number of people who can explain the rationale for each system (one, or two or more). The count of single-holder cases, weighted by how soon each holder is expected to leave or move on. Building the list is estimated at about half a day — taking the measurement is nearly the entire first move.</p>
+            <a class="xref" href="en/p2_position.html#c9">→ See Part II, Ch. 9</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="block">
+        <h2>WHAT ── what to do (people, process, technology)</h2>
+
+        <div class="ppt-cat people">
+          <div class="ppt-hd"><span class="pn">People</span><span class="pe">DESIGNING AUTHORITY AND STAKES</span></div>
+          <div class="actions">
+            <div class="action">
+              <div class="at"><span class="an">PPL-1</span>Partially transfer definitional authority, and calibrate with anchors</div>
+              <p>Move only the authority to define vocabulary, judging criteria and anchor cases to functional line leads; hiring, budget and day-to-day direction stay with the sites — an integrating role, not a matrix organisation. In addition, share real cases and deliverables, not abstract criteria, as the anchor that defines each level, and require a revision history whenever an anchor changes.</p>
+            </div>
+            <div class="action">
+              <div class="at"><span class="an">PPL-2</span>Mutual cover</div>
+              <p>Have Japan and North America actually exchange and pick up pieces of standardised, documented work. This isn't primarily about redundancy — the act of picking up the same work verifies that both sites are at the same level, and it doubles as the institutional channel for moving Japan's accumulated design-rationale knowledge to North America.</p>
+            </div>
+            <div class="action">
+              <div class="at"><span class="an">PPL-3</span>Build the knowledge-holder list and a transfer plan</div>
+              <p>Start by listing, system by system, who can explain the rationale behind it (about half a day). Identify single-holder cases, prioritise by how soon each holder is expected to leave, allocate time for the transfer as actual work, and guarantee it won't disadvantage the person before carrying it out.</p>
+            </div>
+            <div class="action">
+              <div class="at"><span class="an">PPL-4</span>Formally decouple results from pay and grade</div>
+              <p>State in policy or notice that measurement results will not affect grade or compensation. Without this, honest reporting stays penalised, and site heads have a rational reason to resist standardisation simply because protecting their people is their job.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="ppt-cat process">
+          <div class="ppt-hd"><span class="pn">Process</span><span class="pe">DESIGNING MEASUREMENT, RECORDS AND DEMAND</span></div>
+          <div class="actions">
+            <div class="action">
+              <div class="at"><span class="an">PRC-1</span>Redesign measurement</div>
+              <p>Split capability into three layers — technical execution / vendor governance / design-rationale knowledge — and measure each on a different scale. Technical execution stays on the standard taxonomy's five-point scale, self-reported and peer-visible; vendor governance is measured on three levels — can execute / can evaluate / holds the role only; design-rationale knowledge is measured simply by headcount of holders. Evidence is ranked: records first, work product second, self-report demoted to a supporting role only.</p>
+            </div>
+            <div class="action">
+              <div class="at"><span class="an">PRC-2</span>Revise work forms and reconcile</div>
+              <p>Add one field each: an "in-house cost estimate" to the approval form, a "reason for not returning it" to acceptance records, "an alternative considered" to sign-off, and "initial fault hypothesis" to incident records. All are form revisions with almost no added cost. Because each is only a prediction at the time it's recorded, add a reconciliation field so that once the outcome is known, the reason for being wrong gets written down too.</p>
+            </div>
+            <div class="action">
+              <div class="at"><span class="an">PRC-3</span>Define demand</div>
+              <p>Rather than one sheet asking for "headcount needed," split it into three sheets with a different unit per layer (headcount for technical execution, covered/uncovered for vendor governance, holder count for design-rationale knowledge). Don't force a common logic across sites either — Japan starts from "what cannot be sent outside," North America works backward from its go-live date, and Europe starts by asking whether it should hold the function at all.</p>
+            </div>
+            <div class="action">
+              <div class="at"><span class="an">PRC-4</span>Put the enabling conditions in place</div>
+              <p>① allocate opportunity (who gets which case) ② tolerate failure (state in writing that a return or an alternative proposal doesn't lower anyone's rating) ③ secure time (whose budget the extra hours come from) ④ protect the motive to transfer (guarantee that handing over rationale doesn't disadvantage the holder). Without these four, changing the forms produces no behaviour at all.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="ppt-cat tech">
+          <div class="ppt-hd"><span class="pn">Technology</span><span class="pe">LAST, AND MINIMAL</span></div>
+          <div class="actions">
+            <div class="action">
+              <div class="at"><span class="an">TEC-1</span>Choose tools only after measurement is designed</div>
+              <p>The one rule is not to put vendor governance (add-on layer A) into the product's own taxonomy — once that's respected, pick the product on the usability of the base layer alone. Choosing a tool before the measurement design is fixed means the tool ends up measuring only what it happens to measure.</p>
+            </div>
+          </div>
+          <div class="pptnote"><b>Of the nine moves, only one belongs to technology — and its content is a discipline of restraint, not adoption.</b> Bringing in technology before people (authority) and process (measurement, records) are in place only makes visible what was already measurable; it moves none of ①②③.</div>
+        </div>
+
+        <div class="maplbl">CORRESPONDENCE MAP</div>
+        <table class="maptable">
+          <thead><tr><th style="width:46px">ID</th><th style="text-align:left">Move</th><th style="width:26px">①</th><th style="width:26px">②</th><th style="width:26px">③</th></tr></thead>
+          <tbody>
+            <tr><td class="id people">PPL-1</td><td class="name">Transfer authority and calibrate</td><td></td><td class="dot">●</td><td></td></tr>
+            <tr><td class="id people">PPL-2</td><td class="name">Mutual cover</td><td></td><td class="dot">●</td><td class="dot">●</td></tr>
+            <tr><td class="id people">PPL-3</td><td class="name">Knowledge-holder list and transfer plan</td><td></td><td></td><td class="dot">●</td></tr>
+            <tr><td class="id people">PPL-4</td><td class="name">Decouple results from pay/grade</td><td class="dot">●</td><td class="dot">●</td><td></td></tr>
+            <tr><td class="id process">PRC-1</td><td class="name">Redesign measurement</td><td class="dot">●</td><td></td><td></td></tr>
+            <tr><td class="id process">PRC-2</td><td class="name">Revise forms and reconcile</td><td class="dot">●</td><td></td><td></td></tr>
+            <tr><td class="id process">PRC-3</td><td class="name">Define demand</td><td class="dot">●</td><td class="dot">●</td><td></td></tr>
+            <tr><td class="id process">PRC-4</td><td class="name">Enabling conditions</td><td class="dot">●</td><td></td><td class="dot">●</td></tr>
+            <tr><td class="id tech">TEC-1</td><td class="name">Choose tools only after measurement is designed</td><td class="na">─</td><td class="na">─</td><td class="na">─</td></tr>
+          </tbody>
+        </table>
+        <p class="mapnote">TEC-1 (─) maps to none of ①②③ directly. It does not solve a specific problem — it is a rule about sequence: do not start until people and process are in place.</p>
+      </div>
+
+      <div class="block">
+        <h2>HOW ── the mechanism for detecting the indicators</h2>
+
+        <div class="sym p">
+          <div class="sh"><div class="t">Detecting the indicator for ①</div><div class="cls">Target: coverage of "can evaluate," rate of alternative proposals</div></div>
+          <div class="sb">
+            <p><span class="lbl">Who — </span>The functional line lead queries approval, acceptance, sign-off and incident records (a record-inquiry sheet).</p>
+            <p><span class="lbl">Survey items — </span></p>
+            <ul class="obs">
+              <li>Subject (name / site / functional line / role)</li>
+              <li>A1 — requirement translation: who authored the first draft of the requirements, RFP, or spec</li>
+              <li>A2 — cost-estimate validation: whether an in-house estimate exists on the approval, who produced it, and the gap versus the vendor's estimate and why</li>
+              <li>A3 — acceptance judgement: whether the "reason for not returning it" field is filled in, who made the call, and why</li>
+              <li><b>A4 — alternative proposal:</b> whether the sign-off record shows an alternative to the vendor's proposal, who proposed it, and what was decided (an unprompted action — the strongest of the five)</li>
+              <li>A5 — fault triage: who performed the initial triage on the incident record, and what the hypothesis was</li>
+              <li><b>Reconciliation result</b> — the gap between the prediction above (estimate, hypothesis, judgement) and the outcome once known, and whether the reason for the gap is written down</li>
+              <li><b>Evidence tier</b> — whether the judgement rests on primary (records), secondary (work product), or tertiary (self-report) evidence</li>
+            </ul>
+            <p><span class="lbl">Order of evidence — </span>records (primary) → work product (secondary) → self-report (supporting only). Year one covers add-on layer A (vendor governance) only; technical execution (R2, R3, R5) is added the following year.</p>
+            <p><span class="lbl">Output and how to read it — </span>where no evidence exists, the area is recorded as "unverified," kept distinct from "holds the role only." A first measurement dominated by these two categories is not a failure — it is evidence the measurement is working. Sites are never compared side by side, and a low result is never read as a poor rating for a long-tenured employee.</p>
+          </div>
+        </div>
+
+        <div class="sym g">
+          <div class="sh"><div class="t">Detecting the indicator for ②</div><div class="cls">Target: cross-site definition mismatches, discrepancy detection/resolution records</div></div>
+          <div class="sb">
+            <p><span class="lbl">Who — </span>Functional line leads; a line lead's own level is confirmed through mutual judgement among line leads — this works precisely because leads of different functions don't share the same frame of reference.</p>
+            <p><span class="lbl">Survey items — </span></p>
+            <ul class="obs">
+              <li>Site name / functional line name</li>
+              <li>The current definition text (vocabulary, granularity, judging criteria) each site uses for the same label (e.g. "intermediate")</li>
+              <li>Whether the three sites' definitions disagree once placed side by side, and concrete examples</li>
+              <li>The anchor case (a real project or deliverable): its name, who selected it, and when</li>
+              <li><b>Anchor revision history</b> — date, who revised it, why (the only check on arbitrary recalibration)</li>
+              <li><b>Cross-site discrepancy detection and resolution record</b> — date detected, who detected it, what it was, how it was resolved, who confirmed it</li>
+              <li>Mutual-cover exchange record — date, the work involved, which site picked it up, and whether it succeeded</li>
+              <li>The line lead's own level judgement, and whether a record backs it up</li>
+            </ul>
+            <p><span class="lbl">Judging criteria — </span>Can execute: the lead has personally selected and revised anchors, and detected and resolved cross-site discrepancies. Can evaluate: anchors are maintained, but discrepancy detection depends on others. Holds the role only: neither a revision history nor a detection record exists.</p>
+            <p><span class="lbl">Output and a limit — </span>detected discrepancies and how they were resolved go on record, and that record is itself the line lead's own level judgement. Where a site IT head also holds the line-lead role, though, nothing but that revision history stops them from calibrating in their own site's favour.</p>
+          </div>
+        </div>
+
+        <div class="sym">
+          <div class="sh"><div class="t">Detecting the indicator for ③</div><div class="cls">Target: number of people who can explain rationale, single-holder count, urgency</div></div>
+          <div class="sb">
+            <p><span class="lbl">Who — </span>Each department.</p>
+            <p><span class="lbl">Survey items — </span></p>
+            <ul class="obs">
+              <li>System / area name</li>
+              <li><b>Names of the employees who can explain the rationale</b> (more than one, if applicable)</li>
+              <li><b>Number of holders</b> (one, or two or more — the only criterion that matters)</li>
+              <li><b>Each holder's expected tenure</b> (retirement, planned move, contract end — the only variable that sets priority)</li>
+              <li>Single-holder flag (exactly one)</li>
+              <li>Priority ranking (by urgency)</li>
+              <li>Whether a transfer plan exists (owner, planned start), and whether the transfer is complete</li>
+            </ul>
+            <p><span class="lbl">Output and time — </span>no judgement call needed, just names and headcount. About half a day.</p>
+            <p><span class="lbl">In practice — </span>this list is the same figure used as the demand-side "holder count," so it's kept as one list, not duplicated. Unlike ① and ②, which require judging evidence, this one only requires confirming existence — which is what makes it the easiest of the three to start on. It isn't built once and left alone; it gets updated whenever someone leaves or moves on.</p>
+          </div>
+        </div>
+
+        <p style="font-size:9.8px; color:var(--gray-l); line-height:1.6; margin:10px 0 0;">Detailed execution plans for each WHAT item are not covered here — they get worked out individually, item by item, once priorities are set.</p>
+      </div>
+
+      <div class="block decide">
+        <h2>What to decide now</h2>
+
+        <div class="declist">
+          <div class="decitem">
+            <span class="dn">1</span>
+            <div class="db">
+              <div class="dt">Transfer definitional authority to functional line leads?</div>
+              <div class="dr"><b>If not decided — </b>cross-site judgement stays structurally impossible.</div>
+              <div class="dtag"><span class="people">PPL-1</span></div>
+            </div>
+          </div>
+          <div class="decitem">
+            <span class="dn">2</span>
+            <div class="db">
+              <div class="dt">Formally decouple measurement results from pay and grade?</div>
+              <div class="dr"><b>If not decided — </b>honest reporting stays unprotected, and site heads' resistance stays justified.</div>
+              <div class="dtag"><span class="people">PPL-4</span></div>
+            </div>
+          </div>
+          <div class="decitem">
+            <span class="dn">3</span>
+            <div class="db">
+              <div class="dt">Default standardised work (②) to in-house delivery?</div>
+              <div class="dr"><b>If not decided — </b>α (the share subject to mutual cover) stays undefined, and North America's required headcount can't be calculated at all.</div>
+              <div class="dtag"><span class="people">PPL-2</span><span class="process">PRC-3</span></div>
+            </div>
+          </div>
+          <div class="decitem">
+            <span class="dn">4</span>
+            <div class="db">
+              <div class="dt">Whose budget funds the hours for A2/A4 evaluation work?</div>
+              <div class="dr"><b>If not decided — </b>the forms change but no behaviour follows — only traces with no action behind them.</div>
+              <div class="dtag"><span class="process">PRC-4</span></div>
+            </div>
+          </div>
+          <div class="decitem">
+            <span class="dn">5</span>
+            <div class="db">
+              <div class="dt">Guarantee that transferring design-rationale knowledge won't disadvantage the holder?</div>
+              <div class="dr"><b>If not decided — </b>there is no motive to transfer, and ③ never gets executed.</div>
+              <div class="dtag"><span class="people">PPL-3</span></div>
+            </div>
+          </div>
+        </div>
+
+        <p class="today">One task needs no approval and can start today: in each department, list by name who can explain the rationale behind each system. It takes about half a day. It is the only item with a real deadline, and it should come first.</p>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="foot">
+    注記　本資料は検討段階の整理であり、組織としての決定事項を含まない。詳細は本編44章を参照。　│　Note — this is a working synthesis and does not represent decisions taken by the organisation. See the full 44-chapter document for detail.
+  </div>
+
+</div>
+</body>
+</html>

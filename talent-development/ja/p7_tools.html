@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>第VII部 道具 ── 最後に選ぶもの</title>
+<link rel="stylesheet" href="../assets/base.css">
+<script src="../assets/site.js" defer></script>
+</head>
+<body>
+<div class="slide">
+
+  <div class="eyebrow">第VII部　道具</div>
+  <h1>最後に選ぶもの ── ツール選定の規則</h1>
+
+  <p class="lede">
+    <b>ツールの選定は、測定設計が固まった後に行う。</b><br>
+    順序を逆にすれば、<b>ツールが測れるものだけを測ることになる。</b>
+  </p>
+
+  <!-- 39 -->
+  <div class="sec" id="c39">
+    <div class="step"><span class="n">39</span>ツールが解決しない課題は、明確な塊を成している</div>
+
+    <p>スキル管理の一般的課題をツールによる解決可否で分類すると、「いずれのツールでも解決しない」課題が塊を成す。</p>
+
+    <table>
+      <thead><tr><th style="width:340px">解決しない課題</th><th>属する領域</th></tr></thead>
+      <tbody>
+        <tr><td>更新インセンティブの欠如</td><td><b>運用設計</b></td></tr>
+        <tr><td>オーナーシップの不在</td><td><b>組織設計</b></td></tr>
+        <tr><td>監視感による抵抗</td><td><b>組織文化・説明責任</b></td></tr>
+      </tbody>
+    </table>
+
+    <div class="verdict">これらはツール選定の問題ではなく、導入プロセス設計の問題である。なぜ集めるのか、何に使い何に使わないのか、誰が定義権を持つのか ── ここを決めずに導入すれば、どちらの製品を選んでも同じ結果になる。</div>
+
+    <h2 class="sub">当社の該当状況</h2>
+
+    <table>
+      <thead><tr><th style="width:290px">一般課題</th><th>当社での該当</th></tr></thead>
+      <tbody>
+        <tr><td>自己申告バイアス</td><td><b>該当。</b>ただし一般的な形とは異なる（類型③。→ <a class="xref" href="p3_measure.html#c16">第III部16章</a>）</td></tr>
+        <tr><td>更新インセンティブの欠如</td><td>該当しうる</td></tr>
+        <tr><td>粒度の不統一・命名の揺れ</td><td><b>該当。</b>拠点ごとに独自の定義が存在するため</td></tr>
+        <tr class="rx"><td><b>評価基準のブレ</b></td><td><b>強く該当。</b>日本の「中級」と北米の「中級」が同義である保証がない</td></tr>
+        <tr class="rx"><td><b>オーナーシップの不在</b></td><td><b>強く該当。</b>定義権が3拠点に分割されている（C4）</td></tr>
+        <tr><td>可視化止まり</td><td>該当しうる</td></tr>
+        <tr><td>需給予測の欠如</td><td>該当（C12）</td></tr>
+        <tr><td>資格・認証の期限管理</td><td>規制産業として該当</td></tr>
+      </tbody>
+    </table>
+
+    <div class="keybox">
+      <span class="lbl">注目すべき一致</span>
+      <div class="t">強く該当する2項目は、いずれも「ツールでは解決しない」塊に属している。</div>
+      <div class="d">したがって、<b>製品選定を先に行っても当社の課題は動かない。</b></div>
+    </div>
+  </div>
+
+  <!-- 40 -->
+  <div class="sec" id="c40">
+    <div class="step"><span class="n">40</span>選定の唯一の規則</div>
+
+    <p>測定設計が二本立てになった結果、<b>製品に載る領域と載せない領域が分かれる。</b></p>
+
+    <table>
+      <thead><tr><th style="width:200px">層</th><th>尺度と判定方法</th><th style="width:200px">製品に載せるか</th></tr></thead>
+      <tbody>
+        <tr><th class="rh" style="width:200px">基層<br><span class="ex">R2・R3・R5</span></th><td>標準体系（DSS・iCD 等）の<b>製品既定</b>。尺度も<b>既定の5段階のまま</b>。自己申告＋ピア可視化＋アセスメント</td><td><b>載せる</b></td></tr>
+        <tr><th class="rh">付加層A<br><span class="ex">R4</span></th><td>A1〜A5。<b>3水準</b>。ライン長による記録照会</td><td><b>載せない</b><br><span class="ex">記録照会シート＋表計算</span></td></tr>
+        <tr><th class="rh">付加層B<br><span class="ex">経緯知識</span></th><td>保有者の氏名と人数</td><td><b>載せない</b></td></tr>
+      </tbody>
+    </table>
+
+    <div class="keybox">
+      <span class="lbl">唯一の規則</span>
+      <div class="t">付加層A（R4）を、製品のタクソノミーに載せない。</div>
+      <div class="d"><b>失格条件はない。</b>この規則を守れば、あとは基層の使い勝手で選んでよい。</div>
+    </div>
+
+    <p>この規則を置くと、従来「製品要件」として挙げられていた制約の大半が消える。</p>
+
+    <table>
+      <thead><tr><th style="width:340px">従来の制約</th><th>決着</th></tr></thead>
+      <tbody>
+        <tr><td>習熟度ラベルを3水準に置換できるか</td><td><b>不要。</b>R4を載せないため</td></tr>
+        <tr><td>自社固有カテゴリを立てられるか</td><td><b>不要。</b>同上</td></tr>
+        <tr><td>「検証済み／未検証」を併記できるか</td><td><b>不要。</b>未検証は台帳の空欄で表現する</td></tr>
+      </tbody>
+    </table>
+
+    <div class="note">この3つは、いずれも<b>R4を製品に押し込もうとしたために生じていた制約</b>であった。押し込まないのであれば消える。</div>
+
+    <h2 class="sub">残る確認事項</h2>
+
+    <table>
+      <thead><tr><th style="width:60px">#</th><th style="width:380px">確認すべきこと</th><th>理由</th></tr></thead>
+      <tbody>
+        <tr><td class="c"><b>1</b></td><td>既定タクソノミーに <b>R4相当の項目（ベンダー管理等）が含まれるか。含まれる場合、非表示にできるか</b></td><td>唯一の規則を運用で守るため</td></tr>
+        <tr><td class="c"><b>2</b></td><td>標準タクソノミーの<b>改訂に追随するか</b>（DSS・iCD の版が上がったとき）</td><td>基層を製品既定に委ねる以上、追随性が製品の価値そのものになる</td></tr>
+        <tr><td class="c"><b>3</b></td><td><b>更新の契機を内蔵するか</b></td><td>内蔵しない場合、HRサイクル側に設計する必要がある</td></tr>
+        <tr><td class="c"><b>4</b></td><td><b>LMSの有無</b></td><td>育成の実行手段が別途要るかどうか</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 41 -->
+  <div class="sec" id="c41">
+    <div class="step"><span class="n">41</span>順序</div>
+
+    <table>
+      <thead><tr><th style="width:80px">段階</th><th style="width:400px">作業</th><th>道具</th></tr></thead>
+      <tbody>
+        <tr><th class="rh" style="width:80px">1</th><td>測定設計を確定させる（→ <a class="xref" href="p3_measure.html">第III部</a>）</td><td><b>不要</b></td></tr>
+        <tr><th class="rh">2</th><td>需要を定義する（→ <a class="xref" href="p4_demand.html">第IV部</a>）</td><td><b>不要</b></td></tr>
+        <tr><th class="rh">3</th><td>初年度の測定を実行する（R4のみ）</td><td><b>表計算で足りる</b></td></tr>
+        <tr class="rx"><th class="rh">4</th><td>基層へ拡張し、台帳が大きくなった時点</td><td><b>製品導入を検討する</b></td></tr>
+      </tbody>
+    </table>
+
+    <div class="note">製品が必要になるのは、<b>全ロール・全拠点で 200名 × 数十項目 になった時点</b>である。それ以前は表計算で足りる。</div>
+  </div>
+
+  <div class="pagenav">
+    <div class="prev"><a href="p6_execute.html"><span class="lbl">PREV</span>第VI部 ─ 実行</a></div>
+    <div class="home"><a href="../index.html?lang=ja"><span class="lbl">INDEX</span>フレームワーク地図へ</a></div>
+    <div class="next"><a href="p8_goal.html"><span class="lbl">NEXT</span>第VIII部 ─ 到達点</a></div>
+  </div>
+
+</div>
+</body>
+</html>
