@@ -1,0 +1,55 @@
+<svg viewBox="0 0 1000 540" xmlns="http://www.w3.org/2000/svg" role="img">
+<title>生産管理の目的(QCD)とシステムの分担</title>
+<desc>生産管理の目的である品質・原価・納期(QCD)それぞれについて、生産管理システムが主に担う範囲と、他の専属システムが担う範囲を示す図。</desc>
+<rect x="0" y="0" width="1000" height="540" fill="#ffffff"/>
+
+<text x="500" y="28" text-anchor="middle" font-size="18" font-weight="700" fill="#1a1a1a">生産管理の目的(QCD)と、それを担うシステムの分担</text>
+
+<rect x="640" y="42" width="14" height="14" fill="#d97706" opacity="0.25" stroke="#d97706"/>
+<text x="660" y="53" font-size="11" fill="#6b7280">生産管理システムが担う</text>
+<rect x="820" y="42" width="14" height="14" fill="#6b7280" opacity="0.15" stroke="#6b7280"/>
+<text x="840" y="53" font-size="11" fill="#6b7280">他の専属システムが担う</text>
+
+<rect x="100" y="66" width="800" height="46" rx="8" fill="#f3f4f6" stroke="#1a1a1a" stroke-width="1" opacity="0.9"/>
+<text x="500" y="94" text-anchor="middle" font-size="13" font-weight="700" fill="#1a1a1a">生産管理の目的: QCD(品質・原価・納期)を最適なバランスで達成すること</text>
+
+<line x1="220" y1="112" x2="220" y2="150" stroke="#6b7280" stroke-width="1.5"/>
+<line x1="480" y1="112" x2="480" y2="150" stroke="#6b7280" stroke-width="1.5"/>
+<line x1="740" y1="112" x2="740" y2="150" stroke="#6b7280" stroke-width="1.5"/>
+
+<text x="220" y="172" text-anchor="middle" font-size="15" font-weight="700" fill="#1a1a1a">Q(品質)</text>
+<rect x="100" y="184" width="240" height="100" rx="8" fill="#d97706" opacity="0.15" stroke="#d97706" stroke-width="1.5"/>
+<text x="118" y="208" font-size="11" font-weight="700" fill="#1a1a1a">生産管理システムが担う</text>
+<text x="118" y="228" font-size="11" fill="#6b7280">実績データの一部連携</text>
+<text x="118" y="246" font-size="11" fill="#6b7280">(不良数・検査結果の入力等)</text>
+
+<rect x="100" y="292" width="240" height="100" rx="8" fill="#6b7280" opacity="0.10" stroke="#6b7280" stroke-width="1"/>
+<text x="118" y="316" font-size="11" font-weight="700" fill="#6b7280">他の専属システムが担う</text>
+<text x="118" y="336" font-size="11" fill="#6b7280">SPC・検査帳票・是正処置</text>
+<text x="118" y="354" font-size="11" fill="#6b7280">(QMS/専用品質管理システム)</text>
+
+<text x="480" y="172" text-anchor="middle" font-size="15" font-weight="700" fill="#1a1a1a">C(原価)</text>
+<rect x="360" y="184" width="240" height="100" rx="8" fill="#d97706" opacity="0.15" stroke="#d97706" stroke-width="1.5"/>
+<text x="378" y="208" font-size="11" font-weight="700" fill="#1a1a1a">生産管理システムが担う</text>
+<text x="378" y="228" font-size="11" fill="#6b7280">工数・材料使用実績の集計</text>
+<text x="378" y="246" font-size="11" fill="#6b7280">標準原価との突合</text>
+
+<rect x="360" y="292" width="240" height="100" rx="8" fill="#6b7280" opacity="0.10" stroke="#6b7280" stroke-width="1"/>
+<text x="378" y="316" font-size="11" font-weight="700" fill="#6b7280">他の専属システムが担う</text>
+<text x="378" y="336" font-size="11" fill="#6b7280">総勘定元帳への計上</text>
+<text x="378" y="354" font-size="11" fill="#6b7280">財務諸表化(会計・ERP財務)</text>
+
+<text x="740" y="172" text-anchor="middle" font-size="15" font-weight="700" fill="#1a1a1a">D(納期・数量)</text>
+<rect x="620" y="184" width="240" height="100" rx="8" fill="#d97706" opacity="0.15" stroke="#d97706" stroke-width="1.5"/>
+<text x="638" y="208" font-size="11" font-weight="700" fill="#1a1a1a">生産管理システムが担う</text>
+<text x="638" y="228" font-size="11" fill="#6b7280">生産計画・MRP</text>
+<text x="638" y="246" font-size="11" fill="#6b7280">進度管理・在庫管理(中核機能)</text>
+
+<rect x="620" y="292" width="240" height="100" rx="8" fill="#6b7280" opacity="0.10" stroke="#6b7280" stroke-width="1"/>
+<text x="638" y="316" font-size="11" font-weight="700" fill="#6b7280">他の専属システムが担う</text>
+<text x="638" y="336" font-size="11" fill="#6b7280">出荷・物流の実行(WMS/TMS)</text>
+<text x="638" y="354" font-size="11" fill="#6b7280">設備の稼働制御(MES/PLC)</text>
+
+<text x="100" y="425" font-size="12" fill="#6b7280">※ 生産管理システムの守備範囲はD(納期・数量)に最も強く中核機能を持つ。Q(品質)・C(原価)は実績データの一部提供にとどまり、</text>
+<text x="100" y="445" font-size="12" fill="#6b7280">専用システム(QMS・会計システム等)との連携が前提となることが多い。</text>
+</svg>

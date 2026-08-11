@@ -1,0 +1,64 @@
+<svg viewBox="0 0 1000 640" xmlns="http://www.w3.org/2000/svg" role="img">
+<title>ERP・MES・PLCの階層構造(ISA-95モデル)</title>
+<desc>製造業ITアーキテクチャの5階層モデル。上からERP(経営資源計画)、MES(製造実行システム)、SCADA/HMI(監視制御)、PLC/DCS(制御装置)、フィールド機器(センサー・アクチュエータ)の順に並び、IT部門とOT部門の管掌境界を示す。</desc>
+<rect x="0" y="0" width="1000" height="640" fill="#ffffff"/>
+
+<text x="500" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#1a1a1a">製造業ITアーキテクチャの全体像(ISA-95モデル)</text>
+
+<path d="M 60 62 L 45 62 L 45 262 L 60 262" stroke="#2563eb" stroke-width="2" fill="none"/>
+<text x="35" y="162" text-anchor="middle" font-size="13" font-weight="600" fill="#2563eb" transform="rotate(-90 35 162)">情報系(IT部門)</text>
+
+<path d="M 60 292 L 45 292 L 45 592 L 60 592" stroke="#6b7280" stroke-width="2" fill="none"/>
+<text x="35" y="442" text-anchor="middle" font-size="13" font-weight="600" fill="#6b7280" transform="rotate(-90 35 442)">制御系(生産・OT部門)</text>
+
+<rect x="100" y="62" width="700" height="90" rx="8" fill="#2563eb" opacity="0.12" stroke="#2563eb" stroke-width="1.5"/>
+<text x="130" y="94" font-size="16" font-weight="700" fill="#1a1a1a">ERP(Level 4)</text>
+<text x="130" y="116" font-size="12" fill="#6b7280">受注・生産計画・会計・購買</text>
+<text x="130" y="136" font-size="11" fill="#6b7280">例: SAP, Oracle</text>
+<text x="770" y="112" text-anchor="end" font-size="12" fill="#6b7280">週〜月単位</text>
+
+<line x1="500" y1="152" x2="500" y2="176" stroke="#6b7280" stroke-width="2" marker-end="url(#arrow)" marker-start="url(#arrowStart)"/>
+
+<rect x="100" y="176" width="700" height="90" rx="8" fill="#2563eb" opacity="0.06" stroke="#2563eb" stroke-width="1.5" stroke-dasharray="4 3"/>
+<text x="130" y="208" font-size="16" font-weight="700" fill="#1a1a1a">MES(Level 3)</text>
+<text x="130" y="230" font-size="12" fill="#6b7280">作業指示・実績収集・品質・トレーサビリティ</text>
+<text x="130" y="250" font-size="11" fill="#6b7280">例: OSIsoft PI, Wonderware, 自社開発</text>
+<text x="770" y="226" text-anchor="end" font-size="12" fill="#6b7280">シフト〜時間単位</text>
+
+<line x1="80" y1="277" x2="920" y2="277" stroke="#6b7280" stroke-width="1" stroke-dasharray="6 4" opacity="0.6"/>
+<text x="500" y="273" text-anchor="middle" font-size="11" fill="#6b7280" font-style="italic">典型的なIT/OT境界線(企業により議論あり)</text>
+
+<line x1="500" y1="266" x2="500" y2="290" stroke="#6b7280" stroke-width="2" marker-end="url(#arrow)" marker-start="url(#arrowStart)"/>
+
+<rect x="100" y="290" width="700" height="90" rx="8" fill="#6b7280" opacity="0.10" stroke="#6b7280" stroke-width="1.5"/>
+<text x="130" y="322" font-size="16" font-weight="700" fill="#1a1a1a">SCADA / HMI(Level 2)</text>
+<text x="130" y="344" font-size="12" fill="#6b7280">設備状態監視・パラメータ設定</text>
+<text x="130" y="364" font-size="11" fill="#6b7280">例: iFIX, WinCC</text>
+<text x="770" y="340" text-anchor="end" font-size="12" fill="#6b7280">秒〜分単位</text>
+
+<line x1="500" y1="380" x2="500" y2="404" stroke="#6b7280" stroke-width="2" marker-end="url(#arrow)" marker-start="url(#arrowStart)"/>
+
+<rect x="100" y="404" width="700" height="90" rx="8" fill="#6b7280" opacity="0.16" stroke="#6b7280" stroke-width="1.5"/>
+<text x="130" y="436" font-size="16" font-weight="700" fill="#1a1a1a">PLC / DCS(Level 1)</text>
+<text x="130" y="458" font-size="12" fill="#6b7280">機器のシーケンス制御・直接制御</text>
+<text x="130" y="478" font-size="11" fill="#6b7280">例: 三菱電機, Siemens, ロックウェル, オムロン</text>
+<text x="770" y="454" text-anchor="end" font-size="12" fill="#6b7280">ms〜秒単位</text>
+
+<line x1="500" y1="494" x2="500" y2="518" stroke="#6b7280" stroke-width="2" marker-end="url(#arrow)" marker-start="url(#arrowStart)"/>
+
+<rect x="100" y="518" width="700" height="74" rx="8" fill="#6b7280" opacity="0.22" stroke="#6b7280" stroke-width="1.5"/>
+<text x="130" y="550" font-size="16" font-weight="700" fill="#1a1a1a">フィールド機器(Level 0)</text>
+<text x="130" y="572" font-size="12" fill="#6b7280">センサー・アクチュエータ・物理プロセス</text>
+<text x="770" y="558" text-anchor="end" font-size="12" fill="#6b7280">リアルタイム</text>
+
+<text x="100" y="618" font-size="11" fill="#6b7280">上に行くほど「経営情報」、下に行くほど「物理信号」に近づく(ISA-95の5階層モデル)</text>
+
+<defs>
+<marker id="arrow" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto">
+<path d="M0,0 L8,4 L0,8 Z" fill="#6b7280"/>
+</marker>
+<marker id="arrowStart" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto-start-reverse">
+<path d="M0,0 L8,4 L0,8 Z" fill="#6b7280"/>
+</marker>
+</defs>
+</svg>
