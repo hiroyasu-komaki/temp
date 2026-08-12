@@ -6,7 +6,8 @@
 ## 要旨
 
 - 製造業のITアーキテクチャはISA-95モデルにより、ERP(Level4)/MES(Level3)/SCADA・HMI(Level2)/PLC・DCS(Level1)/フィールド機器(Level0)の5階層に整理できる。上に行くほど「経営情報」に、下に行くほど「物理信号」に近づく。
-- MESの機能は「MESA-11」という業界標準の11機能で分解でき、生産管理システムがどこまでをカバーしているかを判定する物差しになる。
+- Level3は「MES」1種類ではない。ISA-95 Part 3はLevel3をMOM(製造オペレーション管理)と定義し、生産(MES)・品質(LIMS/QMS)・保全(CMMS/EAM)・在庫(WMS)の4領域に分ける。
+- MESの機能は「MESA-11」という業界標準の11機能で分解でき、生産管理システムがどこまでをカバーしているかを判定する物差しになる。ただし11機能はMOMの4領域を横断するため、MES単体では全てを満たさない。
 - IT/OTの違いは「どの階層か」ではなく、目的・リアルタイム性・障害影響・セキュリティ優先順位・ライフサイクル・管掌部門という6つの観点で判断する。
 - 「生産管理システム」という実務用語は、ISA-95のどの階層にもぴったり対応しない。ERPの生産関連機能を核に、MESの一部機能まで拡張してカバーする、機能横断的な概念である。
 - 生産管理の目的はQCD(品質・原価・納期)の達成であり、生産管理システムが中核的に担うのは主にD(納期・数量)である。
@@ -28,7 +29,7 @@
 | 階層 | 内容 | 時間粒度 | 代表製品(国内) | 代表製品(海外) |
 |---|---|---|---|---|
 | ERP(Level4) | 受注・生産計画・会計・購買 | 週〜月単位 | mcframe | SAP S/4HANA, Oracle, Microsoft Dynamics |
-| MES(Level3) | 作業指示・実績収集・品質・トレーサビリティ | 日〜時間単位 | mcframe MES, 日立FactRiSM, 横河電機YOKOGAWA-MES, 富士電機MES | Siemens Opcenter, SAP Digital Manufacturing, Rockwell FactoryTalk, AVEVA MES |
+| MES/MOM(Level3) | 作業指示・実績収集・品質・保全・在庫 | 日〜時間単位 | mcframe MES, 日立FactRiSM, 横河電機YOKOGAWA-MES, 富士電機MES | Siemens Opcenter, SAP Digital Manufacturing, Rockwell FactoryTalk, AVEVA MES |
 | SCADA/HMI(Level2) | 設備状態監視・パラメータ設定 | 秒〜分単位 | 横河電機CENTUM/Exaquantum, 富士電機Citect SCADA, 日立Integrate SCADA | AVEVA System Platform, Siemens WinCC, GE/Emerson iFIX |
 | PLC/DCS(Level1) | 機器のシーケンス制御・直接制御 | ms〜秒単位 | 三菱電機, オムロン, キーエンス, 富士電機 | Siemens, Rockwell Automation, Schneider Electric, ABB |
 | フィールド機器(Level0) | センサー・アクチュエータ・物理プロセス | リアルタイム | — | — |
@@ -36,6 +37,29 @@
 ![ISA-95モデルの5階層構造](../images/00_isa95-architecture.svg)
 
 *図1　製造業ITアーキテクチャの全体像(ISA-95モデル)*
+
+Level3の代表製品欄にはMES製品を挙げているが、**Level3はMESだけではない**。次節を参照。
+
+## Level3の内訳:MOM(製造オペレーション管理)の4領域
+
+ISA-95 Part 3(IEC 62264-3)は、Level3を**MOM(Manufacturing Operations Management)**と定義し、**生産・品質・保全・在庫**の4つのオペレーション領域に分けている。4領域はいずれも同じ活動モデル(定義管理・資源管理・詳細スケジューリング・ディスパッチ・実行・データ収集・追跡・分析)を持つ対称的な構造になっている。
+
+実務では「Level3=MES」と略されがちだが、正確にはMESが担うのは生産オペレーション領域であり、品質・保全・在庫にはそれぞれ別系統のシステムが対応する。
+
+| MOMの4領域 | 主な活動 | 代表システム | 代表製品(海外) |
+|---|---|---|---|
+| 生産オペレーション管理 | 作業指示・ディスパッチ・実績収集・進捗追跡 | MES | Siemens Opcenter Execution, AVEVA MES, SAP Digital Manufacturing |
+| 品質オペレーション管理 | 検査計画・試験結果収集・SPC・逸脱管理 | **LIMS / QMS** | LabWare LIMS, Thermo Fisher SampleManager, LabVantage, Siemens Opcenter Quality |
+| 保全オペレーション管理 | 保全作業指示・予防保全計画・故障/停止分析 | **CMMS / EAM** | IBM Maximo, SAP PM(EAM), Infor EAM |
+| 在庫オペレーション管理 | 資材・仕掛の移動、ロケーション、在庫数量 | **WMS** | Manhattan WMS, Blue Yonder WMS, SAP EWM |
+
+![Level3(MOM)の4領域と代表システム](../images/00_mom-4-domains.svg)
+
+*図2　Level3(MOM)の4領域と、それぞれを担うシステム*
+
+この区分は、当社のMESA-11カバレッジ評価(01章・03章)を読むうえで重要である。mcframeで「品質管理」「保全管理」が対象外となるのは**機能不足ではなく、本来LIMS/QMSとCMMS/EAMという別系統のLevel3システムが担う領域だから**である。したがって当社の空白を埋める打ち手は「MESの機能拡張」ではなく「品質・保全・在庫それぞれのL3システムをどう持つか」という問いになる。
+
+なお、国内ベンダー製品にも各領域の製品は存在するが、当社での採用状況とあわせて未確認である。
 
 ## MESA-11:MESの11機能
 
@@ -54,6 +78,8 @@ MESは「計画(ERP)と現場実行の乖離(Execution Gap)を埋める」ため
 | 9 | 保全管理 | 設備の予防保全・故障対応 |
 | 10 | トラッキング・トレーサビリティ | ロット・シリアル単位の追跡 |
 | 11 | パフォーマンス分析 | OEE等の生産性分析 |
+
+MESA-11の11機能はMOMの4領域を横断している。7(品質管理)は品質オペレーション、9(保全管理)は保全オペレーション、1(資源配分)のうち資材にあたる部分は在庫オペレーションに対応し、残りが生産オペレーションにあたる。したがって**MES単体でMESA-11を全て満たすことは通常なく**、LIMS/QMS・CMMS/EAM・WMSとの組み合わせで初めてカバーされる。
 
 ## 生産計画・BOM・製造指図の階層対応
 
@@ -89,7 +115,7 @@ ERP/MESは基本的にIT側、SCADA/PLC/フィールド機器はOT側に分類�
 
 ![生産管理システムがカバーする範囲](../images/00_seisan-kanri-system-position.svg)
 
-*図2　「生産管理システム」はISA-95のどこを指すか*
+*図3　「生産管理システム」はISA-95のどこを指すか*
 
 ## 生産管理の管理対象と目的
 
@@ -107,12 +133,13 @@ ERP/MESは基本的にIT側、SCADA/PLC/フィールド機器はOT側に分類�
 
 ![生産管理の目的(QCD)とシステムの分担](../images/00_qcd-system-bunnitan.svg)
 
-*図3　生産管理の目的(QCD)と、それを担うシステムの分担*
+*図4　生産管理の目的(QCD)と、それを担うシステムの分担*
 
 ## この章の結論
 
 - ERP/MES/SCADA/PLC/フィールド機器の5階層(ISA-95)が、生産系ITを理解する共通言語になる。
-- MESA-11は、MESの機能を分解し、自社システムのカバレッジを判定する物差しとして使える。
+- Level3はMOMの4領域(生産・品質・保全・在庫)に分かれ、MES・LIMS/QMS・CMMS/EAM・WMSがそれぞれを担う。「Level3=MES」という略し方は不正確である。
+- MESA-11は、MESの機能を分解し、自社システムのカバレッジを判定する物差しとして使える。ただし11機能はMOM 4領域を横断するため、カバレッジの空白は「MESの機能不足」ではなく「担当システムの不在」として読む。
 - IT/OTの区分は階層ではなく、目的・リアルタイム性・影響・セキュリティ・ライフサイクル・管掌部門の6観点で判断する。
 - 「生産管理システム」はISA-95に対応しない実務用語であり、ERP中核+MES一部という位置づけで理解する。
 
