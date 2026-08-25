@@ -1,0 +1,643 @@
+<title>IT予算移管トラッカー</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@500;700;900&family=Noto+Sans+JP:wght@400;500;600;700&display=swap">
+<style>
+  :root{
+    --bg:#f2f6f7;
+    --surface:#ffffff;
+    --surface-alt:#eaf1f3;
+    --border:#d9e3e6;
+    --text-primary:#16242a;
+    --text-secondary:#54666c;
+    --text-muted:#8a9aa0;
+    --accent:#1f4e5f;
+    --accent-strong:#123340;
+    --accent-soft:#dce9ec;
+
+    --st-none-bg:#eceef0; --st-none-fg:#5b6b72;
+    --st-prog-bg:#fff1d6; --st-prog-fg:#8a5a00;
+    --st-done-bg:#e0f3e6; --st-done-fg:#1c7a3e;
+    --st-risk-bg:#fbe4e3; --st-risk-fg:#ae2a20;
+
+    --sev-high-bg:#fbe4e3; --sev-high-fg:#ae2a20;
+    --sev-mid-bg:#fff1d6; --sev-mid-fg:#8a5a00;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#0f1618;
+      --surface:#161f22;
+      --surface-alt:#1c2a2e;
+      --border:#2b3a3f;
+      --text-primary:#edf3f4;
+      --text-secondary:#a7b8bd;
+      --text-muted:#748689;
+      --accent:#7fc2d4;
+      --accent-strong:#a9dbe8;
+      --accent-soft:#1f363d;
+
+      --st-none-bg:#242e31; --st-none-fg:#aebac0;
+      --st-prog-bg:#3a2d10; --st-prog-fg:#f0b93f;
+      --st-done-bg:#153a25; --st-done-fg:#5fda88;
+      --st-risk-bg:#3a1a17; --st-risk-fg:#ff9187;
+
+      --sev-high-bg:#3a1a17; --sev-high-fg:#ff9187;
+      --sev-mid-bg:#3a2d10; --sev-mid-fg:#f0b93f;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#0f1618;
+    --surface:#161f22;
+    --surface-alt:#1c2a2e;
+    --border:#2b3a3f;
+    --text-primary:#edf3f4;
+    --text-secondary:#a7b8bd;
+    --text-muted:#748689;
+    --accent:#7fc2d4;
+    --accent-strong:#a9dbe8;
+    --accent-soft:#1f363d;
+
+    --st-none-bg:#242e31; --st-none-fg:#aebac0;
+    --st-prog-bg:#3a2d10; --st-prog-fg:#f0b93f;
+    --st-done-bg:#153a25; --st-done-fg:#5fda88;
+    --st-risk-bg:#3a1a17; --st-risk-fg:#ff9187;
+
+    --sev-high-bg:#3a1a17; --sev-high-fg:#ff9187;
+    --sev-mid-bg:#3a2d10; --sev-mid-fg:#f0b93f;
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--text-primary);
+    font-family:"Noto Sans JP","Hiragino Sans","Yu Gothic",-apple-system,sans-serif;
+    font-variant-numeric:tabular-nums;
+    padding:28px 20px 64px;
+  }
+  .wrap{max-width:1040px;margin:0 auto;}
+
+  header.top{
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:space-between;
+    align-items:flex-end;
+    gap:16px;
+    margin-bottom:24px;
+    padding-bottom:18px;
+    border-bottom:1px solid var(--border);
+  }
+  .eyebrow{
+    font-size:12.5px;
+    letter-spacing:.08em;
+    color:var(--text-muted);
+    margin:0 0 6px;
+    text-transform:uppercase;
+  }
+  h1{
+    font-family:"Zen Kaku Gothic New","Noto Sans JP",sans-serif;
+    font-weight:900;
+    font-size:clamp(22px,3.4vw,30px);
+    margin:0;
+    color:var(--accent-strong);
+    text-wrap:balance;
+  }
+  .top-meta{
+    font-size:13px;
+    color:var(--text-secondary);
+    text-align:right;
+    line-height:1.7;
+  }
+  .top-meta b{color:var(--text-primary);}
+
+  section{margin-bottom:32px;}
+  h2.section-title{
+    font-family:"Zen Kaku Gothic New","Noto Sans JP",sans-serif;
+    font-size:16px;
+    font-weight:700;
+    color:var(--accent);
+    margin:0 0 14px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  h2.section-title::before{
+    content:"";
+    width:4px;height:16px;
+    background:var(--accent);
+    border-radius:2px;
+    display:inline-block;
+  }
+
+  /* stat tiles */
+  .stats{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:12px;
+  }
+  .stat{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:16px 18px;
+  }
+  .stat .num{
+    font-family:"Zen Kaku Gothic New",sans-serif;
+    font-size:28px;
+    font-weight:700;
+    color:var(--accent-strong);
+    line-height:1.1;
+  }
+  .stat .num span{font-size:15px;color:var(--text-muted);font-weight:500;}
+  .stat .lbl{font-size:12.5px;color:var(--text-secondary);margin-top:6px;}
+
+  /* department cards */
+  .dept-list{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:10px;
+    overflow:hidden;
+  }
+  .dept-row{
+    display:grid;
+    grid-template-columns:150px 1fr 190px 96px;
+    gap:16px;
+    align-items:center;
+    padding:16px 18px;
+    border-bottom:1px solid var(--border);
+  }
+  .dept-row:last-child{border-bottom:none;}
+  .dept-name{font-weight:700;font-size:14.5px;color:var(--text-primary);}
+  .dept-name small{display:block;font-weight:400;font-size:11.5px;color:var(--text-muted);margin-top:2px;}
+
+  .stepper{display:flex;align-items:center;gap:4px;overflow-x:auto;}
+  .step{
+    display:flex;flex-direction:column;align-items:center;gap:4px;
+    min-width:64px;
+    position:relative;
+  }
+  .step .dot{
+    width:16px;height:16px;border-radius:50%;
+    background:var(--st-none-bg);
+    border:2px solid var(--border);
+  }
+  .step.current .dot{background:var(--st-prog-fg);border-color:var(--st-prog-fg);box-shadow:0 0 0 3px var(--st-prog-bg);}
+  .step.done .dot{background:var(--st-done-fg);border-color:var(--st-done-fg);}
+  .step .lbl{font-size:10px;color:var(--text-muted);text-align:center;line-height:1.2;}
+  .step.current .lbl{color:var(--st-prog-fg);font-weight:700;}
+  .step-line{flex:1;height:2px;background:var(--border);min-width:10px;margin-top:-16px;}
+
+  .pill{
+    display:inline-flex;align-items:center;gap:5px;
+    font-size:12px;font-weight:700;
+    padding:4px 10px;border-radius:999px;
+    white-space:nowrap;
+  }
+  .pill.none{background:var(--st-none-bg);color:var(--st-none-fg);}
+  .pill.prog{background:var(--st-prog-bg);color:var(--st-prog-fg);}
+  .pill.done{background:var(--st-done-bg);color:var(--st-done-fg);}
+  .pill.risk{background:var(--st-risk-bg);color:var(--st-risk-fg);}
+
+  .owner{font-size:12.5px;color:var(--text-muted);}
+  .owner.unset{font-style:italic;}
+
+  /* cycle timeline */
+  .cycle-row{
+    display:flex;
+    align-items:stretch;
+    gap:8px;
+    overflow-x:auto;
+    padding-bottom:4px;
+  }
+  .cycle-card{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:14px 15px;
+    min-width:168px;
+    flex:1 1 168px;
+    display:flex;flex-direction:column;gap:6px;
+  }
+  .cycle-card.next{border-color:var(--st-prog-fg);box-shadow:0 0 0 1px var(--st-prog-fg) inset;}
+  .cycle-card.final{border-color:var(--accent);}
+  .cycle-q{font-size:11px;color:var(--text-muted);}
+  .cycle-name{font-family:"Zen Kaku Gothic New",sans-serif;font-weight:700;font-size:15px;color:var(--accent-strong);}
+  .cycle-name small{display:inline-block;margin-left:6px;font-size:10.5px;font-weight:500;color:var(--text-muted);}
+  .cycle-desc{font-size:12px;color:var(--text-secondary);line-height:1.55;flex:1;}
+  .cycle-arrow{display:flex;align-items:center;color:var(--text-muted);font-size:16px;flex:0 0 auto;}
+  .cycle-note{font-size:12px;color:var(--text-muted);margin:12px 2px 0;line-height:1.7;}
+
+  /* shadow-IT discovery tracks */
+  .track-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:12px;
+  }
+  .track-card{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:16px 18px;
+  }
+  .track-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+  .track-no{font-family:"Zen Kaku Gothic New",sans-serif;font-weight:700;color:var(--accent);font-size:16px;}
+  .track-name{font-weight:700;font-size:14px;color:var(--text-primary);margin-bottom:6px;}
+  .track-desc{font-size:12.5px;color:var(--text-secondary);line-height:1.6;margin-bottom:10px;}
+
+  /* governance checklist */
+  .gov-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:10px;
+  }
+  .gov-item{
+    display:flex;justify-content:space-between;align-items:center;
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:13px 16px;
+    font-size:13.5px;
+  }
+  .gov-item .t{color:var(--text-primary);font-weight:500;}
+  .gov-item .t small{display:block;font-size:11.5px;color:var(--text-muted);font-weight:400;margin-top:2px;}
+
+  /* callout */
+  .callout{
+    background:var(--st-risk-bg);
+    border:1px solid var(--st-risk-fg);
+    border-radius:10px;
+    padding:16px 18px;
+    display:flex;
+    flex-wrap:wrap;
+    align-items:center;
+    gap:12px;
+  }
+  .callout-head{
+    font-weight:700;
+    font-size:13.5px;
+    color:var(--st-risk-fg);
+    flex:0 0 100%;
+  }
+  .callout-body{
+    font-size:13px;
+    color:var(--text-primary);
+    line-height:1.7;
+    flex:1 1 480px;
+  }
+
+  td.count{
+    font-weight:700;
+    color:var(--accent-strong);
+    white-space:nowrap;
+  }
+
+  /* risk table */
+  .table-scroll{overflow-x:auto;border:1px solid var(--border);border-radius:10px;background:var(--surface);}
+  table{width:100%;border-collapse:collapse;font-size:13px;min-width:640px;}
+  thead th{
+    text-align:left;
+    background:var(--surface-alt);
+    color:var(--accent-strong);
+    font-weight:700;
+    padding:11px 14px;
+    border-bottom:1px solid var(--border);
+    white-space:nowrap;
+  }
+  tbody td{
+    padding:12px 14px;
+    border-bottom:1px solid var(--border);
+    color:var(--text-primary);
+    vertical-align:top;
+    line-height:1.6;
+  }
+  tbody tr:last-child td{border-bottom:none;}
+  td.sev{white-space:nowrap;}
+
+  footer{
+    margin-top:36px;
+    padding-top:16px;
+    border-top:1px solid var(--border);
+    font-size:12px;
+    color:var(--text-muted);
+    line-height:1.7;
+  }
+
+  @media (max-width:720px){
+    .stats{grid-template-columns:repeat(2,1fr);}
+    .gov-grid{grid-template-columns:1fr;}
+    .dept-row{grid-template-columns:1fr;gap:10px;}
+    .stepper{order:3;}
+    .track-grid{grid-template-columns:1fr;}
+    .cycle-row{flex-wrap:nowrap;}
+  }
+</style>
+
+<div class="wrap">
+
+  <header class="top">
+    <div>
+      <p class="eyebrow">Budget &amp; Approval Authority Transfer</p>
+      <h1>IT予算・決裁権移管トラッカー</h1>
+    </div>
+    <div class="top-meta">
+      <div>最終更新：<b>2026年8月22日</b></div>
+      <div>現在：<b>準備期間（〜9月）／サイクル1は10月開始</b></div>
+    </div>
+  </header>
+
+  <section>
+    <h2 class="section-title">全体サマリー</h2>
+    <div class="stats">
+      <div class="stat">
+        <div class="num">5<span>部門</span></div>
+        <div class="lbl">移管対象部門数</div>
+      </div>
+      <div class="stat">
+        <div class="num">0<span>/ 5</span></div>
+        <div class="lbl">棚卸しトラック 着手済み（④除く）</div>
+      </div>
+      <div class="stat">
+        <div class="num">0<span>/ 4</span></div>
+        <div class="lbl">ガバナンス項目 整備済み</div>
+      </div>
+      <div class="stat">
+        <div class="num">7<span>件</span></div>
+        <div class="lbl">主要リスク（未対応）</div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="section-title">推進サイクル（タイムボックス）</h2>
+    <div class="cycle-row">
+      <div class="cycle-card next">
+        <div class="cycle-q">2026年10月–12月</div>
+        <div class="cycle-name">サイクル1<small>初回</small></div>
+        <div class="cycle-desc">棚卸し3手法を並行開始。終了時点で部門ごとの優先順位・着手順を決定</div>
+        <span class="pill prog">次サイクル</span>
+      </div>
+      <div class="cycle-arrow">→</div>
+      <div class="cycle-card">
+        <div class="cycle-q">2027年1月–3月</div>
+        <div class="cycle-name">サイクル2</div>
+        <div class="cycle-desc">優先度の高い部門から個別協議・引き継ぎ設計へ</div>
+        <span class="pill none">予定</span>
+      </div>
+      <div class="cycle-arrow">→</div>
+      <div class="cycle-card">
+        <div class="cycle-q">2027年4月–6月</div>
+        <div class="cycle-name">サイクル3</div>
+        <div class="cycle-desc">準備が整った部門から順次正式移管</div>
+        <span class="pill none">予定</span>
+      </div>
+      <div class="cycle-arrow">→</div>
+      <div class="cycle-card">
+        <div class="cycle-q">2027年7月–9月</div>
+        <div class="cycle-name">サイクル4</div>
+        <div class="cycle-desc">残る部門の引き継ぎ設計・正式移管を継続</div>
+        <span class="pill none">予定</span>
+      </div>
+      <div class="cycle-arrow">→</div>
+      <div class="cycle-card final">
+        <div class="cycle-q">2027年10月–12月</div>
+        <div class="cycle-name">サイクル5<small>最終</small></div>
+        <div class="cycle-desc">全5部門の移管完了・運用定着へ移行</div>
+        <span class="pill none">予定</span>
+      </div>
+    </div>
+    <p class="cycle-note">2026年9月中に実行責任者の指名・棚卸し3手法の担当割り当てを完了し、10月開始のサイクル1に備える。全部門・全情報が揃うのを待たず、サイクルごとに得られた情報で意思決定を更新する。</p>
+  </section>
+
+  <section>
+    <h2 class="section-title">棚卸し進捗（件数）</h2>
+    <p class="cycle-note">管理台帳（Excel）の各シートに転記された件数。④実務能力・人的リソース棚卸しは定性的な内容のため、この件数集計の対象外（ビジネス部門側の組織責任者が対応・下部の部門別ステータスで管理）。</p>
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr><th>シート</th><th>元データ</th><th>担当</th><th>件数</th><th>ステータス</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>⓪-1 業務プロセス一覧</td>
+            <td>既存の業務プロセス台帳</td>
+            <td>IT×ビジネスパートナー</td>
+            <td class="count">0件</td>
+            <td><span class="pill none">未着手</span></td>
+          </tr>
+          <tr>
+            <td>⓪-2 アプリケーション一覧</td>
+            <td>既存のアプリケーション台帳</td>
+            <td>IT×ビジネスパートナー</td>
+            <td class="count">0件</td>
+            <td><span class="pill none">未着手</span></td>
+          </tr>
+          <tr>
+            <td>① 経理・調達データ棚卸し</td>
+            <td>経理・購買システムの支払データ</td>
+            <td>ビジネス部門側の担当者</td>
+            <td class="count">0件</td>
+            <td><span class="pill none">未着手</span></td>
+          </tr>
+          <tr>
+            <td>② 契約台帳起点の洗い出し</td>
+            <td>法務保有の契約書・契約台帳</td>
+            <td>ビジネス部門側の担当者</td>
+            <td class="count">0件</td>
+            <td><span class="pill none">未着手</span></td>
+          </tr>
+          <tr>
+            <td>③ 自己申告（アムネスティ方式）</td>
+            <td>各部門からの自己申告</td>
+            <td>ビジネス部門側の担当者</td>
+            <td class="count">0件</td>
+            <td><span class="pill none">未着手</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <div class="callout">
+      <div class="callout-head">⚠ 経営レベルでの確認が必要な事項</div>
+      <div class="callout-body">
+        棚卸しの結果、IT投資に関する予算は「紐付き予算（特定のシステム・契約・案件に紐づく予算）」と「紐付かない予算（用途が特定されていない、いわゆるバッファ）」に分かれることが想定される。
+        バッファ予算を移管対象に含めるか否か、含める場合その判断を全社共通ルールとするか部門ごとの個別判断とするかは実務レベルでは決定できないため、サイクル1の結果が出そろう前に本部長・社長レベルで方針を確認しておく必要がある。
+      </div>
+      <span class="pill risk">未合意</span>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="section-title">部門別ステータス</h2>
+    <p class="cycle-note">着手順はサイクル1の棚卸し結果（可視性・複雑度・協力度）をもとに決定する。現時点では全部門が横並びの初期状態。</p>
+    <div class="dept-list">
+
+      <div class="dept-row">
+        <div class="dept-name">人事総務</div>
+        <div class="stepper">
+          <div class="step current"><div class="dot"></div><div class="lbl">Ph0<br>受諾</div></div>
+          <div class="step-line"></div>
+          <div class="step"><div class="dot"></div><div class="lbl">Ph1<br>棚卸し</div></div>
+          <div class="step-line"></div>
+          <div class="step"><div class="dot"></div><div class="lbl">Ph2<br>協議</div></div>
+          <div class="step-line"></div>
+          <div class="step"><div class="dot"></div><div class="lbl">Ph3<br>正式移管</div></div>
+          <div class="step-line"></div>
+          <div class="step"><div class="dot"></div><div class="lbl">Ph4<br>定着</div></div>
+        </div>
+        <div><span class="pill none">未着手</span></div>
+        <div class="owner unset">窓口：未定</div>
+      </div>
+
+      <div class="dept-row">
+        <div class="dept-name">法務</div>
+        <div class="stepper">
+          <div class="step current"><div class="dot"></div><div class="lbl">Ph0<br>受諾</div></div>
+          <div class="step-line"></div>
+          <div class="step"><div class="dot"></div><div class="lbl">Ph1<br>棚卸し</div></div>
+          <div class="step-line"></div>
+          <div class="step"><div class="dot"></div><div class="lbl">Ph2<br>協議</div></div>
+          <div class="step-line"></div>
+          <div class="step"><div class="dot"></div><div class="lbl">Ph3<br>正式移管</div></div>
+          <div class="step-line"></div>
+          <div class="step"><div class="dot"></div><div class="lbl">Ph4<br>定着</div></div>
+        </div>
+        <div><span class="pill none">未着手</span></div>
+        <div class="owner unset">窓口：未定</div>
+      </div>
+
+      <div class="dept-row">
+        <div class="dept-name">事業部門A<small>ビジネス部門</small></div>
+        <div class="stepper">
+          <div class="step current"><div class="dot"></div><div class="lbl">Ph0<br>受諾</div></div>
+          <div class="step-line"></div>
+          <div class="step"><div class="dot"></div><div class="lbl">Ph1<br>棚卸し</div></div>
+          <div class="step-line"></div>
+          <div class="step"><div class="dot"></div><div class="lbl">Ph2<br>協議</div></div>
+          <div class="step-line"></div>
+          <div class="step"><div class="dot"></div><div class="lbl">Ph3<br>正式移管</div></div>
+          <div class="step-line"></div>
+          <div class="step"><div class="dot"></div><div class="lbl">Ph4<br>定着</div></div>
+        </div>
+        <div><span class="pill risk">要フォロー</span></div>
+        <div class="owner unset">窓口：未定</div>
+      </div>
+
+      <div class="dept-row">
+        <div class="dept-name">事業部門B<small>ビジネス部門</small></div>
+        <div class="stepper">
+          <div class="step current"><div class="dot"></div><div class="lbl">Ph0<br>受諾</div></div>
+          <div class="step-line"></div>
+          <div class="step"><div class="dot"></div><div class="lbl">Ph1<br>棚卸し</div></div>
+          <div class="step-line"></div>
+          <div class="step"><div class="dot"></div><div class="lbl">Ph2<br>協議</div></div>
+          <div class="step-line"></div>
+          <div class="step"><div class="dot"></div><div class="lbl">Ph3<br>正式移管</div></div>
+          <div class="step-line"></div>
+          <div class="step"><div class="dot"></div><div class="lbl">Ph4<br>定着</div></div>
+        </div>
+        <div><span class="pill risk">要フォロー</span></div>
+        <div class="owner unset">窓口：未定</div>
+      </div>
+
+      <div class="dept-row">
+        <div class="dept-name">事業部門C<small>ビジネス部門</small></div>
+        <div class="stepper">
+          <div class="step current"><div class="dot"></div><div class="lbl">Ph0<br>受諾</div></div>
+          <div class="step-line"></div>
+          <div class="step"><div class="dot"></div><div class="lbl">Ph1<br>棚卸し</div></div>
+          <div class="step-line"></div>
+          <div class="step"><div class="dot"></div><div class="lbl">Ph2<br>協議</div></div>
+          <div class="step-line"></div>
+          <div class="step"><div class="dot"></div><div class="lbl">Ph3<br>正式移管</div></div>
+          <div class="step-line"></div>
+          <div class="step"><div class="dot"></div><div class="lbl">Ph4<br>定着</div></div>
+        </div>
+        <div><span class="pill risk">要フォロー</span></div>
+        <div class="owner unset">窓口：未定</div>
+      </div>
+
+    </div>
+  </section>
+
+  <section>
+    <h2 class="section-title">ガバナンス整備チェックリスト</h2>
+    <div class="gov-grid">
+      <div class="gov-item">
+        <div class="t">IT部門としての受諾表明<small>対象範囲・移管内容の正式受諾</small></div>
+        <span class="pill none">未着手</span>
+      </div>
+      <div class="gov-item">
+        <div class="t">実行責任者の指名<small>本計画の推進オーナー</small></div>
+        <span class="pill none">未着手</span>
+      </div>
+      <div class="gov-item">
+        <div class="t">部門ごとの窓口設定<small>対象5部門×担当者</small></div>
+        <span class="pill none">未着手</span>
+      </div>
+      <div class="gov-item">
+        <div class="t">定例報告体制<small>本部長・社長への月次報告</small></div>
+        <span class="pill none">未着手</span>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="section-title">主要リスク</h2>
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr><th>リスク</th><th>重要度</th><th>影響</th><th>対応策</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>対象部門の協力が得られず、実務レベルの進捗が停滞する</td>
+            <td class="sev"><span class="pill risk">高</span></td>
+            <td>スケジュール遅延、実質的な移管の形骸化</td>
+            <td>早期の受諾表明と、本部長・社長ラインへの定例報告により停滞を可視化・エスカレーション</td>
+          </tr>
+          <tr>
+            <td>実行方法の設計担当が曖昧なまま進む</td>
+            <td class="sev"><span class="pill prog">中</span></td>
+            <td>誰も動かず、方針だけが宙に浮く</td>
+            <td>実行責任者・部門ごとの窓口を明示的に指名</td>
+          </tr>
+          <tr>
+            <td>部門により温度差があり、進捗にばらつきが出る</td>
+            <td class="sev"><span class="pill prog">中</span></td>
+            <td>一部部門のみ停滞し、プロジェクト全体の完了が遅れる</td>
+            <td>部門ごとに進捗を個別管理し、遅延部門への早期フォロー</td>
+          </tr>
+          <tr>
+            <td>棚卸し3手法の担当・体制が定まらないまま並行実施しようとする</td>
+            <td class="sev"><span class="pill prog">中</span></td>
+            <td>いずれの手法も実質的に進まない</td>
+            <td>経理データ抽出・契約台帳確認・自己申告呼びかけの各担当を個別に指名する</td>
+          </tr>
+          <tr>
+            <td>既存のビジネスパートナーに新たな予算管理業務を追加負担させてしまう</td>
+            <td class="sev"><span class="pill risk">高</span></td>
+            <td>既存の高額案件対応の質が低下、担当者の疲弊</td>
+            <td>増員（異動・新規採用・一時応援）を確保した上で着手する</td>
+          </tr>
+          <tr>
+            <td>サイクルで区切ることにより、一部の実態を把握しきれないまま次に進む</td>
+            <td class="sev"><span class="pill prog">中</span></td>
+            <td>移管後に想定外の契約・課題が発覚する</td>
+            <td>各サイクル終了時点の未把握領域を明示し、次サイクル以降で継続対応する</td>
+          </tr>
+          <tr>
+            <td>紐付かない予算（バッファ）の移管方針が未定義のまま棚卸しが進む</td>
+            <td class="sev"><span class="pill risk">高</span></td>
+            <td>部門ごとに対応が割れる、移管対象の線引きを巡る対立が発生する</td>
+            <td>棚卸し開始前に、本部長・社長レベルで方針（全社共通ルールとするか個別判断とするか）を確認する</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <footer>
+    このダッシュボードは「実行計画（叩き台）」時点でのステータス・スナップショットです。窓口・実行責任者・進捗は今後の更新により反映されます。閲覧専用（このページ上での編集はできません）。
+  </footer>
+
+</div>
