@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="ja" data-lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>複雑性と組織運営</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌀</text></svg>">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@500;700;900&family=Noto+Sans+JP:wght@400;500;600;700&display=swap">
+<style>
+  :root{
+    --bg:#f2f6f7;
+    --surface:#ffffff;
+    --surface-alt:#eaf1f3;
+    --border:#d9e3e6;
+    --text-primary:#16242a;
+    --text-secondary:#54666c;
+    --text-muted:#8a9aa0;
+    --accent:#1f4e5f;
+    --accent-strong:#123340;
+    --accent-soft:#dce9ec;
+    --chip-bg:#eaf1f3;
+    --chip-fg:#3e7c8c;
+    --callout-bg:#fff8ec;
+    --callout-border:#e8d3a0;
+    --callout-fg:#6f5210;
+    --design-fg:#8a5a2b;
+    --design-bg:#fbf2e6;
+    --emerge-fg:#1f6b5f;
+    --emerge-bg:#e4f2ef;
+    --code-bg:#123340;
+    --code-fg:#dce9ec;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#0f1618;
+      --surface:#161f22;
+      --surface-alt:#1c2a2e;
+      --border:#2b3a3f;
+      --text-primary:#edf3f4;
+      --text-secondary:#a7b8bd;
+      --text-muted:#748689;
+      --accent:#7fc2d4;
+      --accent-strong:#a9dbe8;
+      --accent-soft:#1f363d;
+      --chip-bg:#1f363d;
+      --chip-fg:#8fd2e2;
+      --callout-bg:#2a2411;
+      --callout-border:#4d3f16;
+      --callout-fg:#e8cf8f;
+      --design-fg:#e0b075;
+      --design-bg:#2a2115;
+      --emerge-fg:#7fd4c2;
+      --emerge-bg:#122b28;
+      --code-bg:#08171c;
+      --code-fg:#bfe3ee;
+    }
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--text-primary);
+    font-family:"Noto Sans JP","Hiragino Sans","Yu Gothic",-apple-system,sans-serif;
+    padding:0 20px 80px;
+  }
+  a{color:inherit;}
+  .wrap{max-width:980px;margin:0 auto;}
+
+  [data-lang="ja"] .lang-en{display:none;}
+  [data-lang="en"] .lang-ja{display:none;}
+  [data-lang="en"] body{font-family:"Noto Sans JP","Segoe UI","Helvetica Neue",Arial,sans-serif;}
+
+  .navbar{
+    position:sticky;top:0;z-index:50;
+    background:color-mix(in srgb, var(--bg) 88%, transparent);
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--border);
+    margin:0 -20px;padding:0 20px;
+  }
+  .navbar-inner{
+    max-width:980px;margin:0 auto;display:flex;gap:8px;align-items:center;
+    padding:12px 0;
+  }
+  .nav-links-scroll{
+    flex:1;min-width:0;overflow-x:auto;scrollbar-width:none;
+  }
+  .nav-links-scroll::-webkit-scrollbar{display:none;}
+  .navbar a{
+    font-size:12.5px;font-weight:700;color:var(--text-secondary);
+    text-decoration:none;padding:7px 12px;border-radius:999px;white-space:nowrap;
+    transition:background .15s ease, color .15s ease;
+  }
+  .navbar a:hover{background:var(--accent-soft);color:var(--accent-strong);}
+  .nav-links{display:flex;gap:4px;width:max-content;}
+  .lang-toggle{display:flex;gap:2px;flex:none;background:var(--surface-alt);border-radius:999px;padding:3px;border:1px solid var(--border);position:relative;z-index:1;}
+  .lang-toggle button{
+    font-size:11.5px;font-weight:700;border:none;background:transparent;color:var(--text-muted);
+    padding:5px 11px;border-radius:999px;cursor:pointer;white-space:nowrap;
+    font-family:inherit;transition:background .15s ease, color .15s ease;
+  }
+  .lang-toggle button.active{background:var(--accent);color:#fff;}
+
+  header.hero{padding:56px 4px 36px;border-bottom:1px solid var(--border);margin-bottom:44px;}
+  .eyebrow{
+    font-size:12px;letter-spacing:.14em;color:var(--text-muted);
+    margin:0 0 14px;text-transform:uppercase;font-weight:600;
+  }
+  h1{
+    font-family:"Zen Kaku Gothic New","Noto Sans JP",sans-serif;font-weight:900;
+    font-size:clamp(28px,4.6vw,42px);margin:0 0 20px;color:var(--accent-strong);letter-spacing:.01em;
+  }
+  .hero p{font-size:15.5px;line-height:1.9;color:var(--text-secondary);max-width:680px;margin:0 0 12px;}
+  .hero p b{color:var(--text-primary);}
+
+  section{margin-bottom:66px;scroll-margin-top:64px;}
+  h2.section-title{
+    font-family:"Zen Kaku Gothic New","Noto Sans JP",sans-serif;font-size:13px;font-weight:700;
+    color:var(--accent);letter-spacing:.1em;text-transform:uppercase;margin:0 0 8px;
+    display:flex;align-items:center;gap:10px;
+  }
+  h2.section-title::after{content:"";flex:1;height:1px;background:var(--border);}
+  h2.section-heading{
+    font-family:"Zen Kaku Gothic New",sans-serif;font-size:clamp(21px,3.1vw,27px);
+    font-weight:700;color:var(--text-primary);margin:0 0 20px;line-height:1.45;
+  }
+  h3.sub-heading{
+    font-family:"Zen Kaku Gothic New",sans-serif;font-size:16.5px;font-weight:700;
+    color:var(--accent-strong);margin:30px 0 10px;
+  }
+  p.lead{font-size:14.5px;line-height:1.95;color:var(--text-secondary);margin:0 0 16px;}
+  p.body-text{font-size:14px;line-height:1.95;color:var(--text-primary);margin:0 0 14px;}
+  p.body-text b, p.lead b{color:var(--accent-strong);}
+  .cite{font-size:11.5px;color:var(--text-muted);}
+
+  blockquote.src{
+    margin:16px 0;padding:16px 20px;border-left:3px solid var(--accent);
+    background:var(--surface-alt);border-radius:0 10px 10px 0;
+    font-size:13.5px;line-height:1.85;color:var(--text-primary);
+  }
+  blockquote.src .attrib{display:block;margin-top:8px;font-size:11.5px;color:var(--text-muted);}
+
+  .sim-block{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:22px;margin:22px 0 24px;}
+  .sim-block-head{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:14px;flex-wrap:wrap;}
+  .sim-block-head h4{
+    font-family:"Zen Kaku Gothic New",sans-serif;font-size:16px;margin:0 0 4px;
+    color:var(--text-primary);display:flex;align-items:center;gap:8px;
+  }
+  .sim-block-head span.desc{font-size:12.5px;color:var(--text-muted);}
+  .fullscreen-link{
+    font-size:12px;font-weight:700;color:var(--accent-strong);text-decoration:none;
+    border:1px solid var(--border);padding:7px 12px;border-radius:999px;white-space:nowrap;
+  }
+  .fullscreen-link:hover{background:var(--accent-soft);}
+  .sim-frame-wrap{border-radius:12px;overflow:hidden;border:1px solid var(--border);background:#0a0e17;}
+  .sim-frame-wrap iframe{display:block;width:100%;border:none;}
+  .tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px;}
+  .tag{
+    font-size:10.8px;color:var(--chip-fg);background:var(--chip-bg);
+    padding:4px 9px;border-radius:999px;font-weight:600;white-space:nowrap;
+  }
+  .takeaway{
+    margin-top:16px;padding:14px 18px;background:var(--accent-soft);border-radius:10px;
+    font-size:13.2px;line-height:1.85;color:var(--text-primary);
+  }
+  .takeaway b{color:var(--accent-strong);}
+  .takeaway .label{
+    display:block;font-size:10.5px;font-weight:700;letter-spacing:.1em;
+    color:var(--accent);margin-bottom:5px;text-transform:uppercase;
+  }
+
+  .card-grid{display:grid;gap:16px;}
+  .card-grid.cols-2{grid-template-columns:1fr 1fr;}
+  .card-grid.cols-3{grid-template-columns:repeat(3,1fr);}
+  .plain-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px 22px;}
+  .plain-card h4{font-family:"Zen Kaku Gothic New",sans-serif;font-size:15px;margin:0 0 8px;color:var(--accent-strong);}
+  .plain-card p{font-size:13px;line-height:1.8;color:var(--text-secondary);margin:0;}
+  .plain-card .kicker{font-size:11px;font-weight:700;color:var(--text-muted);letter-spacing:.04em;margin-bottom:6px;}
+
+  .table-scroll{overflow-x:auto;margin:20px 0;border:1px solid var(--border);border-radius:14px;background:var(--surface);}
+  table{width:100%;border-collapse:collapse;font-size:13px;min-width:640px;}
+  th,td{padding:14px 16px;text-align:left;border-bottom:1px solid var(--border);vertical-align:top;line-height:1.75;}
+  thead th{
+    font-family:"Zen Kaku Gothic New",sans-serif;font-size:12.5px;font-weight:700;
+    background:var(--surface-alt);color:var(--text-primary);white-space:nowrap;
+  }
+  thead th.col-design{color:var(--design-fg);}
+  thead th.col-emerge{color:var(--emerge-fg);}
+  tbody tr:last-child td{border-bottom:none;}
+  td.axis{font-weight:700;color:var(--text-primary);white-space:nowrap;}
+  td.design{background:var(--design-bg);color:var(--text-primary);}
+  td.emerge{background:var(--emerge-bg);color:var(--text-primary);}
+
+  .type-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px 20px;display:flex;flex-direction:column;gap:4px;}
+  .type-card .num{font-size:11px;font-weight:700;color:var(--accent);letter-spacing:.06em;}
+  .type-card h4{font-family:"Zen Kaku Gothic New",sans-serif;font-size:15px;margin:3px 0 8px;color:var(--text-primary);}
+  .type-card .rule{
+    font-size:11.5px;color:var(--chip-fg);background:var(--chip-bg);display:inline-block;
+    padding:3px 9px;border-radius:999px;font-weight:700;margin-bottom:9px;width:fit-content;
+  }
+  .type-card p{font-size:12.8px;line-height:1.75;color:var(--text-secondary);margin:0 0 8px;}
+  .type-card .interv{
+    font-size:12.5px;line-height:1.75;color:var(--text-primary);
+    border-top:1px dashed var(--border);padding-top:9px;margin-top:auto;
+  }
+  .type-card .interv b{color:var(--emerge-fg);}
+
+  .callout{
+    background:var(--callout-bg);border:1px solid var(--callout-border);color:var(--callout-fg);
+    border-radius:14px;padding:20px 24px;margin:20px 0;font-size:13.5px;line-height:1.9;
+  }
+  .callout h4{margin:0 0 8px;font-family:"Zen Kaku Gothic New",sans-serif;font-size:14.5px;}
+  .callout p{margin:0 0 10px;}
+  .callout p:last-child{margin:0;}
+
+  figure.diagram{margin:24px 0;text-align:center;}
+  figure.diagram img{max-width:100%;border-radius:12px;border:1px solid var(--border);}
+  figure.diagram figcaption{font-size:12px;color:var(--text-muted);margin-top:10px;line-height:1.7;text-align:left;}
+
+  .logic-chain{
+    background:var(--code-bg);color:var(--code-fg);border-radius:12px;padding:20px 22px;
+    font-size:12.8px;line-height:2;white-space:pre-wrap;margin:18px 0;
+    font-family:"SF Mono","Menlo",monospace;overflow-x:auto;
+  }
+
+  .objection{
+    background:var(--surface-alt);border:1px solid var(--border);
+    border-radius:18px;padding:30px 32px;
+  }
+  .objection h3{font-family:"Zen Kaku Gothic New",sans-serif;font-size:17px;color:var(--accent-strong);margin:0 0 12px;}
+  .objection p{font-size:13.8px;line-height:1.95;color:var(--text-primary);margin:0 0 14px;}
+  .objection p:last-child{margin:0;}
+  .objection b{color:var(--accent-strong);}
+
+  details.deepdive{background:var(--surface);border:1px solid var(--border);border-radius:16px;margin-top:16px;}
+  details.deepdive > summary{
+    list-style:none;cursor:pointer;padding:18px 22px;display:flex;align-items:center;
+    justify-content:space-between;gap:12px;font-family:"Zen Kaku Gothic New",sans-serif;
+    font-weight:700;font-size:15px;color:var(--accent-strong);
+  }
+  details.deepdive > summary::-webkit-details-marker{display:none;}
+  details.deepdive > summary .plus{font-size:20px;font-weight:400;color:var(--accent);transition:transform .2s ease;flex:none;}
+  details.deepdive[open] > summary .plus{transform:rotate(45deg);}
+  details.deepdive > summary .label-sub{font-weight:500;font-size:12px;color:var(--text-muted);margin-top:4px;display:block;}
+  .deepdive-body{padding:0 22px 24px;}
+
+  .diag-card{
+    background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--accent);
+    border-radius:10px;padding:20px 22px;
+  }
+  .diag-card .q-num{font-size:11px;font-weight:700;color:var(--accent);letter-spacing:.06em;margin-bottom:6px;}
+  .diag-card h4{font-family:"Zen Kaku Gothic New",sans-serif;font-size:14.5px;margin:0 0 10px;color:var(--text-primary);}
+  .diag-card p{font-size:12.8px;line-height:1.8;color:var(--text-secondary);margin:0 0 8px;}
+  .diag-card p:last-child{margin-bottom:0;}
+  .diag-card .q-label{font-weight:700;color:var(--text-primary);}
+
+  ol.actions{counter-reset:step;list-style:none;padding:0;margin:0;display:grid;gap:12px;}
+  ol.actions li{
+    background:var(--surface);border:1px solid var(--border);border-radius:12px;
+    padding:18px 20px 18px 56px;position:relative;font-size:13.5px;line-height:1.85;color:var(--text-primary);
+  }
+  ol.actions li::before{
+    counter-increment:step;content:counter(step);
+    position:absolute;left:18px;top:17px;width:24px;height:24px;border-radius:50%;
+    background:var(--accent);color:var(--bg);font-size:12px;font-weight:700;
+    display:flex;align-items:center;justify-content:center;
+  }
+  ol.actions li b{color:var(--accent-strong);}
+
+  footer{border-top:1px solid var(--border);padding-top:20px;font-size:12.5px;color:var(--text-muted);line-height:1.85;}
+  footer a{color:var(--accent);font-weight:600;text-decoration:none;}
+  footer a:hover{text-decoration:underline;}
+
+  @media (max-width:760px){
+    .card-grid.cols-2, .card-grid.cols-3{grid-template-columns:1fr;}
+    header.hero{padding:40px 4px 28px;}
+    .sim-frame-wrap iframe{height:760px !important;}
+    .objection{padding:24px 20px;}
+    .navbar-inner{flex-wrap:nowrap;}
+  }
+</style>
+</head>
+<body>
+
+<div class="navbar">
+  <div class="navbar-inner">
+    <div class="nav-links-scroll">
+      <div class="nav-links">
+        <a href="#what"><span class="lang-ja">創発とは</span><span class="lang-en">What Emergence Is</span></a>
+        <a href="#ashby"><span class="lang-ja">全部は管理できない理由</span><span class="lang-en">Why Not Everything Can Be Controlled</span></a>
+        <a href="#threshold"><span class="lang-ja">広まり方</span><span class="lang-en">How Things Spread</span></a>
+        <a href="#split"><span class="lang-ja">設計と創発</span><span class="lang-en">Design vs. Emergence</span></a>
+        <a href="#duet"><span class="lang-ja">そろえると組み合わせる</span><span class="lang-en">Aligning and Combining</span></a>
+        <a href="#types"><span class="lang-ja">タイプと打ち手</span><span class="lang-en">Types and Levers</span></a>
+        <a href="#objection"><span class="lang-ja">最も強い反論</span><span class="lang-en">The Strongest Objection</span></a>
+      </div>
+    </div>
+    <div class="lang-toggle">
+      <button id="langJaBtn" type="button">日本語</button>
+      <button id="langEnBtn" type="button">EN</button>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <header class="hero">
+    <p class="eyebrow">Complexity &amp; Organizations</p>
+    <h1><span class="lang-ja">複雑性と組織運営</span><span class="lang-en">Complexity and Organizations</span></h1>
+    <p><span class="lang-ja">複雑系の科学が組織について教えてくれるのは、<b>「管理のやり方が変わる」</b>ということです。一人ひとりの行動を細かく積み上げても、組織全体はうまく動きません。でも、全体に効く「取っ手」を見つけて動かせば、組織は動きます。創発とは、その取っ手が現れる現象のことです。</span><span class="lang-en">What complexity science teaches us about organizations is that <b>the way we manage things changes</b>. Stacking up detailed control over every individual action doesn't make an organization work well. But if you find the right lever for the whole system and move it, the organization moves. Emergence is the name for how that lever appears.</span></p>
+    <p><span class="lang-ja">このページでは、もとになっている研究や理論を確認しながら、実際の組織運営に使える形に置き換えて説明します。3つのシミュレーションは、実際に手を動かして試してみるために用意しました。</span><span class="lang-en">This page walks through the research and theory behind these ideas, and translates them into something you can actually use in running an organization. The three simulations are here so you can try things out yourself, hands-on.</span></p>
+  </header>
+
+  <section id="what">
+    <h2 class="section-title"><span class="lang-ja">01 &nbsp;創発とは何か</span><span class="lang-en">01 &nbsp;What Emergence Is</span></h2>
+    <h2 class="section-heading"><span class="lang-ja">「多ければ違う」と、組織を動かす取っ手</span><span class="lang-en">"More Is Different," and the Lever That Moves an Organization</span></h2>
+
+    <p class="body-text"><span class="lang-ja">物理学者のフィリップ・アンダーソンは1972年に、こんなことを示しました。世の中のものはすべて、単純な物理の法則に従っています。でも、その単純な法則をいくら積み上げても、全体がどうなるかを組み立て直すことはできません。<span class="cite">（アンダーソン, 1972年）</span></span><span class="lang-en">In 1972, the physicist Philip Anderson showed something important. Everything in the world follows simple physical laws. But no matter how many of those simple laws you stack up, you can't rebuild what the whole system will do just from that. <span class="cite">(Anderson, 1972)</span></span></p>
+
+    <p class="body-text"><span class="lang-ja">ここで大事なのは、「積み上げて説明できない」ことと、「コントロールできない」ことは別だという点です。温度や圧力は、分子1つ1つの動きを計算しなくても、しっかりコントロールできます。創発を研究しているクラカウアーたちも、この点をはっきり述べています。</span><span class="lang-en">Here's the key point: not being able to explain something by stacking up small parts is different from not being able to control it. You can control temperature and pressure perfectly well without calculating the motion of every single molecule. Researchers who study emergence, like Krakauer and colleagues, make this same point clearly.</span></p>
+
+    <blockquote class="src">
+      <span class="lang-ja">新しい性質が生まれるしくみを持つものは、部品を増やすだけで新しいことができるようになる。しかも、全体をシンプルなルールで説明できるようになる。それは、<b>コントロールしたり設計したりするための「取っ手」を与えてくれる。</b></span><span class="lang-en">Systems with the machinery to produce new properties gain new capabilities simply by adding more parts. And the whole system becomes explainable with simple rules. <b>That gives you a lever for control and design.</b></span>
+      <span class="attrib">Krakauer, D. C., Krakauer, J. W., &amp; Mitchell, M. (2025). <i>Large Language Models and Emergence: A Complex Systems Perspective.</i></span>
+    </blockquote>
+
+    <p class="body-text"><span class="lang-ja">創発とは、細かい部分をいちいち気にしなくても、全体の動きをシンプルに説明できてしまう、ということです。空気の中には数えきれないほどの分子が飛び回っていますが、私たちは1つ1つの分子の動きを追いかけなくても、「温度」と「圧力」というたった2つの数字で空気をコントロールできます。</span><span class="lang-en">Emergence means the whole system's behavior can be explained simply, without having to track every small detail. Countless molecules are flying around in the air, but we don't need to follow each one — we can control the air with just two numbers: temperature and pressure.</span></p>
+
+    <p class="body-text"><span class="lang-ja">同じように、組織にも「温度」や「圧力」にあたるものがあるはずです。それは、一人ひとりの行動計画ではありません。<b>会議に誰を呼ぶか。誰と誰が話すか。違う意見をどこまで受け入れるか。誰が最終判断をするか。何を基準に評価するか。</b>こうしたものを変えると、組織全体の動きが変わります。</span><span class="lang-en">Organizations should have something like "temperature" and "pressure" too. It isn't a detailed action plan for each person. It's things like: <b>who gets invited to which meetings, who talks to whom, how much disagreement gets tolerated, who makes the final call, and what standard people get evaluated by.</b> Change these, and the whole organization's behavior changes.</span></p>
+
+    <h3 class="sub-heading"><span class="lang-ja">動かして確かめる</span><span class="lang-en">Try It Yourself</span></h3>
+    <p class="body-text"><span class="lang-ja">下のシミュレーションでは、鳥の群れの1羽1羽に、たった3つのルールしか与えられていません。「①近くの仲間とぶつからない ②近くの仲間と同じ方向を向く ③群れの真ん中に寄る」。この3つだけです。</span><span class="lang-en">In the simulation below, each bird follows only three rules: (1) don't crash into nearby birds, (2) match direction with nearby birds, (3) move toward the center of nearby birds. That's all — just three rules.</span></p>
+
+    <div class="sim-block">
+      <div class="sim-block-head">
+        <div>
+          <h4><span class="lang-ja">🐦 群れ形成シミュレーション</span><span class="lang-en">🐦 Flocking Simulation</span></h4>
+          <span class="desc"><span class="lang-ja">3つの単純なルールから、群れという1つのまとまりが生まれる</span><span class="lang-en">Three simple rules produce one unified flock</span></span>
+        </div>
+        <a class="fullscreen-link" id="link-boids" href="html/boids_simulation.html" target="_blank" rel="noopener"><span class="lang-ja">全画面で開く ↗</span><span class="lang-en">Open Fullscreen ↗</span></a>
+      </div>
+      <div class="sim-frame-wrap">
+        <iframe id="frame-boids" src="html/boids_simulation.html" style="height:680px;" loading="lazy" title="Flocking Simulation"></iframe>
+      </div>
+      <div class="tags">
+        <span class="tag">Reynolds, Boids (1987)</span>
+        <span class="tag"><span class="lang-ja">小さなルール → 全体の秩序</span><span class="lang-en">Small rules → order in the whole</span></span>
+        <span class="tag"><span class="lang-ja">温度と圧力の考え方</span><span class="lang-en">The temperature-and-pressure idea</span></span>
+      </div>
+      <div class="takeaway">
+        <span class="label"><span class="lang-ja">読み取り方</span><span class="lang-en">How to Read This</span></span>
+        <span class="lang-ja"><b>予測できないのは1羽1羽の動き、予測できるのは群れ全体の形です。</b>10分後に1羽がどこにいるかは誰にも分かりません。でも「群れができる」「このルールを変えると群れが散る、または固まる」は確実に言えます。これは、さっき説明した「温度と圧力」と同じ考え方です。<br><br>このシミュレーションは、人間が3つのルールを決めて作ったものです。ここから分かるのは、<b>「よく選んだ少しのルールがあれば、全体としてまとまった動きが安定して生まれる」</b>ということです。設計できるのはルールであって、1羽1羽の動きではありません。</span><span class="lang-en"><b>What you can't predict is where any single bird will be. What you can predict is the shape of the whole flock.</b> Nobody can say where one bird will be in ten minutes. But you can say for certain that a flock will form, and that changing these rules will make the flock scatter or tighten up. That's the same idea as temperature and pressure.<br><br>This simulation runs on three rules that a person chose. What it shows is that <b>a few well-chosen rules can reliably produce stable, coordinated behavior for the whole group.</b> What you can design is the rules — not each bird's movement.</span>
+      </div>
+    </div>
+
+    <p class="body-text"><span class="lang-ja">ただし鳥には、考えも、感情も、損得勘定も、上下関係もありません。人間の組織にはそれが全部あります。この群れのシミュレーションが見せてくれるのは、<b>「単純なルールから全体の動きが生まれる」という仕組みそのもの</b>です。組織が実際にこう動くことの証拠ではありません。</span><span class="lang-en">Birds, though, have no thoughts, no emotions, no cost-benefit calculations, and no hierarchy. Human organizations have all of these. What this flocking simulation shows is <b>the mechanism itself — simple rules producing whole-group behavior.</b> It is not proof that organizations actually work this way.</span></p>
+
+    <p class="body-text"><span class="lang-ja">クラカウアーたちは、創発を2つのタイプに分けています。単純な部品同士がぶつかり合って複雑さが生まれるタイプと、もともと複雑な材料（学習した経験など）から高い能力が生まれるタイプです。生き物や経済、そして人間の組織は、後者のタイプにあたります。組織のメンバーは1人1人がすでにたくさんのことを学んで経験を積んだ存在で、鳥のシミュレーションの1羽のような「何も知らない存在」とは違います。</span><span class="lang-en">Krakauer and colleagues divide emergence into two types: one where complexity arises from simple parts interacting, and one where high-level ability arises from material that was already complex, like learned experience. Living things, economies, and human organizations belong to the second type. Each member of an organization has already learned a great deal and built up experience — unlike a single bird in the simulation, which starts out knowing nothing.</span></p>
+  </section>
+
+  <section id="ashby">
+    <h2 class="section-title"><span class="lang-ja">02 &nbsp;管理の限界</span><span class="lang-en">02 &nbsp;The Limits of Control</span></h2>
+    <h2 class="section-heading"><span class="lang-ja">中央で全部コントロールできない理由</span><span class="lang-en">Why Headquarters Can't Control Everything</span></h2>
+
+    <p class="body-text"><span class="lang-ja">「中央が現場のすべてをコントロールすることはできない」という話を、きちんとした理論として示したのは、サイバネティクスという分野の研究者、W・R・アシュビーです。</span><span class="lang-en">The idea that headquarters can't control everything happening in the field was put on rigorous theoretical footing by W. Ross Ashby, a researcher in the field of cybernetics.</span></p>
+
+    <blockquote class="src">
+      <span class="lang-ja"><b>多様性だけが、多様性に対抗できる。</b>（Only variety can destroy variety.）<br>
+      コントロールする側が用意できるパターンの数が、コントロールされる側で実際に起きるパターンの数より少なければ、その差の分だけコントロールは効かない。</span><span class="lang-en"><b>Only variety can destroy variety.</b><br>
+      If the number of patterns the controller can produce is smaller than the number of patterns that actually occur on the controlled side, control fails by exactly that gap.</span>
+      <span class="attrib">W. Ross Ashby (1956). <i>An Introduction to Cybernetics</i> &mdash; <span class="lang-ja">必要多様性の法則</span><span class="lang-en">the Law of Requisite Variety</span></span>
+    </blockquote>
+
+    <p class="body-text"><span class="lang-ja">これは感覚論ではなく、情報の理論として証明できることです。本社が現場より単純にしか物事を見られないなら、本社が現場のすべてを設計・統制することは、そもそも不可能なのです。</span><span class="lang-en">This isn't a matter of opinion — it can be proven as a theory of information. If headquarters can only perceive things more simply than the field does, then headquarters designing and controlling everything in the field is impossible from the start.</span></p>
+
+    <p class="body-text"><span class="lang-ja">この法則には、解き方が3つあります。</span><span class="lang-en">There are three ways to solve this problem.</span></p>
+
+    <div class="card-grid cols-3">
+      <div class="plain-card">
+        <div class="kicker"><span class="lang-ja">やり方 A</span><span class="lang-en">Option A</span></div>
+        <h4><span class="lang-ja">本社が見られる幅を増やす</span><span class="lang-en">Widen what headquarters can see</span></h4>
+        <p><span class="lang-ja">データや観測の仕組み、専門の人を増やして、本社がもっと多くの状況を見分けられるようにする。コストはかかるが、有効な場面もある（航空管制、金融のリスク管理など）。</span><span class="lang-en">Add more data, better observation systems, and more specialists so headquarters can tell more situations apart. This costs money, but it works well in some settings, like air traffic control or financial risk management.</span></p>
+      </div>
+      <div class="plain-card">
+        <div class="kicker"><span class="lang-ja">やり方 B</span><span class="lang-en">Option B</span></div>
+        <h4><span class="lang-ja">現場側の幅を減らす</span><span class="lang-en">Narrow the field's options</span></h4>
+        <p><span class="lang-ja">標準化・マニュアル化・チェックリストで、選べる選択肢そのものを減らす。「設計」がいちばんうまく効くやり方。</span><span class="lang-en">Use standardization, manuals, and checklists to reduce the number of choices available in the first place. This is where "design" works best.</span></p>
+      </div>
+      <div class="plain-card">
+        <div class="kicker"><span class="lang-ja">やり方 C</span><span class="lang-en">Option C</span></div>
+        <h4><span class="lang-ja">判断を現場に渡す</span><span class="lang-en">Hand judgment to the field</span></h4>
+        <p><span class="lang-ja">たくさんのパターンを知っている現場の人に、決める権利を渡す。権限委譲は理想論ではなく、<b>この法則を解く現実的な方法の1つ</b>です。</span><span class="lang-en">Give decision-making authority to the people in the field who know the most patterns. Delegating authority isn't idealism — it's <b>one practical way to solve this law.</b></span></p>
+      </div>
+    </div>
+
+    <p class="body-text" style="margin-top:20px;"><span class="lang-ja">航空会社は、離着陸の手順ではBを徹底し（チェックリスト通りにやる）、非常事態が起きたときは機長にCを与えます（その場の最終判断を任せる）。<b>「この仕事は本社では対応しきれないパターンの多さだから、Cを選ぶ」</b>という順番で考えるのが、この法則の正しい使い方です。</span><span class="lang-en">Airlines enforce Option B strictly for takeoff and landing procedures (follow the checklist exactly), and give Option C to the captain in an emergency (trust their judgment on the spot). <b>The right way to use this law is to reason in this order: "this task has more patterns than headquarters can handle, so we choose C."</b></span></p>
+
+    <p class="body-text"><span class="lang-ja">ここまでの話をつなげると、こういう流れになります。</span><span class="lang-en">Putting this together, the chain of reasoning looks like this.</span></p>
+
+    <div class="logic-chain"><span class="lang-ja">全体の法則は、細かい部分から組み立てて導けない（アンダーソン, 1972年）
+　　↓
+でも全体には、シンプルな説明が成り立つ。それが操作の取っ手になる（クラカウアーたち, 2025年）
+　　↓
+だから、コントロールする対象は「1人ひとりの行動」から「全体のルールや仕組み」に変わる
+　　↓
+そのうえで、本社が扱えるパターンの数を超える場所では、コントロールは届かない（アシュビー, 1956年）
+　　↓
+だから、場所ごとに A（本社を強化）／B（標準化）／C（現場に委譲）を選ぶ</span><span class="lang-en">The laws of the whole can't be derived by assembling small parts (Anderson, 1972)
+    ↓
+But the whole still admits a simple description. That description becomes a lever (Krakauer et al., 2025)
+    ↓
+So the target of control shifts from "each person's actions" to "the rules and structures of the whole"
+    ↓
+And where the number of patterns exceeds what headquarters can handle, control doesn't reach (Ashby, 1956)
+    ↓
+So for each situation, choose A (strengthen HQ), B (standardize), or C (delegate to the field)</span></div>
+
+    <p class="body-text"><span class="lang-ja">この流れの中で、2番目と4番目がよく省略されます。省略すると、「部分から全体は説明できないのだから、コントロールなんて無理で、リーダーは場を整えるだけでいい」という単純な話になってしまいます。でも、そこには2つの飛躍があります。</span><span class="lang-en">Steps two and four in this chain often get skipped. Skip them, and you end up with an oversimplified story: "the whole can't be explained from the parts, so control is impossible, and leaders should just tend the conditions." But that jumps over two gaps in the logic.</span></p>
+
+    <p class="body-text"><span class="lang-ja">1つ目。<b>「組み立てて説明できない」ことと「コントロールできない」ことは、別の話です。</b>2つ目。<b>「完全にはコントロールできない」から「だから場を整えるだけでいい」は、論理的には導けません。</b>一部分だけでもコントロールできるなら、それもコントロールです。中央集権的なやり方がうまくいかなくなるのは、「本質的に間違っているから」ではなく、<b>本社が扱えるパターンの数を、現場の複雑さが超えてしまったとき</b>だけです。その外側では、設計もコントロールもちゃんと機能します。</span><span class="lang-en">First: <b>not being explainable by assembling the parts is a different matter from not being controllable.</b> Second: <b>"control is never complete" does not logically lead to "so leaders should only tend the conditions."</b> Controlling even part of something is still control. Centralized approaches stop working not because they're fundamentally wrong, but only when <b>the field's complexity exceeds the number of patterns headquarters can handle.</b> Outside that limit, design and control both work fine.</span></p>
+  </section>
+  <section id="threshold">
+    <h2 class="section-title"><span class="lang-ja">03 &nbsp;広まり方</span><span class="lang-en">03 &nbsp;How Things Spread</span></h2>
+    <h2 class="section-heading"><span class="lang-ja">なぜ号令だけではルールが広まらないのか</span><span class="lang-en">Why a Directive Alone Doesn't Spread a Rule</span></h2>
+    <p class="body-text"><span class="lang-ja">前の章で見たアシュビーの法則は、「本社が扱えるパターンの数」という情報量の話でした。ここではもう1つ、号令だけでは組織が動かない理由を見ます。<b>ルールを決めること自体は設計です。でも、決めたルールが実際に組織にどう広まるかは、号令では制御できない創発的な過程</b>だからです。</span><span class="lang-en">Ashby's Law from the last section was about information — the number of patterns headquarters can handle. Here's a second reason a directive alone doesn't move an organization. <b>Deciding on a rule is a design act. But how that rule actually spreads through the organization is an emergent process that a directive alone can't control.</b></span></p>
+    <p class="lead"><span class="lang-ja">創発が起きる場面での変化は、まっすぐには進みません。しばらく何も起きず、あるところを超えた瞬間に、一気に動き出します。これは、やる気や熱意の問題ではなく、<b>「しきい値」の仕組み</b>の問題です。</span><span class="lang-en">Change doesn't move in a straight line when emergence is involved. Nothing seems to happen for a while, and then the moment a certain point is crossed, everything moves at once. This isn't about motivation or enthusiasm — it's about <b>how thresholds work.</b></span></p>
+
+    <div class="sim-block">
+      <div class="sim-block-head">
+        <div>
+          <h4><span class="lang-ja">📋 ルール浸透シミュレーション</span><span class="lang-en">📋 Rule Diffusion Simulation</span></h4>
+          <span class="desc"><span class="lang-ja">あるところまでは何も起きず、超えた瞬間に一気に広まる</span><span class="lang-en">Nothing happens until a point is crossed, then it spreads all at once</span></span>
+        </div>
+        <a class="fullscreen-link" id="link-threshold" href="html/rule_diffusion.html" target="_blank" rel="noopener"><span class="lang-ja">全画面で開く ↗</span><span class="lang-en">Open Fullscreen ↗</span></a>
+      </div>
+      <div class="sim-frame-wrap">
+        <iframe id="frame-threshold" src="html/rule_diffusion.html" style="height:720px;" loading="lazy" title="Rule Diffusion Simulation"></iframe>
+      </div>
+      <div class="tags">
+        <span class="tag">Granovetter (1978)</span>
+        <span class="tag">Centola &amp; Macy (2007)</span>
+        <span class="tag"><span class="lang-ja">広まり方のモデル</span><span class="lang-en">A model of how things spread</span></span>
+      </div>
+      <div class="takeaway">
+        <span class="label"><span class="lang-ja">読み取り方</span><span class="lang-en">How to Read This</span></span>
+        <span class="lang-ja">灰色は「まだ守っていない人」、緑は「もう守っている人」、オレンジの縁取りは「まわりのかなり多くが守るまで、自分は守らない人（抵抗する人）」です。<b>何も変わらない時期があるのは失敗ではありません。しきい値の仕組みから、当然そうなるのです。</b>ここで号令を大きくしても、ほとんど効果はありません。<br><br>効果があるレバーは2つです。<b>①しきい値が低い人（すぐ動く人）から巻き込む。②接触の仕方を変える。</b>行動を変えるには、1人からではなく複数の知り合いから同時に働きかけられることが必要なので、広く薄く伝えるより、狭く濃く伝えるほうが効きます。抵抗する人を直接説得しに行くのは、コストの割に一番効かないやり方です。まわりが変われば、その人たちは自然に動きます。</span><span class="lang-en">Gray means "not yet complying," green means "already complying," and an orange outline marks someone who resists — they won't comply until most of the people around them already do. <b>A period where nothing seems to change isn't a failure. It's exactly what threshold dynamics predict.</b> Making the directive louder at this point barely helps.<br><br>Two levers actually work: <b>(1) bring in the people with low thresholds — the ones who move quickly — first. (2) Change how contact happens.</b> Since changing behavior usually requires being nudged by several acquaintances at once, not just one, reaching a small group deeply beats reaching a large group thinly. Directly trying to persuade the resisters is the least effective approach for the cost involved. Once the people around them change, resisters tend to move on their own.</span>
+      </div>
+    </div>
+
+    <p class="body-text"><span class="lang-ja">「組織の自然なリズムに合わせる」「じっと我慢する時期を経て、急に伸びる」といった話は、このしきい値の性質とつじつまが合いますし、実感にも合います。ただし、これはきちんとした証明があるわけではなく、経験則として受け止めるのが正確です。</span><span class="lang-en">Ideas like "work with the organization's natural rhythm" or "endure a quiet period before a sudden leap" line up with how thresholds behave, and they match people's intuition. That said, there's no rigorous proof of this — it's more accurate to treat it as a rule of thumb.</span></p>
+  </section>
+
+  <section id="split">
+    <h2 class="section-title"><span class="lang-ja">04 &nbsp;使い分けの基準</span><span class="lang-en">04 &nbsp;How to Choose</span></h2>
+    <h2 class="section-heading"><span class="lang-ja">設計が向いている仕事と、創発が向いている仕事</span><span class="lang-en">Work Suited to Design, and Work Suited to Emergence</span></h2>
+    <p class="body-text"><span class="lang-ja">§02で見た3つの解き方のうち、実際の仕事の現場でよく使われるのはBとCです。<b>B（標準化・マニュアル化）は、ルールを決めて任せる「設計」にあたり、C（現場に判断を渡す）は、現場の判断に委ねる「創発」にあたります。</b>ここからは、目の前の仕事にBとCのどちらを選ぶべきかを考えます。</span><span class="lang-en">Of the three ways to solve Ashby's Law from section 2, B and C are the ones actually used day to day. <b>Option B — standardizing and setting fixed rules — is what we'll call "design." Option C — handing judgment to the field — is what we'll call "emergence."</b> From here, the question is which of the two, design or emergence, fits the work in front of you.</span></p>
+    <p class="lead"><span class="lang-ja">設計と創発、どちらを選ぶべきかは、組織が新しいか古いかではなく、<b>その仕事の性質</b>で決まります。見るべきポイントは4つです。</span><span class="lang-en">Whether to choose design or emergence isn't about whether an organization is new or old — it depends on <b>the nature of the work itself.</b> There are four things to look at.</span></p>
+
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th><span class="lang-ja">見るポイント</span><span class="lang-en">What to look at</span></th>
+            <th class="col-design"><span class="lang-ja">設計（きっちり決める）が向いている</span><span class="lang-en">Design (fixed rules) fits</span></th>
+            <th class="col-emerge"><span class="lang-ja">創発（現場に任せる）が向いている</span><span class="lang-en">Emergence (leave it to the field) fits</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="axis"><span class="lang-ja">まわりの変化</span><span class="lang-en">How much things change</span></td>
+            <td class="design"><span class="lang-ja">少ない。状況がずっと同じ</span><span class="lang-en">Little. The situation stays the same</span></td>
+            <td class="emerge"><span class="lang-ja">多い。前提が数ヶ月で変わる</span><span class="lang-en">A lot. Assumptions change within months</span></td>
+          </tr>
+          <tr>
+            <td class="axis"><span class="lang-ja">情報がどこにあるか</span><span class="lang-en">Where the information is</span></td>
+            <td class="design"><span class="lang-ja">本社に集められる。数字にしやすい</span><span class="lang-en">Can be gathered at HQ. Easy to quantify</span></td>
+            <td class="emerge"><span class="lang-ja">現場にしかない。言葉にしにくい</span><span class="lang-en">Only exists in the field. Hard to put into words</span></td>
+          </tr>
+          <tr>
+            <td class="axis"><span class="lang-ja">失敗の重さ</span><span class="lang-en">How costly failure is</span></td>
+            <td class="design"><span class="lang-ja">取り返しがつかない。人の命やお金に関わる</span><span class="lang-en">Irreversible. Involves lives or money</span></td>
+            <td class="emerge"><span class="lang-ja">やり直せる。安く試せる</span><span class="lang-en">Recoverable. Cheap to try again</span></td>
+          </tr>
+          <tr>
+            <td class="axis"><span class="lang-ja">繰り返しの多さ</span><span class="lang-en">How repetitive it is</span></td>
+            <td class="design"><span class="lang-ja">同じ作業が毎回ある</span><span class="lang-en">The same task happens every time</span></td>
+            <td class="emerge"><span class="lang-ja">毎回条件が違う。一度きりが多い</span><span class="lang-en">Conditions differ each time. Often one-off</span></td>
+          </tr>
+          <tr>
+            <td class="axis"><span class="lang-ja">具体例</span><span class="lang-en">Examples</span></td>
+            <td class="design"><span class="lang-ja">給料の計算、経理、安全のルール、法律への対応、飛行機の離着陸の手順、感染対策</span><span class="lang-en">Payroll, accounting, safety rules, legal compliance, takeoff/landing procedures, infection control</span></td>
+            <td class="emerge"><span class="lang-ja">新しい商品を考える、研究開発、お客さんへのその場の対応、手術中の判断、新規事業</span><span class="lang-en">Coming up with new products, R&amp;D, handling customers on the spot, decisions during surgery, new ventures</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout">
+      <h4><span class="lang-ja">ほとんどの組織は、この両方を同時に抱えている</span><span class="lang-en">Most organizations carry both at once</span></h4>
+      <p><span class="lang-ja">手術室は、器具の数を数えたり感染を防いだりする場面ではものすごくきっちりしています（手順を1つでも飛ばしてはいけない）。でも、手術中に予想外のことが起きたときは、その場でメンバーの役割を組み替えます。この2つが、同じチームの中で、同じ日に起きています。</span><span class="lang-en">An operating room is extremely strict about counting instruments and preventing infection — you can't skip a single step. But when something unexpected happens mid-surgery, the team reshuffles roles on the spot. Both of these happen in the same team, on the same day.</span></p>
+      <p><span class="lang-ja">やるべきことは、「アジャイルな組織になる」ことではありません。<b>自分たちの仕事を4つのポイントで仕分けて、それぞれに合ったやり方をあてはめること</b>です。失敗は両方の方向で起きます。きっちり決めるべき仕事を現場任せにしてしまうこと（安全のルールを現場の裁量にする）。逆に、現場に任せるべき仕事をきっちり管理しすぎること（新しいことに挑戦する仕事を、細かい数値目標でしばる）。後者ばかりが問題にされがちですが、前者は人の命に関わります。</span><span class="lang-en">The goal isn't to "become an agile organization." It's to <b>sort your work using these four points and apply the right approach to each.</b> Failure happens in both directions: leaving work that should be tightly controlled up to the field's discretion (like treating safety rules as optional), or over-managing work that should be left to the field (like locking down new ventures with detailed numeric targets). The second failure gets talked about more, but the first one can cost lives.</span></p>
+    </div>
+
+    <figure class="diagram">
+      <img src="images/Designed_versus_Emergent_Order.jpg" alt="Designed order vs. emergent order">
+      <figcaption><span class="lang-ja">きっちり設計された組織（航空会社、手術室、半導体工場、原発など）は、実は長生きで信頼性の高い組織でもあります。設計が弱くなるのは、まわりの変化が本社の対応力を超えたときです。この図は「2つのやり方がある」ということを示すためのものとして見てください。</span><span class="lang-en">Tightly designed organizations — airlines, operating rooms, semiconductor plants, nuclear plants — actually tend to be long-lived and highly reliable. Design breaks down only when change outpaces what headquarters can handle. Read this figure simply as showing that two approaches exist.</span></figcaption>
+    </figure>
+  </section>
+
+  <section id="duet">
+    <h2 class="section-title"><span class="lang-ja">05 &nbsp;そろえると組み合わせる</span><span class="lang-en">05 &nbsp;Aligning and Combining</span></h2>
+    <h2 class="section-heading"><span class="lang-ja">創発には「そろえる」方向と「組み合わせる」方向がある</span><span class="lang-en">Emergence Has an Aligning Direction and a Combining Direction</span></h2>
+    <p class="body-text"><span class="lang-ja">前の章では、仕事を「設計」と「創発」に仕分けました。ここからは主語を組織全体に移し、<b>「創発に任せる」と決めた仕事の中で、実際に何が起きているか</b>を見ていきます。組織全体の性質は、メンバー1人1人の行動が積み上がってできています。その積み上がり方には、大きく分けて2つの道筋があります。</span><span class="lang-en">The last section sorted individual pieces of work into "design" and "emergence." From here, the subject shifts to <b>the organization as a whole: what actually happens, inside the work you leave emergent.</b> Any organization-wide property is built up from what each individual member does. Broadly, that buildup can take one of two routes.</span></p>
+    <p class="lead"><span class="lang-ja">コズロフスキーとクライン（2000年）という研究者は、小さな個人の動きが組織全体の性質に育つまでの道筋を2つに分けました。<b>「合成」</b>はメンバーの性質が似てきて、みんなで共有される方向。<b>「編成」</b>は、それぞれ違うものが組み合わさって、全体としての力になる方向です。</span><span class="lang-en">Researchers Kozlowski and Klein (2000) split the path from small individual behaviors to whole-organization properties into two routes. <b>"Composition"</b> is the direction where members become more alike and share something in common. <b>"Compilation"</b> is the direction where different things combine into a single collective strength.</span></p>
+
+    <p class="body-text"><span class="lang-ja">どちらも、複数のメンバーがやり取りしながら1つの組織的な性質が出来上がっていく、という点では同じです。分かれ道になるのは1点だけです。<b>その性質は、メンバー同士が似てくることで生まれるのか（合成）、それともメンバー同士の違いがうまく組み合わさることで生まれるのか（編成）。</b>個人1人だけに向けた働きかけの話ではなく、どちらも人と人とのやり取りの中で起きる現象です。</span><span class="lang-en">Both are alike in this respect: a single organization-wide property forms out of multiple members interacting with each other. There's only one fork in the road. <b>Does that property come from members becoming more alike (composition), or from members' differences combining well (compilation)?</b> Neither is about acting on one individual in isolation — both are things that happen through interaction between people.</span></p>
+
+    <h3 class="sub-heading"><span class="lang-ja">合成的創発：そろうことで土台ができる</span><span class="lang-en">Composition: Alignment Builds the Foundation</span></h3>
+    <p class="body-text"><span class="lang-ja">1人1人の考え方や気持ちが、日々のやり取りを通じて、共通の文化やルールに近づいていくプロセスです。会社の文化、心理的な安心感、みんなが共有するビジョンが、ここに入ります。共有される性質は、必ず1人1人から生まれます。だから会社の文化を評価するときは、上司の主観的な思い込みに頼らず、メンバー1人1人が実際にどう感じているかを、きちんと調べる必要があります。</span><span class="lang-en">This is the process where individual thoughts and feelings converge toward a shared culture or shared rules through daily interaction. Company culture, psychological safety, and a shared vision all belong here. A shared property always arises from individuals. So when you assess a company's culture, you need to actually check how each person feels — not rely on a manager's subjective impression.</span></p>
+
+    <p class="body-text"><span class="lang-ja">では、どのように調べるのか。簡単な方法は、メンバー1人1人に同じ質問をして、答えがどれくらいバラバラかを見ることです。「このチームが目指している方向を一言で言うと？」のような質問をして、答えがほぼ同じ言葉に集まるならそろっている状態、バラバラならまだそろっていません。</span><span class="lang-en">So how do you actually check this? The simple way is to ask every member the same question, and look at how much the answers vary. Ask something like "In one sentence, what is this team aiming for?" — if the answers cluster around nearly the same words, you're aligned. If they scatter, you're not there yet.</span></p>
+
+    <p class="body-text"><span class="lang-ja">もう少しきちんと確かめたいときは、組織研究で使われている2つの指標が参考になります。メンバー同士の答えがどれだけ一致しているかを測る<b>「rwg」</b>という指標（ジェームズ, デマリー, ウルフ, 1984年）と、チームの違いがどれだけ個人の答えの違いを説明しているかを測る<b>「ICC」</b>という指標（ブリース, 2000年）です。どちらも数値が高いほど、そろっている度合いが強いということです。§6の3つの質問のうちQ2（「実際にどれくらいそろっているかを見る」）は、まさにこの確認作業にあたります。ここで「ほぼそろっている」と判定されて初めて、合成の土台ができあがったと言えます。</span><span class="lang-en">For a more rigorous check, organizational research offers two useful statistics. <b>rwg</b> (James, Demaree, &amp; Wolf, 1984) measures how closely members' answers match each other, and <b>ICC</b> (Bliese, 2000) measures how much of the difference in individual answers is explained by team membership. Higher numbers on either mean stronger alignment. Question 2 of the three-question check in section 6 — "check how closely they actually match" — is exactly this kind of assessment. Only once that check comes back "nearly identical" can you say the foundation of composition is actually in place.</span></p>
+
+    <div class="sim-block">
+      <div class="sim-block-head">
+        <div>
+          <h4><span class="lang-ja">💬 意見形成シミュレーション</span><span class="lang-en">💬 Opinion Formation Simulation</span></h4>
+          <span class="desc"><span class="lang-ja">「どこまで耳を貸すか」を少し変えるだけで、まとまるか分かれるかが切り替わる</span><span class="lang-en">A small change in how much people listen to differing views flips the outcome between consensus and division</span></span>
+        </div>
+        <a class="fullscreen-link" id="link-opinion" href="html/opinion_dynamics.html" target="_blank" rel="noopener"><span class="lang-ja">全画面で開く ↗</span><span class="lang-en">Open Fullscreen ↗</span></a>
+      </div>
+      <div class="sim-frame-wrap">
+        <iframe id="frame-opinion" src="html/opinion_dynamics.html" style="height:700px;" loading="lazy" title="Opinion Formation Simulation"></iframe>
+      </div>
+      <div class="tags">
+        <span class="tag">Hegselmann&ndash;Krause (2002)</span>
+        <span class="tag"><span class="lang-ja">耳を貸す幅のモデル</span><span class="lang-en">A model of how much people listen</span></span>
+        <span class="tag"><span class="lang-ja">まとまるか、分かれるか</span><span class="lang-en">Consensus or division</span></span>
+      </div>
+      <div class="takeaway">
+        <span class="label"><span class="lang-ja">読み取り方</span><span class="lang-en">How to Read This</span></span>
+        <span class="lang-ja"><b>これが、さっき言った「全体を動かす取っ手」の具体例です。</b>1人を説得しても、全体は変わりません。でも「違う意見にどこまで耳を貸すか」という度合いを少し変えるだけで、全員がまとまった1つの意見にたどり着くか、いくつかのグループに分かれたまま二度とまとまらないかが、大きく切り替わります。<br><br>組織で言うと、変えるべきなのは話し合いの中身ではなく、「誰と誰が話すか」「違う意見をどこまで受け入れるか」という話し合いの仕組みです。<br><br>ただしこのシミュレーションには、上下関係も感情も入っていません。実際の組織では、上司の一言が、この「どこまで耳を貸すか」を大きく変えてしまいます。</span><span class="lang-en"><b>This is a concrete example of the lever that moves the whole system, mentioned earlier.</b> Persuading one person doesn't change the whole group. But a small change in how much people listen to differing opinions flips the outcome dramatically — between everyone converging on one shared opinion, or splitting into groups that never come back together.<br><br>For organizations, what should change isn't the content of discussions, but the structure of discussion itself: who talks to whom, and how much disagreement gets accepted.<br><br>This simulation, though, has no hierarchy and no emotion built in. In a real organization, one comment from a boss can drastically change how much people are willing to listen to others.</span>
+      </div>
+    </div>
+
+    <h3 class="sub-heading"><span class="lang-ja">編成的創発：組み合わさることで力が出る</span><span class="lang-en">Compilation: Combining Produces Strength</span></h3>
+    <p class="body-text"><span class="lang-ja">メンバーそれぞれが違う強みを持ち寄り、それがパズルのピースのように組み合わさって、全体の力になるプロセスです。全員が同じである必要はありません。<b>「誰が何を知っているか」という組み合わせ方</b>こそが大事です。プロのスポーツチームやアジャイルなチームで、全員が同じスキルを持つより、違う役割の人がうまく連携するほうが、高い成果を出せるのと同じです。</span><span class="lang-en">This is the process where each member brings a different strength, and those strengths fit together like puzzle pieces into collective power. Members don't need to be alike. What matters is <b>how "who knows what" combines.</b> Just like a professional sports team or an agile team performs better when different roles work well together, rather than when everyone has the same skill.</span></p>
+
+    <p class="body-text"><span class="lang-ja">このページに、編成的創発を体験するシミュレーションがないのは、手を抜いているからではありません。「組み合わせ方」がケースごとに全然違うので、1つのシンプルなモデルにしにくいという性質があるからです。</span><span class="lang-en">This page has no simulation for compilation, and that's not because we skipped it. It's because how things combine differs so much from case to case that it resists being reduced to one simple model.</span></p>
+
+    <p class="body-text"><span class="lang-ja">これは実務上も大事なヒントです。<b>測りにくいもの、モデルにしにくいものは、経営者の目に入りにくくなります。</b>「アジャイルの本質」と言われながら、編成的創発がいちばん管理されていないのは、おそらくこの「測りにくさ」が理由です。</span><span class="lang-en">This is itself a useful clue for practice: <b>whatever is hard to measure or model tends to escape a manager's attention.</b> Compilation is called "the essence of agile," yet it's probably the least managed of all — likely because it's the hardest to measure.</span></p>
+
+    <div class="callout">
+      <h4><span class="lang-ja">まず「そろえる」、次に「組み合わせる」</span><span class="lang-en">Align First, Then Combine</span></h4>
+      <p><span class="lang-ja">心理的な安心感や共通の価値観（合成）が土台にないと、アジャイル（編成）はうまく機能しません。実務としては説得力のある話です。</span><span class="lang-en">Without a foundation of psychological safety and shared values (composition), agile ways of working (compilation) don't function well. This is a convincing story in practice.</span></p>
+      <p><span class="lang-ja">ただし、これはコズロフスキーとクラインが主張したことではありません。彼らの6つの分類は「創発の種類分け」であって、「順番」についての理論ではないからです。この順番の話は実務的な解釈であり、支えるには心理的安全性の研究など、別の根拠が必要です。</span><span class="lang-en">But this isn't something Kozlowski and Klein actually argued. Their six-way classification is a taxonomy of emergence types, not a theory about sequence. This ordering claim is a practical interpretation, and it needs separate support — like research on psychological safety — to hold up.</span></p>
+    </div>
+  </section>
+
+
+  <section id="types">
+    <h2 class="section-title"><span class="lang-ja">06 &nbsp;タイプと打ち手</span><span class="lang-en">06 &nbsp;Types and Levers</span></h2>
+    <h2 class="section-heading"><span class="lang-ja">6つのタイプを見分けて、効く手を打つ</span><span class="lang-en">Tell the Six Types Apart, Then Act</span></h2>
+
+    <p class="body-text"><span class="lang-ja">前の章では、創発を「そろえる（合成）」と「組み合わせる（編成）」という2つの方向に分けました。ただし実際の組織の指標を見ていくと、この2つだけでは足りない場面があります。たとえば「チームの雰囲気」というものを考えてみます。これはメンバー1人1人の感じ方から成り立っていますが、その成り立ち方にはいくつかのパターンがあります。コズロフスキーとクライン（2000年）は、色々な組織研究を見比べて、そのパターンを6つに整理しました。</span><span class="lang-en">The last section split emergence into two directions: aligning (composition) and combining (compilation). But looking at real organizational metrics, those two categories alone aren't always enough. Take something like "team mood," for example. It's built up from how each individual member feels, but there are several different patterns in how that happens. Kozlowski and Klein (2000) compared a wide range of organizational research and sorted these patterns into six types.</span></p>
+
+    <p class="body-text"><span class="lang-ja">この6つのタイプは、コズロフスキーとクラインが色々な組織研究を見比べてまとめた、分類のための道具です。もともとは「1人1人から集めたデータを、チームや組織全体の指標として合算していいか」を判定するために作られています。</span><span class="lang-en">These six types are a classification tool that Kozlowski and Klein built by comparing organizational research. They were originally designed to judge whether it's valid to aggregate data collected from individuals into a team- or organization-level metric.</span></p>
+
+    <p class="body-text"><span class="lang-ja">ここで使えるのは、<b>「成り立ち方が違えば、効く打ち手も違う」</b>という点です。これは、分類から論理的に導ける話です。6つのタイプと、それぞれに効く打ち手は以下の通りです。</span><span class="lang-en">What's useful here is this: <b>different formation patterns call for different effective levers.</b> That follows logically from the classification itself. Here are the six types, and the lever that works for each.</span></p>
+
+    <div class="card-grid cols-3">
+      <div class="type-card">
+        <div class="num"><span class="lang-ja">① 収束的創発</span><span class="lang-en">1. Convergent Emergence</span></div>
+        <h4><span class="lang-ja">全員が同じことをそろって出す</span><span class="lang-en">Everyone converges on the same value</span></h4>
+        <div class="rule"><span class="lang-ja">みんなで平均に近づく</span><span class="lang-en">Everyone moves toward the average</span></div>
+        <p><span class="lang-ja">マクロな平均に綺麗に収束する。組織の空気、みんなで共有する考え方。</span><span class="lang-en">Cleanly converges on a macro average. Organizational climate, shared mindsets.</span></p>
+        <div class="interv"><span class="lang-ja"><b>効く手：</b>平均を動かす施策。対話や、みんなで集まる場、何度も同じメッセージを伝えること。全員に同じように効く、数少ないタイプ。</span><span class="lang-en"><b>What works:</b> moving the average — dialogue, shared gatherings, repeating the same message. One of the few types where the same lever works for everyone equally.</span></div>
+      </div>
+      <div class="type-card">
+        <div class="num"><span class="lang-ja">② プール型制限創発</span><span class="lang-en">2. Pooled Constrained Emergence</span></div>
+        <h4><span class="lang-ja">量は違うが最低ラインがある</span><span class="lang-en">Amounts differ, but there's a floor</span></h4>
+        <div class="rule"><span class="lang-ja">最低ラインが決まっている</span><span class="lang-en">A floor is set</span></div>
+        <p><span class="lang-ja">出す量は人によって違うが、システムが最低ラインを縛っている。営業所の売上など。</span><span class="lang-en">Individual output varies, but the system enforces a minimum. Sales branch revenue, for example.</span></p>
+        <div class="interv"><span class="lang-ja"><b>効く手：</b>最低ラインのルールを作る。底上げしたいなら、平均に働きかけるより、最低ラインを決めるほうが効く。</span><span class="lang-en"><b>What works:</b> setting floor rules. To raise the bottom, defining a minimum works better than trying to move the average.</span></div>
+      </div>
+      <div class="type-card">
+        <div class="num"><span class="lang-ja">③ プール型無制限創発</span><span class="lang-en">3. Pooled Unconstrained Emergence</span></div>
+        <h4><span class="lang-ja">上限も下限もなく積み上がる</span><span class="lang-en">Adds up with no ceiling or floor</span></h4>
+        <div class="rule"><span class="lang-ja">そのまま足し合わせる</span><span class="lang-en">Simply summed together</span></div>
+        <p><span class="lang-ja">バラつきが大きく、手を抜いてもそのまま合算される。欠勤率、離職率など。</span><span class="lang-en">Large variation, and any slacking off gets summed in directly. Absenteeism, turnover rate, for example.</span></p>
+        <div class="interv"><span class="lang-ja"><b>効く手：</b>合計を増やしたいなら、人数を増やすほうが速い。平均だけを見ると実態を見誤るので、バラつきそのものを見ること。</span><span class="lang-en"><b>What works:</b> to raise the total, adding more people is faster than moving the average. Watching only the average misreads what's really going on — look at the spread itself.</span></div>
+      </div>
+      <div class="type-card">
+        <div class="num"><span class="lang-ja">④ 最小値／最大値創発</span><span class="lang-en">4. Min/Max Emergence</span></div>
+        <h4><span class="lang-ja">1人が全体を決めてしまう</span><span class="lang-en">One person decides for everyone</span></h4>
+        <div class="rule"><span class="lang-ja">いちばん弱い人／強い人</span><span class="lang-en">The weakest or strongest person</span></div>
+        <p><span class="lang-ja">いちばん弱い人、またはいちばん強い人が、全体を決めてしまう。登山チームの速度、裁判員の判決など。</span><span class="lang-en">The weakest or the strongest person determines the whole outcome. A climbing team's pace, a jury's verdict, for example.</span></p>
+        <div class="interv"><span class="lang-ja"><b>効く手：</b>弱い人が決めるタイプなら、<b>そのボトルネックだけ</b>を直す（平均を上げても意味がない）。強い人が決めるタイプなら、その1人に集中投資する。</span><span class="lang-en"><b>What works:</b> if the weakest link decides, fix <b>that specific bottleneck</b> — raising the average does nothing. If the strongest decides, concentrate investment on that one person.</span></div>
+      </div>
+      <div class="type-card">
+        <div class="num"><span class="lang-ja">⑤ 分散型創発</span><span class="lang-en">5. Variance Emergence</span></div>
+        <h4><span class="lang-ja">バラつき自体が特徴になる</span><span class="lang-en">The variation itself is the feature</span></h4>
+        <div class="rule"><span class="lang-ja">バラつきが価値</span><span class="lang-en">Variation is the value</span></div>
+        <p><span class="lang-ja">平均ではなく、メンバー同士の違いの大きさそのものが、組織の特徴になる。多様性、規範がどれだけ根づいているかなど。</span><span class="lang-en">Not the average, but the size of the differences between members, defines the organization's character. Diversity, how deeply norms have taken root, for example.</span></p>
+        <div class="interv"><span class="lang-ja"><b>効く手：</b>バラつきを増やすか減らすか、それ自体が目的になる。みんなを同じにする施策が、逆効果になることもある。</span><span class="lang-en"><b>What works:</b> increasing or decreasing the variation is itself the goal. Measures that make everyone the same can backfire here.</span></div>
+      </div>
+      <div class="type-card">
+        <div class="num"><span class="lang-ja">⑥ パターン型創発</span><span class="lang-en">6. Pattern Emergence</span></div>
+        <h4><span class="lang-ja">組み合わさり方が価値を生む</span><span class="lang-en">The way things combine creates value</span></h4>
+        <div class="rule"><span class="lang-ja">役割の噛み合わせ</span><span class="lang-en">How roles interlock</span></div>
+        <p><span class="lang-ja">違う役割を持つ人がうまく組み合わさって、全体の力になる。誰が何を知っているかを覚えている関係、アジャイルチームなど。</span><span class="lang-en">People in different roles combine well to create collective strength. Transactive memory (who remembers what others know), agile teams, for example.</span></p>
+        <div class="interv"><span class="lang-ja"><b>効く手：</b>1人1人ではなく<b>「組み合わせ」</b>を設計する。誰が何を知っているかを見える化する。1人ずつの評価は意味を持たない。</span><span class="lang-en"><b>What works:</b> design the combination, not each individual. Make who-knows-what visible. Evaluating people one by one doesn't mean much here.</span></div>
+      </div>
+    </div>
+
+    <p class="body-text" style="margin-top:22px;"><span class="lang-ja"><b>使い方はシンプルです。</b>動かしたい組織の指標を1つ選び、「これはどのタイプか」を考えます。それだけで、打つべき手が変わります。よくある失敗は、本当は「いちばん弱い人が全体を決めるタイプ」の指標に対して、全員向けの研修という「そろえる」タイプの手を打ってしまうことです。平均は上がっても、指標そのものは動きません。</span><span class="lang-en"><b>Using this is simple.</b> Pick one organizational metric you want to move, and ask which type it is. That alone changes what lever you should pull. A common mistake is applying an "alignment" lever — like training for everyone — to a metric that's actually a "weakest link decides" type. The average goes up, but the metric itself doesn't budge.</span></p>
+
+    <h3 class="sub-heading"><span class="lang-ja">自分のチームに当てはめる</span><span class="lang-en">Applying This to Your Own Team</span></h3>
+    <p class="body-text"><span class="lang-ja">ここでいう指標とは、「チームの雰囲気」「営業所の売上」「欠勤率」のように、上の6枚のカードに出てきたのと同じ、あなたが実際に良くしたい・動かしたいと思っている組織の数字や状態のことです。</span><span class="lang-en">The "metric" here means an organizational number or state you actually want to improve or move — things like "team mood," "sales revenue," or "absenteeism," the same kind of thing shown in the six cards above.</span></p>
+
+    <h3 class="sub-heading"><span class="lang-ja">指標にはどんなカテゴリがあるか</span><span class="lang-en">What Categories of Metrics Are There?</span></h3>
+    <p class="body-text"><span class="lang-ja">組織で実際に使われている指標を大まかに分けると、次のようなカテゴリがあります。（これはコズロフスキーとクラインの分類ではなく、実務でよく使われる切り口をまとめた、実務的な整理です。）</span><span class="lang-en">Organizational metrics broadly fall into categories like these. (This isn't Kozlowski and Klein's own classification — it's a practical grouping of measurement angles commonly used in practice.)</span></p>
+
+    <div class="card-grid cols-3">
+      <div class="plain-card">
+        <div class="kicker"><span class="lang-ja">事業成果</span><span class="lang-en">Business Outcomes</span></div>
+        <h4><span class="lang-ja">売上・利益・生産量など</span><span class="lang-en">Revenue, Profit, Output</span></h4>
+        <p><span class="lang-ja">事業の結果そのものを測る指標です。例：営業所の売上。</span><span class="lang-en">Metrics that measure the business result itself. Example: sales branch revenue.</span></p>
+      </div>
+      <div class="plain-card">
+        <div class="kicker"><span class="lang-ja">定着・稼働</span><span class="lang-en">Retention &amp; Attendance</span></div>
+        <h4><span class="lang-ja">出勤・在籍の状態</span><span class="lang-en">Showing Up and Staying</span></h4>
+        <p><span class="lang-ja">メンバーがどれだけ組織にとどまり、働き続けているかを測る指標です。例：欠勤率、離職率。</span><span class="lang-en">Metrics measuring how much members stay with and keep working for the organization. Example: absenteeism, turnover rate.</span></p>
+      </div>
+      <div class="plain-card">
+        <div class="kicker"><span class="lang-ja">組織風土・意識</span><span class="lang-en">Climate &amp; Shared Mindset</span></div>
+        <h4><span class="lang-ja">気持ちや考え方のそろい方</span><span class="lang-en">How Aligned Feelings and Thinking Are</span></h4>
+        <p><span class="lang-ja">メンバーの気持ちや考え方がどれだけそろっているかを測る指標です。例：チームの雰囲気、心理的安全性。</span><span class="lang-en">Metrics measuring how aligned members' feelings and thinking are. Example: team mood, psychological safety.</span></p>
+      </div>
+      <div class="plain-card">
+        <div class="kicker"><span class="lang-ja">人材の多様性</span><span class="lang-en">Workforce Diversity</span></div>
+        <h4><span class="lang-ja">違いの大きさそのもの</span><span class="lang-en">The Size of Differences Itself</span></h4>
+        <p><span class="lang-ja">メンバー同士の違いの大きさそのものを測る指標です。例：属性やバックグラウンドの多様性。</span><span class="lang-en">Metrics measuring the size of differences between members. Example: diversity of backgrounds.</span></p>
+      </div>
+      <div class="plain-card">
+        <div class="kicker"><span class="lang-ja">知識・スキル</span><span class="lang-en">Knowledge &amp; Skill</span></div>
+        <h4><span class="lang-ja">誰が何を知っているか</span><span class="lang-en">Who Knows What</span></h4>
+        <p><span class="lang-ja">誰が何を知っているか、役割がどう組み合わさっているかを測る指標です。例：専門性の分布、アジャイルチームの役割分担。</span><span class="lang-en">Metrics measuring who knows what, and how roles combine. Example: distribution of expertise, role allocation on an agile team.</span></p>
+      </div>
+      <div class="plain-card">
+        <div class="kicker"><span class="lang-ja">能力の上限・ボトルネック</span><span class="lang-en">Capability Ceiling &amp; Bottlenecks</span></div>
+        <h4><span class="lang-ja">1人の能力で全体が決まる</span><span class="lang-en">One Person's Ability Decides It All</span></h4>
+        <p><span class="lang-ja">一番弱い人、または一番強い人の能力で全体が決まってしまう指標です。例：登山チームの速度、裁判員の判決。</span><span class="lang-en">Metrics where the whole outcome is decided by the weakest or strongest member's ability. Example: a climbing team's pace, a jury's verdict.</span></p>
+      </div>
+    </div>
+
+    <p class="body-text"><span class="lang-ja">どのカテゴリの指標でも、それが実際に6つのうちどのタイプにあたるかは、別に見分ける必要があります。カテゴリは「何を測るか」の切り口にすぎず、「どう成り立つか」を決めるのは、以降のQ1〜Q3です。ここまで見てきた通り、6つのタイプによって効く打ち手はまったく違います。だから、自分が動かしたい指標が6つのうちどれにあたるかを、まず見分ける必要があります。そのために、自分自身や周りのメンバーに、次の3つの質問を順番に投げかけてみてください。</span><span class="lang-en">Whichever category a metric falls into, you still need to separately work out which of the six types it actually is. The category is just a way of organizing what you're measuring — the following Q1 through Q3 determine how it's actually formed. As you've seen, each of the six types responds to a completely different lever. So the first step is figuring out which of the six your metric belongs to. To do that, ask yourself or the people around you the following three questions, in order.</span></p>
+
+    <ol class="actions">
+      <li><span class="lang-ja"><b>Q1. その数字は、たった1人の値で、ほぼ決まってしまうか。</b>いちばん出来る人、またはいちばん苦手な人の値が、そのままチーム全体の値になっているなら → <b>④最小値／最大値創発</b>。ここで当てはまれば、以降の質問には進まなくてよい。</span><span class="lang-en"><b>Q1. Is this number basically decided by a single person's value?</b> If the value of the strongest performer or the weakest performer directly becomes the whole team's value → <b>Min/Max Emergence (Type 4)</b>. If this applies, you don't need to go further.</span></li>
+      <li><span class="lang-ja"><b>Q2. メンバー全員が、同じような値になっていてほしいものか。</b>「はい」なら、実際にどれくらいそろっているかを見る。ほぼそろっている → <b>①収束的創発</b>。最低ラインは超えているが、人によるばらつきもある → <b>②プール型制限創発</b>。「いいえ」（そろっていなくてよい）なら Q3 へ。</span><span class="lang-en"><b>Q2. Do you want every member to end up with a similar value?</b> If yes, check how closely they actually match. Nearly identical → <b>Convergent Emergence (Type 1)</b>. Everyone clears a floor, but with some individual variation → <b>Pooled Constrained Emergence (Type 2)</b>. If no (variation is fine), go to Q3.</span></li>
+      <li><span class="lang-ja"><b>Q3. 知りたいのは「合計・平均」か、「ばらつきの大きさ」そのものか、それとも「誰が何を担当しているかという組み合わせ」か。</b>合計や平均を足し上げているだけ → <b>③プール型無制限創発</b>。ばらつきの大きさそのものが特徴になっている → <b>⑤分散型創発</b>。数字よりも役割の組み合わさり方が重要 → <b>⑥パターン型創発</b>。</span><span class="lang-en"><b>Q3. Are you interested in the total/average, the size of the variation itself, or the combination of who's doing what?</b> If you're just summing or averaging → <b>Pooled Unconstrained Emergence (Type 3)</b>. If the variation itself is the defining feature → <b>Variance Emergence (Type 5)</b>. If the combination of roles matters more than the numbers → <b>Pattern Emergence (Type 6)</b>.</span></li>
+    </ol>
+
+    <p class="body-text"><span class="lang-ja">「チームの雰囲気」や「営業所の売上」だけでなく、組織の雰囲気を診断する指標には他にも色々な例があります。6つのタイプそれぞれを代表する指標を1つずつ選び、この質問をあてはめると、次のようになります。</span><span class="lang-en">Beyond "team mood" and "sales branch revenue," there are plenty of other metrics for diagnosing an organization's climate. Here's what happens when you pick one representative metric for each of the six types and run it through these questions.</span></p>
+
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th></th>
+            <th><span class="lang-ja">チームの雰囲気</span><span class="lang-en">Team Mood</span></th>
+            <th><span class="lang-ja">営業所の売上</span><span class="lang-en">Sales Branch Revenue</span></th>
+            <th><span class="lang-ja">欠勤率</span><span class="lang-en">Absenteeism</span></th>
+            <th><span class="lang-ja">登山チームの速度</span><span class="lang-en">Climbing Team's Pace</span></th>
+            <th><span class="lang-ja">メンバーの多様性</span><span class="lang-en">Member Diversity</span></th>
+            <th><span class="lang-ja">誰が何を知っているか</span><span class="lang-en">Who Knows What</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="axis"><span class="lang-ja">Q1. 1人の数字で決まるか</span><span class="lang-en">Q1. Decided by one person's number?</span></td>
+            <td><span class="lang-ja">いいえ → Q2へ</span><span class="lang-en">No → go to Q2</span></td>
+            <td><span class="lang-ja">いいえ → Q2へ</span><span class="lang-en">No → go to Q2</span></td>
+            <td><span class="lang-ja">いいえ → Q2へ</span><span class="lang-en">No → go to Q2</span></td>
+            <td><span class="lang-ja">はい。いちばん遅い人の速度で決まる</span><span class="lang-en">Yes, decided by the slowest member's pace</span></td>
+            <td><span class="lang-ja">いいえ → Q2へ</span><span class="lang-en">No → go to Q2</span></td>
+            <td><span class="lang-ja">いいえ → Q2へ</span><span class="lang-en">No → go to Q2</span></td>
+          </tr>
+          <tr>
+            <td class="axis"><span class="lang-ja">Q2. 全員同じような値になってほしいか</span><span class="lang-en">Q2. Want everyone similar?</span></td>
+            <td><span class="lang-ja">はい。実際にほぼそろっている</span><span class="lang-en">Yes, and they nearly match</span></td>
+            <td><span class="lang-ja">はい。ただし最低ラインを超えていればよく、ばらつきもある</span><span class="lang-en">Yes, but only needs to clear a floor, with some variation</span></td>
+            <td><span class="lang-ja">いいえ。そろっていなくてよい → Q3へ</span><span class="lang-en">No, variation is fine → go to Q3</span></td>
+            <td><span class="lang-ja">（Q1で判定済み）</span><span class="lang-en">(Already resolved at Q1)</span></td>
+            <td><span class="lang-ja">いいえ。そろっていなくてよい → Q3へ</span><span class="lang-en">No, variation is fine → go to Q3</span></td>
+            <td><span class="lang-ja">いいえ。そろっていなくてよい → Q3へ</span><span class="lang-en">No, variation is fine → go to Q3</span></td>
+          </tr>
+          <tr>
+            <td class="axis"><span class="lang-ja">Q3. 合計・平均か、ばらつきか、組み合わせか</span><span class="lang-en">Q3. Total/average, variance, or combination?</span></td>
+            <td><span class="lang-ja">（Q2で判定済み）</span><span class="lang-en">(Already resolved at Q2)</span></td>
+            <td><span class="lang-ja">（Q2で判定済み）</span><span class="lang-en">(Already resolved at Q2)</span></td>
+            <td><span class="lang-ja">合計・平均を見たい</span><span class="lang-en">Interested in the total/average</span></td>
+            <td><span class="lang-ja">（Q1で判定済み）</span><span class="lang-en">(Already resolved at Q1)</span></td>
+            <td><span class="lang-ja">ばらつきの大きさそのものが特徴</span><span class="lang-en">The spread itself is the defining feature</span></td>
+            <td><span class="lang-ja">誰が何を担当しているかの組み合わせが重要</span><span class="lang-en">The combination of who's doing what matters</span></td>
+          </tr>
+          <tr>
+            <td class="axis"><span class="lang-ja">判定</span><span class="lang-en">Result</span></td>
+            <td><b><span class="lang-ja">①収束的創発</span><span class="lang-en">Convergent Emergence (Type 1)</span></b></td>
+            <td><b><span class="lang-ja">②プール型制限創発</span><span class="lang-en">Pooled Constrained Emergence (Type 2)</span></b></td>
+            <td><b><span class="lang-ja">③プール型無制限創発</span><span class="lang-en">Pooled Unconstrained Emergence (Type 3)</span></b></td>
+            <td><b><span class="lang-ja">④最小値／最大値創発</span><span class="lang-en">Min/Max Emergence (Type 4)</span></b></td>
+            <td><b><span class="lang-ja">⑤分散型創発</span><span class="lang-en">Variance Emergence (Type 5)</span></b></td>
+            <td><b><span class="lang-ja">⑥パターン型創発</span><span class="lang-en">Pattern Emergence (Type 6)</span></b></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p class="body-text"><span class="cite"><span class="lang-ja">このタイプ分けは、感覚でおおよその見当をつけるためのものです。本来はきちんとした統計的な手続きで確かめる必要があります。</span><span class="lang-en">This classification is meant to give you a rough, intuitive sense of things. Properly confirming it requires rigorous statistical methods.</span></span></p>
+  </section>
+
+  <section id="objection">
+    <h2 class="section-title"><span class="lang-ja">07 &nbsp;最も強い反論</span><span class="lang-en">07 &nbsp;The Strongest Objection</span></h2>
+    <h2 class="section-heading"><span class="lang-ja">ステイシーは、このページのやり方そのものに反対する</span><span class="lang-en">Stacey Objects to This Page's Whole Approach</span></h2>
+    <p class="lead"><span class="lang-ja">この種の話でよく「味方」として引用されるラルフ・ステイシー本人が、実はここまでの議論への最も強い反論者です。</span><span class="lang-en">Ralph Stacey — often cited as an ally for this kind of argument — is actually the strongest objector to everything argued so far on this page.</span></p>
+
+    <div class="objection">
+      <h3><span class="lang-ja">反論の中身</span><span class="lang-en">What the Objection Says</span></h3>
+      <p><span class="lang-ja">ステイシーは最初の頃、「カオスの縁」やステイシー・マトリクスという、複雑系の考え方を使っていました。でも後になって、<b>これらを自分で撤回しました。</b>組織に複雑適応系という考え方をそのまま当てはめること自体をやめ、<b>「自然科学のモデルを、そのまま人間の行いに当てはめるのは間違っている」</b>と主張するようになったのです。<span class="cite">（ステイシー、グリフィン、ショー, 2000年 / ステイシー, 2001年）</span></span><span class="lang-en">Stacey originally used complexity-science ideas like "the edge of chaos" and the Stacey Matrix. Later, <b>he retracted them himself.</b> He abandoned applying the complex-adaptive-systems framework directly to organizations, and came to argue that <b>applying natural-science models directly to human action is a mistake.</b> <span class="cite">(Stacey, Griffin &amp; Shaw, 2000 / Stacey, 2001)</span></span></p>
+      <p><span class="lang-ja">この立場から見ると、<b>このページの§01から§06までは、まるごと批判の対象になります。</b>鳥の群れのモデルを持ち出し、物理学の話を引き、集団をタイプに分け、「効く打ち手」を提案する。これらはすべて、彼が「組織という人間の営みを、外から観察できる物のように扱う誤り」と呼んだものに当てはまります。</span><span class="lang-en">From this position, <b>everything in sections 1 through 6 of this page becomes fair game for criticism.</b> Bringing in a bird-flock model, citing physics, sorting groups into types, proposing "effective levers" — all of it fits what he called the error of treating organizations, a human activity, as an externally observable object.</span></p>
+      <p><span class="lang-ja">彼の代わりの考え方はこうです。知識とは、中央に保存できるような物ではなく、<b>人と人とのあいだのリアルタイムのやり取りの中にしか存在しない。</b>そのやり取りは、感情的であり、力関係の中にあり、何かを生み出すと同時に何かを壊すものでもある。主流のシステム思考や知識管理のやり方は、この泥臭い部分をノイズとして取り除き、きれいな情報の流れ図だけを描こうとしてきた。これが彼の批判です。</span><span class="lang-en">His alternative is this: knowledge isn't something you can store centrally — <b>it exists only in real-time interaction between people.</b> That interaction is emotional, embedded in power relations, and simultaneously creates and destroys things. His criticism is that mainstream systems thinking and knowledge management try to strip out this messy part as noise and draw clean information flow diagrams instead.</span></p>
+      <p><span class="lang-ja"><b>「リーダーは場を整えるべきだ」という結論も、実は彼の主張ではありません。</b>リーダーが相互作用の場を設計できるという発想そのものを、彼は「管理主義が裏口から戻ってきたもの」として警戒していました。</span><span class="lang-en"><b>"Leaders should tend the conditions" isn't actually his conclusion either.</b> He was wary of the very idea that a leader can design the space for interaction, calling it managerialism sneaking back in through the back door.</span></p>
+    </div>
+
+    <h3 class="sub-heading"><span class="lang-ja">この反論をどう受け止めるか</span><span class="lang-en">How to Take This Objection</span></h3>
+    <p class="body-text"><span class="lang-ja">全部をそのまま受け入れると、モデルもタイプ分けも打ち手も、全部捨てることになります。実務的には、ほとんど何も残りません。ステイシー自身、代わりの設計論を出していません。それは彼にとって当然のことで、「設計論を求めること自体が間違っている」というのが彼の主張だからです。</span><span class="lang-en">Accept all of it at face value, and you'd have to throw out the models, the typologies, and the levers. Practically speaking, almost nothing would be left. Stacey himself never offered an alternative design theory. For him that's expected — his whole point is that looking for a design theory is itself the wrong move.</span></p>
+    <p class="body-text"><span class="lang-ja">現実的な落としどころはこうです。<b>ステイシーの考え方は、土台としてではなく、「見落としに気づかせてくれる装置」として使う。</b>モデルは使います。ただし、モデルが必ず見落としているもの（感情、力関係、その場の即興、生々しさ）を思い出させてくれる問いとして、彼の考え方を手元に置いておく。§05で意見形成のモデルに「上下関係も感情も入っていない」と書いたのは、この使い方です。</span><span class="lang-en">A realistic compromise is this: <b>use Stacey's ideas not as a foundation, but as a device that flags what a model is missing.</b> Keep using the models. But keep his questions close by, as a reminder of what every model necessarily leaves out — emotion, power, improvisation, rawness. Noting in section 5 that the opinion-formation model has no hierarchy or emotion built in is exactly this kind of use.</span></p>
+    <p class="body-text"><span class="lang-ja">実務的には、彼の批判は<b>次の4つの問い</b>にまとめられます。会議のあとに、自分自身に問いかけてみる質問です。</span><span class="lang-en">In practice, his critique boils down to <b>four questions</b> you can ask yourself after a meeting.</span></p>
+
+    <div class="card-grid cols-2" style="margin-top:20px;">
+      <div class="diag-card">
+        <div class="q-num"><span class="lang-ja">問い 1 &nbsp;感情</span><span class="lang-en">Question 1 &nbsp;Emotion</span></div>
+        <h4><span class="lang-ja">感情が働いていたか</span><span class="lang-en">Was emotion actually present?</span></h4>
+        <p><span class="lang-ja"><span class="q-label">問い：</span>今日の話し合いは、データや理屈だけのやり取りだったか。それとも本音、不安、情熱、対立といった感情のこもったやり取りがあったか。</span><span class="lang-en"><span class="q-label">Question:</span> Was today's discussion purely an exchange of data and logic? Or was there real emotion — honesty, anxiety, passion, conflict?</span></p>
+        <p><span class="lang-ja">真の学びや知恵は、感情と切り離せません。感情を押し殺した話し合いからは、組織を動かすエネルギーは生まれない、というのがステイシーの考えです。</span><span class="lang-en">Real learning and wisdom, in Stacey's view, can't be separated from emotion. A discussion with all emotion suppressed doesn't generate the energy that moves an organization.</span></p>
+      </div>
+      <div class="diag-card">
+        <div class="q-num"><span class="lang-ja">問い 2 &nbsp;力関係</span><span class="lang-en">Question 2 &nbsp;Power</span></div>
+        <h4><span class="lang-ja">お互いを活かせていたか</span><span class="lang-en">Did people bring out the best in each other?</span></h4>
+        <p><span class="lang-ja"><span class="q-label">問い：</span>特定の誰かが話し合いを支配し、他の人を黙らせていなかったか。それとも発言がお互いを刺激して、新しい行動やアイデアを引き出し合っていたか。</span><span class="lang-en"><span class="q-label">Question:</span> Did one person dominate the discussion and silence everyone else? Or did people's comments spark each other into new ideas and actions?</span></p>
+        <p><span class="lang-ja">話し合いは常に力関係の中で行われます。上下関係による押さえつけが強すぎると、自発的な動きはその場で止まってしまいます。</span><span class="lang-en">Discussion always happens within power relations. When hierarchy suppresses too strongly, spontaneous movement stops right there.</span></p>
+      </div>
+      <div class="diag-card">
+        <div class="q-num"><span class="lang-ja">問い 3 &nbsp;壊すことと生み出すこと</span><span class="lang-en">Question 3 &nbsp;Creation and Destruction</span></div>
+        <h4><span class="lang-ja">「当たり前」が揺らぐ瞬間はあったか</span><span class="lang-en">Did any assumption get shaken?</span></h4>
+        <p><span class="lang-ja"><span class="q-label">問い：</span>誰も傷つかない、無難な合意で終わったか。それとも、これまでの前提を疑い、一時的な混乱を招くような瞬間があったか。</span><span class="lang-en"><span class="q-label">Question:</span> Did the meeting end in a safe consensus that hurt no one? Or was there a moment that questioned an existing assumption and caused some temporary disruption?</span></p>
+        <p><span class="lang-ja">新しい知恵は、いつも古い秩序を壊すこととセットでやってきます。耳の痛い意見を歓迎できているかどうかが、分かれ目です。</span><span class="lang-en">New wisdom always comes paired with breaking some old order. Whether uncomfortable opinions get welcomed is what separates the two outcomes.</span></p>
+      </div>
+      <div class="diag-card">
+        <div class="q-num"><span class="lang-ja">問い 4 &nbsp;即興</span><span class="lang-en">Question 4 &nbsp;Improvisation</span></div>
+        <h4><span class="lang-ja">予定外のところから何か生まれたか</span><span class="lang-en">Did anything emerge from the unplanned?</span></h4>
+        <p><span class="lang-ja"><span class="q-label">問い：</span>決められたアジェンダをただなぞるだけの時間だったか。それとも、思いがけない脱線から、その場で面白いアイデアが生まれたか。</span><span class="lang-en"><span class="q-label">Question:</span> Was the meeting just tracing through a fixed agenda? Or did an unexpected tangent produce an interesting idea on the spot?</span></p>
+        <p><span class="lang-ja">生きた知恵は、マニュアルの中にはありません。「いまこの瞬間」のやり取りの中からしか、本当の知恵は生まれない。これがステイシーの中心的な主張です。</span><span class="lang-en">Living wisdom isn't found in a manual. Real wisdom can only emerge from interaction happening right now, in this moment — that's the core of Stacey's argument.</span></p>
+      </div>
+    </div>
+
+    <details class="deepdive">
+      <summary>
+        <span>
+          <span class="lang-ja">「場を整える」と言い出したのは誰か</span><span class="lang-en">Who Actually Said Leaders Should Tend the Conditions</span>
+          <span class="label-sub"><span class="lang-ja">ステイシーとよく混同される、別の理論</span><span class="lang-en">A different theory, often confused with Stacey's</span></span>
+        </span>
+        <span class="plus">+</span>
+      </summary>
+      <div class="deepdive-body">
+        <p class="body-text"><span class="lang-ja">「リーダーは1人1人を管理するのではなく、創発が起きる条件を整えるべきだ」という主張をきちんと理論化したのは、ウール=ビエン、マリオン、マッケルビー（2007年）の<b>複雑性リーダーシップ理論</b>です。彼らはリーダーの役割を3つに分けました。</span><span class="lang-en">The claim that "leaders should tend the conditions for emergence rather than manage each person" was actually put into rigorous theory by Uhl-Bien, Marion, and McKelvey (2007), in their <b>Complexity Leadership Theory</b>. They split the leadership role into three parts.</span></p>
+        <p class="body-text"><span class="lang-ja"><b>管理する役割：</b>計画を立て、調整し、資源を配る。組織に必要な役割で、なくすべきものとはされていません。<br><b>適応する役割：</b>現場のやり取りから生まれる、公式の権限とは関係のない変化の動き。<br><b>整える役割：</b>この2つの間に立ち、現場の動きが管理の仕組みに押しつぶされないよう守り、条件を整える。</span><span class="lang-en"><b>Administrative leadership:</b> planning, coordinating, allocating resources. This role is necessary to an organization and isn't meant to disappear.<br><b>Adaptive leadership:</b> the movement for change that emerges from interactions in the field, independent of formal authority.<br><b>Enabling leadership:</b> standing between the two, protecting the field's movement from being crushed by the administrative structure, and tending the conditions.</span></p>
+        <p class="body-text"><span class="lang-ja">この理論は、管理という役割をなくせとは言っていません。3つの役割が<b>どう絡み合うか</b>を扱う理論であり、その意味で§04の「使い分け」の考え方と合っています。</span><span class="lang-en">This theory doesn't say to eliminate the administrative role. It's a theory about <b>how the three roles interact</b>, and in that sense it lines up with the "choosing between approaches" idea in section 4.</span></p>
+      </div>
+    </details>
+  </section>
+
+  <footer>
+    <span class="lang-ja">理論の全体像は <a href="proposal/Complex%20Adaptive%20Systems%3A%20CAS.md">proposal フォルダの文書</a> にまとまっています。</span><span class="lang-en">The full theoretical background is available in the document in the <a href="proposal/Complex%20Adaptive%20Systems%3A%20CAS.md">proposal folder</a> (Japanese).</span>
+  </footer>
+
+</div>
+
+<script>
+(function(){
+  const simFiles = {
+    boids: {ja:'html/boids_simulation.html', en:'html/boids_simulation.en.html'},
+    opinion: {ja:'html/opinion_dynamics.html', en:'html/opinion_dynamics.en.html'},
+    threshold: {ja:'html/rule_diffusion.html', en:'html/rule_diffusion.en.html'}
+  };
+  const titles = {ja:'複雑性と組織運営', en:'Complexity and Organizations'};
+  const langJaBtn = document.getElementById('langJaBtn');
+  const langEnBtn = document.getElementById('langEnBtn');
+
+  function updateSimSources(lang){
+    for (const key in simFiles){
+      const frame = document.getElementById('frame-' + key);
+      const link = document.getElementById('link-' + key);
+      if (frame) frame.src = simFiles[key][lang];
+      if (link) link.href = simFiles[key][lang];
+    }
+  }
+
+  function setLang(lang){
+    document.documentElement.setAttribute('data-lang', lang);
+    document.documentElement.lang = lang;
+    document.title = titles[lang];
+    langJaBtn.classList.toggle('active', lang === 'ja');
+    langEnBtn.classList.toggle('active', lang === 'en');
+    updateSimSources(lang);
+  }
+
+  langJaBtn.addEventListener('click', (e) => { e.preventDefault(); setLang('ja'); });
+  langEnBtn.addEventListener('click', (e) => { e.preventDefault(); setLang('en'); });
+
+  setLang('ja');
+})();
+</script>
+
+</body>
+</html>

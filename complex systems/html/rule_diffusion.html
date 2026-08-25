@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>組織へのルール浸透シミュレーション</title>
+<style>
+  :root {
+    --bg: #0f1420;
+    --panel: #161d2e;
+    --panel-border: #29354d;
+    --text: #e7ecf5;
+    --text-dim: #93a1bd;
+    --accent: #6fd3c7;
+    --stubborn: #f2a65a;
+    --unadopted: #556080;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 24px 16px 40px;
+  }
+  h1 { font-size: 20px; font-weight: 600; margin: 0 0 4px; text-align: center; }
+  p.sub {
+    color: var(--text-dim); font-size: 13.5px; margin: 0 0 20px;
+    text-align: center; max-width: 680px; line-height: 1.6;
+  }
+  .layout {
+    display: flex; gap: 20px; flex-wrap: wrap; justify-content: center;
+    width: 100%; max-width: 1060px;
+  }
+  .canvas-wrap {
+    background: var(--panel); border: 1px solid var(--panel-border);
+    border-radius: 12px; padding: 12px;
+  }
+  canvas { display: block; background: #0a0e17; border-radius: 8px; }
+  #histCanvas { margin-top: 8px; }
+  .legend {
+    display: flex; gap: 16px; justify-content: center;
+    font-size: 11.5px; color: var(--text-dim); margin-top: 8px; flex-wrap: wrap;
+  }
+  .legend span { display: flex; align-items: center; gap: 5px; }
+  .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+  .controls {
+    background: var(--panel); border: 1px solid var(--panel-border);
+    border-radius: 12px; padding: 18px; width: 310px;
+    display: flex; flex-direction: column; gap: 14px; font-size: 13px;
+  }
+  .rule { border: 1px solid var(--panel-border); border-radius: 8px; padding: 10px 12px; }
+  .rule.star { border-color: var(--accent); background: rgba(111,211,199,0.06); }
+  .rule-title { font-weight: 600; margin-bottom: 6px; display: flex; justify-content: space-between; }
+  .rule-desc { color: var(--text-dim); font-size: 12px; line-height: 1.5; margin-bottom: 8px; }
+  input[type="range"] { width: 100%; accent-color: var(--accent); }
+  .valtag { color: var(--accent); font-weight: 600; }
+  .row { display: flex; gap: 8px; }
+  .row button {
+    flex: 1; background: var(--accent); color: #0a1a17; border: none;
+    border-radius: 8px; padding: 9px; font-size: 12.5px; font-weight: 600; cursor: pointer;
+  }
+  .row button#pauseBtn { background: #223047; color: var(--text); }
+  .row button:hover { opacity: 0.88; }
+  .stat { font-size: 12.5px; color: var(--text-dim); line-height: 1.8; border-top: 1px solid var(--panel-border); padding-top: 10px; }
+  .stat b { color: var(--text); }
+</style>
+</head>
+<body>
+
+<h1>📋 組織へのルール浸透シミュレーション</h1>
+<p class="sub">
+  灰色＝未遵守、緑＝遵守。オレンジの縁取りは「頑固な人（抵抗層）」で、通常より高いハードルがないと従いません。
+  下の「①新ルールを発令する」を押すと、全員が未遵守の状態からスタートします。
+</p>
+
+<div class="layout">
+  <div class="canvas-wrap">
+    <canvas id="mainCanvas" width="620" height="420"></canvas>
+    <div class="legend">
+      <span><span class="dot" style="background:#556080"></span>未遵守</span>
+      <span><span class="dot" style="background:#6fd3c7"></span>遵守</span>
+      <span><span class="dot" style="background:#556080;border:2px solid #f2a65a"></span>頑固な人（抵抗層）</span>
+    </div>
+    <canvas id="histCanvas" width="620" height="90"></canvas>
+  </div>
+
+  <div class="controls">
+    <div class="rule star">
+      <div class="rule-title">★ トップダウンの強制力 <span class="valtag" id="authVal"></span></div>
+      <div class="rule-desc">周囲が誰も従っていなくても、経営陣の発信・監査・罰則だけでどれだけ従わせられるか。</div>
+      <input type="range" id="authSlider" min="0" max="60" step="1" value="15">
+    </div>
+
+    <div class="rule star">
+      <div class="rule-title">★ 頑固な人（抵抗層）の割合 <span class="valtag" id="stubVal"></span></div>
+      <div class="rule-desc">同じ職場でも人によって従うハードルは違います。この割合の人は「周りがほぼ全員従っていて、かつ強制力も強い」時にしか動きません。</div>
+      <input type="range" id="stubSlider" min="0" max="60" step="1" value="20">
+    </div>
+
+    <div class="rule">
+      <div class="rule-title">可視性（遵守状況が見える範囲） <span class="valtag" id="visVal"></span></div>
+      <div class="rule-desc">同僚が実際に従っているかどうかを観察できる範囲。狭いほど、周りの遵守状況が伝わりにくい。</div>
+      <input type="range" id="visSlider" min="20" max="160" step="5" value="70">
+    </div>
+
+    <div class="rule">
+      <div class="rule-title">遵守コスト・摩擦 <span class="valtag" id="frictionVal"></span></div>
+      <div class="rule-desc">そのルールを守るのにかかる手間。高いほど、全員のハードルが底上げされる。</div>
+      <input type="range" id="frictionSlider" min="0" max="50" step="1" value="10">
+    </div>
+
+    <div class="rule">
+      <div class="rule-title">風化・後戻り率 <span class="valtag" id="relapseVal"></span></div>
+      <div class="rule-desc">支持（周囲の遵守＋強制力）が自分のハードルを下回った時、どれだけ早く元の未遵守に戻るか。</div>
+      <input type="range" id="relapseSlider" min="0" max="30" step="1" value="6">
+    </div>
+
+    <div class="row">
+      <button id="resetBtn">①新ルールを発令する</button>
+      <button id="pauseBtn">⏸ 一時停止</button>
+    </div>
+
+    <div class="stat" id="stat"></div>
+  </div>
+</div>
+
+<script>
+const mainCanvas = document.getElementById('mainCanvas');
+const ctx = mainCanvas.getContext('2d');
+const histCanvas = document.getElementById('histCanvas');
+const hctx = histCanvas.getContext('2d');
+const W = mainCanvas.width, H = mainCanvas.height;
+const N = 160;
+
+function rand(min, max) { return Math.random() * (max - min) + min; }
+function lerpColor(c1, c2, t) {
+  const r = Math.round(c1[0] + (c2[0] - c1[0]) * t);
+  const g = Math.round(c1[1] + (c2[1] - c1[1]) * t);
+  const b = Math.round(c1[2] + (c2[2] - c1[2]) * t);
+  return `rgb(${r},${g},${b})`;
+}
+const UNADOPTED_RGB = [85, 96, 128];
+const ADOPTED_RGB = [111, 211, 199];
+
+class Employee {
+  constructor(stubbornFrac) {
+    this.x = rand(0, W);
+    this.y = rand(0, H);
+    this.vx = rand(-0.4, 0.4);
+    this.vy = rand(-0.4, 0.4);
+    this.stubborn = Math.random() < stubbornFrac;
+    this.threshold = this.stubborn ? rand(0.75, 1.0) : rand(0.0, 0.55);
+    this.commitment = 0; // 0 = 未遵守, 1 = 完全に遵守
+  }
+}
+
+let people = [];
+function resetAll() {
+  const stubbornFrac = parseInt(stubSlider.value) / 100;
+  people = Array.from({ length: N }, () => new Employee(stubbornFrac));
+}
+
+const authSlider = document.getElementById('authSlider');
+const stubSlider = document.getElementById('stubSlider');
+const visSlider = document.getElementById('visSlider');
+const frictionSlider = document.getElementById('frictionSlider');
+const relapseSlider = document.getElementById('relapseSlider');
+const authVal = document.getElementById('authVal');
+const stubVal = document.getElementById('stubVal');
+const visVal = document.getElementById('visVal');
+const frictionVal = document.getElementById('frictionVal');
+const relapseVal = document.getElementById('relapseVal');
+const stat = document.getElementById('stat');
+
+function syncLabels() {
+  authVal.textContent = authSlider.value + '%';
+  stubVal.textContent = stubSlider.value + '%';
+  visVal.textContent = visSlider.value + 'px';
+  frictionVal.textContent = frictionSlider.value + '%';
+  relapseVal.textContent = relapseSlider.value + '%';
+}
+[authSlider, stubSlider, visSlider, frictionSlider, relapseSlider].forEach(s => s.addEventListener('input', syncLabels));
+syncLabels();
+resetAll();
+
+let paused = false;
+const pauseBtn = document.getElementById('pauseBtn');
+pauseBtn.addEventListener('click', () => {
+  paused = !paused;
+  pauseBtn.textContent = paused ? '▶ 再開' : '⏸ 一時停止';
+});
+document.getElementById('resetBtn').addEventListener('click', () => {
+  resetAll();
+  elapsedFrames = 0;
+});
+
+function step() {
+  const authority = parseInt(authSlider.value) / 100;
+  const radius = parseFloat(visSlider.value);
+  const friction = parseInt(frictionSlider.value) / 100;
+  const relapseRate = parseInt(relapseSlider.value) / 1000; // per-frame decrement
+  const adoptRate = 0.012; // per-frame increment when supported
+
+  const newCommit = new Array(N);
+  for (let i = 0; i < N; i++) {
+    const p = people[i];
+    let adoptedNeighbors = 0, totalNeighbors = 0;
+    for (let j = 0; j < N; j++) {
+      if (i === j) continue;
+      const q = people[j];
+      const dx = p.x - q.x, dy = p.y - q.y;
+      if (dx * dx + dy * dy < radius * radius) {
+        totalNeighbors++;
+        if (q.commitment > 0.5) adoptedNeighbors++;
+      }
+    }
+    const localSupport = totalNeighbors > 0 ? adoptedNeighbors / totalNeighbors : 0;
+    const totalSignal = Math.min(1, localSupport + authority);
+    const effectiveThreshold = Math.min(1, p.threshold + friction);
+
+    let c = p.commitment;
+    if (totalSignal >= effectiveThreshold) {
+      c += adoptRate;
+    } else {
+      c -= relapseRate;
+    }
+    c += rand(-0.001, 0.001);
+    newCommit[i] = Math.min(1, Math.max(0, c));
+  }
+  for (let i = 0; i < N; i++) {
+    const p = people[i];
+    p.commitment = newCommit[i];
+    p.x += p.vx; p.y += p.vy;
+    p.vx += rand(-0.05, 0.05); p.vy += rand(-0.05, 0.05);
+    const sp = Math.hypot(p.vx, p.vy);
+    if (sp > 0.7) { p.vx = (p.vx / sp) * 0.7; p.vy = (p.vy / sp) * 0.7; }
+    if (p.x < 0) p.x += W; if (p.x > W) p.x -= W;
+    if (p.y < 0) p.y += H; if (p.y > H) p.y -= H;
+  }
+}
+
+function drawMain() {
+  ctx.clearRect(0, 0, W, H);
+  for (const p of people) {
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, 4.5, 0, Math.PI * 2);
+    ctx.fillStyle = lerpColor(UNADOPTED_RGB, ADOPTED_RGB, p.commitment);
+    ctx.fill();
+    if (p.stubborn) {
+      ctx.lineWidth = 1.6;
+      ctx.strokeStyle = '#f2a65a';
+      ctx.stroke();
+    }
+  }
+}
+
+function drawHist() {
+  hctx.clearRect(0, 0, histCanvas.width, histCanvas.height);
+  const bins = 30;
+  const counts = new Array(bins).fill(0);
+  for (const p of people) {
+    let idx = Math.floor(p.commitment * bins);
+    if (idx >= bins) idx = bins - 1;
+    counts[idx]++;
+  }
+  const maxCount = Math.max(...counts, 1);
+  const bw = histCanvas.width / bins;
+  for (let i = 0; i < bins; i++) {
+    const h = (counts[i] / maxCount) * (histCanvas.height - 10);
+    const t = (i + 0.5) / bins;
+    hctx.fillStyle = lerpColor(UNADOPTED_RGB, ADOPTED_RGB, t);
+    hctx.fillRect(i * bw + 1, histCanvas.height - h, bw - 2, h);
+  }
+}
+
+function updateStat() {
+  const adoptedAll = people.filter(p => p.commitment > 0.5);
+  const stubbornPeople = people.filter(p => p.stubborn);
+  const nonStubborn = people.filter(p => !p.stubborn);
+  const rateAll = (adoptedAll.length / N * 100).toFixed(0);
+  const rateStub = stubbornPeople.length ? (stubbornPeople.filter(p => p.commitment > 0.5).length / stubbornPeople.length * 100).toFixed(0) : '—';
+  const rateNonStub = nonStubborn.length ? (nonStubborn.filter(p => p.commitment > 0.5).length / nonStubborn.length * 100).toFixed(0) : '—';
+
+  let verdict;
+  if (rateAll >= 95) verdict = '👉 ほぼ全社に浸透';
+  else if (rateNonStub >= 80 && rateStub < 40) verdict = '👉 抵抗層の壁で足踏み中（一般層はほぼ浸透、頑固層だけ残存）';
+  else if (rateAll < 15) verdict = '👉 ほとんど浸透していない';
+  else verdict = '👉 浸透が広がっている途中';
+
+  const seconds = (elapsedFrames / 60).toFixed(1);
+  stat.innerHTML = `
+    発令からの経過: <b>${seconds} 秒</b><br>
+    全体の遵守率: <b>${rateAll}%</b><br>
+    &nbsp;&nbsp;一般層の遵守率: <b>${rateNonStub}%</b><br>
+    &nbsp;&nbsp;抵抗層の遵守率: <b>${rateStub}%</b><br>
+    ${verdict}
+  `;
+}
+
+let frame = 0;
+let elapsedFrames = 0;
+function loop() {
+  if (!paused) {
+    step();
+    elapsedFrames++;
+  }
+  drawMain();
+  if (frame % 4 === 0) { drawHist(); updateStat(); }
+  frame++;
+  requestAnimationFrame(loop);
+}
+loop();
+</script>
+</body>
+</html>

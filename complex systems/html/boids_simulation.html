@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>群れのシミュレーション：単純なルールから複雑な動きが生まれる</title>
+<style>
+  :root {
+    --bg: #0f1420;
+    --panel: #161d2e;
+    --panel-border: #29354d;
+    --text: #e7ecf5;
+    --text-dim: #93a1bd;
+    --accent: #6fd3c7;
+    --accent2: #f2b56b;
+    --accent3: #e07a9c;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 24px 16px 40px;
+  }
+  h1 {
+    font-size: 20px;
+    font-weight: 600;
+    margin: 0 0 4px;
+    text-align: center;
+  }
+  p.sub {
+    color: var(--text-dim);
+    font-size: 13.5px;
+    margin: 0 0 20px;
+    text-align: center;
+    max-width: 640px;
+    line-height: 1.6;
+  }
+  .layout {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 100%;
+    max-width: 1040px;
+  }
+  .canvas-wrap {
+    background: var(--panel);
+    border: 1px solid var(--panel-border);
+    border-radius: 12px;
+    padding: 12px;
+  }
+  canvas {
+    display: block;
+    background: #0a0e17;
+    border-radius: 8px;
+  }
+  .controls {
+    background: var(--panel);
+    border: 1px solid var(--panel-border);
+    border-radius: 12px;
+    padding: 18px;
+    width: 280px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    font-size: 13px;
+  }
+  .rule {
+    border: 1px solid var(--panel-border);
+    border-radius: 8px;
+    padding: 10px 12px;
+  }
+  .rule-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+  .rule-desc {
+    color: var(--text-dim);
+    font-size: 12px;
+    line-height: 1.5;
+    margin-bottom: 8px;
+  }
+  .toggle {
+    position: relative;
+    display: inline-block;
+    width: 38px;
+    height: 21px;
+    flex-shrink: 0;
+  }
+  .toggle input { opacity: 0; width: 0; height: 0; }
+  .slider-toggle {
+    position: absolute; cursor: pointer; inset: 0;
+    background: #364259; border-radius: 20px; transition: .2s;
+  }
+  .slider-toggle:before {
+    content: ""; position: absolute; height: 15px; width: 15px;
+    left: 3px; bottom: 3px; background: white; border-radius: 50%; transition: .2s;
+  }
+  input:checked + .slider-toggle { background: var(--accent); }
+  input:checked + .slider-toggle:before { transform: translateX(17px); }
+
+  input[type="range"] {
+    width: 100%;
+    accent-color: var(--accent);
+  }
+  .row { display: flex; align-items: center; gap: 8px; }
+  .row label { flex: 1; color: var(--text-dim); }
+  button#resetBtn {
+    background: var(--accent);
+    color: #0a1a17;
+    border: none;
+    border-radius: 8px;
+    padding: 10px;
+    font-weight: 600;
+    font-size: 13px;
+    cursor: pointer;
+  }
+  button#resetBtn:hover { opacity: 0.9; }
+  .stat {
+    font-size: 12px;
+    color: var(--text-dim);
+    text-align: center;
+    margin-top: 8px;
+  }
+  .legend {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin-top: 8px;
+    font-size: 11.5px;
+    color: var(--text-dim);
+  }
+  .legend span { display: flex; align-items: center; gap: 5px; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+</style>
+</head>
+<body>
+
+<h1>🐦 単純なルール3つだけで「群れ」が生まれる</h1>
+<p class="sub">
+  各粒子は「近くの仲間しか見えない」うえに、次の3つのルールしか知りません。中央の指揮者はいません。
+  右側のスイッチを消してみてください——ルールを一つ減らすごとに、群れがどう崩れるかが分かります。
+</p>
+
+<div class="layout">
+  <div class="canvas-wrap">
+    <canvas id="canvas" width="620" height="520"></canvas>
+    <div class="legend">
+      <span><span class="dot" style="background:#6fd3c7"></span>通常の個体</span>
+      <span><span class="dot" style="background:#f2b56b"></span>周囲の平均密度が高い個体</span>
+    </div>
+  </div>
+
+  <div class="controls">
+    <div class="rule">
+      <div class="rule-title">
+        ① 分離（ぶつからない）
+        <label class="toggle">
+          <input type="checkbox" id="sepToggle" checked>
+          <span class="slider-toggle"></span>
+        </label>
+      </div>
+      <div class="rule-desc">近すぎる仲間からは少し離れる</div>
+      <div class="row"><label>強さ</label><input type="range" id="sepSlider" min="0" max="3" step="0.1" value="1.2"></div>
+    </div>
+
+    <div class="rule">
+      <div class="rule-title">
+        ② 整列（向きを合わせる）
+        <label class="toggle">
+          <input type="checkbox" id="aliToggle" checked>
+          <span class="slider-toggle"></span>
+        </label>
+      </div>
+      <div class="rule-desc">近くの仲間の平均的な進行方向に合わせる</div>
+      <div class="row"><label>強さ</label><input type="range" id="aliSlider" min="0" max="3" step="0.1" value="1.0"></div>
+    </div>
+
+    <div class="rule">
+      <div class="rule-title">
+        ③ 結合（集まる）
+        <label class="toggle">
+          <input type="checkbox" id="cohToggle" checked>
+          <span class="slider-toggle"></span>
+        </label>
+      </div>
+      <div class="rule-desc">近くの仲間の重心に向かってゆっくり寄る</div>
+      <div class="row"><label>強さ</label><input type="range" id="cohSlider" min="0" max="3" step="0.1" value="1.0"></div>
+    </div>
+
+    <button id="resetBtn">個体をまき直す</button>
+    <div class="stat" id="stat"></div>
+  </div>
+</div>
+
+<script>
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+const W = canvas.width, H = canvas.height;
+const N = 140;
+const PERCEPTION = 55;
+const MAX_SPEED = 2.6;
+const MAX_FORCE = 0.09;
+
+let boids = [];
+
+function rand(min, max) { return Math.random() * (max - min) + min; }
+
+class Boid {
+  constructor() {
+    this.x = rand(0, W);
+    this.y = rand(0, H);
+    const angle = rand(0, Math.PI * 2);
+    this.vx = Math.cos(angle) * rand(1, 2);
+    this.vy = Math.sin(angle) * rand(1, 2);
+    this.neighbors = 0;
+  }
+  update(flock, opts) {
+    let sepX = 0, sepY = 0, sepCount = 0;
+    let aliX = 0, aliY = 0, aliCount = 0;
+    let cohX = 0, cohY = 0, cohCount = 0;
+
+    for (const other of flock) {
+      if (other === this) continue;
+      const dx = this.x - other.x, dy = this.y - other.y;
+      const d = Math.hypot(dx, dy);
+      if (d < PERCEPTION && d > 0) {
+        if (d < 24) { sepX += dx / d; sepY += dy / d; sepCount++; }
+        aliX += other.vx; aliY += other.vy; aliCount++;
+        cohX += other.x; cohY += other.y; cohCount++;
+      }
+    }
+    this.neighbors = aliCount;
+
+    let ax = 0, ay = 0;
+
+    if (opts.sep && sepCount > 0) {
+      sepX /= sepCount; sepY /= sepCount;
+      ax += sepX * opts.sepW * 0.15;
+      ay += sepY * opts.sepW * 0.15;
+    }
+    if (opts.ali && aliCount > 0) {
+      aliX /= aliCount; aliY /= aliCount;
+      const d = Math.hypot(aliX, aliY) || 1;
+      ax += (aliX / d) * opts.aliW * 0.05;
+      ay += (aliY / d) * opts.aliW * 0.05;
+    }
+    if (opts.coh && cohCount > 0) {
+      cohX /= cohCount; cohY /= cohCount;
+      ax += (cohX - this.x) * opts.cohW * 0.0015;
+      ay += (cohY - this.y) * opts.cohW * 0.0015;
+    }
+
+    this.vx += ax; this.vy += ay;
+    const speed = Math.hypot(this.vx, this.vy);
+    if (speed > MAX_SPEED) {
+      this.vx = (this.vx / speed) * MAX_SPEED;
+      this.vy = (this.vy / speed) * MAX_SPEED;
+    }
+    if (speed < 0.6) {
+      this.vx += rand(-0.05, 0.05);
+      this.vy += rand(-0.05, 0.05);
+    }
+
+    this.x += this.vx; this.y += this.vy;
+    if (this.x < 0) this.x += W; if (this.x > W) this.x -= W;
+    if (this.y < 0) this.y += H; if (this.y > H) this.y -= H;
+  }
+  draw() {
+    const angle = Math.atan2(this.vy, this.vx);
+    const hot = this.neighbors > 6;
+    ctx.save();
+    ctx.translate(this.x, this.y);
+    ctx.rotate(angle);
+    ctx.beginPath();
+    ctx.moveTo(7, 0);
+    ctx.lineTo(-5, 4);
+    ctx.lineTo(-5, -4);
+    ctx.closePath();
+    ctx.fillStyle = hot ? '#f2b56b' : '#6fd3c7';
+    ctx.globalAlpha = 0.9;
+    ctx.fill();
+    ctx.restore();
+  }
+}
+
+function resetBoids() {
+  boids = Array.from({ length: N }, () => new Boid());
+}
+resetBoids();
+
+const sepToggle = document.getElementById('sepToggle');
+const aliToggle = document.getElementById('aliToggle');
+const cohToggle = document.getElementById('cohToggle');
+const sepSlider = document.getElementById('sepSlider');
+const aliSlider = document.getElementById('aliSlider');
+const cohSlider = document.getElementById('cohSlider');
+const stat = document.getElementById('stat');
+document.getElementById('resetBtn').addEventListener('click', resetBoids);
+
+function loop() {
+  ctx.clearRect(0, 0, W, H);
+
+  const opts = {
+    sep: sepToggle.checked, sepW: parseFloat(sepSlider.value),
+    ali: aliToggle.checked, aliW: parseFloat(aliSlider.value),
+    coh: cohToggle.checked, cohW: parseFloat(cohSlider.value),
+  };
+
+  for (const b of boids) b.update(boids, opts);
+  for (const b of boids) b.draw();
+
+  const activeRules = [opts.sep && '分離', opts.ali && '整列', opts.coh && '結合'].filter(Boolean);
+  stat.textContent = activeRules.length
+    ? `有効なルール: ${activeRules.join(' + ')}`
+    : '有効なルールなし → ただのランダムな粒子';
+
+  requestAnimationFrame(loop);
+}
+loop();
+</script>
+</body>
+</html>
