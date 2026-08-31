@@ -1,0 +1,656 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>こんなとき、VMOにご相談ください | VMO Advisory Desk</title>
+  <link href="https://fonts.googleapis.com/css2?family=Zen+Old+Mincho:wght@500;600&family=Noto+Sans+JP:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: #f6f4ef;
+      font-family: "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+      color: #1d2333;
+    }
+    a { color: #1f2a44; }
+    a:hover { color: #33456b; }
+
+    .wrap {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 56px 40px 112px;
+    }
+
+    .langbar {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      margin-bottom: 40px;
+    }
+
+    .langbtn {
+      font-family: inherit;
+      font-size: 12.5px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      color: #5c6472;
+      background: transparent;
+      border: 1px solid #d5d0c4;
+      padding: 8px 16px;
+      cursor: pointer;
+      transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+    }
+
+    .langbtn:hover { border-color: #1f2a44; color: #1d2333; }
+
+    .langbtn.is-active {
+      background: #1f2a44;
+      border-color: #1f2a44;
+      color: #f6f4ef;
+    }
+
+    .mark {
+      width: 42px;
+      height: 2px;
+      margin-bottom: 22px;
+    }
+
+    .eyebrow {
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      margin: 0 0 20px;
+    }
+
+    h1 {
+      font-family: "Zen Old Mincho", "Hiragino Mincho ProN", "Yu Mincho", serif;
+      font-weight: 600;
+      font-size: 42px;
+      line-height: 1.45;
+      letter-spacing: 0.01em;
+      margin: 0 0 28px;
+      color: #1d2333;
+    }
+
+    .intro {
+      max-width: 680px;
+      font-size: 16px;
+      line-height: 2;
+      color: #5c6472;
+      margin: 0;
+    }
+
+    .journey {
+      position: relative;
+      margin-top: 52px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .journey::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 50%;
+      height: 1px;
+      background: #d5d0c4;
+    }
+
+    .journey-step {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      background: #f6f4ef;
+      padding: 0 18px;
+    }
+
+    .journey-step:first-child { padding-left: 0; }
+    .journey-step:last-child { padding-right: 0; }
+
+    .journey-dot {
+      width: 28px;
+      height: 28px;
+      flex: none;
+      border: 1px solid;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .journey-name {
+      font-size: 13.5px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+    }
+
+    .phase { margin-top: 72px; }
+
+    .phase-head {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 24px;
+      align-items: baseline;
+      padding-bottom: 18px;
+      border-bottom: 1.5px solid #1d2333;
+    }
+
+    .phase-title {
+      display: flex;
+      align-items: baseline;
+      gap: 14px;
+    }
+
+    .phase-num {
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .phase-title h2 {
+      font-family: "Zen Old Mincho", "Hiragino Mincho ProN", "Yu Mincho", serif;
+      font-size: 25px;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      margin: 0;
+      color: #1d2333;
+    }
+
+    .phase-role {
+      font-size: 14.5px;
+      line-height: 1.85;
+      color: #5c6472;
+      margin: 0;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      border-left: 1px solid #ddd9d0;
+    }
+
+    .card {
+      border-right: 1px solid #ddd9d0;
+      border-bottom: 1px solid #ddd9d0;
+      padding: 32px 40px 34px;
+      transition: background 0.15s ease;
+    }
+
+    .card:hover { background: #f0ede5; }
+
+    .card.wide { grid-column: 1 / -1; }
+
+    .ico {
+      width: 25px;
+      height: 25px;
+      display: block;
+      margin-bottom: 16px;
+      opacity: 0.9;
+    }
+
+    .card h3 {
+      font-size: 18.5px;
+      font-weight: 600;
+      line-height: 1.6;
+      margin: 0 0 12px;
+      color: #1d2333;
+    }
+
+    .card p {
+      font-size: 14.5px;
+      line-height: 1.85;
+      color: #5c6472;
+      margin: 0;
+    }
+
+    .closing {
+      margin-top: 88px;
+      background: #efebe1;
+      padding: 52px 56px;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 40px;
+      align-items: start;
+    }
+
+    .closing h2 {
+      font-family: "Zen Old Mincho", "Hiragino Mincho ProN", "Yu Mincho", serif;
+      font-size: 27px;
+      font-weight: 600;
+      line-height: 1.6;
+      letter-spacing: 0.02em;
+      margin: 0;
+      color: #1d2333;
+    }
+
+    .closing p {
+      font-size: 15px;
+      line-height: 2.05;
+      color: #4a515f;
+      margin: 0;
+    }
+
+    @media (max-width: 720px) {
+      .wrap { padding: 40px 24px 80px; }
+      h1 { font-size: 30px; }
+      .journey { flex-wrap: wrap; gap: 14px 24px; margin-top: 40px; }
+      .journey::before { display: none; }
+      .journey-step { padding: 0; }
+      .phase { margin-top: 56px; }
+      .phase-head { grid-template-columns: 1fr; gap: 12px; }
+      .cards { grid-template-columns: 1fr; }
+      .card { padding: 28px 24px; }
+      .closing { grid-template-columns: 1fr; gap: 20px; margin-top: 64px; padding: 36px 26px; }
+      .closing h2 { font-size: 22px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <div class="langbar">
+    <button type="button" class="langbtn is-active" data-lang="ja">日本語</button>
+    <button type="button" class="langbtn" data-lang="en">English</button>
+  </div>
+
+  <div class="lang" data-lang="ja" style="display: block">
+
+    <div class="mark" style="background: #1f2a44"></div>
+    <div class="eyebrow" style="color: #1f2a44">VMO 相談窓口</div>
+    <h1>こんなとき、<span style="color: #1f2a44">VMO</span>にご相談ください</h1>
+    <p class="intro">システムやサービスの検討を始めた瞬間から、契約を終えるその日まで。VMOは、ベンダーとのやり取りに伴走するチームです。まだ何も決まっていない段階でも構いません。早くお声がけいただくほど、選べる選択肢も交渉の余地も大きくなります。</p>
+
+    <div class="journey">
+      <div class="journey-step">
+        <span class="journey-dot" style="color: #1f2a44; border-color: #1f2a44">01</span>
+        <span class="journey-name">探索</span>
+      </div>
+      <div class="journey-step">
+        <span class="journey-dot" style="color: #1f2a44; border-color: #1f2a44">02</span>
+        <span class="journey-name">選定・契約</span>
+      </div>
+      <div class="journey-step">
+        <span class="journey-dot" style="color: #1f2a44; border-color: #1f2a44">03</span>
+        <span class="journey-name">運用・改善</span>
+      </div>
+      <div class="journey-step">
+        <span class="journey-dot" style="color: #1f2a44; border-color: #1f2a44">04</span>
+        <span class="journey-name">見直し・転換</span>
+      </div>
+    </div>
+
+    <div class="phase">
+      <div class="phase-head">
+        <div class="phase-title">
+          <span class="phase-num" style="color: #1f2a44">01</span>
+          <h2>探索</h2>
+        </div>
+        <p class="phase-role">まだ何も決まっていない段階から、選択肢と費用感を一緒に把握します。</p>
+      </div>
+      <div class="cards">
+        <div class="card wide">
+          <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="color: #1f2a44">
+            <circle cx="10.5" cy="10.5" r="6.5"></circle>
+            <line x1="15.4" y1="15.4" x2="20.5" y2="20.5"></line>
+          </svg>
+          <h3>どんな選択肢があるのか、相場感を知りたい</h3>
+          <p>製品もベンダーもまだ絞れていない段階で構いません。市場にどんな選択肢があるか、費用はどのくらいが妥当か、他案件の実績をもとに一緒に整理します。</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="phase">
+      <div class="phase-head">
+        <div class="phase-title">
+          <span class="phase-num" style="color: #1f2a44">02</span>
+          <h2>選定・契約</h2>
+        </div>
+        <p class="phase-role">候補を見極める材料と手順を用意し、契約条件の設計と交渉まで引き受けます。</p>
+      </div>
+      <div class="cards">
+        <div class="card">
+          <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="color: #1f2a44">
+            <path d="M9 3.5h5.5L19 8v9.5A1.5 1.5 0 0 1 17.5 19H9a1.5 1.5 0 0 1-1.5-1.5V5A1.5 1.5 0 0 1 9 3.5Z"></path>
+            <path d="M14.2 3.6V8.2H18.8"></path>
+            <path d="M4.5 7.5V19A1.5 1.5 0 0 0 6 20.5h9.5"></path>
+          </svg>
+          <h3>RFP・見積依頼の準備を手伝ってほしい</h3>
+          <p>新しく選ぶときも、いまのベンダーの代わりを探すときも。要件の整理から評価基準づくり、比較表の作成まで、ベンダーに公平に競ってもらうための準備を引き受けます。</p>
+        </div>
+        <div class="card">
+          <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="color: #1f2a44">
+            <path d="M12 3.2l7 2.4v5.3c0 3.9-2.8 7.1-7 8.4-4.2-1.3-7-4.5-7-8.4V5.6l7-2.4Z"></path>
+            <path d="M9 11.8l2.2 2.2 4.2-4.4"></path>
+          </svg>
+          <h3>もう決まっている案件を、契約前に確認したい</h3>
+          <p>候補がすでに固まっている場合でも構いません。契約を結ぶ前に、条件の妥当性と見落としているリスクを洗い出し、判断の裏付けをお渡しします。</p>
+        </div>
+        <div class="card wide">
+          <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="color: #1f2a44">
+            <path d="M4 20.5h16"></path>
+            <path d="M5 16.2l9.4-9.4 3.3 3.3-9.4 9.4H5v-3.3Z"></path>
+            <path d="M14.4 6.8l1.6-1.6a1.4 1.4 0 0 1 2 0l1.3 1.3a1.4 1.4 0 0 1 0 2l-1.6 1.6"></path>
+          </svg>
+          <h3>契約条件をどう詰めればいいか分からない</h3>
+          <p>価格はもちろん、SLA、未達時の減額、解約や自動更新の条件まで。数年後に効いてくる条項を設計し、ベンダーとの交渉をVMOが引き受けます。</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="phase">
+      <div class="phase-head">
+        <div class="phase-title">
+          <span class="phase-num" style="color: #1f2a44">03</span>
+          <h2>運用・改善</h2>
+        </div>
+        <p class="phase-role">使い始めたあとの品質・コスト・予算を、継続して見ていきます。</p>
+      </div>
+      <div class="cards">
+        <div class="card">
+          <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="color: #1f2a44">
+            <path d="M3.8 17.5a8.2 8.2 0 1 1 16.4 0"></path>
+            <path d="M12 17.5l4.6-4.9"></path>
+            <circle cx="12" cy="17.6" r="1.1"></circle>
+          </svg>
+          <h3>ベンダーの対応品質に納得がいかない</h3>
+          <p>サービス仕様やSLAが実態に合っていないのかもしれません。改善要求の進め方から条件の作り直しまで、言いにくい交渉はVMOが引き受けます。</p>
+        </div>
+        <div class="card">
+          <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="color: #1f2a44">
+            <polyline points="3.8 16.6 9.6 10.8 13.2 14.4 20.2 7.4"></polyline>
+            <polyline points="15.2 7.4 20.2 7.4 20.2 12.4"></polyline>
+          </svg>
+          <h3>ベンダーから値上げを要請された</h3>
+          <p>その値上げ幅が妥当かどうかは、他案件の情報と突き合わせて初めて検証できます。同じベンダーとの他の契約も交渉のテーブルに載せ、値上げ交渉の場数を踏んだ担当者が、代替案を持って矢面に立ちます。</p>
+        </div>
+        <div class="card">
+          <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="color: #1f2a44">
+            <line x1="3.6" y1="20.2" x2="20.4" y2="20.2"></line>
+            <rect x="5.6" y="13.4" width="3.6" height="6.8"></rect>
+            <rect x="10.2" y="9.2" width="3.6" height="11"></rect>
+            <rect x="14.8" y="5.4" width="3.6" height="14.8"></rect>
+          </svg>
+          <h3>来年度の予算をどう積めばいいか分からない</h3>
+          <p>見当がつかないまま数字を置く必要はありません。複数のベンダーから概算見積もりを取得し、過去の契約実績と突き合わせることで、社内に説明できる予算をつくります。</p>
+        </div>
+        <div class="card">
+          <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="color: #1f2a44">
+            <circle cx="5.8" cy="6.6" r="2.1"></circle>
+            <circle cx="18.2" cy="9.2" r="2.1"></circle>
+            <circle cx="11.2" cy="18.4" r="2.1"></circle>
+            <path d="M7.4 8.1l2.6 8.3"></path>
+            <path d="M16.6 10.9l-3.6 5.8"></path>
+            <path d="M7.8 6.9l8.4 1.8"></path>
+          </svg>
+          <h3>契約が入り組んで、全体が見えない</h3>
+          <p>長年の取引で契約が重なっている、一つのシステムに複数のベンダーが関わっている、原本が見当たらない。入り組んだ契約関係を解きほぐし、いまの実態に合った構成に組み直します。</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="phase">
+      <div class="phase-head">
+        <div class="phase-title">
+          <span class="phase-num" style="color: #1f2a44">04</span>
+          <h2>見直し・転換</h2>
+        </div>
+        <p class="phase-role">増やす、絞る、乗り換える、畳む。次の姿が決まったら、契約をそこに合わせて組み替えます。</p>
+      </div>
+      <div class="cards">
+        <div class="card">
+          <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="color: #1f2a44">
+            <path d="M12 3.4v6.4"></path>
+            <polyline points="8.6 6.8 12 3.4 15.4 6.8"></polyline>
+            <path d="M12 20.6v-6.4"></path>
+            <polyline points="8.6 17.2 12 20.6 15.4 17.2"></polyline>
+            <line x1="4.4" y1="12" x2="19.6" y2="12"></line>
+          </svg>
+          <h3>いまの体制が実態に合っていない</h3>
+          <p>利用が増えて手が回らない、あるいは伸びが止まって過剰になっている。増強も縮小も、必要な水準に合わせて契約と体制を組み替えます。</p>
+        </div>
+        <div class="card">
+          <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="color: #1f2a44">
+            <polyline points="4.2 7.4 19.8 7.4"></polyline>
+            <polyline points="16.4 4 19.8 7.4 16.4 10.8"></polyline>
+            <polyline points="19.8 16.6 4.2 16.6"></polyline>
+            <polyline points="7.6 13.2 4.2 16.6 7.6 20"></polyline>
+          </svg>
+          <h3>いまのベンダーを続けるべきか迷っている</h3>
+          <p>続けた場合と乗り換えた場合、それぞれのコストとリスクを並べて比較します。切り替えるなら、移行の段取りと引き継ぎ条件まで含めて検討します。</p>
+        </div>
+        <div class="card wide">
+          <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="color: #1f2a44">
+            <rect x="3.6" y="4.4" width="16.8" height="4.2"></rect>
+            <path d="M5.6 8.6V19a1.2 1.2 0 0 0 1.2 1.2h10.4a1.2 1.2 0 0 0 1.2-1.2V8.6"></path>
+            <path d="M12 11.4v4.8"></path>
+            <polyline points="9.6 13.8 12 16.2 14.4 13.8"></polyline>
+          </svg>
+          <h3>システムの縮小・廃止を控えている</h3>
+          <p>保守体制の縮小や契約終了に向けて、複数ベンダーにまたがる契約を棚卸しし、解約条件の確認から引き継ぎ資料の整理まで準備を進めます。</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="closing">
+      <h2>手が回らないのは、<br>当然のことです</h2>
+      <p>ここに挙げたのは、時間さえあればご自身でもできることばかりです。けれど、複数のプロジェクトと複数のシステムを同時に抱えながら、そのすべてに手を尽くすのは現実的ではありません。これまでベンダーの厚意に頼ったり、「信頼関係」という言葉で預けてきた部分を、これからはVMOが引き受けます。皆さんの側に立つエージェントとして、ベンダーと向き合います。</p>
+    </div>
+
+  </div>
+
+  <div class="lang" data-lang="en" style="display: none">
+
+    <div class="mark" style="background: #1f2a44"></div>
+    <div class="eyebrow" style="color: #1f2a44">VMO ADVISORY DESK</div>
+    <h1>If any of this sounds familiar,<br>talk to <span style="color: #1f2a44">VMO</span></h1>
+    <p class="intro">From the moment you start looking at a system or a service, through to the day the contract ends, VMO works alongside you in every dealing with vendors. Nothing has to be decided yet. The earlier you reach out, the more options you have and the more room there is to negotiate.</p>
+
+    <div class="journey">
+      <div class="journey-step">
+        <span class="journey-dot" style="color: #1f2a44; border-color: #1f2a44">01</span>
+        <span class="journey-name">Explore</span>
+      </div>
+      <div class="journey-step">
+        <span class="journey-dot" style="color: #1f2a44; border-color: #1f2a44">02</span>
+        <span class="journey-name">Select &amp; Contract</span>
+      </div>
+      <div class="journey-step">
+        <span class="journey-dot" style="color: #1f2a44; border-color: #1f2a44">03</span>
+        <span class="journey-name">Operate &amp; Improve</span>
+      </div>
+      <div class="journey-step">
+        <span class="journey-dot" style="color: #1f2a44; border-color: #1f2a44">04</span>
+        <span class="journey-name">Rethink &amp; Transition</span>
+      </div>
+    </div>
+
+    <div class="phase">
+      <div class="phase-head">
+        <div class="phase-title">
+          <span class="phase-num" style="color: #1f2a44">01</span>
+          <h2>Explore</h2>
+        </div>
+        <p class="phase-role">From the stage where nothing is decided, we map the options and what they should cost.</p>
+      </div>
+      <div class="cards">
+        <div class="card wide">
+          <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="color: #1f2a44">
+            <circle cx="10.5" cy="10.5" r="6.5"></circle>
+            <line x1="15.4" y1="15.4" x2="20.5" y2="20.5"></line>
+          </svg>
+          <h3>You want to know what is out there, and what it should cost</h3>
+          <p>It is fine if neither the product nor the vendor has been narrowed down. We work through what the market offers and what a reasonable price looks like, drawing on what we have seen in other engagements.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="phase">
+      <div class="phase-head">
+        <div class="phase-title">
+          <span class="phase-num" style="color: #1f2a44">02</span>
+          <h2>Select &amp; Contract</h2>
+        </div>
+        <p class="phase-role">We prepare the material and the process for judging candidates, and take on the design and negotiation of the terms.</p>
+      </div>
+      <div class="cards">
+        <div class="card">
+          <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="color: #1f2a44">
+            <path d="M9 3.5h5.5L19 8v9.5A1.5 1.5 0 0 1 17.5 19H9a1.5 1.5 0 0 1-1.5-1.5V5A1.5 1.5 0 0 1 9 3.5Z"></path>
+            <path d="M14.2 3.6V8.2H18.8"></path>
+            <path d="M4.5 7.5V19A1.5 1.5 0 0 0 6 20.5h9.5"></path>
+          </svg>
+          <h3>You want help preparing an RFP or a request for quotes</h3>
+          <p>Whether you are choosing something new or looking for a replacement for your current vendor. We take on the requirements, the evaluation criteria and the comparison sheet — the groundwork that makes vendors compete on equal footing.</p>
+        </div>
+        <div class="card">
+          <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="color: #1f2a44">
+            <path d="M12 3.2l7 2.4v5.3c0 3.9-2.8 7.1-7 8.4-4.2-1.3-7-4.5-7-8.4V5.6l7-2.4Z"></path>
+            <path d="M9 11.8l2.2 2.2 4.2-4.4"></path>
+          </svg>
+          <h3>You want a second look before signing a deal already decided</h3>
+          <p>It is fine if the candidate is already settled. Before the contract is signed, we test whether the terms are reasonable and surface the risks that may have been missed, so your decision has something behind it.</p>
+        </div>
+        <div class="card wide">
+          <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="color: #1f2a44">
+            <path d="M4 20.5h16"></path>
+            <path d="M5 16.2l9.4-9.4 3.3 3.3-9.4 9.4H5v-3.3Z"></path>
+            <path d="M14.4 6.8l1.6-1.6a1.4 1.4 0 0 1 2 0l1.3 1.3a1.4 1.4 0 0 1 0 2l-1.6 1.6"></path>
+          </svg>
+          <h3>You are not sure how to pin down the contract terms</h3>
+          <p>Price, of course, but also the SLA, service credits, termination and auto-renewal. We design the clauses that will matter years from now, and take the negotiation with the vendor off your hands.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="phase">
+      <div class="phase-head">
+        <div class="phase-title">
+          <span class="phase-num" style="color: #1f2a44">03</span>
+          <h2>Operate &amp; Improve</h2>
+        </div>
+        <p class="phase-role">Once it is running, we keep watch over quality, cost and budget.</p>
+      </div>
+      <div class="cards">
+        <div class="card">
+          <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="color: #1f2a44">
+            <path d="M3.8 17.5a8.2 8.2 0 1 1 16.4 0"></path>
+            <path d="M12 17.5l4.6-4.9"></path>
+            <circle cx="12" cy="17.6" r="1.1"></circle>
+          </svg>
+          <h3>You are not satisfied with the vendor's service</h3>
+          <p>The service description or the SLA may no longer match reality. From how to raise the improvement request to rewriting the terms, VMO takes on the conversations that are hard to have.</p>
+        </div>
+        <div class="card">
+          <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="color: #1f2a44">
+            <polyline points="3.8 16.6 9.6 10.8 13.2 14.4 20.2 7.4"></polyline>
+            <polyline points="15.2 7.4 20.2 7.4 20.2 12.4"></polyline>
+          </svg>
+          <h3>A vendor has asked for a price increase</h3>
+          <p>Whether the increase is justified can only be tested against what we see elsewhere. We bring your other contracts with the same vendor to the table, and someone who has negotiated many of these stands in front with alternatives in hand.</p>
+        </div>
+        <div class="card">
+          <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="color: #1f2a44">
+            <line x1="3.6" y1="20.2" x2="20.4" y2="20.2"></line>
+            <rect x="5.6" y="13.4" width="3.6" height="6.8"></rect>
+            <rect x="10.2" y="9.2" width="3.6" height="11"></rect>
+            <rect x="14.8" y="5.4" width="3.6" height="14.8"></rect>
+          </svg>
+          <h3>You do not know how to build next year's budget</h3>
+          <p>You should not have to put a number down blind. We collect ballpark quotes from several vendors and check them against past contracts, so the budget is one you can explain internally.</p>
+        </div>
+        <div class="card">
+          <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="color: #1f2a44">
+            <circle cx="5.8" cy="6.6" r="2.1"></circle>
+            <circle cx="18.2" cy="9.2" r="2.1"></circle>
+            <circle cx="11.2" cy="18.4" r="2.1"></circle>
+            <path d="M7.4 8.1l2.6 8.3"></path>
+            <path d="M16.6 10.9l-3.6 5.8"></path>
+            <path d="M7.8 6.9l8.4 1.8"></path>
+          </svg>
+          <h3>Contracts have become tangled and the whole is hard to see</h3>
+          <p>Contracts stacked up over years of business, several vendors around a single system, originals no longer on file. We untangle the contractual relationships and rebuild them into a structure that matches how things work today.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="phase">
+      <div class="phase-head">
+        <div class="phase-title">
+          <span class="phase-num" style="color: #1f2a44">04</span>
+          <h2>Rethink &amp; Transition</h2>
+        </div>
+        <p class="phase-role">Scale up, scale down, switch or wind down. Once the next shape is clear, we rebuild the contracts around it.</p>
+      </div>
+      <div class="cards">
+        <div class="card">
+          <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="color: #1f2a44">
+            <path d="M12 3.4v6.4"></path>
+            <polyline points="8.6 6.8 12 3.4 15.4 6.8"></polyline>
+            <path d="M12 20.6v-6.4"></path>
+            <polyline points="8.6 17.2 12 20.6 15.4 17.2"></polyline>
+            <line x1="4.4" y1="12" x2="19.6" y2="12"></line>
+          </svg>
+          <h3>The current arrangement no longer fits</h3>
+          <p>Usage has grown beyond what the team can carry, or it has plateaued and you are paying for more than you need. Scaling up or down, we rebuild the contract and the support structure to the level you actually need.</p>
+        </div>
+        <div class="card">
+          <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="color: #1f2a44">
+            <polyline points="4.2 7.4 19.8 7.4"></polyline>
+            <polyline points="16.4 4 19.8 7.4 16.4 10.8"></polyline>
+            <polyline points="19.8 16.6 4.2 16.6"></polyline>
+            <polyline points="7.6 13.2 4.2 16.6 7.6 20"></polyline>
+          </svg>
+          <h3>You are weighing whether to stay with your vendor</h3>
+          <p>We lay the cost and risk of staying next to the cost and risk of switching. If you do switch, we work through the migration sequence and the handover terms as well.</p>
+        </div>
+        <div class="card wide">
+          <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="color: #1f2a44">
+            <rect x="3.6" y="4.4" width="16.8" height="4.2"></rect>
+            <path d="M5.6 8.6V19a1.2 1.2 0 0 0 1.2 1.2h10.4a1.2 1.2 0 0 0 1.2-1.2V8.6"></path>
+            <path d="M12 11.4v4.8"></path>
+            <polyline points="9.6 13.8 12 16.2 14.4 13.8"></polyline>
+          </svg>
+          <h3>A system is being scaled back or shut down</h3>
+          <p>As support is reduced and contracts come to an end, we inventory the contracts spread across vendors — from checking termination conditions to organising the documentation that has to be handed over.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="closing">
+      <h2>Not having the bandwidth<br>is entirely normal</h2>
+      <p>Everything listed here is something you could do yourself, given the time. But while carrying several projects and several systems at once, doing all of it thoroughly is not realistic. What has until now been covered by a vendor's goodwill, or filed away under the word "trust", is what VMO takes on from here. We deal with vendors as an agent that works for you.</p>
+    </div>
+
+  </div>
+
+</div>
+<script>
+(function () {
+  var buttons = document.querySelectorAll('.langbtn');
+  var panels = document.querySelectorAll('.lang');
+  buttons.forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var lang = btn.getAttribute('data-lang');
+      panels.forEach(function (panel) {
+        panel.style.display = panel.getAttribute('data-lang') === lang ? 'block' : 'none';
+      });
+      buttons.forEach(function (other) {
+        other.classList.toggle('is-active', other === btn);
+      });
+      document.documentElement.lang = lang;
+    });
+  });
+})();
+</script>
+</body>
+</html>
