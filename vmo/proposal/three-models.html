@@ -55,10 +55,25 @@
     .close { margin-top: 72px; padding-top: 26px; border-top: 1.5px solid #1d2333; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 40px; align-items: start; }
     .close h2 { font-family: "Zen Old Mincho", "Hiragino Mincho ProN", "Yu Mincho", serif; font-size: 25px; font-weight: 600; letter-spacing: 0.03em; margin: 0; color: #1d2333; }
     .close p { font-size: 15px; line-height: 2.05; color: #4a515f; margin: 0; }
+    .aside { margin-top: 34px; background: #efebe1; padding: 36px 40px; }
+    .aside h3 { font-family: "Zen Old Mincho", "Hiragino Mincho ProN", "Yu Mincho", serif; font-size: 20px; font-weight: 600; letter-spacing: 0.02em; line-height: 1.6; margin: 0 0 16px; color: #1d2333; }
+    .aside p { font-size: 14.5px; line-height: 2.0; color: #4a515f; margin: 0 0 14px; max-width: 880px; }
+    .aside p:last-child { margin-bottom: 0; }
+    .aside b { font-weight: 600; color: #1d2333; }
+    .formula .fn { font-size: 11.5px; vertical-align: super; margin-left: 12px; letter-spacing: 0; text-decoration: none; color: #6f7268; font-family: "Noto Sans JP", sans-serif; }
+    .formula .fn:hover { color: #1f2a44; }
+    .notes { margin-top: 76px; padding-top: 24px; border-top: 1px solid #ddd9d0; }
+    .notes-title { font-size: 12.5px; font-weight: 600; letter-spacing: 0.1em; color: #6f7268; margin: 0 0 26px; }
+    .note { margin-bottom: 26px; max-width: 880px; }
+    .note:last-child { margin-bottom: 0; }
+    .note h4 { font-size: 14px; font-weight: 600; line-height: 1.6; margin: 0 0 9px; color: #1d2333; }
+    .note p { font-size: 13.5px; line-height: 1.95; color: #5c6472; margin: 0 0 9px; }
+    .note p:last-child { margin-bottom: 0; }
+    .note .f { font-family: "Zen Old Mincho", "Hiragino Mincho ProN", serif; font-size: 15px; color: #1f2a44; letter-spacing: 0.04em; }
     @media print {
       body { background: #fff; }
       .wrap { padding: 0 0 12px; max-width: none; }
-      .model, .points, .table-head, .close { break-inside: avoid; page-break-inside: avoid; }
+      .model, .points, .table-head, .close, .note, .aside { break-inside: avoid; page-break-inside: avoid; }
       .model { margin-top: 34px; }
     }
     @media (max-width: 720px) {
@@ -70,6 +85,9 @@
       .points { grid-template-columns: 1fr; gap: 26px; }
       .close { grid-template-columns: 1fr; gap: 18px; margin-top: 56px; }
       .close h2 { font-size: 21px; }
+      .aside { padding: 26px 24px; }
+      .aside h3 { font-size: 17px; }
+      .aside p { font-size: 14px; }
       .formula { font-size: 17px; }
     }
 </style>
@@ -155,7 +173,7 @@
           <span class="model-num">02</span>
           <h2>ガバナンス型（機能集約）</h2>
         </div>
-        <div class="formula">V(t) = v(t) ×（1 − λ）</div>
+        <div class="formula">V(t) = v(t) ×（1 − λ）<a class="fn" href="#note2">※2</a></div>
         <div class="model-body">
           <div>
             <p>ベンダー対応の機能をVMOへ移す形です。移管が終われば現場はほとんど関与しなくなるので、成果はVMOの水準そのものになります。だから成果の曲線は、移管が進むにつれてVMOの水準そのものへ収束していきます。誰が担当しても同じ手順に乗るためばらつきは小さくなりますが、VMOが現場の水準（100）に追いつくまで、平均は基準を割ったままです。ガバナンス型が買っているのは、水準ではなく分散の縮小だと言えます。</p>
@@ -227,7 +245,7 @@
           <span class="model-num">03</span>
           <h2>エージェント型（伴走）</h2>
         </div>
-        <div class="formula">V(t) = d × max(1,（v(t) − c）/ 100)</div>
+        <div class="formula">V(t) = d × max(1,（v(t) − c）/ 100)<a class="fn" href="#note1">※1</a></div>
         <div class="model-body">
           <div>
             <p>現場を残したまま、VMOを上乗せする形です。VMOの成長は現場の寄与に掛かる形で効くので、現場が寄与している限り、成果の平均が100を下回ることはありません。担当者の力量がそのまま結果に効くため、ばらつきは①と同じように残ります。VMOが現場の水準と調整コストを超えた時点から、分布全体が上へ持ち上がります。基準を超えたあとは②と同じようにばらつきを抑える効果も働きますが、現場の寄与が残るぶん②ほど均一にはなりません。まず平均を押し上げ、そのあとにばらつきが収まるモデルです。</p>
@@ -345,9 +363,33 @@
     </table>
   </div>
 
+  <div class="aside">
+    <h3>3つのうちどれかを選ぶ、という話ではありません</h3>
+    <p>ここまで3つのモデルを並べましたが、どれかひとつが正解で、残りは失敗する、というものではありません。3つとも、現実を単純化して性質だけを取り出した基準線です。<b>基準線は、位置を測るためのものであって、その上を歩くためのものではありません。</b></p>
+    <p>実際には、案件の性質によって効く形が変わります。定型的で件数の多い契約と、金額も文脈も大きい契約とでは、適した距離の取り方が違います。VMOが育つにつれても動きます。<b>うまくいく形は、あらかじめ選ぶものではなく、進めながら形になっていくもの</b>です。図面どおりに組み上げるのではなく、実際に動く人の手の届き方に合わせて、少しずつ整えていくことになります。</p>
+    <p>そのために必要なのは、精緻なモデルではありません。前提と目的の共有です。いまVMOがどの水準にあり、何を引き受けられて、何がまだ引き受けられないのか。この案件で最も守りたいものは何か。それさえ共有されていれば、呼び名が①でも②でも③でも、その場に合った役割分担は見つかります。<b>前提と目的を共有したうえで、共同作業として進めること。それが唯一の正解</b>だと考えています。</p>
+  </div>
+
   <div class="close">
     <h2>導入にあたって</h2>
     <p>エージェント型は、現場の寄与が残っていることを前提に成り立つモデルです。だからこそ、その特徴を理解したうえで導入し、狙いどおりに機能しているかを随時モニタリングする必要があります。平均がどれだけ上がり、ばらつきがどこまで収まったかを継続して可視化し、成果として示していきます。</p>
+  </div>
+
+
+  <div class="notes">
+    <p class="notes-title">補足 — この資料の単純化について</p>
+
+    <div class="note" id="note1">
+      <h4>※1　③の式は、掛け算ではなく「高い方を取る」形が正確です</h4>
+      <p>伴走による効果を正しく書くなら、<span class="f">V(t) = max ( d , v(t) − c )</span>——現場の力量と、VMOが保証できる水準の、高い方を取る形になります。VMOが持ち込むのは相場、確認すべき観点、他契約からの交渉材料であり、それらは<b>すでに備えている担当者より、備えていない担当者にこそ大きく効きます</b>。だから平均が上がると同時に、ばらつきが縮みます。「100を下回らない」ことも、この形なら仮定ではなく結果として出てきます。</p>
+      <p>本文で掛け算の表記を採ったのは、「VMOが育った分だけ現場の成果に上乗せされる」という関係を一目で伝えるためです。ただしこの形のままでは、倍率が上がるとばらつきも比例して広がることになり、本文および統計値で述べたばらつきの縮小を表現できていません。図と数値は上の max の考え方に沿って描いています。<b>掛け算の表記は、その簡略表現としてお読みください。</b>誤解を招く書き方をしていることをお詫びします。</p>
+    </div>
+
+    <div class="note" id="note2">
+      <h4>※2　②で現場の寄与度が急落する姿は、意図的に理想化しています</h4>
+      <p>図の②では、移管の開始とともに現場の寄与度がほぼゼロへ向かいます。これはガバナンス型を純粋な形で取り出したときの姿であり、モデルとしてはこの通りです。ただし現実にこの落ち方をしたなら、それは<b>権限を取り上げられた現場や、役割を外された関係者が手を引いた状態</b>——移管ではなく、組織としての破綻を意味します。</p>
+      <p>実際の移管はそうならないように設計します。契約の更新時期に合わせて段階的に移す、移管後も現場に残す役割を先に決めておく、外れる側の面目が立つように順序と伝え方を配慮する。それによって、この落差はもっと緩やかになります。ここでは②というモデルの性質を際立たせるために、あえて手当てのない形で描いています。</p>
+    </div>
   </div>
 
 </div>
