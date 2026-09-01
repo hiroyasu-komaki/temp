@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>エージェント型VMOの特徴 | VMO導入方針</title>
+  <link href="https://fonts.googleapis.com/css2?family=Zen+Old+Mincho:wght@500;600&family=Noto+Sans+JP:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #f6f4ef; font-family: "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif; color: #1d2333; }
+    a { color: #1f2a44; }
+    a:hover { color: #33456b; }
+    .wrap { max-width: 1120px; margin: 0 auto; padding: 88px 40px 112px; }
+    .mark { width: 42px; height: 2px; background: #1f2a44; margin-bottom: 22px; }
+    .eyebrow { font-size: 13px; font-weight: 600; letter-spacing: 0.14em; color: #1f2a44; margin: 0 0 20px; }
+    h1 { font-family: "Zen Old Mincho", "Hiragino Mincho ProN", "Yu Mincho", serif; font-weight: 600; font-size: 40px; line-height: 1.45; letter-spacing: 0.01em; margin: 0 0 26px; color: #1d2333; }
+    .lead { background: #efebe1; padding: 34px 38px; margin: 4px 0 24px; }
+    .lead p { margin: 0; font-size: 16.5px; line-height: 2.05; color: #3f4654; max-width: 860px; }
+    .intro { max-width: 720px; font-size: 14.5px; line-height: 1.95; color: #8f9188; margin: 0; }
+    .notation { margin-top: 48px; background: #efebe1; padding: 30px 34px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px 40px; }
+    .notation div { font-size: 14px; line-height: 1.8; color: #4a515f; }
+    .notation b { font-family: "Zen Old Mincho", serif; font-weight: 600; color: #1d2333; margin-right: 10px; }
+    .legend-inline { display: flex; flex-wrap: wrap; gap: 8px 22px; margin-top: 14px; }
+    .legend-inline span { display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 600; color: #5c6472; }
+    .syms { margin-top: 24px; padding-top: 16px; border-top: 1px solid #ddd9d0; display: grid; gap: 9px; }
+    .syms div { font-size: 13px; line-height: 1.75; color: #5c6472; }
+    .syms b { font-family: "Zen Old Mincho", serif; font-weight: 600; color: #1d2333; margin-right: 9px; }
+    .syms sub { font-size: 0.75em; }
+    .swatch { width: 16px; height: 3px; flex: none; }
+    .dot { width: 9px; height: 9px; border-radius: 50%; flex: none; opacity: 0.45; }
+    .model { margin-top: 64px; }
+    .model:first-of-type { margin-top: 52px; }
+    .model-head { display: flex; align-items: baseline; gap: 14px; }
+    .model-num { font-size: 13px; font-weight: 600; letter-spacing: 0.1em; color: #1f2a44; font-variant-numeric: tabular-nums; }
+    .model-head h2 { font-family: "Zen Old Mincho", "Hiragino Mincho ProN", "Yu Mincho", serif; font-size: 25px; font-weight: 600; letter-spacing: 0.03em; margin: 0; }
+    .formula { font-family: "Zen Old Mincho", "Hiragino Mincho ProN", "Yu Mincho", serif; font-size: 21px; letter-spacing: 0.05em; color: #1f2a44; border-top: 1px solid #ddd9d0; border-bottom: 1px solid #ddd9d0; padding: 18px 0; margin: 18px 0 26px; }
+    .model-body { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 44px; align-items: start; }
+    .model-body p { font-size: 14.5px; line-height: 1.95; color: #5c6472; margin: 0; }
+    .chart-cap { font-size: 11.5px; color: #8f9188; margin: 12px 0 0; letter-spacing: 0.02em; }
+    .chart { width: 100%; height: auto; display: block; }
+    .stats { display: flex; gap: 28px; padding: 10px 0 14px; border-top: 1px solid #ddd9d0; border-bottom: 1px solid #ddd9d0; margin-bottom: 14px; }
+    .stats span { font-size: 13px; color: #1d2333; font-variant-numeric: tabular-nums; letter-spacing: 0.02em; }
+    .stats b { font-weight: 600; font-size: 11.5px; color: #8f9188; letter-spacing: 0.06em; margin-right: 9px; }
+    .stats i { font-style: normal; color: #8f9188; margin: 0 3px; }
+    .points { margin-top: 76px; padding-top: 26px; border-top: 1.5px solid #1d2333; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 36px; }
+    .points h3 { font-size: 16px; font-weight: 600; line-height: 1.6; margin: 0 0 10px; color: #1d2333; }
+    .points p { font-size: 14px; line-height: 1.9; color: #5c6472; margin: 0; }
+    .table-head { margin-top: 76px; padding-bottom: 18px; border-bottom: 1.5px solid #1d2333; }
+    .table-head h2 { font-family: "Zen Old Mincho", "Hiragino Mincho ProN", "Yu Mincho", serif; font-size: 25px; font-weight: 600; letter-spacing: 0.03em; margin: 0; }
+    .table-scroll { overflow-x: auto; }
+    table { width: 100%; min-width: 760px; border-collapse: collapse; }
+    th, td { text-align: left; vertical-align: top; padding: 20px 22px 20px 0; border-bottom: 1px solid #ddd9d0; font-size: 14px; line-height: 1.85; }
+    th { font-size: 12.5px; font-weight: 600; letter-spacing: 0.08em; color: #8f9188; padding-top: 18px; padding-bottom: 12px; }
+    td.model-cell { width: 6%; font-family: "Zen Old Mincho", serif; font-weight: 600; font-size: 17px; color: #1f2a44; padding-right: 12px; }
+    td.name-cell { width: 24%; font-weight: 600; color: #1d2333; padding-right: 28px; }
+    td { color: #5c6472; }
+    .close { margin-top: 72px; padding-top: 26px; border-top: 1.5px solid #1d2333; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 40px; align-items: start; }
+    .close h2 { font-family: "Zen Old Mincho", "Hiragino Mincho ProN", "Yu Mincho", serif; font-size: 25px; font-weight: 600; letter-spacing: 0.03em; margin: 0; color: #1d2333; }
+    .close p { font-size: 15px; line-height: 2.05; color: #4a515f; margin: 0; }
+    @media (max-width: 720px) {
+      .wrap { padding: 56px 24px 72px; }
+      h1 { font-size: 28px; }
+      .lead { padding: 26px 24px; }
+      .lead p { font-size: 15px; }
+      .model-body { grid-template-columns: 1fr; gap: 24px; }
+      .points { grid-template-columns: 1fr; gap: 26px; }
+      .close { grid-template-columns: 1fr; gap: 18px; margin-top: 56px; }
+      .close h2 { font-size: 21px; }
+      .formula { font-size: 17px; }
+    }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="mark"></div>
+  <div class="eyebrow">VMO 導入方針</div>
+  <h1>エージェント型VMOの特徴</h1>
+  <div class="lead">
+    <p>エージェント型のVMOは、現場からベンダー対応を引き取るのではなく、現場の代理人として交渉と契約設計を担います。判断とオーナーシップが現場に残るため、成果がいまの水準を下回ることがありません。そしてVMOが経験を積むほど、その成長分が現場の成果に掛け算で上乗せされていきます。</p>
+  </div>
+  <p class="intro">以下では、現状（①）とガバナンス型（②）を並べ、エージェント型（③）との違いを式とグラフで確かめます。いまの姿を100として、3つを同じ物差しで比べます。</p>
+
+      <div class="model">
+        <div class="model-head">
+          <span class="model-num">01</span>
+          <h2>現状（分散・自前）</h2>
+        </div>
+        <div class="formula">V = Σ dᵢ</div>
+        <div class="model-body">
+          <div>
+            <p>現場が自分で対応している、いまの姿です。全体の成果は案件ごとの積み上げで、一件ごとの結果は担当者の力量と経験に左右されます。平均すれば100ですが、うまくまとまる案件とそうでない案件の差が大きい。劣った状態という意味ではなく、これが比較の出発点です。ベンダー対応の経験は個人に閉じるため、時間が経っても水準は上がりません。</p>
+            <div class="syms"><div><b>d<sub>i</sub></b>案件 i における現場の寄与度。いまの水準を100とする。</div></div>
+          </div>
+          <div>
+            <div class="stats"><span><b>平均</b>100 <i>→</i> 100</span><span><b>ばらつき σ</b>20 <i>→</i> 20</span></div>
+            <svg class="chart" viewBox="0 0 480 262" role="img" aria-label="現状モデル。案件ごとの成果は100を中心に大きくばらつき、平均は100のまま横ばい。">
+            <line x1="52" y1="172.9" x2="380" y2="172.9" stroke="#e4e0d6" stroke-width="1"></line>
+            <line x1="52" y1="46.6" x2="380" y2="46.6" stroke="#e4e0d6" stroke-width="1"></line>
+            <text x="44" y="239.0" text-anchor="end" font-size="10" fill="#8f9188">0</text>
+            <text x="44" y="175.9" text-anchor="end" font-size="10" fill="#8f9188">50</text>
+            <text x="44" y="112.8" text-anchor="end" font-size="10" fill="#8f9188">100</text>
+            <text x="44" y="49.6" text-anchor="end" font-size="10" fill="#8f9188">150</text>
+            <line x1="52" y1="109.8" x2="380" y2="109.8" stroke="#b9b3a4" stroke-width="1" stroke-dasharray="4 4"></line>
+            <text x="56" y="102.8" font-size="10" fill="#8f9188">現在 = 100</text>
+            <line x1="52" y1="236" x2="380" y2="236" stroke="#c9c4b8" stroke-width="1"></line>
+            <text x="52" y="253" font-size="10.5" fill="#8f9188">導入時</text>
+            <text x="380" y="253" text-anchor="end" font-size="10.5" fill="#8f9188">数年後</text>
+            <circle cx="57.1" cy="153.3" r="2.5" fill="#2a5fa0" fill-opacity="0.45"></circle>
+            <circle cx="68.1" cy="120.9" r="2.5" fill="#2a5fa0" fill-opacity="0.45"></circle>
+            <circle cx="79.4" cy="113.7" r="2.5" fill="#2a5fa0" fill-opacity="0.45"></circle>
+            <circle cx="90.4" cy="108.3" r="2.5" fill="#2a5fa0" fill-opacity="0.45"></circle>
+            <circle cx="102.2" cy="96.9" r="2.5" fill="#2a5fa0" fill-opacity="0.45"></circle>
+            <circle cx="110.6" cy="110.7" r="2.5" fill="#2a5fa0" fill-opacity="0.45"></circle>
+            <circle cx="119.8" cy="85.7" r="2.5" fill="#2a5fa0" fill-opacity="0.45"></circle>
+            <circle cx="130.4" cy="136.0" r="2.5" fill="#2a5fa0" fill-opacity="0.45"></circle>
+            <circle cx="148.7" cy="64.0" r="2.5" fill="#2a5fa0" fill-opacity="0.45"></circle>
+            <circle cx="156.8" cy="108.0" r="2.5" fill="#2a5fa0" fill-opacity="0.45"></circle>
+            <circle cx="164.1" cy="82.9" r="2.5" fill="#2a5fa0" fill-opacity="0.45"></circle>
+            <circle cx="174.3" cy="110.9" r="2.5" fill="#2a5fa0" fill-opacity="0.45"></circle>
+            <circle cx="186.2" cy="113.4" r="2.5" fill="#2a5fa0" fill-opacity="0.45"></circle>
+            <circle cx="199.3" cy="107.5" r="2.5" fill="#2a5fa0" fill-opacity="0.45"></circle>
+            <circle cx="210.1" cy="97.0" r="2.5" fill="#2a5fa0" fill-opacity="0.45"></circle>
+            <circle cx="222.6" cy="139.3" r="2.5" fill="#2a5fa0" fill-opacity="0.45"></circle>
+            <circle cx="232.4" cy="128.4" r="2.5" fill="#2a5fa0" fill-opacity="0.45"></circle>
+            <circle cx="241.6" cy="137.6" r="2.5" fill="#2a5fa0" fill-opacity="0.45"></circle>
+            <circle cx="258.2" cy="65.4" r="2.5" fill="#2a5fa0" fill-opacity="0.45"></circle>
+            <circle cx="266.8" cy="115.1" r="2.5" fill="#2a5fa0" fill-opacity="0.45"></circle>
+            <circle cx="274.7" cy="96.5" r="2.5" fill="#2a5fa0" fill-opacity="0.45"></circle>
+            <circle cx="283.7" cy="78.5" r="2.5" fill="#2a5fa0" fill-opacity="0.45"></circle>
+            <circle cx="300.1" cy="138.8" r="2.5" fill="#2a5fa0" fill-opacity="0.45"></circle>
+            <circle cx="308.0" cy="70.5" r="2.5" fill="#2a5fa0" fill-opacity="0.45"></circle>
+            <circle cx="323.5" cy="98.7" r="2.5" fill="#2a5fa0" fill-opacity="0.45"></circle>
+            <circle cx="328.5" cy="99.8" r="2.5" fill="#2a5fa0" fill-opacity="0.45"></circle>
+            <circle cx="345.0" cy="168.7" r="2.5" fill="#2a5fa0" fill-opacity="0.45"></circle>
+            <circle cx="351.9" cy="85.9" r="2.5" fill="#2a5fa0" fill-opacity="0.45"></circle>
+            <circle cx="360.2" cy="129.3" r="2.5" fill="#2a5fa0" fill-opacity="0.45"></circle>
+            <circle cx="372.7" cy="131.0" r="2.5" fill="#2a5fa0" fill-opacity="0.45"></circle>
+            <path d="M52.0 109.8 L60.2 109.8 L68.4 109.8 L76.6 109.8 L84.8 109.8 L93.0 109.8 L101.2 109.8 L109.4 109.8 L117.6 109.8 L125.8 109.8 L134.0 109.8 L142.2 109.8 L150.4 109.8 L158.6 109.8 L166.8 109.8 L175.0 109.8 L183.2 109.8 L191.4 109.8 L199.6 109.8 L207.8 109.8 L216.0 109.8 L224.2 109.8 L232.4 109.8 L240.6 109.8 L248.8 109.8 L257.0 109.8 L265.2 109.8 L273.4 109.8 L281.6 109.8 L289.8 109.8 L298.0 109.8 L306.2 109.8 L314.4 109.8 L322.6 109.8 L330.8 109.8 L339.0 109.8 L347.2 109.8 L355.4 109.8 L363.6 109.8 L371.8 109.8 L380.0 109.8" fill="none" stroke="#2a5fa0" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"></path>
+            <circle cx="380" cy="109.8" r="3.2" fill="#2a5fa0"></circle>
+            <text x="389" y="113.8" font-size="11" fill="#4a515f">V 成果の平均</text>
+            </svg>
+            <div class="legend-inline"><span><i class="swatch" style="background: #2a5fa0"></i>成果の平均（V）</span><span><i class="dot" style="background: #2a5fa0"></i>個別案件の成果</span></div>
+            <p class="chart-cap">現在の水準を100とした指数／点は個別案件、線はその平均（概念図）</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="model">
+        <div class="model-head">
+          <span class="model-num">02</span>
+          <h2>ガバナンス型（機能集約）</h2>
+        </div>
+        <div class="formula">V(t) = Σ v(t) ×（1 − λ）</div>
+        <div class="model-body">
+          <div>
+            <p>ベンダー対応の機能をVMOへ移す形です。移管が終われば現場はほとんど関与しなくなるので、成果はVMOの水準そのものになります。だから成果の曲線は、VMOの成長曲線とほぼ同じ形を描きます。誰が担当しても同じ手順に乗るためばらつきは小さくなりますが、VMOが現場の水準（100）に追いつくまで、平均は基準を割ったままです。ガバナンス型が買っているのは、水準ではなく分散の縮小だと言えます。</p>
+            <div class="syms"><div><b>d<sub>i</sub></b>案件 i における現場の寄与度。移管が進むほど下がる。</div><div><b>v(t)</b>VMOの専門性。同じ物差しの指数で、案件が集まるほど育つ。</div><div><b>λ</b>現場の文脈がVMOへ渡りきらないことによる伝達ロス。</div></div>
+          </div>
+          <div>
+            <div class="stats"><span><b>平均</b>100 <i>→</i> 126</span><span><b>ばらつき σ</b>21 <i>→</i> 7</span></div>
+            <svg class="chart" viewBox="0 0 480 262" role="img" aria-label="ガバナンス型。現場の寄与度が急速に下がり、成果はVMOの成長曲線とほぼ同じ形を描いて、VMOが100を超えるまで基準を割り続ける。">
+            <line x1="52" y1="172.9" x2="380" y2="172.9" stroke="#e4e0d6" stroke-width="1"></line>
+            <line x1="52" y1="46.6" x2="380" y2="46.6" stroke="#e4e0d6" stroke-width="1"></line>
+            <text x="44" y="239.0" text-anchor="end" font-size="10" fill="#8f9188">0</text>
+            <text x="44" y="175.9" text-anchor="end" font-size="10" fill="#8f9188">50</text>
+            <text x="44" y="112.8" text-anchor="end" font-size="10" fill="#8f9188">100</text>
+            <text x="44" y="49.6" text-anchor="end" font-size="10" fill="#8f9188">150</text>
+            <path d="M52.0 109.8 L60.2 126.1 L68.4 136.2 L76.6 142.3 L84.8 145.6 L93.0 147.0 L101.2 147.1 L109.4 146.4 L117.6 145.1 L125.8 143.4 L134.0 141.4 L142.2 139.2 L150.4 137.0 L158.6 134.7 L166.8 132.3 L175.0 130.0 L183.2 127.6 L191.4 125.3 L199.6 122.9 L207.8 120.6 L216.0 118.4 L224.2 116.1 L232.4 113.9 L240.6 111.7 L248.8 109.8 L257.0 109.8 L265.2 109.8 L273.4 109.8 L281.6 109.8 L289.8 109.8 L298.0 109.8 L306.2 109.8 L314.4 109.8 L322.6 109.8 L330.8 109.8 L339.0 109.8 L347.2 109.8 L355.4 109.8 L363.6 109.8 L371.8 109.8 L380.0 109.8 L380.0 109.8 L52.0 109.8 Z" fill="#c05a17" fill-opacity="0.10" stroke="none"></path>
+            <line x1="52" y1="109.8" x2="380" y2="109.8" stroke="#b9b3a4" stroke-width="1" stroke-dasharray="4 4"></line>
+            <text x="56" y="102.8" font-size="10" fill="#8f9188">現在 = 100</text>
+            <line x1="52" y1="236" x2="380" y2="236" stroke="#c9c4b8" stroke-width="1"></line>
+            <text x="52" y="253" font-size="10.5" fill="#8f9188">導入時</text>
+            <text x="380" y="253" text-anchor="end" font-size="10.5" fill="#8f9188">数年後</text>
+            <circle cx="60.8" cy="80.3" r="2.5" fill="#2a5fa0" fill-opacity="0.45"></circle>
+            <circle cx="65.1" cy="152.5" r="2.5" fill="#2a5fa0" fill-opacity="0.45"></circle>
+            <circle cx="80.1" cy="171.6" r="2.5" fill="#2a5fa0" fill-opacity="0.45"></circle>
+            <circle cx="87.4" cy="137.6" r="2.5" fill="#2a5fa0" fill-opacity="0.45"></circle>
+            <circle cx="98.8" cy="163.9" r="2.5" fill="#2a5fa0" fill-opacity="0.45"></circle>
+            <circle cx="111.8" cy="145.1" r="2.5" fill="#2a5fa0" fill-opacity="0.45"></circle>
+            <circle cx="119.3" cy="124.2" r="2.5" fill="#2a5fa0" fill-opacity="0.45"></circle>
+            <circle cx="133.4" cy="131.6" r="2.5" fill="#2a5fa0" fill-opacity="0.45"></circle>
+            <circle cx="145.0" cy="143.4" r="2.5" fill="#2a5fa0" fill-opacity="0.45"></circle>
+            <circle cx="152.4" cy="154.1" r="2.5" fill="#2a5fa0" fill-opacity="0.45"></circle>
+            <circle cx="169.0" cy="144.2" r="2.5" fill="#2a5fa0" fill-opacity="0.45"></circle>
+            <circle cx="178.7" cy="134.5" r="2.5" fill="#2a5fa0" fill-opacity="0.45"></circle>
+            <circle cx="192.4" cy="134.2" r="2.5" fill="#2a5fa0" fill-opacity="0.45"></circle>
+            <circle cx="198.6" cy="102.3" r="2.5" fill="#2a5fa0" fill-opacity="0.45"></circle>
+            <circle cx="211.1" cy="120.4" r="2.5" fill="#2a5fa0" fill-opacity="0.45"></circle>
+            <circle cx="218.2" cy="121.5" r="2.5" fill="#2a5fa0" fill-opacity="0.45"></circle>
+            <circle cx="232.2" cy="112.0" r="2.5" fill="#2a5fa0" fill-opacity="0.45"></circle>
+            <circle cx="242.9" cy="120.4" r="2.5" fill="#2a5fa0" fill-opacity="0.45"></circle>
+            <circle cx="255.4" cy="100.1" r="2.5" fill="#2a5fa0" fill-opacity="0.45"></circle>
+            <circle cx="263.8" cy="94.8" r="2.5" fill="#2a5fa0" fill-opacity="0.45"></circle>
+            <circle cx="278.6" cy="98.9" r="2.5" fill="#2a5fa0" fill-opacity="0.45"></circle>
+            <circle cx="283.9" cy="94.6" r="2.5" fill="#2a5fa0" fill-opacity="0.45"></circle>
+            <circle cx="294.4" cy="98.5" r="2.5" fill="#2a5fa0" fill-opacity="0.45"></circle>
+            <circle cx="311.5" cy="80.2" r="2.5" fill="#2a5fa0" fill-opacity="0.45"></circle>
+            <circle cx="318.5" cy="95.7" r="2.5" fill="#2a5fa0" fill-opacity="0.45"></circle>
+            <circle cx="329.3" cy="82.4" r="2.5" fill="#2a5fa0" fill-opacity="0.45"></circle>
+            <circle cx="343.9" cy="90.8" r="2.5" fill="#2a5fa0" fill-opacity="0.45"></circle>
+            <circle cx="349.6" cy="85.0" r="2.5" fill="#2a5fa0" fill-opacity="0.45"></circle>
+            <circle cx="365.8" cy="83.4" r="2.5" fill="#2a5fa0" fill-opacity="0.45"></circle>
+            <circle cx="372.5" cy="93.0" r="2.5" fill="#2a5fa0" fill-opacity="0.45"></circle>
+            <path d="M52.0 109.8 L60.2 138.5 L68.4 159.9 L76.6 175.7 L84.8 187.4 L93.0 196.1 L101.2 202.5 L109.4 207.2 L117.6 210.8 L125.8 213.4 L134.0 215.3 L142.2 216.8 L150.4 217.8 L158.6 218.6 L166.8 219.2 L175.0 219.6 L183.2 219.9 L191.4 220.2 L199.6 220.3 L207.8 220.5 L216.0 220.6 L224.2 220.6 L232.4 220.7 L240.6 220.7 L248.8 220.8 L257.0 220.8 L265.2 220.8 L273.4 220.8 L281.6 220.8 L289.8 220.8 L298.0 220.8 L306.2 220.8 L314.4 220.8 L322.6 220.8 L330.8 220.8 L339.0 220.8 L347.2 220.8 L355.4 220.8 L363.6 220.8 L371.8 220.8 L380.0 220.8" fill="none" stroke="#c05a17" stroke-width="2.0" stroke-linecap="round" stroke-linejoin="round"></path>
+            <path d="M52.0 172.9 L60.2 165.7 L68.4 160.9 L76.6 156.6 L84.8 152.7 L93.0 149.0 L101.2 145.5 L109.4 142.1 L117.6 138.9 L125.8 135.8 L134.0 132.7 L142.2 129.7 L150.4 126.8 L158.6 124.0 L166.8 121.2 L175.0 118.4 L183.2 115.7 L191.4 113.1 L199.6 110.4 L207.8 107.9 L216.0 105.3 L224.2 102.8 L232.4 100.3 L240.6 97.8 L248.8 95.4 L257.0 93.0 L265.2 90.6 L273.4 88.3 L281.6 85.9 L289.8 83.6 L298.0 81.3 L306.2 79.0 L314.4 76.8 L322.6 74.5 L330.8 72.3 L339.0 70.1 L347.2 67.9 L355.4 65.7 L363.6 63.5 L371.8 61.4 L380.0 59.2" fill="none" stroke="#00875a" stroke-width="2.0" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="5 4"></path>
+            <path d="M52.0 109.8 L60.2 126.1 L68.4 136.2 L76.6 142.3 L84.8 145.6 L93.0 147.0 L101.2 147.1 L109.4 146.4 L117.6 145.1 L125.8 143.4 L134.0 141.4 L142.2 139.2 L150.4 137.0 L158.6 134.7 L166.8 132.3 L175.0 130.0 L183.2 127.6 L191.4 125.3 L199.6 122.9 L207.8 120.6 L216.0 118.4 L224.2 116.1 L232.4 113.9 L240.6 111.7 L248.8 109.5 L257.0 107.3 L265.2 105.2 L273.4 103.0 L281.6 100.9 L289.8 98.8 L298.0 96.8 L306.2 94.7 L314.4 92.7 L322.6 90.7 L330.8 88.7 L339.0 86.7 L347.2 84.7 L355.4 82.7 L363.6 80.8 L371.8 78.8 L380.0 76.9" fill="none" stroke="#2a5fa0" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"></path>
+            <circle cx="380" cy="220.8" r="3.2" fill="#c05a17"></circle>
+            <text x="389" y="224.8" font-size="11" fill="#4a515f">d 現場の寄与度</text>
+            <circle cx="380" cy="59.2" r="3.2" fill="#00875a"></circle>
+            <text x="389" y="72.2" font-size="11" fill="#4a515f">v VMOの専門性</text>
+            <circle cx="380" cy="76.9" r="3.2" fill="#2a5fa0"></circle>
+            <text x="389" y="70.9" font-size="11" fill="#4a515f">V 成果の平均</text>
+            </svg>
+            <div class="legend-inline"><span><i class="swatch" style="background: #c05a17"></i>現場の寄与度（d）</span><span><i class="swatch" style="background: #00875a"></i>VMOの専門性（v）</span><span><i class="swatch" style="background: #2a5fa0"></i>成果の平均（V）</span><span><i class="dot" style="background: #2a5fa0"></i>個別案件の成果</span></div>
+            <p class="chart-cap">現在の水準を100とした指数／点は個別案件、線はその平均（概念図）</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="model">
+        <div class="model-head">
+          <span class="model-num">03</span>
+          <h2>エージェント型（伴走）</h2>
+        </div>
+        <div class="formula">V(t) = Σ dᵢ × max(1,（v(t) − c）/ 100)</div>
+        <div class="model-body">
+          <div>
+            <p>現場を残したまま、VMOを上乗せする形です。VMOの成長は現場の寄与に掛かる形で効くので、現場が寄与している限り、成果が100を下回ることはありません。担当者の力量がそのまま結果に効くため、ばらつきは①と同じように残ります。VMOが現場の水準と調整コストを超えた時点から、分布全体が上へ持ち上がります。基準を超えたあとは②と同じようにばらつきを抑える効果も働きますが、現場の寄与が残るぶん②ほど均一にはなりません。まず平均を押し上げ、そのあとにばらつきが収まるモデルです。</p>
+            <div class="syms"><div><b>d<sub>i</sub></b>案件 i における現場の寄与度。伴走では100のまま保たれる。</div><div><b>v(t)</b>VMOの専門性。同じ物差しの指数で、案件が集まるほど育つ。</div><div><b>c</b>伴走にかかる調整コスト。</div></div>
+          </div>
+          <div>
+            <div class="stats"><span><b>平均</b>100 <i>→</i> 134</span><span><b>ばらつき σ</b>20 <i>→</i> 11</span></div>
+            <svg class="chart" viewBox="0 0 480 262" role="img" aria-label="エージェント型。現場の寄与度は100のまま保たれ、VMOの専門性が100を超えたところから分布全体が上に持ち上がる。">
+            <line x1="52" y1="172.9" x2="380" y2="172.9" stroke="#e4e0d6" stroke-width="1"></line>
+            <line x1="52" y1="46.6" x2="380" y2="46.6" stroke="#e4e0d6" stroke-width="1"></line>
+            <text x="44" y="239.0" text-anchor="end" font-size="10" fill="#8f9188">0</text>
+            <text x="44" y="175.9" text-anchor="end" font-size="10" fill="#8f9188">50</text>
+            <text x="44" y="112.8" text-anchor="end" font-size="10" fill="#8f9188">100</text>
+            <text x="44" y="49.6" text-anchor="end" font-size="10" fill="#8f9188">150</text>
+            <path d="M52.0 109.8 L60.2 109.8 L68.4 109.8 L76.6 109.8 L84.8 109.8 L93.0 109.8 L101.2 109.8 L109.4 109.8 L117.6 109.8 L125.8 109.8 L134.0 109.8 L142.2 109.8 L150.4 109.8 L158.6 109.8 L166.8 109.8 L175.0 109.8 L183.2 109.8 L191.4 109.8 L199.6 109.8 L207.8 109.8 L216.0 109.8 L224.2 109.8 L232.4 107.9 L240.6 105.4 L248.8 103.0 L257.0 100.6 L265.2 98.2 L273.4 95.8 L281.6 93.5 L289.8 91.2 L298.0 88.9 L306.2 86.6 L314.4 84.3 L322.6 82.1 L330.8 79.9 L339.0 77.7 L347.2 75.5 L355.4 73.3 L363.6 71.1 L371.8 69.0 L380.0 66.8 L380.0 109.8 L52.0 109.8 Z" fill="#2a5fa0" fill-opacity="0.10" stroke="none"></path>
+            <line x1="52" y1="109.8" x2="380" y2="109.8" stroke="#b9b3a4" stroke-width="1" stroke-dasharray="4 4"></line>
+            <text x="56" y="102.8" font-size="10" fill="#8f9188">現在 = 100</text>
+            <line x1="52" y1="236" x2="380" y2="236" stroke="#c9c4b8" stroke-width="1"></line>
+            <text x="52" y="253" font-size="10.5" fill="#8f9188">導入時</text>
+            <text x="380" y="253" text-anchor="end" font-size="10.5" fill="#8f9188">数年後</text>
+            <circle cx="58.9" cy="90.5" r="2.5" fill="#2a5fa0" fill-opacity="0.45"></circle>
+            <circle cx="71.1" cy="100.8" r="2.5" fill="#2a5fa0" fill-opacity="0.45"></circle>
+            <circle cx="82.0" cy="155.3" r="2.5" fill="#2a5fa0" fill-opacity="0.45"></circle>
+            <circle cx="89.2" cy="123.2" r="2.5" fill="#2a5fa0" fill-opacity="0.45"></circle>
+            <circle cx="101.4" cy="90.0" r="2.5" fill="#2a5fa0" fill-opacity="0.45"></circle>
+            <circle cx="112.9" cy="95.8" r="2.5" fill="#2a5fa0" fill-opacity="0.45"></circle>
+            <circle cx="121.3" cy="149.6" r="2.5" fill="#2a5fa0" fill-opacity="0.45"></circle>
+            <circle cx="133.6" cy="91.4" r="2.5" fill="#2a5fa0" fill-opacity="0.45"></circle>
+            <circle cx="148.6" cy="72.4" r="2.5" fill="#2a5fa0" fill-opacity="0.45"></circle>
+            <circle cx="152.6" cy="128.5" r="2.5" fill="#2a5fa0" fill-opacity="0.45"></circle>
+            <circle cx="163.5" cy="105.5" r="2.5" fill="#2a5fa0" fill-opacity="0.45"></circle>
+            <circle cx="179.3" cy="76.6" r="2.5" fill="#2a5fa0" fill-opacity="0.45"></circle>
+            <circle cx="191.2" cy="133.1" r="2.5" fill="#2a5fa0" fill-opacity="0.45"></circle>
+            <circle cx="200.2" cy="113.6" r="2.5" fill="#2a5fa0" fill-opacity="0.45"></circle>
+            <circle cx="206.9" cy="117.0" r="2.5" fill="#2a5fa0" fill-opacity="0.45"></circle>
+            <circle cx="220.8" cy="102.7" r="2.5" fill="#2a5fa0" fill-opacity="0.45"></circle>
+            <circle cx="228.5" cy="129.4" r="2.5" fill="#2a5fa0" fill-opacity="0.45"></circle>
+            <circle cx="239.9" cy="137.2" r="2.5" fill="#2a5fa0" fill-opacity="0.45"></circle>
+            <circle cx="254.9" cy="72.1" r="2.5" fill="#2a5fa0" fill-opacity="0.45"></circle>
+            <circle cx="262.5" cy="86.3" r="2.5" fill="#2a5fa0" fill-opacity="0.45"></circle>
+            <circle cx="279.0" cy="96.2" r="2.5" fill="#2a5fa0" fill-opacity="0.45"></circle>
+            <circle cx="284.8" cy="126.8" r="2.5" fill="#2a5fa0" fill-opacity="0.45"></circle>
+            <circle cx="299.7" cy="91.2" r="2.5" fill="#2a5fa0" fill-opacity="0.45"></circle>
+            <circle cx="312.2" cy="99.9" r="2.5" fill="#2a5fa0" fill-opacity="0.45"></circle>
+            <circle cx="320.9" cy="84.2" r="2.5" fill="#2a5fa0" fill-opacity="0.45"></circle>
+            <circle cx="330.7" cy="52.6" r="2.5" fill="#2a5fa0" fill-opacity="0.45"></circle>
+            <circle cx="339.5" cy="77.6" r="2.5" fill="#2a5fa0" fill-opacity="0.45"></circle>
+            <circle cx="352.3" cy="73.8" r="2.5" fill="#2a5fa0" fill-opacity="0.45"></circle>
+            <circle cx="364.0" cy="46.8" r="2.5" fill="#2a5fa0" fill-opacity="0.45"></circle>
+            <circle cx="371.3" cy="65.3" r="2.5" fill="#2a5fa0" fill-opacity="0.45"></circle>
+            <path d="M52.0 109.8 L60.2 109.8 L68.4 109.8 L76.6 109.8 L84.8 109.8 L93.0 109.8 L101.2 109.8 L109.4 109.8 L117.6 109.8 L125.8 109.8 L134.0 109.8 L142.2 109.8 L150.4 109.8 L158.6 109.8 L166.8 109.8 L175.0 109.8 L183.2 109.8 L191.4 109.8 L199.6 109.8 L207.8 109.8 L216.0 109.8 L224.2 109.8 L232.4 109.8 L240.6 109.8 L248.8 109.8 L257.0 109.8 L265.2 109.8 L273.4 109.8 L281.6 109.8 L289.8 109.8 L298.0 109.8 L306.2 109.8 L314.4 109.8 L322.6 109.8 L330.8 109.8 L339.0 109.8 L347.2 109.8 L355.4 109.8 L363.6 109.8 L371.8 109.8 L380.0 109.8" fill="none" stroke="#c05a17" stroke-width="2.0" stroke-linecap="round" stroke-linejoin="round"></path>
+            <path d="M52.0 172.9 L60.2 165.7 L68.4 160.9 L76.6 156.6 L84.8 152.7 L93.0 149.0 L101.2 145.5 L109.4 142.1 L117.6 138.9 L125.8 135.8 L134.0 132.7 L142.2 129.7 L150.4 126.8 L158.6 124.0 L166.8 121.2 L175.0 118.4 L183.2 115.7 L191.4 113.1 L199.6 110.4 L207.8 107.9 L216.0 105.3 L224.2 102.8 L232.4 100.3 L240.6 97.8 L248.8 95.4 L257.0 93.0 L265.2 90.6 L273.4 88.3 L281.6 85.9 L289.8 83.6 L298.0 81.3 L306.2 79.0 L314.4 76.8 L322.6 74.5 L330.8 72.3 L339.0 70.1 L347.2 67.9 L355.4 65.7 L363.6 63.5 L371.8 61.4 L380.0 59.2" fill="none" stroke="#00875a" stroke-width="2.0" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="5 4"></path>
+            <path d="M52.0 107.8 L60.2 107.8 L68.4 107.8 L76.6 107.8 L84.8 107.8 L93.0 107.8 L101.2 107.8 L109.4 107.8 L117.6 107.8 L125.8 107.8 L134.0 107.8 L142.2 107.8 L150.4 107.8 L158.6 107.8 L166.8 107.8 L175.0 107.8 L183.2 107.8 L191.4 107.8 L199.6 107.8 L207.8 107.8 L216.0 107.8 L224.2 107.8 L232.4 105.9 L240.6 103.4 L248.8 101.0 L257.0 98.6 L265.2 96.2 L273.4 93.8 L281.6 91.5 L289.8 89.2 L298.0 86.9 L306.2 84.6 L314.4 82.3 L322.6 80.1 L330.8 77.9 L339.0 75.7 L347.2 73.5 L355.4 71.3 L363.6 69.1 L371.8 67.0 L380.0 64.8" fill="none" stroke="#2a5fa0" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"></path>
+            <circle cx="380" cy="109.8" r="3.2" fill="#c05a17"></circle>
+            <text x="389" y="122.8" font-size="11" fill="#4a515f">d 現場の寄与度</text>
+            <circle cx="380" cy="59.2" r="3.2" fill="#00875a"></circle>
+            <text x="389" y="52.2" font-size="11" fill="#4a515f">v VMOの専門性</text>
+            <circle cx="380" cy="64.8" r="3.2" fill="#2a5fa0"></circle>
+            <text x="389" y="77.8" font-size="11" fill="#4a515f">V 成果の平均</text>
+            </svg>
+            <div class="legend-inline"><span><i class="swatch" style="background: #c05a17"></i>現場の寄与度（d）</span><span><i class="swatch" style="background: #00875a"></i>VMOの専門性（v）</span><span><i class="swatch" style="background: #2a5fa0"></i>成果の平均（V）</span><span><i class="dot" style="background: #2a5fa0"></i>個別案件の成果</span></div>
+            <p class="chart-cap">現在の水準を100とした指数／点は個別案件、線はその平均（概念図）</p>
+          </div>
+        </div>
+      </div>
+
+  <div class="points">
+    <div>
+      <h3>②は分散を抑え、③は平均を上げる</h3>
+      <p>同じ「VMOを育てる」でも、順番が違います。②は最初にばらつきを抑え、水準は後から追いつきます。③はまず全体を持ち上げ、VMOが基準を超えたあとにばらつきが収まります。どちらを先に必要とするかで選び方が変わります。</p>
+    </div>
+    <div>
+      <h3>分かれ目は、VMOが100を超えられるか</h3>
+      <p>②は成果がVMOの水準そのものになるため、VMOが現場に追いつくまで基準を割り続けます。③は現場が下限を支えるので割り込みません。育つ間のリスクを現場が負うのか、負わないのかが違います。</p>
+    </div>
+    <div>
+      <h3>早期相談は、v(t)の成長エンジン</h3>
+      <p>VMOが育つのは案件が集まるからです。現場が早く声をかけるほどvが早く100を超え、上乗せの始まりが前倒しになる。「早めにご相談ください」はお願いではなく、モデル上の必然です。</p>
+    </div>
+  </div>
+
+  <div class="table-head">
+    <h2>3つのモデルの比較</h2>
+  </div>
+  <div class="table-scroll">
+    <table>
+      <thead>
+        <tr>
+          <th>モデル</th>
+          <th>名称</th>
+          <th>強み</th>
+          <th>弱み</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="model-cell">①</td>
+          <td class="name-cell">現状（自前対応）</td>
+          <td>現場が全体を把握しており、意思決定が速い。調整コストがかからない。</td>
+          <td>案件ごとのばらつきが大きく、結果が担当者に依存する。経験が個人に閉じて蓄積せず、時間が経っても水準が上がらない。</td>
+        </tr>
+        <tr>
+          <td class="model-cell">②</td>
+          <td class="name-cell">ガバナンス型（分散を抑える）</td>
+          <td>誰が担当しても同じ手順に乗るので、ばらつきが小さくなる。統制と監査対応が容易。VMO側に経験が集約されて育つ。</td>
+          <td>成果がVMOの水準そのものになり、VMOが現場に追いつくまで基準を割り続ける。伝達ロスが残り、現場の寄与度はほぼゼロになる。</td>
+        </tr>
+        <tr>
+          <td class="model-cell">③</td>
+          <td class="name-cell">エージェント型（平均を上げる）</td>
+          <td>現場が100を保つので基準を割らない。VMOが育った分だけ分布全体が上振れし、基準を超えたあとはばらつきも収まっていく。</td>
+          <td>ばらつきが収まるのはVMOが基準を超えたあとで、均一化の速さでは②に劣る。上乗せが生まれるまでは調整コストだけが乗る。</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="close">
+    <h2>導入にあたって</h2>
+    <p>エージェント型は、現場の寄与が残っていることを前提に成り立つモデルです。だからこそ、その特徴を理解したうえで導入し、狙いどおりに機能しているかを随時モニタリングする必要があります。平均がどれだけ上がり、ばらつきがどこまで収まったかを継続して可視化し、成果として示していきます。</p>
+  </div>
+
+</div>
+</body>
+</html>
