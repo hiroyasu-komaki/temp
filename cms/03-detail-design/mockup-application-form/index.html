@@ -1,0 +1,694 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>IT投資 申請画面（紙芝居）</title>
+<style>
+:root{--teal:#0E5A66;--teal-d:#0E3F48;--ink:#1E2226;--muted:#555B61;--line:#E3E1DB;--soft:#F3F2EE;--bg:#E7E5DF;--red:#B42318;--ai:#4A3A86;--ai-bg:#EFEBF8;--amber:#7A5200;--amber-bg:#FFF3D6}
+*{box-sizing:border-box}
+body{margin:0;font-family:"BIZ UDPGothic","Meiryo UI","Hiragino Sans","Yu Gothic",sans-serif;background:var(--bg);color:var(--ink);font-size:14px}
+input,select,textarea,button{font-family:inherit;font-size:14px}
+input[type=text],select,textarea{border:1px solid #B9BDC2;border-radius:6px;padding:8px 10px;background:#fff;color:var(--ink);width:100%;min-height:38px}
+textarea{resize:vertical;line-height:1.6}
+input:focus,select:focus,textarea:focus,button:focus-visible{outline:2px solid var(--teal);outline-offset:1px}
+button{cursor:pointer}button:disabled{cursor:not-allowed}
+.wrap{display:flex;min-height:100vh}
+.app{flex:1;min-width:0;max-width:1080px;display:flex;flex-direction:column;background:#fff;position:relative;height:100vh;box-shadow:0 0 0 1px #D3D0C8}
+.hdr{height:56px;flex-shrink:0;display:flex;align-items:center;justify-content:space-between;padding:0 28px;background:var(--teal-d);color:#fff}
+.hdr .name{font-size:17px;font-weight:700;letter-spacing:.04em}.hdr .sub{font-size:12px;color:#A9C9CF}
+.btn-ghost{height:34px;padding:0 14px;border-radius:6px;border:1px solid #7FA9B1;background:transparent;color:#fff;font-size:13px}
+.stepper{height:52px;flex-shrink:0;display:flex;align-items:center;gap:6px;padding:0 28px;border-bottom:1px solid var(--line);background:#FAF9F6}
+.dot{width:24px;height:24px;border-radius:12px;font-size:12px;display:flex;align-items:center;justify-content:center;background:#E7E5DF;color:#6B7177}
+.dot.cur{background:var(--teal);color:#fff}.dot.done{background:#CFE3E6;color:#0E4A54}
+.slabel{font-size:13px;color:#6B7177}.slabel.cur{font-weight:700;color:var(--ink)}
+.sline{width:28px;height:1px;background:#C9C6BE;margin:0 6px}
+.body{flex:1;overflow-y:auto;padding:28px 40px 40px}
+h1{margin:0;font-size:22px}h2{margin:0;font-size:17px}
+.lead{margin:6px 0 0;font-size:13px;color:var(--muted)}
+.col{display:flex;flex-direction:column;gap:22px}
+.field{display:flex;flex-direction:column;gap:6px}
+.flabel{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.flabel label{font-size:13px;font-weight:700}
+.req{font-size:11px;color:var(--red)}
+.hint{font-size:11px;color:#6B7177}.src{font-size:11px;color:#5A4A96}
+.badge{display:inline-block;padding:2px 8px;border-radius:999px;font-size:11px}
+.b-ai{background:var(--ai-bg);color:var(--ai)}.b-edited,.b-conflict{background:var(--amber-bg);color:var(--amber)}
+.b-user{background:#E2EEF0;color:#0E4A54}.b-empty{background:#F0EFEA;color:#5E646A}.b-missing{background:#FDE8E6;color:#9B1C12}
+.err{border-color:#D92D20 !important;background:#FFF8F7 !important}
+.pill{height:30px;padding:0 12px;border-radius:999px;font-size:12px;border:1px solid #C9C6BE;background:#fff;color:#2A2F34}
+.pill.on{border-color:var(--teal);background:var(--teal);color:#fff}
+.radio{height:40px;padding:0 18px;border-radius:8px;border:1.5px solid #C9C6BE;background:#fff}
+.radio.on{border-color:var(--teal);background:#E2EEF0}
+.primary{height:42px;padding:0 24px;border:none;border-radius:8px;font-size:15px;font-weight:700;background:var(--teal);color:#fff}
+.primary:disabled{background:#C9CDD1}
+.secondary{height:42px;padding:0 20px;border:1px solid #B9BDC2;border-radius:8px;background:#fff}
+.outline{height:34px;padding:0 14px;border:1px solid var(--teal);border-radius:6px;background:#fff;color:var(--teal);font-size:13px}
+.ftr{height:68px;flex-shrink:0;display:flex;align-items:center;justify-content:space-between;padding:0 40px;border-top:1px solid var(--line);background:#FAF9F6}
+.list{border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.lrow{display:grid;gap:12px;padding:12px 18px;align-items:center;border-top:1px solid var(--line)}
+.lrow.head{background:var(--soft);font-size:12px;font-weight:700;color:var(--muted);border-top:none}
+.tag{display:inline-block;padding:3px 10px;border-radius:999px;font-size:12px}
+.drop{border:1.5px dashed #9FB7BB;border-radius:10px;padding:22px;display:flex;align-items:center;justify-content:space-between;background:#F6FAFA}
+.gen{height:46px;padding:0 20px;border-radius:8px;display:inline-flex;align-items:center;gap:8px;font-size:15px;font-weight:700;border:none;background:#5B3FA6;color:#fff}
+.gen:disabled{background:#D9D6CE;color:#7A7F84}
+.panel{border-radius:10px;padding:16px 18px}
+@keyframes bar{0%{transform:translateX(-100%)}100%{transform:translateX(250%)}}
+.bar{height:6px;border-radius:3px;background:#D9D1EE;overflow:hidden}.bar div{width:40%;height:6px;background:#6A4FB0;animation:bar 1.1s linear infinite}
+.review{display:flex;gap:28px;align-items:flex-start}
+.toc{width:170px;flex-shrink:0;position:sticky;top:0;display:flex;flex-direction:column;gap:2px;font-size:13px}
+.toc a{display:block;padding:7px 10px;border-radius:6px;text-decoration:none;color:#2A2F34}.toc a.miss{color:#9B1C12}.toc a:hover{background:var(--soft)}
+.sec{border:1px solid var(--line);border-radius:12px;padding:20px 22px;display:flex;flex-direction:column;gap:18px}
+.counts{display:flex;gap:10px;flex-wrap:wrap}.counts div{padding:8px 12px;border-radius:8px;font-size:13px}
+.tgrid{display:grid;gap:6px;align-items:center}.tgrid .th{font-size:11px;font-weight:700;color:var(--muted)}
+.tgrid input{height:36px;min-height:36px;font-size:13px}
+.x{height:36px;border:none;background:transparent;color:#8A9096;font-size:16px}
+.addrow{height:32px;padding:0 12px;border:1px dashed #9FB7BB;border-radius:6px;background:#fff;color:var(--teal);font-size:12px}
+.conflict{border-radius:8px;padding:12px 14px;background:#FFF7E8;border:1px solid #F0D49A;display:flex;flex-direction:column;gap:8px}
+.cand{padding:8px 12px;border-radius:8px;font-size:13px;text-align:left;border:1.5px solid #E0C98F;background:#fff}
+.cand.on{border-color:var(--teal);background:#E2EEF0}
+.modal{position:absolute;inset:0;background:rgba(20,24,28,.45);display:flex;align-items:center;justify-content:center}
+.dialog{width:460px;border-radius:12px;background:#fff;padding:24px;display:flex;flex-direction:column;gap:14px;box-shadow:0 12px 40px rgba(0,0,0,.25)}
+.danger{height:40px;padding:0 16px;border:none;border-radius:8px;background:var(--red);color:#fff}
+.toast{position:absolute;left:50%;bottom:88px;transform:translateX(-50%);padding:12px 20px;border-radius:8px;background:var(--ink);color:#fff;font-size:13px}
+.side{width:380px;flex-shrink:0;height:100vh;overflow-y:auto;padding:28px;display:flex;flex-direction:column;gap:22px}
+.jump{text-align:left;padding:9px 12px;border-radius:8px;font-size:13px;border:1px solid #D3D0C8;background:#fff;color:#2A2F34}
+.jump.on{border-color:var(--teal);background:var(--teal);color:#fff}
+.note{display:flex;gap:10px;font-size:13px;line-height:1.65;color:#2A2F34}
+.note .n{flex-shrink:0;width:22px;height:22px;border-radius:11px;background:var(--teal);color:#fff;font-size:11px;display:flex;align-items:center;justify-content:center}
+.issues{display:flex;flex-direction:column;gap:8px;padding:14px 16px;border-radius:10px;background:#FFF7E8}
+.kv{display:grid;grid-template-columns:160px minmax(0,1fr);gap:10px 16px;font-size:14px}.kv .k{color:#6B7177}
+.sr{position:absolute;left:-9999px}
+.lang{display:inline-flex;border:1px solid #7FA9B1;border-radius:6px;overflow:hidden}.lang button{height:32px;padding:0 10px;border:none;background:transparent;color:#D6E6E9;font-size:12px}.lang button.on{background:#fff;color:#0E3F48;font-weight:700}
+</style>
+</head>
+<body>
+<div id="root"><div style="max-width:640px;margin:60px auto;padding:24px 28px;background:#fff;border-radius:12px;line-height:1.8;font-size:14px">
+<div style="font-weight:700;font-size:16px;margin-bottom:8px">IT投資 申請画面（紙芝居）</div>
+この画面が表示されたままの場合、JavaScript が動いていません。<br>
+プレビュー画面やメールの添付表示では動かないことがあります。<br>
+<strong>index.html をブラウザ（Edge／Chrome／Safari）で直接開いてください。</strong>
+<div id="boot-error" style="margin-top:12px;color:#B42318;font-size:12px"></div>
+</div></div>
+<script>window.addEventListener('error',function(e){var el=document.getElementById('boot-error')||document.body.appendChild(document.createElement('div'));el.style.cssText='position:fixed;left:12px;bottom:12px;z-index:9;padding:10px 14px;background:#FDE8E6;color:#9B1C12;border-radius:8px;font-size:12px';el.textContent='エラー：'+(e.message||e)+'（'+(e.lineno||'')+'行）';});</script>
+
+<script>
+(function () {
+'use strict';
+/* ---------- i18n ---------- */
+var LANG = 'ja';
+try { var saved = localStorage.getItem('cms-mock-lang'); if (saved === 'en' || saved === 'ja') LANG = saved; } catch (e) {}
+var EN = {
+  // header / common
+  'IT投資 申請': 'IT Investment Request', '投資委員会 案件管理システム（CMS）': 'Investment Committee Case Management System (CMS)',
+  '下書き保存': 'Save draft', '[起案担当者 氏名]': '[Submitter name]', '表示言語': 'Display language',
+  '基本情報': 'Basic info', '資料添付': 'Attachments', '確認・修正': 'Review & edit', '通知先': 'Notification list', '確認・申請': 'Confirm & submit',
+  '次へ': 'Next', '次へ（確認・修正）': 'Next (review & edit)', '申請する': 'Submit', '戻る': 'Back', 'マイ申請に戻る': 'Back to My requests',
+  '必須': 'Required', 'PDF出力': 'Export PDF', '下書きを保存しました': 'Draft saved', 'ポップアップを許可してください': 'Please allow pop-ups',
+  // home
+  'マイ申請': 'My requests', 'あなたが起案担当の申請と下書きです。': 'Requests and drafts you are responsible for.', '＋ 新規申請': '+ New request',
+  '案件名': 'Case name', '状態': 'Status', '更新日': 'Updated', '下書き': 'Draft', '再開する': 'Resume', '[申請済みの案件名]': '[Submitted case name]',
+  'Step1 論点整理中': 'Step 1: Issue briefing', '（申請後の画面は対象外）': '(post-submission screens out of scope)',
+  // meta
+  '最初に、案件を特定する最低限の情報を入力してください。起案担当者と提案日は自動で記録されます。': 'Start with the minimum information that identifies the case. The submitter and request date are recorded automatically.',
+  '例：品質試験データ管理システムの更新': 'e.g. Renewal of the quality test data management system', '60字以内': 'Up to 60 characters',
+  '提案部門': 'Proposing department', '提案責任者': 'Accountable proposer', '氏名で検索（社内ユーザー）': 'Search by name (internal users)', '社内ユーザーから選択': 'Select from internal users',
+  '審議区分': 'Review type', '執行開始': 'Start of execution', '年度途中の新規': 'New in-year request',
+  '執行開始：予算に計上済みの案件／年度途中の新規：予算編成後に発生した案件': 'Start of execution: case already in the budget / New in-year request: case that arose after budgeting',
+  '起案担当者：[起案担当者 氏名]（自動）': 'Submitter: [Submitter name] (automatic)', '提案日：申請日時（自動）': 'Request date: submission time (automatic)',
+  '（選択してください）': '(Select)', '信頼性保証本部 品質管理部': 'Reliability Assurance Div. / Quality Control Dept.', '生産本部 生産管理部': 'Production Div. / Production Control Dept.',
+  '研究本部 分析研究部': 'Research Div. / Analytical Research Dept.', '営業本部 営業企画部': 'Sales Div. / Sales Planning Dept.',
+  // attach
+  '資料の添付と自動生成': 'Attachments and auto-generation',
+  'お手元の資料（企画書、提案書、見積書など）を添付し、「案件概要書を自動生成」を押してください。資料から読み取れた内容が、次の画面の項目に入ります。': 'Attach the documents you have (plans, proposals, quotes, etc.) and press "Generate case summary". What can be read from them fills in the fields on the next screen.',
+  'ファイルを添付': 'Attach files', '複数可。形式は [対応形式：未確定]': 'Multiple files allowed. Formats: [supported formats: TBD]', 'ファイルを選択': 'Choose files',
+  'ファイル': 'File', '資料の種類（任意）': 'Document type (optional)', '資料の種類': 'Document type', '削除': 'Remove',
+  '（選択なし）': '(None)', '社内企画書': 'Internal plan', 'ベンダー提案書': 'Vendor proposal', '製品資料': 'Product material', '見積書': 'Quote', '業務フロー図': 'Process flow', 'その他': 'Other',
+  '案件概要書を自動生成': 'Generate case summary', '案件概要書を再生成': 'Regenerate case summary',
+  '資料を1件以上添付すると押せます': 'Available once at least one file is attached', '全項目を上書きします（確認あり）': 'Overwrites all fields (with confirmation)', '数十秒かかることがあります': 'This may take a few tens of seconds',
+  '資料を読み取っています…': 'Reading your documents…', '資料に書かれている内容だけで項目を埋めます。読み取れない項目は空欄のままになります。': 'Fields are filled only from what the documents say. Anything that cannot be read stays blank.',
+  '自動生成が完了しました。「次へ」で内容を確認・修正してください。': 'Generation complete. Press "Next" to review and edit.',
+  '案件概要書を作り直しますか？': 'Regenerate the case summary?', 'キャンセル': 'Cancel', '上書きして生成': 'Overwrite and generate',
+  '添付資料から全項目を生成し直し、<strong>今の内容をすべて上書き</strong>します。あなたが入力・修正した内容は失われます。': 'All fields will be regenerated from the attachments and <strong>everything currently entered will be overwritten</strong>. Your inputs and edits will be lost.',
+  // review
+  '案件概要書の確認・修正': 'Review & edit the case summary',
+  'AI が資料から読み取った内容です。事実と異なる箇所、空欄の必須項目を修正してください。評価（「全社的に重要」など）は書かないでください。': 'This is what the AI read from your documents. Correct anything that is not factual and fill in required blanks. Do not add assessments (e.g. "important company-wide").',
+  'AI生成': 'AI-generated', 'AI生成を修正': 'AI-generated, edited', '入力': 'Entered', '資料に記載なし': 'Not in documents', '未入力（必須）': 'Missing (required)', '資料間で不一致': 'Documents disagree',
+  '未入力の必須': 'Missing required', 'セクション': 'Sections',
+  '必須（不明・該当なし可）': 'Required ("unknown"/"N/A" allowed)', 'どちらか必須': 'One of the two required', 'スポンサー必須': 'Sponsor required',
+  '出所：': 'Source: ', '分からない場合：': 'If unknown: ', '＋ 行を追加': '+ Add row', '行を削除': 'Delete row',
+  '資料間で値が異なります。どちらかを選ぶか、下の欄に直接入力してください。': 'The documents give different values. Pick one, or type the value below.', '例：2027年12月': 'e.g. Dec 2027',
+  '不明': 'Unknown', '該当なし': 'N/A', '連携なし': 'No integration',
+  '1 目的・背景': '1 Purpose', '1　目的・背景': '1  Purpose & background', '2 期待効果': '2 Benefits', '2　期待効果': '2  Expected benefits',
+  '3 スコープ': '3 Scope', '3　スコープ': '3  Scope', '4 事実項目': '4 Facts', '4　事実項目': '4  Fact items', '5 ステークホルダー': '5 Stakeholders', '5　主要ステークホルダー': '5  Key stakeholders',
+  '6 概算予算': '6 Budget', '6　概算予算': '6  Estimated budget', '7 スケジュール': '7 Schedule', '7　想定スケジュール': '7  Planned schedule', '8 主要リスク': '8 Risks', '8　主要リスク': '8  Key risks',
+  '定量的効果と定性的効果のどちらかは入力してください。': 'Enter either quantitative or qualitative benefits.',
+  '事実だけを記入してください。「全社的に重要」などの評価は不要です。': 'Enter facts only. No assessments such as "important company-wide".',
+  'ビジネススポンサーの行は必須です。想定PMは「未定」でも構いません。': 'The business sponsor row is required. The expected PM may be "TBD".',
+  'リソースが厳しい、PM候補がいない、といった制約も書いて構いません。': 'Constraints such as tight resources or no PM candidate are fine to write here.',
+  '現状の課題': 'Current issues', '案件の必要性': 'Why this is needed', 'ビジネス上の背景': 'Business context',
+  '定量的効果（KGI/KPI）': 'Quantitative benefits (KGI/KPI)', '金額換算効果': 'Monetary benefits', '定性的効果': 'Qualitative benefits',
+  '対象組織・ユーザー': 'Target organizations & users', '対象業務プロセス': 'Target business processes', '対象システム・機能': 'Target systems & functions', '明確に除外する範囲': 'Explicitly out of scope', '将来の検討事項': 'Future considerations',
+  '受益範囲（利用部門・利用者数・対象業務）': 'Beneficiaries (departments, number of users, operations)', '利用者数（概数）': 'Number of users (approx.)', '連携システム': 'Integrated systems',
+  '対象データの種類': 'Data categories', '対象データの説明': 'Data description', '新規／更新の別': 'New or renewal', '現行製品': 'Current product', '更新・改修の場合に入力': 'Enter for renewals or modifications',
+  '現行製品の保守期限': 'Current product end of support', '運用・保守の体制（体制と契約先）': 'Operations & maintenance (team and contractors)',
+  '新規構築': 'New build', '既存システムの更新': 'Renewal of existing system', '既存システムの改修・機能追加': 'Modification of existing system',
+  'マスタ': 'Master data', '取引データ': 'Transaction data', '個人情報': 'Personal data', 'GxP電子記録': 'GxP electronic records', '機密情報': 'Confidential',
+  '主要ステークホルダー': 'Key stakeholders', '初期投資合計（万円）': 'Total initial investment (10k JPY)', '初期投資の内訳': 'Initial investment breakdown',
+  '運用コスト合計（万円／年）': 'Total running cost (10k JPY / year)', '運用コストの内訳': 'Running cost breakdown',
+  '想定開始時期': 'Planned start', '想定完了時期': 'Planned completion', 'フェーズ': 'Phases', '重要マイルストーン': 'Key milestones', '制約条件・前提条件': 'Constraints & assumptions', '主要リスク': 'Key risks',
+  '指標': 'Metric', '現状': 'Current', '目標': 'Target', '測定方法': 'How measured', '効果発現時期': 'When realized', '効果項目': 'Benefit item', '年間効果額（万円）': 'Annual amount (10k JPY)', '算出根拠': 'Basis',
+  '接続先システム': 'System', '連携方式': 'Method', '方向': 'Direction', '役割': 'Role', '部門・氏名': 'Department / name', '期待される関与': 'Expected involvement',
+  '費目': 'Item', '金額（万円）': 'Amount (10k JPY)', '備考': 'Notes', '年間金額（万円）': 'Annual amount (10k JPY)', '主な活動': 'Main activities', '開始予定': 'Start', '完了予定': 'End',
+  'リスク内容': 'Risk', '影響度': 'Impact', '発生確率': 'Likelihood', '初期対応方針': 'Initial response',
+  // notify
+  '申請の状況（受付、審議の進み具合、結果）をメールで受け取る関係者を登録してください。通知先は承認・確認を行う役割ではありません。': 'Register the people who should receive email updates on this request (receipt, progress, result). Recipients do not approve or review anything.',
+  '通知先を追加': 'Add recipient', '氏名またはグループ（配布リスト）で検索': 'Search by name or group (distribution list)', '追加': 'Add', '候補：': 'Suggestions: ',
+  'QCシステムチーム（配布リスト）': 'QC Systems Team (distribution list)', '信頼性保証本部 企画グループ（配布リスト）': 'Reliability Assurance Planning Group (distribution list)', '[個人の氏名]': '[Person name]',
+  '[起案担当者 氏名]（あなた）': '[Submitter name] (you)', '（提案責任者）': ' (accountable proposer)', '自動・削除不可': 'Automatic, cannot remove',
+  '通知する出来事：申請の受付／Step の移行（論点整理 → 委員会の審議 → 回答）／審議回答書の確定／会議の招集／承認結果<br>申請後も、起案担当者が通知先を追加・削除できます。': 'Notified events: request received / step changes (issue briefing → committee review → response) / final committee response / meeting invitation / approval result<br>The submitter can add or remove recipients after submission as well.',
+  // confirm / done
+  '申請後は案件概要書を直接編集できません。変更は、事務局から共有される論点整理書への意見として伝えてください。': 'After submission you cannot edit the case summary directly. Send changes as comments on the issue brief the secretariat shares with you.',
+  '添付資料': 'Attachments', 'AI生成のまま': 'Left as AI-generated', '{n} 件': '{n}', '{a} 項目（修正 {e}・入力 {u}）': '{a} fields (edited {e}, entered {u})',
+  '未入力の必須項目が {n} 件あります': '{n} required fields are missing', '修正する': 'Fix', '内容を確認した': 'I have reviewed the content',
+  '期待効果（定量・定性のどちらか）': 'Expected benefits (quantitative or qualitative)', 'ビジネススポンサー（部門・氏名）': 'Business sponsor (department / name)', '手元資料（1件以上）': 'Attachments (at least one)',
+  '申請を受け付けました': 'Your request has been received', '案件ID': 'Case ID', '[案件ID：申請時に採番]': '[Case ID: assigned on submission]', '通知': 'Notifications',
+  '事務局と通知先 {n} 件に受付を通知しました': 'The secretariat and {n} recipients have been notified',
+  '次は、事務局が内容をもとに論点整理を行い、論点整理書をあなたに共有します。<br>論点整理書に対する意見は、共有後に何度でも伝えられます。': 'Next, the secretariat will prepare an issue brief from your request and share it with you.<br>You can comment on the issue brief as many times as needed.',
+  '（提出しない）': ' (not submitted)', '（提出する）': ' (submitted)', '添付ファイルの提出': 'Submitting attachments',
+  '添付ファイルも含めて申請する': 'Submit with attachments', '手元資料を案件の資料として保存します。': 'Your documents are stored as part of the case.',
+  '案件概要書のみを申請する': 'Submit the case summary only', '手元資料は提出しません。一時保管のファイルは1日後に自動で削除されます。': 'Your documents are not submitted. The temporarily stored files are deleted automatically after one day.', '添付したファイルは一時保管され、1日後に自動で削除されます。': 'Attached files are stored temporarily and deleted automatically after one day.', '添付したファイルは本人と CMS だけが見られる一時保管場所に置き、1日後に自動で削除する。「添付ファイルも含めて申請」なら申請時に案件の資料へ移す。': 'Attached files go to a temporary location only you and the CMS can see, and are deleted automatically after one day. If you choose "Submit with attachments", they are moved into the case at submission.',
+  '注意': 'Note', '添付したファイルは、案件リストを参照できる人全員に公開されます。社外秘の見積や個人情報を含む資料を添付する場合は注意してください。': 'Attached files are visible to everyone who can view the case list. Take care with confidential quotes or documents containing personal data.',
+  '提出しない（案件概要書のみ）': 'Not submitted (case summary only)', '添付した資料を案件の資料として提出するかは、最後の「確認・申請」で選べます。': 'Whether to submit these documents with the case is chosen on the final "Confirm & submit" screen.',
+  '添付ファイルを含めて申請するか、案件概要書のみを申請するかを選ぶ（必須）。含める場合、案件リストを参照できる全員に公開されることを注意書きで示す。': 'Choose whether to submit with attachments or the case summary only (required). A note warns that attachments are visible to everyone who can view the case list.',
+  '手元資料を1件以上添付する。形式は自由（資料が全く無い案件は想定しない）。提出するかどうかは最後に選ぶ。': 'Attach at least one document, in any format (cases with no documents at all are not expected). Whether to submit them is chosen at the end.',
+  // pdf
+  '案件概要書': 'Case Summary', '下書き（未申請）': 'DRAFT (not submitted)', '申請済み': 'Submitted', '（記載なし）': '(not provided)', '出力日時': 'Exported', '出力者': 'Exported by', '案件ID：[申請時に採番]': 'Case ID: [assigned on submission]',
+  '本書は IT投資 申請画面から出力した。内容は出力時点のもので、申請前は変更される可能性がある。': 'Exported from the IT Investment Request screen. Content reflects the time of export and may change before submission.',
+  // side panel
+  '紙芝居｜申請画面': 'Storyboard | Request screens',
+  '画面項目と動作のイメージです。実際の画面は Power Apps の標準部品で作るため、見た目は異なります。値は架空の案件のサンプルです。': 'Illustrates fields and behavior. The real screens use standard Power Apps controls and will look different. Values are from a fictitious sample case.',
+  '入力値（サンプル）は翻訳されません。切り替わるのは画面の表示だけです。': 'Entered values (sample) are not translated. Only the screen labels change.',
+  '画面へ移動': 'Go to screen', 'この画面の動作': 'What this screen does', '未決事項': 'Open items',
+  '① マイ申請': '① My requests', '② 基本情報': '② Basic info', '③ 資料添付・自動生成': '③ Attachments & generation', '④ 案件概要書の確認・修正': '④ Review & edit summary', '⑤ 通知先': '⑤ Notification list', '⑥ 確認・申請': '⑥ Confirm & submit', '⑦ 申請完了': '⑦ Submitted',
+  '起案担当者が自分の申請と下書きを一覧で見る入口。': 'Entry point where the submitter sees their requests and drafts.',
+  '「新規申請」で申請を始める。下書きは「再開する」で続きから編集できる。': '"New request" starts a request. "Resume" continues a draft.',
+  '申請済み案件の状況表示は、申請後の画面（この紙芝居の対象外）。': 'Status of submitted cases is shown on post-submission screens (not in this storyboard).',
+  '右上で表示言語（日本語／English）を切り替えられる。': 'The display language (日本語 / English) can be switched at the top right.',
+  '最初に入力するのは最低限の4項目だけ。': 'Only four minimum fields are entered first.',
+  '起案担当者と提案日は自動で記録する（サインイン情報・申請日時）。': 'Submitter and request date are recorded automatically (sign-in and submission time).',
+  '提案部門は、案件一覧の絞り込みと集計に使う。': 'The proposing department is used to filter and aggregate the case list.',
+  '画面上部の「下書き保存」はどの画面でも使える。下書きでは必須チェックをしない。': '"Save draft" at the top is available on every screen. Drafts are not checked for required fields.',
+  '手元資料を1件以上添付する。形式は自由（資料が全く無い案件は想定しない）。': 'Attach at least one document, in any format (cases with no documents at all are not expected).',
+  '「案件概要書を自動生成」で、AI が添付資料を読み取り、次の画面の項目に値を入れる。': '"Generate case summary" has the AI read the attachments and fill in the fields on the next screen.',
+  '資料から読み取れない項目は空欄のまま。推測では埋めない。': 'Fields that cannot be read stay blank; nothing is guessed.',
+  '2回目以降は確認ダイアログを出し、全項目を上書きする（入力・修正した内容は失われる）。': 'From the second time on, a confirmation dialog appears and all fields are overwritten (inputs and edits are lost).',
+  '項目ごとに状態を表示する：AI生成／AI生成を修正／入力／資料に記載なし。': 'Each field shows its state: AI-generated / AI-generated, edited / entered / not in documents.',
+  'AI が入れた値には出所（資料名と見出し）を表示する。': 'Values filled by the AI show their source (document and heading).',
+  '資料間で値が食い違う項目は両方を示し、起案者が選ぶ（例：現行製品の保守期限）。': 'Where documents disagree, both values are shown and the submitter picks one (e.g. end of support).',
+  '必須項目が空欄なら赤で示す。事実項目の一部は「不明」「該当なし」を選べる。': 'Blank required fields are shown in red. Some fact items allow "unknown" or "N/A".',
+  '項目ごとの状態は申請時点のものを保存し、事務局が AI 生成のまま提出された値を区別できる。': 'Field states are saved at submission so the secretariat can tell which values were left as AI-generated.',
+  '「PDF出力」で、その時点の案件概要書を A4 の PDF にできる（申請前の社内確認用。出所や AI 生成の表示は含めない）。': '"Export PDF" produces an A4 PDF of the current case summary (for internal review before submission; sources and AI labels are not included).',
+  '申請の状況を共有したい関係者を登録する（複数可。個人・グループ）。': 'Register the people to keep informed (multiple; individuals or groups).',
+  '起案担当者と提案責任者は自動で含まれ、外せない。': 'The submitter and accountable proposer are included automatically and cannot be removed.',
+  '通知先は承認・確認の役割を持たない。受付・Step の移行・回答書の確定・会議の招集・承認結果を受け取る。': 'Recipients have no approval or review role. They receive: receipt, step changes, final response, meeting invitation, approval result.',
+  '申請後も起案担当者が追加・削除できる。': 'The submitter can add or remove recipients after submission.',
+  '未入力の必須項目を一覧で示し、「修正する」で該当箇所へ戻れる。': 'Missing required fields are listed; "Fix" jumps back to each one.',
+  '「PDF出力」で、申請前の案件概要書を A4 の PDF にできる。未入力の項目は「（記載なし）」と出力する。': '"Export PDF" produces an A4 PDF before submission. Blank fields are printed as "(not provided)".',
+  '「内容を確認した」を ON にし、必須項目がそろうと「申請する」が押せる。': '"Submit" is enabled once "I have reviewed the content" is checked and all required fields are filled.',
+  '申請後、起案者は案件概要書を直接編集できない。変更は論点整理書への意見で伝える。': 'After submission, the case summary cannot be edited directly; changes go through comments on the issue brief.',
+  '案件IDを採番し、事務局と通知先に受付を通知する。': 'A case ID is assigned and the secretariat and recipients are notified.',
+  '次は事務局が Copilot で論点整理を行い、論点整理書を起案者に共有する。論点整理は申請画面では行わない。': 'Next, the secretariat prepares the issue brief with Copilot and shares it with the submitter. Issue briefing is not done on the request screens.',
+  '審議区分に年次の予算申請を含めるか（T4）': 'Whether review types include annual budget requests (T4)',
+  '読み取れる添付ファイルの形式（T10）': 'Supported attachment formats (T10)', 'AI の呼び出し方式と費用（T5）': 'How the AI is invoked and its cost (T5)',
+  'PDF の作り方（Power Automate で生成）とレイアウト（T14）': 'How the PDF is produced (Power Automate) and its layout (T14)',
+  '通知先の閲覧範囲・登録件数の上限・社外アドレスの可否（T12）': 'What recipients can view, maximum recipients, external addresses (T12)',
+  '対応言語・既定言語・通知メールと PDF の言語（T15）': 'Supported and default languages; language of emails and PDFs (T15)'
+};
+function T(s) { if (LANG === 'ja') return s; var e = EN[s]; return e === undefined ? s : e; }
+function Tf(s, o) { var r = T(s); Object.keys(o).forEach(function (k) { r = r.split('{' + k + '}').join(o[k]); }); return r; }
+
+/* ---------- data (values are sample input; not translated) ---------- */
+var DOC1 = '案件概要書_LIMS更新.docx', DOC2 = 'QLabCloud_提案書.pdf', DOC3 = '概算見積書.pdf';
+var SAMPLE_FILES = [{ name: DOC1, kind: '社内企画書' }, { name: DOC2, kind: 'ベンダー提案書' }, { name: DOC3, kind: '見積書' }];
+var KINDS = ['（選択なし）', '社内企画書', 'ベンダー提案書', '製品資料', '見積書', '業務フロー図', 'その他'];
+var DEPTS = ['（選択してください）', '信頼性保証本部 品質管理部', '生産本部 生産管理部', '研究本部 分析研究部', '営業本部 営業企画部'];
+var NEWREN = ['（選択してください）', '新規構築', '既存システムの更新', '既存システムの改修・機能追加'];
+var DATA_CATS = ['マスタ', '取引データ', '個人情報', 'GxP電子記録', '機密情報', 'その他', '不明'];
+var AI = {
+  currentIssue: ['試験記録の約6割が紙のワークシートで作成・承認されている。出荷判定に必要な試験結果の集計を Excel で手作業で行っている。両工場で試験方法のマスタの持ち方が異なり、工場間で結果を比較できない。', DOC1 + ' §1.3'],
+  necessity: ['現行 LIMS「LabTrack 7」の保守が終了し、延長保守は提供されない。保守期限までに SaaS 型 LIMS へ移行する必要がある。', DOC1 + ' §1.2・§2'],
+  businessContext: ['「品質データのデジタル化」の方針に沿った取り組みで、2027年度中の稼働を求められている。', DOC1 + ' §1.4'],
+  qualitative: ['試験記録を電子化し、紙のワークシートを廃止する。工場間で試験結果を比較できるようになる。', DOC1 + ' §2'],
+  inScopeOrgUsers: ['静岡工場・富山工場の品質管理（QC）部門', DOC1 + ' §3.1'],
+  inScopeProcesses: ['受入試験・工程内試験・出荷試験・安定性試験（工場実施分）', DOC1 + ' §3.1'],
+  inScopeSystems: ['SaaS 型 LIMS「QLab Cloud」の導入。生産管理システム・分析機器データシステムとの連携', DOC2 + ' 2章'],
+  outOfScope: ['微生物試験（別システムで管理）、治験薬の試験', DOC1 + ' §3.2'],
+  futureConsiderations: ['研究所 分析研究部の開発品の安定性試験への展開（第2期。2029年度以降に検討）', DOC1 + ' §3.3'],
+  beneficiaryScope: ['品質管理部（静岡工場・富山工場）。対象業務は受入試験・工程内試験・出荷試験・安定性試験（工場実施分）', DOC1 + ' §3.1'],
+  dataDescription: ['試験結果・試験記録（GMP 上の電子記録）。電子署名のため試験者の氏名・社員番号を保持する。過去データ（約10年分）は PDF で保管し、移行しない。', DOC1 + ' §5'],
+  newOrRenewal: ['既存システムの更新', DOC1 + ' §1.1'],
+  currentProduct: ['LabTrack 7（オンプレミス）', DOC1 + ' §1.1'],
+  opsStructure: ['稼働後の運用は QC システムチーム（2名）が行う。製品の保守・問い合わせは国内代理店と直接契約。コンピュータ化システムバリデーションは外部コンサルタントに委託。', DOC1 + ' §6'],
+  initialCostTotal: ['18000', DOC3 + ' p.1'],
+  runningCostAnnual: ['5000', DOC3 + ' p.1'],
+  plannedStart: ['2027年4月', DOC1 + ' §7.2'],
+  plannedEnd: ['2028年1月', DOC1 + ' §7.2'],
+  milestones: ['2028年1月 本番稼働（静岡・富山同時）', DOC1 + ' §7.2'],
+  constraints: ['保守終了から稼働までの間（2027年12月末〜2028年1月）は、現行システムを保守なしで使用する。', DOC1 + ' §7.2']
+};
+var AI_TABLES = {
+  kpis: [[['出荷判定のリードタイム', '平均5日', '3日', '', '']], DOC1 + ' §2'],
+  integrations: [[['生産管理システム', '夜間の CSV ファイル連携（ファイルサーバ経由）', '双方向'], ['分析機器データシステム', '機器ベンダー提供のコネクタ', '受信']], DOC1 + ' §4.2'],
+  stakeholders: [[['ビジネススポンサー', '', ''], ['想定PM', '', ''], ['業務オーナー', '品質管理部 QCシステムチーム', '導入の推進・稼働後の運用']], DOC1 + ' §6'],
+  phases: [[['要件定義・設定', '', '2027年4月', '2027年9月', ''], ['バリデーション', '', '2027年10月', '2027年12月', ''], ['本番稼働', '静岡・富山同時', '2028年1月', '2028年1月', '']], DOC1 + ' §7.2'],
+  risks: [[['稼働遅延', '', '', '両工場同時稼働とし、並行稼働期間を設けない'], ['利用者の習熟', '', '', '稼働前に各工場で2回の研修を行う'], ['過去データの参照', '', '', 'PDF で保管し、必要に応じて参照する']], DOC1 + ' §9']
+};
+var SPONSOR = 'ビジネススポンサー';
+var AI_CHIPS = { dataCategories: [['GxP電子記録', '個人情報'], DOC1 + ' §5'] };
+var CONFLICT = [{ value: '2027年12月', source: DOC1 + ' §1.2' }, { value: '2028年3月', source: DOC3 + ' 前提条件' }];
+var TABLE_COLS = {
+  kpis: ['指標', '現状', '目標', '測定方法', '効果発現時期'], monetaryBenefits: ['効果項目', '年間効果額（万円）', '算出根拠'],
+  integrations: ['接続先システム', '連携方式', '方向'], stakeholders: ['役割', '部門・氏名', '期待される関与'],
+  initialCosts: ['費目', '金額（万円）', '備考'], runningCosts: ['費目', '年間金額（万円）', '備考'],
+  phases: ['フェーズ', '主な活動', '開始予定', '完了予定', '備考'], risks: ['リスク内容', '影響度', '発生確率', '初期対応方針']
+};
+var SECTIONS = [
+  { id: 'sec-1', nav: '1 目的・背景', title: '1　目的・背景', fields: [
+    { key: 'currentIssue', label: '現状の課題', type: 'textarea', req: 'req' },
+    { key: 'necessity', label: '案件の必要性', type: 'textarea', req: 'req' },
+    { key: 'businessContext', label: 'ビジネス上の背景', type: 'textarea' }] },
+  { id: 'sec-2', nav: '2 期待効果', title: '2　期待効果', lead: '定量的効果と定性的効果のどちらかは入力してください。', fields: [
+    { key: 'kpis', label: '定量的効果（KGI/KPI）', type: 'table', req: 'either' },
+    { key: 'monetaryBenefits', label: '金額換算効果', type: 'table' },
+    { key: 'qualitative', label: '定性的効果', type: 'textarea', req: 'either' }] },
+  { id: 'sec-3', nav: '3 スコープ', title: '3　スコープ', fields: [
+    { key: 'inScopeOrgUsers', label: '対象組織・ユーザー', type: 'textarea', req: 'req' },
+    { key: 'inScopeProcesses', label: '対象業務プロセス', type: 'textarea', req: 'req' },
+    { key: 'inScopeSystems', label: '対象システム・機能', type: 'textarea' },
+    { key: 'outOfScope', label: '明確に除外する範囲', type: 'textarea' },
+    { key: 'futureConsiderations', label: '将来の検討事項', type: 'textarea' }] },
+  { id: 'sec-4', nav: '4 事実項目', title: '4　事実項目', lead: '事実だけを記入してください。「全社的に重要」などの評価は不要です。', fields: [
+    { key: 'beneficiaryScope', label: '受益範囲（利用部門・利用者数・対象業務）', type: 'textarea', req: 'req' },
+    { key: 'userCount', label: '利用者数（概数）', type: 'text', req: 'unk', unk: ['不明'] },
+    { key: 'integrations', label: '連携システム', type: 'table', req: 'unk', unk: ['連携なし', '不明'] },
+    { key: 'dataCategories', label: '対象データの種類', type: 'chips', req: 'unk' },
+    { key: 'dataDescription', label: '対象データの説明', type: 'textarea' },
+    { key: 'newOrRenewal', label: '新規／更新の別', type: 'select', req: 'req', options: NEWREN },
+    { key: 'currentProduct', label: '現行製品', type: 'text', hint: '更新・改修の場合に入力' },
+    { key: 'supportEndDate', label: '現行製品の保守期限', type: 'conflict', req: 'unk', unk: ['該当なし', '不明'] },
+    { key: 'opsStructure', label: '運用・保守の体制（体制と契約先）', type: 'textarea', req: 'unk', unk: ['不明'] }] },
+  { id: 'sec-5', nav: '5 ステークホルダー', title: '5　主要ステークホルダー', lead: 'ビジネススポンサーの行は必須です。想定PMは「未定」でも構いません。', fields: [
+    { key: 'stakeholders', label: '主要ステークホルダー', type: 'table', req: 'sponsor' }] },
+  { id: 'sec-6', nav: '6 概算予算', title: '6　概算予算', fields: [
+    { key: 'initialCostTotal', label: '初期投資合計（万円）', type: 'text', req: 'req' },
+    { key: 'initialCosts', label: '初期投資の内訳', type: 'table' },
+    { key: 'runningCostAnnual', label: '運用コスト合計（万円／年）', type: 'text', req: 'req' },
+    { key: 'runningCosts', label: '運用コストの内訳', type: 'table' }] },
+  { id: 'sec-7', nav: '7 スケジュール', title: '7　想定スケジュール', fields: [
+    { key: 'plannedStart', label: '想定開始時期', type: 'text', req: 'req' },
+    { key: 'plannedEnd', label: '想定完了時期', type: 'text', req: 'req' },
+    { key: 'phases', label: 'フェーズ', type: 'table' },
+    { key: 'milestones', label: '重要マイルストーン', type: 'textarea' },
+    { key: 'constraints', label: '制約条件・前提条件', type: 'textarea' }] },
+  { id: 'sec-8', nav: '8 主要リスク', title: '8　主要リスク', lead: 'リソースが厳しい、PM候補がいない、といった制約も書いて構いません。', fields: [
+    { key: 'risks', label: '主要リスク', type: 'table' }] }
+];
+var FIELD = {}; SECTIONS.forEach(function (s) { s.fields.forEach(function (f) { FIELD[f.key] = f; }); });
+var ORDER = ['home', 'meta', 'attach', 'review', 'notify', 'confirm', 'done'];
+var STEPS = [['meta', '基本情報'], ['attach', '資料添付'], ['review', '確認・修正'], ['notify', '通知先'], ['confirm', '確認・申請']];
+var JUMP = { home: '① マイ申請', meta: '② 基本情報', attach: '③ 資料添付・自動生成', review: '④ 案件概要書の確認・修正', notify: '⑤ 通知先', confirm: '⑥ 確認・申請', done: '⑦ 申請完了' };
+var NOTES = {
+  home: ['起案担当者が自分の申請と下書きを一覧で見る入口。', '「新規申請」で申請を始める。下書きは「再開する」で続きから編集できる。', '右上で表示言語（日本語／English）を切り替えられる。', '申請済み案件の状況表示は、申請後の画面（この紙芝居の対象外）。'],
+  meta: ['最初に入力するのは最低限の4項目だけ。', '起案担当者と提案日は自動で記録する（サインイン情報・申請日時）。', '提案部門は、案件一覧の絞り込みと集計に使う。', '画面上部の「下書き保存」はどの画面でも使える。下書きでは必須チェックをしない。'],
+  attach: ['手元資料を1件以上添付する。形式は自由（資料が全く無い案件は想定しない）。提出するかどうかは最後に選ぶ。', '添付したファイルは本人と CMS だけが見られる一時保管場所に置き、1日後に自動で削除する。「添付ファイルも含めて申請」なら申請時に案件の資料へ移す。', '「案件概要書を自動生成」で、AI が添付資料を読み取り、次の画面の項目に値を入れる。', '資料から読み取れない項目は空欄のまま。推測では埋めない。', '2回目以降は確認ダイアログを出し、全項目を上書きする（入力・修正した内容は失われる）。'],
+  review: ['項目ごとに状態を表示する：AI生成／AI生成を修正／入力／資料に記載なし。', 'AI が入れた値には出所（資料名と見出し）を表示する。', '資料間で値が食い違う項目は両方を示し、起案者が選ぶ（例：現行製品の保守期限）。', '必須項目が空欄なら赤で示す。事実項目の一部は「不明」「該当なし」を選べる。', '項目ごとの状態は申請時点のものを保存し、事務局が AI 生成のまま提出された値を区別できる。', '「PDF出力」で、その時点の案件概要書を A4 の PDF にできる（申請前の社内確認用。出所や AI 生成の表示は含めない）。'],
+  notify: ['申請の状況を共有したい関係者を登録する（複数可。個人・グループ）。', '起案担当者と提案責任者は自動で含まれ、外せない。', '通知先は承認・確認の役割を持たない。受付・Step の移行・回答書の確定・会議の招集・承認結果を受け取る。', '申請後も起案担当者が追加・削除できる。'],
+  confirm: ['未入力の必須項目を一覧で示し、「修正する」で該当箇所へ戻れる。', '「PDF出力」で、申請前の案件概要書を A4 の PDF にできる。未入力の項目は「（記載なし）」と出力する。', '添付ファイルを含めて申請するか、案件概要書のみを申請するかを選ぶ（必須）。含める場合、案件リストを参照できる全員に公開されることを注意書きで示す。', '「内容を確認した」を ON にし、必須項目がそろうと「申請する」が押せる。', '申請後、起案者は案件概要書を直接編集できない。変更は論点整理書への意見で伝える。'],
+  done: ['案件IDを採番し、事務局と通知先に受付を通知する。', '次は事務局が Copilot で論点整理を行い、論点整理書を起案者に共有する。論点整理は申請画面では行わない。']
+};
+var ISSUES = {
+  home: ['対応言語・既定言語・通知メールと PDF の言語（T15）'],
+  meta: ['審議区分に年次の予算申請を含めるか（T4）'],
+  attach: ['読み取れる添付ファイルの形式（T10）', 'AI の呼び出し方式と費用（T5）'],
+  review: ['PDF の作り方（Power Automate で生成）とレイアウト（T14）'],
+  notify: ['通知先の閲覧範囲・登録件数の上限・社外アドレスの可否（T12）'],
+  confirm: ['PDF の作り方（Power Automate で生成）とレイアウト（T14）']
+};
+
+/* ---------- state ---------- */
+function esc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+function filled(x) { return x != null && String(x).trim() !== ''; }
+function unset(v) { return !v || v.indexOf('選択') >= 0; }
+function emptyValues() {
+  var v = { title: '品質試験データ管理システム（LIMS）の更新', dept: '信頼性保証本部 品質管理部', owner: '品質管理部長 [氏名]', reviewType: '執行開始' };
+  SECTIONS.forEach(function (s) { s.fields.forEach(function (f) { if (f.type !== 'table' && f.type !== 'chips') v[f.key] = ''; }); });
+  return v;
+}
+function emptyTables() { var t = {}; Object.keys(TABLE_COLS).forEach(function (k) { t[k] = []; }); return t; }
+function copyFiles(a) { return a.map(function (f) { return { name: f.name, kind: f.kind }; }); }
+var S = { screen: 'home', generated: false, generating: false, regen: false, files: [], v: emptyValues(), t: emptyTables(),
+  chips: { dataCategories: [] }, o: {}, src: {}, integrationsNone: false, recipients: [], newRecipient: '', confirmed: false, attachPolicy: '', toast: '' };
+// recipients: {name, locked, kind:'self'|'owner'|undefined}
+function defaultRecipients() { return [{ locked: true, kind: 'self' }, { locked: true, kind: 'owner' }]; }
+function recipientName(r) { return r.kind === 'self' ? T('[起案担当者 氏名]（あなた）') : r.kind === 'owner' ? S.v.owner + T('（提案責任者）') : (r.i18n ? T(r.name) : r.name); }
+function applyGenerated() {
+  var o = {}, src = {};
+  SECTIONS.forEach(function (s) { s.fields.forEach(function (f) {
+    if (f.type === 'table' || f.type === 'chips') return;
+    if (AI[f.key]) { S.v[f.key] = AI[f.key][0]; o[f.key] = 'ai'; src[f.key] = AI[f.key][1]; } else { S.v[f.key] = ''; o[f.key] = 'empty'; }
+  }); });
+  S.v.supportEndDate = ''; o.supportEndDate = 'conflict';
+  S.t = emptyTables();
+  Object.keys(AI_TABLES).forEach(function (k) { S.t[k] = AI_TABLES[k][0].map(function (r) { return r.slice(); }); o[k] = 'ai'; src[k] = AI_TABLES[k][1]; });
+  Object.keys(TABLE_COLS).forEach(function (k) { if (!o[k]) o[k] = 'empty'; });
+  S.chips = { dataCategories: AI_CHIPS.dataCategories[0].slice() }; o.dataCategories = 'ai'; src.dataCategories = AI_CHIPS.dataCategories[1];
+  S.o = o; S.src = src; S.generated = true; S.integrationsNone = false;
+  if (!S.recipients.length) S.recipients = defaultRecipients();
+}
+function ensureGenerated() {
+  if (!S.generated) { if (!S.files.length) S.files = copyFiles(SAMPLE_FILES); applyGenerated(); }
+  if (!S.recipients.length) S.recipients = defaultRecipients();
+}
+function touch(key) { var c = S.o[key]; S.o[key] = (c === 'ai' || c === 'edited' || c === 'conflict') ? 'edited' : 'user'; }
+function setField(key, val) { S.v[key] = val; var c = S.o[key]; if (c === 'ai' || c === 'edited' || c === 'conflict') S.o[key] = 'edited'; else S.o[key] = val ? 'user' : 'empty'; }
+function missing() {
+  var out = [];
+  if (!filled(S.v.title)) out.push({ label: '案件名', to: 'meta' });
+  if (unset(S.v.dept)) out.push({ label: '提案部門', to: 'meta' });
+  if (!filled(S.v.owner)) out.push({ label: '提案責任者', to: 'meta' });
+  if (!S.files.length) out.push({ label: '手元資料（1件以上）', to: 'attach' });
+  var kpiOk = S.t.kpis.some(function (r) { return filled(r[0]); });
+  SECTIONS.forEach(function (s) { s.fields.forEach(function (f) {
+    if (!f.req) return;
+    if (f.req === 'either') { if (f.key === 'kpis' && !kpiOk && !filled(S.v.qualitative)) out.push({ label: '期待効果（定量・定性のどちらか）', sec: s.id, keys: ['kpis', 'qualitative'] }); return; }
+    if (f.req === 'sponsor') { var sp = S.t.stakeholders.filter(function (r) { return r[0] === SPONSOR; })[0]; if (!sp || !filled(sp[1])) out.push({ label: 'ビジネススポンサー（部門・氏名）', sec: s.id, keys: [f.key] }); return; }
+    if (f.type === 'table') { if (!S.integrationsNone && !S.t[f.key].some(function (r) { return filled(r[0]); })) out.push({ label: f.label, sec: s.id, keys: [f.key] }); return; }
+    if (f.type === 'chips') { if (!S.chips[f.key].length) out.push({ label: f.label, sec: s.id, keys: [f.key] }); return; }
+    var val = S.v[f.key];
+    if (f.type === 'select' ? unset(val) : !filled(val)) out.push({ label: f.label, sec: s.id, keys: [f.key] });
+  }); });
+  return out;
+}
+
+/* ---------- views ---------- */
+function badge(state, isMissing) {
+  if (state === 'conflict') return '<span class="badge b-conflict">' + T('資料間で不一致') + '</span>';
+  if (isMissing) return '<span class="badge b-missing">' + T('未入力（必須）') + '</span>';
+  var m = { ai: ['b-ai', 'AI生成'], edited: ['b-edited', 'AI生成を修正'], user: ['b-user', '入力'] }[state] || ['b-empty', '資料に記載なし'];
+  return '<span class="badge ' + m[0] + '">' + T(m[1]) + '</span>';
+}
+function options(list, cur) { return list.map(function (o) { return '<option value="' + esc(o) + '"' + (o === cur ? ' selected' : '') + '>' + esc(T(o)) + '</option>'; }).join(''); }
+var ICON_DOC = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#555B61" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H6a2 2 0 00-2 2v14a2 2 0 002 2h12a2 2 0 002-2V9z"/><path d="M14 3v6h6"/></svg>';
+function pdfBtn() { return '<button class="outline" style="height:38px;display:inline-flex;align-items:center;gap:6px;flex-shrink:0" data-act="pdf"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H6a2 2 0 00-2 2v14a2 2 0 002 2h12a2 2 0 002-2V9z"/><path d="M14 3v6h6"/><path d="M12 12v6M9 15l3 3 3-3"/></svg>' + T('PDF出力') + '</button>'; }
+function titleRow(title, lead, withPdf) {
+  return '<div style="display:flex;gap:16px;align-items:flex-start;justify-content:space-between"><div><h1>' + T(title) + '</h1><p class="lead">' + T(lead) + '</p></div>' + (withPdf ? pdfBtn() : '') + '</div>';
+}
+function vHome() {
+  var cols = 'grid-template-columns:minmax(0,3fr) minmax(0,1.4fr) minmax(0,1fr) 170px';
+  return '<div class="col"><div style="display:flex;align-items:flex-end;justify-content:space-between"><div><h1 style="font-size:24px">' + T('マイ申請') + '</h1><p class="lead">' + T('あなたが起案担当の申請と下書きです。') + '</p></div>' +
+    '<button class="primary" data-act="startNew">' + T('＋ 新規申請') + '</button></div><div class="list">' +
+    '<div class="lrow head" style="' + cols + '"><div>' + T('案件名') + '</div><div>' + T('状態') + '</div><div>' + T('更新日') + '</div><div></div></div>' +
+    '<div class="lrow" style="' + cols + '"><div style="font-weight:700">品質試験データ管理システム（LIMS）の更新</div><div><span class="tag" style="background:#FFF3D6;color:#7A5200">' + T('下書き') + '</span></div><div style="color:#555B61">2026/09/20</div><div><button class="outline" data-act="go" data-to="review">' + T('再開する') + '</button></div></div>' +
+    '<div class="lrow" style="' + cols + '"><div style="font-weight:700">' + T('[申請済みの案件名]') + '</div><div><span class="tag" style="background:#E2EEF0;color:#0E4A54">' + T('Step1 論点整理中') + '</span></div><div style="color:#555B61">2026/08/28</div><div style="font-size:12px;color:#6B7177">' + T('（申請後の画面は対象外）') + '</div></div></div></div>';
+}
+function vMeta() {
+  var req = '<span class="req">' + T('必須') + '</span>';
+  var h = '<div class="col" style="max-width:720px">' + titleRow('基本情報', '最初に、案件を特定する最低限の情報を入力してください。起案担当者と提案日は自動で記録されます。');
+  h += '<div class="field"><div class="flabel"><label for="m-title">' + T('案件名') + '</label>' + req + '</div><input type="text" id="m-title" data-meta="title" value="' + esc(S.v.title) + '" placeholder="' + esc(T('例：品質試験データ管理システムの更新')) + '"><div class="hint">' + T('60字以内') + '</div></div>';
+  h += '<div class="field"><div class="flabel"><label for="m-dept">' + T('提案部門') + '</label>' + req + '</div><select id="m-dept" data-meta="dept">' + options(DEPTS, S.v.dept) + '</select></div>';
+  h += '<div class="field"><div class="flabel"><label for="m-owner">' + T('提案責任者') + '</label>' + req + '</div><input type="text" id="m-owner" data-meta="owner" value="' + esc(S.v.owner) + '" placeholder="' + esc(T('氏名で検索（社内ユーザー）')) + '"><div class="hint">' + T('社内ユーザーから選択') + '</div></div>';
+  h += '<div class="field"><div class="flabel"><span style="font-size:13px;font-weight:700">' + T('審議区分') + '</span>' + req + '</div><div style="display:flex;gap:10px">' +
+    ['執行開始', '年度途中の新規'].map(function (r) { var on = S.v.reviewType === r; return '<button class="radio' + (on ? ' on' : '') + '" aria-pressed="' + on + '" data-act="reviewType" data-val="' + r + '">' + T(r) + '</button>'; }).join('') +
+    '</div><div class="hint">' + T('執行開始：予算に計上済みの案件／年度途中の新規：予算編成後に発生した案件') + '</div></div>';
+  h += '<div class="panel" style="background:#F3F2EE;display:grid;grid-template-columns:1fr 1fr;gap:16px;font-size:13px;color:#454B51"><div>' + T('起案担当者：[起案担当者 氏名]（自動）') + '</div><div>' + T('提案日：申請日時（自動）') + '</div></div></div>';
+  return h;
+}
+function vAttach() {
+  var h = '<div class="col" style="max-width:820px">' + titleRow('資料の添付と自動生成', 'お手元の資料（企画書、提案書、見積書など）を添付し、「案件概要書を自動生成」を押してください。資料から読み取れた内容が、次の画面の項目に入ります。');
+  h += '<div class="drop"><div style="display:flex;align-items:center;gap:14px"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#0E5A66" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.5l-8.6 8.6a5 5 0 01-7.1-7.1l8.6-8.6a3.3 3.3 0 014.7 4.7l-8.6 8.6a1.7 1.7 0 01-2.4-2.4l7.9-7.9"/></svg><div><div style="font-weight:700">' + T('ファイルを添付') + '</div><div class="hint" style="font-size:12px">' + T('複数可。形式は [対応形式：未確定]') + '<br>' + T('添付した資料を案件の資料として提出するかは、最後の「確認・申請」で選べます。') + '<br>' + T('添付したファイルは一時保管され、1日後に自動で削除されます。') + '</div></div></div>' +
+    '<button class="outline" style="height:38px" data-act="addFile"' + (S.files.length >= SAMPLE_FILES.length ? ' disabled' : '') + '>' + T('ファイルを選択') + '</button></div>';
+  if (S.files.length) {
+    var cols = 'grid-template-columns:minmax(0,2fr) minmax(0,1fr) 90px';
+    h += '<div class="list"><div class="lrow head" style="' + cols + '"><div>' + T('ファイル') + '</div><div>' + T('資料の種類（任意）') + '</div><div></div></div>' +
+      S.files.map(function (f, i) {
+        return '<div class="lrow" style="' + cols + ';padding:10px 16px"><div style="display:flex;align-items:center;gap:8px">' + ICON_DOC + '<span>' + esc(f.name) + '</span></div>' +
+          '<select aria-label="' + esc(T('資料の種類')) + '" data-kind="' + i + '" style="min-height:34px;padding:4px 8px">' + options(KINDS, f.kind) + '</select>' +
+          '<button data-act="removeFile" data-i="' + i + '" style="border:none;background:transparent;color:#B42318;font-size:13px">' + T('削除') + '</button></div>';
+      }).join('') + '</div>';
+  }
+  var dis = !S.files.length || S.generating;
+  h += '<div style="display:flex;align-items:center;gap:16px"><button class="gen" data-act="generate"' + (dis ? ' disabled' : '') + '><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 4.7L18.5 9.5l-4.7 1.8L12 16l-1.8-4.7L5.5 9.5l4.7-1.8z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/></svg>' +
+    T(S.generated ? '案件概要書を再生成' : '案件概要書を自動生成') + '</button><div class="hint" style="font-size:12px">' +
+    T(!S.files.length ? '資料を1件以上添付すると押せます' : S.generated ? '全項目を上書きします（確認あり）' : '数十秒かかることがあります') + '</div></div>';
+  if (S.generating) h += '<div class="panel" style="background:#EFEBF8;display:flex;flex-direction:column;gap:10px"><div style="font-weight:700;color:#4A3A86">' + T('資料を読み取っています…') + '</div><div class="bar"><div></div></div><div style="font-size:12px;color:#4A3A86">' + T('資料に書かれている内容だけで項目を埋めます。読み取れない項目は空欄のままになります。') + '</div></div>';
+  else if (S.generated) h += '<div class="panel" style="background:#E6F2EC;font-size:13px;color:#1F5B3B">' + T('自動生成が完了しました。「次へ」で内容を確認・修正してください。') + '</div>';
+  return h + '</div>';
+}
+function vField(f, miss) {
+  var state = S.o[f.key] || 'empty', val = S.v[f.key] || '';
+  var isMissing = miss.some(function (m) { return m.keys && m.keys.indexOf(f.key) >= 0; });
+  var reqText = { req: '必須', unk: '必須（不明・該当なし可）', either: 'どちらか必須', sponsor: 'スポンサー必須' }[f.req] || '';
+  var err = isMissing ? ' err' : '';
+  var h = '<div class="field"><div class="flabel"><label for="f-' + f.key + '">' + esc(T(f.label)) + '</label>' + (reqText ? '<span class="req">' + T(reqText) + '</span>' : '') + badge(state, isMissing) + '</div>';
+  if (f.type === 'text') h += '<input type="text" id="f-' + f.key + '" data-field="' + f.key + '" value="' + esc(val) + '" class="' + err + '">';
+  if (f.type === 'textarea') h += '<textarea id="f-' + f.key + '" data-field="' + f.key + '" rows="3" class="' + err + '">' + esc(val) + '</textarea>';
+  if (f.type === 'select') h += '<select id="f-' + f.key + '" data-field="' + f.key + '" class="' + err + '">' + options(f.options, val) + '</select>';
+  if (f.type === 'chips') h += '<div style="display:flex;gap:8px;flex-wrap:wrap">' + DATA_CATS.map(function (c) { var on = S.chips[f.key].indexOf(c) >= 0; return '<button class="pill' + (on ? ' on' : '') + '" aria-pressed="' + on + '" data-act="chip" data-key="' + f.key + '" data-val="' + c + '">' + T(c) + '</button>'; }).join('') + '</div>';
+  if (f.type === 'conflict') {
+    if (state === 'conflict' || state === 'edited' || state === 'ai') {
+      h += '<div class="conflict"><div style="font-size:12px;color:#7A5200;font-weight:700">' + T('資料間で値が異なります。どちらかを選ぶか、下の欄に直接入力してください。') + '</div><div style="display:flex;gap:8px;flex-wrap:wrap">' +
+        CONFLICT.map(function (c) { var on = val === c.value; return '<button class="cand' + (on ? ' on' : '') + '" aria-pressed="' + on + '" data-act="pick" data-key="' + f.key + '" data-val="' + c.value + '"><strong>' + c.value + '</strong>　<span style="font-size:11px">' + T('出所：') + esc(c.source) + '</span></button>'; }).join('') + '</div></div>';
+    }
+    h += '<input type="text" id="f-' + f.key + '" data-field="' + f.key + '" value="' + esc(val) + '" placeholder="' + esc(T('例：2027年12月')) + '" class="' + (isMissing && !val ? 'err' : '') + '">';
+  }
+  if (f.type === 'table') {
+    var cols = TABLE_COLS[f.key], gs = 'grid-template-columns:repeat(' + cols.length + ',minmax(0,1fr)) 36px';
+    h += '<div class="tgrid" style="' + gs + '">' + cols.map(function (c) { return '<div class="th">' + T(c) + '</div>'; }).join('') + '<div></div>';
+    S.t[f.key].forEach(function (r, ri) {
+      r.forEach(function (c, ci) {
+        var e = f.req === 'sponsor' && r[0] === SPONSOR && ci === 1 && !c ? ' class="err"' : '';
+        h += '<input type="text" id="t-' + f.key + '-' + ri + '-' + ci + '" aria-label="' + esc(T(cols[ci])) + '" data-tkey="' + f.key + '" data-ri="' + ri + '" data-ci="' + ci + '" value="' + esc(c) + '"' + e + '>';
+      });
+      h += '<button class="x" aria-label="' + esc(T('行を削除')) + '" data-act="delRow" data-key="' + f.key + '" data-i="' + ri + '">×</button>';
+    });
+    h += '</div><div><button class="addrow" data-act="addRow" data-key="' + f.key + '">' + T('＋ 行を追加') + '</button></div>';
+  }
+  if (f.unk) {
+    h += '<div style="display:flex;gap:8px;align-items:center"><span class="hint">' + T('分からない場合：') + '</span>' + f.unk.map(function (u) {
+      var on = f.type === 'table' ? (u === '連携なし' && S.integrationsNone) : (val === u || val === T(u));
+      return '<button class="pill' + (on ? ' on' : '') + '" aria-pressed="' + on + '" data-act="unk" data-key="' + f.key + '" data-val="' + u + '">' + T(u) + '</button>';
+    }).join('') + '</div>';
+  }
+  if ((state === 'ai' || state === 'edited') && S.src[f.key] && f.type !== 'conflict') h += '<div class="src">' + T('出所：') + esc(S.src[f.key]) + '</div>';
+  if (f.hint) h += '<div class="hint">' + T(f.hint) + '</div>';
+  return h + '</div>';
+}
+function counts(miss) {
+  var c = { ai: 0, edited: 0, user: 0, missing: miss.length };
+  Object.keys(S.o).forEach(function (k) { var x = S.o[k]; if (x === 'ai' || x === 'edited' || x === 'user') c[x]++; });
+  return c;
+}
+function vReview(miss) {
+  var c = counts(miss);
+  var toc = SECTIONS.map(function (s) { var m = miss.some(function (x) { return x.sec === s.id; }); return '<a href="#' + s.id + '" class="' + (m ? 'miss' : '') + '">' + T(s.nav) + (m ? '　●' : '') + '</a>'; }).join('');
+  var h = '<div class="review"><nav class="toc" aria-label="' + esc(T('セクション')) + '">' + toc + '</nav><div class="col" style="flex:1;min-width:0">';
+  h += titleRow('案件概要書の確認・修正', 'AI が資料から読み取った内容です。事実と異なる箇所、空欄の必須項目を修正してください。評価（「全社的に重要」など）は書かないでください。', true);
+  h += '<div class="counts"><div style="background:#EFEBF8;color:#4A3A86">' + T('AI生成') + ' ' + c.ai + '</div><div style="background:#FFF3D6;color:#7A5200">' + T('AI生成を修正') + ' ' + c.edited + '</div><div style="background:#E2EEF0;color:#0E4A54">' + T('入力') + ' ' + c.user + '</div><div style="background:#FDE8E6;color:#9B1C12">' + T('未入力の必須') + ' ' + c.missing + '</div></div>';
+  SECTIONS.forEach(function (s) {
+    h += '<section class="sec" id="' + s.id + '"><div><h2>' + T(s.title) + '</h2>' + (s.lead ? '<p class="lead" style="font-size:12px">' + T(s.lead) + '</p>' : '') + '</div>' + s.fields.map(function (f) { return vField(f, miss); }).join('') + '</section>';
+  });
+  return h + '</div></div>';
+}
+var SUGGEST = ['QCシステムチーム（配布リスト）', '信頼性保証本部 企画グループ（配布リスト）', '[個人の氏名]'];
+function vNotify() {
+  var sug = SUGGEST.filter(function (n) { return !S.recipients.some(function (r) { return r.name === n; }); });
+  var h = '<div class="col" style="max-width:760px">' + titleRow('通知先', '申請の状況（受付、審議の進み具合、結果）をメールで受け取る関係者を登録してください。通知先は承認・確認を行う役割ではありません。');
+  h += '<div style="display:flex;gap:10px"><label for="newRecipient" class="sr">' + T('通知先を追加') + '</label><input type="text" id="newRecipient" value="' + esc(S.newRecipient) + '" placeholder="' + esc(T('氏名またはグループ（配布リスト）で検索')) + '"><button class="primary" style="height:40px;font-size:14px;padding:0 18px" data-act="addRecipient">' + T('追加') + '</button></div>';
+  if (sug.length) h += '<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><span class="hint" style="font-size:12px">' + T('候補：') + '</span>' + sug.map(function (n) { return '<button class="pill" data-act="addSuggestion" data-val="' + esc(n) + '">＋ ' + esc(T(n)) + '</button>'; }).join('') + '</div>';
+  h += '<div class="list">' + S.recipients.map(function (r, i) {
+    return '<div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid #EEECE7"><div style="display:flex;align-items:center;gap:10px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#555B61" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg><span>' + esc(recipientName(r)) + '</span>' +
+      (r.locked ? '<span class="tag" style="font-size:11px;background:#F3F2EE;color:#555B61">' + T('自動・削除不可') + '</span>' : '') + '</div>' +
+      (r.locked ? '' : '<button data-act="removeRecipient" data-i="' + i + '" style="border:none;background:transparent;color:#B42318;font-size:13px">' + T('削除') + '</button>') + '</div>';
+  }).join('') + '</div>';
+  h += '<div class="panel" style="background:#F3F2EE;font-size:12px;color:#454B51;line-height:1.7">' + T('通知する出来事：申請の受付／Step の移行（論点整理 → 委員会の審議 → 回答）／審議回答書の確定／会議の招集／承認結果<br>申請後も、起案担当者が通知先を追加・削除できます。') + '</div>';
+  return h + '</div>';
+}
+function vConfirm(miss) {
+  var c = counts(miss);
+  var h = '<div class="col" style="max-width:760px">' + titleRow('確認・申請', '申請後は案件概要書を直接編集できません。変更は、事務局から共有される論点整理書への意見として伝えてください。', true);
+  h += '<div class="kv panel" style="border:1px solid #E3E1DB"><div class="k">' + T('案件名') + '</div><div style="font-weight:700">' + esc(S.v.title) + '</div><div class="k">' + T('提案部門') + '</div><div>' + esc(T(S.v.dept)) + '</div><div class="k">' + T('審議区分') + '</div><div>' + esc(T(S.v.reviewType)) + '</div>' +
+    '<div class="k">' + T('添付資料') + '</div><div>' + Tf('{n} 件', { n: S.files.length }) + (S.attachPolicy === 'exclude' ? T('（提出しない）') : S.attachPolicy === 'include' ? T('（提出する）') : '') + '</div><div class="k">' + T('通知先') + '</div><div>' + Tf('{n} 件', { n: S.recipients.length }) + '</div><div class="k">' + T('AI生成のまま') + '</div><div>' + Tf('{a} 項目（修正 {e}・入力 {u}）', { a: c.ai, e: c.edited, u: c.user }) + '</div></div>';
+  if (miss.length) h += '<div class="panel" style="background:#FDE8E6;display:flex;flex-direction:column;gap:8px"><div style="font-weight:700;color:#9B1C12">' + Tf('未入力の必須項目が {n} 件あります', { n: miss.length }) + '</div>' +
+    miss.map(function (m, i) { return '<div style="display:flex;justify-content:space-between;font-size:13px;color:#6E1810"><span>' + esc(T(m.label)) + '</span><button data-act="fix" data-i="' + i + '" style="border:none;background:transparent;color:#0E5A66;font-size:13px;text-decoration:underline">' + T('修正する') + '</button></div>'; }).join('') + '</div>';
+  h += vAttachPolicy();
+  h += '<label style="display:flex;align-items:center;gap:12px;padding:16px 18px;border:1.5px solid ' + (S.confirmed ? '#0E5A66' : '#C9C6BE') + ';border-radius:10px;font-size:15px;font-weight:700;cursor:pointer"><input type="checkbox" id="confirmed"' + (S.confirmed ? ' checked' : '') + ' style="width:20px;height:20px">' + T('内容を確認した') + '</label>';
+  return h + '</div>';
+}
+function vAttachPolicy() {
+  var opts = [['include', '添付ファイルも含めて申請する', '手元資料を案件の資料として保存します。'], ['exclude', '案件概要書のみを申請する', '手元資料は提出しません。一時保管のファイルは1日後に自動で削除されます。']];
+  var h = '<div class="field"><div class="flabel"><span style="font-size:14px;font-weight:700">' + T('添付ファイルの提出') + '</span><span class="req">' + T('必須') + '</span></div>' +
+    '<div role="radiogroup" aria-label="' + esc(T('添付ファイルの提出')) + '" style="display:grid;grid-template-columns:1fr 1fr;gap:10px">' +
+    opts.map(function (o) { var on = S.attachPolicy === o[0]; return '<button role="radio" aria-checked="' + on + '" data-act="attachPolicy" data-val="' + o[0] + '" style="text-align:left;padding:12px 14px;border-radius:10px;border:1.5px solid ' + (on ? '#0E5A66' : '#C9C6BE') + ';background:' + (on ? '#E2EEF0' : '#fff') + '"><div style="font-weight:700;font-size:14px">' + (on ? '● ' : '○ ') + T(o[1]) + '</div><div style="font-size:12px;color:#555B61;margin-top:4px">' + T(o[2]) + '</div></button>'; }).join('') + '</div>' +
+    '<div class="panel" style="background:#FFF7E8;border:1px solid #F0D49A;font-size:13px;color:#5C3E00;line-height:1.7;padding:12px 16px"><strong>' + T('注意') + '</strong>　' + T('添付したファイルは、案件リストを参照できる人全員に公開されます。社外秘の見積や個人情報を含む資料を添付する場合は注意してください。') + '</div></div>';
+  return h;
+}
+function vDone() {
+  return '<div class="col" style="max-width:700px;padding-top:30px;gap:20px"><div style="width:56px;height:56px;border-radius:28px;background:#E6F2EC;display:flex;align-items:center;justify-content:center"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#1F7A4A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"/></svg></div>' +
+    '<h1 style="font-size:24px">' + T('申請を受け付けました') + '</h1><div class="kv" style="grid-template-columns:140px minmax(0,1fr)"><div class="k">' + T('案件ID') + '</div><div style="font-weight:700">' + T('[案件ID：申請時に採番]') + '</div><div class="k">' + T('案件名') + '</div><div>' + esc(S.v.title) + '</div><div class="k">' + T('通知') + '</div><div>' + Tf('事務局と通知先 {n} 件に受付を通知しました', { n: S.recipients.length }) + '</div></div>' +
+    '<div class="panel" style="background:#F3F2EE;font-size:13px;line-height:1.8;color:#454B51">' + T('次は、事務局が内容をもとに論点整理を行い、論点整理書をあなたに共有します。<br>論点整理書に対する意見は、共有後に何度でも伝えられます。') + '</div>' +
+    '<div><button class="outline" style="height:40px" data-act="go" data-to="home">' + T('マイ申請に戻る') + '</button></div></div>';
+}
+function langSwitch() {
+  return '<div class="lang" role="group" aria-label="' + esc(T('表示言語')) + '">' +
+    [['ja', '日本語'], ['en', 'English']].map(function (l) { var on = LANG === l[0]; return '<button lang="' + l[0] + '" class="' + (on ? 'on' : '') + '" aria-pressed="' + on + '" data-act="lang" data-val="' + l[0] + '">' + l[1] + '</button>'; }).join('') + '</div>';
+}
+function render() {
+  var body = document.querySelector('.body'), top = body ? body.scrollTop : 0;
+  var FOC = '#root button,#root input,#root select,#root textarea,#root a';
+  var focList = Array.prototype.slice.call(document.querySelectorAll(FOC));
+  var activeIdx = focList.indexOf(document.activeElement);
+  document.documentElement.lang = LANG;
+  document.title = T('IT投資 申請') + ' — ' + (LANG === 'ja' ? '紙芝居' : 'Storyboard');
+  var scr = S.screen, miss = S.generated ? missing() : [];
+  var stepIdx = STEPS.map(function (x) { return x[0]; }).indexOf(scr);
+  var h = '<div class="wrap"><main class="app"><div class="hdr"><div style="display:flex;align-items:center;gap:12px;min-width:0"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg><span class="name">' + T('IT投資 申請') + '</span><span class="sub">' + T('投資委員会 案件管理システム（CMS）') + '</span></div>' +
+    '<div style="display:flex;align-items:center;gap:14px;flex-shrink:0">' + (scr !== 'home' && scr !== 'done' ? '<button class="btn-ghost" data-act="draft">' + T('下書き保存') + '</button>' : '') + '<span style="font-size:13px;color:#D6E6E9">' + T('[起案担当者 氏名]') + '</span>' + langSwitch() + '</div></div>';
+  if (stepIdx >= 0) h += '<div class="stepper">' + STEPS.map(function (x, i) {
+    var cls = i === stepIdx ? 'cur' : i < stepIdx ? 'done' : '';
+    return '<div class="dot ' + cls + '">' + (i < stepIdx ? '✓' : i + 1) + '</div><div class="slabel ' + (i === stepIdx ? 'cur' : '') + '">' + T(x[1]) + '</div>' + (i < STEPS.length - 1 ? '<div class="sline"></div>' : '');
+  }).join('') + '</div>';
+  h += '<div class="body">' + ({ home: vHome, meta: vMeta, attach: vAttach, review: function () { return vReview(miss); }, notify: vNotify, confirm: function () { return vConfirm(miss); }, done: vDone }[scr])() + '</div>';
+  if (scr !== 'home' && scr !== 'done') {
+    var idx = ORDER.indexOf(scr), dis = false, label = '次へ';
+    if (scr === 'meta') dis = !filled(S.v.title) || unset(S.v.dept) || !filled(S.v.owner);
+    if (scr === 'attach') { dis = !S.generated || S.generating; label = '次へ（確認・修正）'; }
+    if (scr === 'confirm') { dis = !S.confirmed || miss.length > 0 || !S.attachPolicy; label = '申請する'; }
+    h += '<div class="ftr"><button class="secondary" data-act="back">' + T(idx <= 1 ? 'マイ申請に戻る' : '戻る') + '</button><button class="primary" data-act="next"' + (dis ? ' disabled' : '') + '>' + T(label) + '</button></div>';
+  }
+  if (S.regen) h += '<div class="modal"><div class="dialog" role="dialog" aria-modal="true" aria-label="' + esc(T('案件概要書を作り直しますか？')) + '"><div style="font-size:17px;font-weight:700">' + T('案件概要書を作り直しますか？') + '</div><div style="font-size:13px;color:#454B51;line-height:1.7">' + T('添付資料から全項目を生成し直し、<strong>今の内容をすべて上書き</strong>します。あなたが入力・修正した内容は失われます。') + '</div><div style="display:flex;justify-content:flex-end;gap:10px"><button class="secondary" style="height:40px" data-act="cancelRegen">' + T('キャンセル') + '</button><button class="danger" data-act="confirmRegen">' + T('上書きして生成') + '</button></div></div></div>';
+  if (S.toast) h += '<div class="toast" role="status">' + esc(T(S.toast)) + '</div>';
+  h += '</main><aside class="side"><div><div style="font-size:12px;font-weight:700;color:#0E5A66;letter-spacing:.08em">' + T('紙芝居｜申請画面') + '</div><div style="margin-top:6px;font-size:12px;color:#555B61;line-height:1.7">' + T('画面項目と動作のイメージです。実際の画面は Power Apps の標準部品で作るため、見た目は異なります。値は架空の案件のサンプルです。') + (LANG !== 'ja' ? '<br>' + T('入力値（サンプル）は翻訳されません。切り替わるのは画面の表示だけです。') : '') + '</div></div>' +
+    '<div style="display:flex;flex-direction:column;gap:6px"><div style="font-size:12px;font-weight:700;color:#454B51">' + T('画面へ移動') + '</div>' + ORDER.map(function (s) { return '<button class="jump' + (s === scr ? ' on' : '') + '" data-act="go" data-to="' + s + '">' + T(JUMP[s]) + '</button>'; }).join('') + '</div>' +
+    '<div style="display:flex;flex-direction:column;gap:10px"><div style="font-size:12px;font-weight:700;color:#454B51">' + T('この画面の動作') + '</div>' + (NOTES[scr] || []).map(function (t, i) { return '<div class="note"><div class="n">' + (i + 1) + '</div><div>' + T(t) + '</div></div>'; }).join('') + '</div>' +
+    (ISSUES[scr] ? '<div class="issues"><div style="font-size:12px;font-weight:700;color:#7A5200">' + T('未決事項') + '</div>' + ISSUES[scr].map(function (t) { return '<div style="font-size:12px;color:#5C3E00;line-height:1.6">・' + T(t) + '</div>'; }).join('') + '</div>' : '') +
+    '</aside></div>';
+  document.getElementById('root').innerHTML = h;
+  var nb = document.querySelector('.body'); if (nb && S._keepScroll) nb.scrollTop = top;
+  S._keepScroll = false;
+  if (S._restore && activeIdx >= 0) { var nl = document.querySelectorAll(FOC); if (nl[activeIdx]) nl[activeIdx].focus({ preventScroll: true }); }
+  if (S._scrollTo) { var tg = document.getElementById(S._scrollTo); if (tg && nb) nb.scrollTop = tg.offsetTop - nb.offsetTop - 20; S._scrollTo = null; }
+}
+function rerender() { S._keepScroll = true; render(); }
+function later() { setTimeout(function () { S._restore = true; rerender(); S._restore = false; }, 0); }
+
+/* ---------- PDF ---------- */
+function pdfDoc() {
+  var now = new Date(), ts = now.getFullYear() + '/' + (now.getMonth() + 1) + '/' + now.getDate() + ' ' + ('0' + now.getHours()).slice(-2) + ':' + ('0' + now.getMinutes()).slice(-2);
+  var NA = '<span class="na">' + T('（記載なし）') + '</span>';
+  var val = function (x) { return filled(x) ? esc(x).replace(/\n/g, '<br>') : NA; };
+  var body = '';
+  SECTIONS.forEach(function (s) {
+    body += '<h2>' + T(s.title) + '</h2><table class="kv">';
+    s.fields.forEach(function (f) {
+      var cell;
+      if (f.type === 'table') {
+        var rows = S.t[f.key].filter(function (r) { return r.some(filled); });
+        if (f.key === 'integrations' && S.integrationsNone) cell = esc(T('連携なし'));
+        else if (!rows.length) cell = NA;
+        else cell = '<table class="grid"><tr>' + TABLE_COLS[f.key].map(function (c) { return '<th>' + T(c) + '</th>'; }).join('') + '</tr>' +
+          rows.map(function (r) { return '<tr>' + r.map(function (c) { return '<td>' + esc(c) + '</td>'; }).join('') + '</tr>'; }).join('') + '</table>';
+      } else if (f.type === 'chips') cell = S.chips[f.key].length ? esc(S.chips[f.key].map(T).join(LANG === 'ja' ? '、' : ', ')) : NA;
+      else if (f.type === 'select') cell = unset(S.v[f.key]) ? NA : esc(T(S.v[f.key]));
+      else cell = val(S.v[f.key]);
+      body += '<tr><th>' + esc(T(f.label)) + '</th><td>' + cell + '</td></tr>';
+    });
+    body += '</table>';
+  });
+  var files = S.attachPolicy === 'exclude' ? esc(T('提出しない（案件概要書のみ）')) : S.files.length ? S.files.map(function (f) { return esc(f.name) + (unset(f.kind) ? '' : (LANG === 'ja' ? '（' + esc(T(f.kind)) + '）' : ' (' + esc(T(f.kind)) + ')')); }).join('<br>') : NA;
+  return '<!doctype html><html lang="' + LANG + '"><head><meta charset="utf-8"><title>' + esc(T('案件概要書')) + '_' + esc(S.v.title) + '</title><style>' +
+    '@page{size:A4;margin:16mm 14mm}body{font-family:"BIZ UDPGothic","Meiryo UI","Hiragino Sans","Yu Gothic",sans-serif;color:#1E2226;font-size:10pt;line-height:1.55;margin:0}' +
+    '.top{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:1.5pt solid #0E3F48;padding-bottom:6pt;margin-bottom:10pt}' +
+    'h1{font-size:16pt;margin:0}.meta{font-size:8.5pt;color:#555B61;text-align:right}.stamp{display:inline-block;border:1pt solid #B42318;color:#B42318;padding:1pt 6pt;font-size:8.5pt;margin-bottom:3pt}' +
+    'h2{font-size:11.5pt;margin:14pt 0 5pt;color:#0E3F48;break-after:avoid}table.kv{width:100%;border-collapse:collapse}' +
+    'table.kv th{width:30%;text-align:left;vertical-align:top;font-weight:700;background:#F3F2EE;padding:4pt 6pt;border:0.5pt solid #C9C6BE;font-size:9pt}' +
+    'table.kv td{padding:4pt 6pt;border:0.5pt solid #C9C6BE;vertical-align:top}tr{break-inside:avoid}' +
+    'table.grid{width:100%;border-collapse:collapse;font-size:8.5pt}table.grid th{width:auto;background:#E7E5DF;font-weight:700;text-align:left;padding:2pt 4pt;border:0.5pt solid #C9C6BE;font-size:8.5pt}table.grid td{padding:2pt 4pt;border:0.5pt solid #C9C6BE}' +
+    '.na{color:#8A9096}.foot{margin-top:14pt;font-size:8pt;color:#6B7177}' +
+    '</style></head><body><div class="top"><div><div class="stamp">' + T(S.screen === 'done' ? '申請済み' : '下書き（未申請）') + '</div><h1>' + T('案件概要書') + '</h1><div style="font-size:12pt;font-weight:700;margin-top:2pt">' + esc(S.v.title) + '</div></div>' +
+    '<div class="meta">' + T('案件ID：[申請時に採番]') + '<br>' + T('出力日時') + (LANG === 'ja' ? '：' : ': ') + ts + '<br>' + T('出力者') + (LANG === 'ja' ? '：' : ': ') + T('[起案担当者 氏名]') + '</div></div>' +
+    '<table class="kv"><tr><th>' + T('提案部門') + '</th><td>' + esc(T(S.v.dept)) + '</td></tr><tr><th>' + T('提案責任者') + '</th><td>' + val(S.v.owner) + '</td></tr><tr><th>' + T('審議区分') + '</th><td>' + esc(T(S.v.reviewType)) + '</td></tr><tr><th>' + T('添付資料') + '</th><td>' + files + '</td></tr></table>' +
+    body + '<div class="foot">' + T('本書は IT投資 申請画面から出力した。内容は出力時点のもので、申請前は変更される可能性がある。') + '</div>' +
+    '<script>window.onload=function(){setTimeout(function(){window.print();},300);};<\/script></body></html>';
+}
+
+/* ---------- actions ---------- */
+function go(to) {
+  if (['review', 'notify', 'confirm', 'done'].indexOf(to) >= 0) ensureGenerated();
+  else if (to === 'attach' && !S.files.length) S.files = copyFiles(SAMPLE_FILES.slice(0, 1));
+  S.screen = to; S.regen = false; render();
+}
+function generate() { S.generating = true; rerender(); setTimeout(function () { applyGenerated(); S.generating = false; rerender(); }, 1600); }
+var toastTimer;
+function toast(msg) { S.toast = msg; rerender(); clearTimeout(toastTimer); toastTimer = setTimeout(function () { S.toast = ''; rerender(); }, 2200); }
+var A = {
+  lang: function (d) { LANG = d.val; try { localStorage.setItem('cms-mock-lang', LANG); } catch (e) {} rerender(); },
+  go: function (d) { go(d.to); },
+  back: function () { var i = ORDER.indexOf(S.screen); go(i <= 1 ? 'home' : ORDER[i - 1]); },
+  next: function () { var i = ORDER.indexOf(S.screen); go(ORDER[i + 1]); },
+  startNew: function () { S.generated = false; S.files = []; S.v = emptyValues(); S.t = emptyTables(); S.chips = { dataCategories: [] }; S.o = {}; S.src = {}; S.recipients = []; S.confirmed = false; S.attachPolicy = ''; go('meta'); },
+  draft: function () { toast('下書きを保存しました'); },
+  reviewType: function (d) { S.v.reviewType = d.val; rerender(); },
+  addFile: function () { var n = SAMPLE_FILES.filter(function (f) { return !S.files.some(function (x) { return x.name === f.name; }); })[0]; if (n) S.files.push({ name: n.name, kind: n.kind }); rerender(); },
+  removeFile: function (d) { S.files.splice(+d.i, 1); rerender(); },
+  generate: function () { if (S.generated) { S.regen = true; rerender(); } else generate(); },
+  cancelRegen: function () { S.regen = false; rerender(); },
+  confirmRegen: function () { S.regen = false; generate(); },
+  chip: function (d) {
+    var cur = S.chips[d.key].slice(), on = cur.indexOf(d.val) >= 0;
+    if (d.val === '不明') cur = on ? [] : ['不明'];
+    else { cur = cur.filter(function (x) { return x !== '不明'; }); if (on) cur = cur.filter(function (x) { return x !== d.val; }); else cur.push(d.val); }
+    S.chips[d.key] = cur; touch(d.key); rerender();
+  },
+  attachPolicy: function (d) { S.attachPolicy = d.val; rerender(); },
+  pick: function (d) { setField(d.key, d.val); rerender(); },
+  unk: function (d) {
+    if (FIELD[d.key].type === 'table') { if (d.val === '連携なし') S.integrationsNone = !S.integrationsNone; else S.t[d.key] = [[T('不明'), '', '']]; touch(d.key); }
+    else setField(d.key, T(d.val));
+    rerender();
+  },
+  addRow: function (d) { S.t[d.key].push(TABLE_COLS[d.key].map(function () { return ''; })); rerender(); },
+  delRow: function (d) { S.t[d.key].splice(+d.i, 1); touch(d.key); rerender(); },
+  addRecipient: function () { var n = S.newRecipient.trim(); if (n) { S.recipients.push({ name: n, locked: false }); S.newRecipient = ''; } rerender(); },
+  addSuggestion: function (d) { S.recipients.push({ name: d.val, locked: false, i18n: true }); rerender(); },
+  removeRecipient: function (d) { S.recipients.splice(+d.i, 1); rerender(); },
+  pdf: function () { var w = window.open('', '_blank'); if (!w) { toast('ポップアップを許可してください'); return; } w.document.open(); w.document.write(pdfDoc()); w.document.close(); },
+  fix: function (d) { var m = missing()[+d.i]; if (!m) return; if (m.sec) { S._scrollTo = m.sec; S.screen = 'review'; render(); } else go(m.to); }
+};
+var root = document.getElementById('root');
+root.addEventListener('click', function (e) {
+  var b = e.target.closest('[data-act]'); if (!b || b.disabled) return;
+  e.preventDefault(); A[b.dataset.act](b.dataset);
+});
+root.addEventListener('input', function (e) {
+  var t = e.target, d = t.dataset;
+  if (d.field) setField(d.field, t.value);
+  else if (d.tkey) { S.t[d.tkey][+d.ri][+d.ci] = t.value; touch(d.tkey); }
+  else if (d.meta) S.v[d.meta] = t.value;
+  else if (t.id === 'newRecipient') S.newRecipient = t.value;
+});
+root.addEventListener('change', function (e) {
+  var t = e.target, d = t.dataset;
+  if (t.id === 'confirmed') { S.confirmed = t.checked; return rerender(); }
+  if (d.kind != null) { S.files[+d.kind].kind = t.value; return; }
+  if (t.tagName === 'SELECT' && d.field) setField(d.field, t.value);
+  if (t.tagName === 'SELECT' && d.meta) S.v[d.meta] = t.value;
+  if (d.field || d.tkey || d.meta) later();
+});
+root.addEventListener('keydown', function (e) { if (e.key === 'Enter' && e.target.id === 'newRecipient') { e.preventDefault(); A.addRecipient(); } });
+window.__T_KEYS = function () { return EN; };
+render();
+})();
+</script>
+</body>
+</html>

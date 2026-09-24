@@ -1,0 +1,443 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>審議ワークベンチ（紙芝居）</title>
+<style>
+:root{--teal:#0E5A66;--teal-d:#16324A;--ink:#1E2226;--muted:#555B61;--line:#E3E1DB;--soft:#F3F2EE;--bg:#E7E5DF;--red:#B42318}
+*{box-sizing:border-box}
+body{margin:0;font-family:"BIZ UDPGothic","Meiryo UI","Hiragino Sans","Yu Gothic",sans-serif;background:var(--bg);color:var(--ink);font-size:14px}
+input,select,textarea,button{font-family:inherit;font-size:14px}
+input[type=text],input[type=datetime-local],select,textarea{border:1px solid #B9BDC2;border-radius:6px;padding:8px 10px;background:#fff;color:var(--ink);width:100%;min-height:38px}
+textarea{resize:vertical;line-height:1.6}
+input:focus,select:focus,textarea:focus,button:focus-visible{outline:2px solid var(--teal);outline-offset:1px}
+button{cursor:pointer}button:disabled{cursor:not-allowed}
+.wrap{display:flex;min-height:100vh}
+.app{flex:1;min-width:0;max-width:1100px;display:flex;flex-direction:column;background:#fff;position:relative;height:100vh;box-shadow:0 0 0 1px #D3D0C8}
+.hdr{height:56px;flex-shrink:0;display:flex;align-items:center;justify-content:space-between;padding:0 24px;background:var(--teal-d);color:#fff}
+.hdr .name{font-size:17px;font-weight:700;letter-spacing:.04em}
+.tabs{display:flex;gap:4px;padding:0 24px;border-bottom:1px solid var(--line);background:#FAF9F6;flex-shrink:0}
+.tabs button{border:none;background:transparent;padding:14px 16px;font-size:14px;color:var(--muted);border-bottom:3px solid transparent}
+.tabs button.on{color:var(--ink);font-weight:700;border-bottom-color:var(--teal)}
+.body{flex:1;overflow-y:auto;padding:24px 32px 40px}
+h1{margin:0;font-size:22px}h2{margin:0;font-size:16px}
+.lead{margin:6px 0 0;font-size:13px;color:var(--muted)}
+.col{display:flex;flex-direction:column;gap:18px}
+.sec{border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.sec-h{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:var(--soft)}
+.sec-h .t{font-weight:700;font-size:14px}.sec-h .n{font-size:12px;color:var(--muted)}
+.row{display:grid;gap:12px;padding:11px 16px;align-items:center;border-top:1px solid var(--line);font-size:13px}
+.row.link{cursor:pointer}.row.link:hover{background:#F6FAFA}
+.row.head{background:#FAF9F6;font-size:12px;font-weight:700;color:var(--muted);border-top:none}
+.tag{display:inline-block;padding:3px 10px;border-radius:999px;font-size:12px;white-space:nowrap}
+.over{color:#9B1C12;font-weight:700}
+.empty{padding:18px 16px;font-size:13px;color:#6B7177}
+.primary{height:38px;padding:0 18px;border:none;border-radius:8px;font-size:14px;font-weight:700;background:var(--teal);color:#fff}
+.primary:disabled{background:#C9CDD1}
+.secondary{height:38px;padding:0 16px;border:1px solid #B9BDC2;border-radius:8px;background:#fff}
+.act{height:36px;padding:0 14px;border:1px solid var(--teal);border-radius:8px;background:#fff;color:var(--teal);font-size:13px;font-weight:700}
+.act.main{background:var(--teal);color:#fff}
+.pill{height:30px;padding:0 12px;border-radius:999px;font-size:12px;border:1px solid #C9C6BE;background:#fff;color:#2A2F34}
+.pill.on{border-color:var(--teal);background:var(--teal);color:#fff}
+.progress{display:flex;align-items:center;gap:4px;flex-wrap:wrap}
+.progress .st{font-size:12px;padding:4px 10px;border-radius:999px;background:#EEECE7;color:#8A9096}
+.progress .st.done{background:#DCEAEC;color:#0E4A54}.progress .st.cur{background:var(--teal);color:#fff;font-weight:700}
+.progress .ar{color:#B9BDC2;font-size:11px}
+.dtabs{display:flex;gap:2px;border-bottom:1px solid var(--line)}
+.dtabs button{border:none;background:transparent;padding:10px 14px;font-size:13px;color:var(--muted);border-bottom:2px solid transparent}
+.dtabs button.on{color:var(--ink);font-weight:700;border-bottom-color:var(--teal)}
+.kv{display:grid;grid-template-columns:200px minmax(0,1fr);gap:8px 16px;font-size:13px}.kv .k{color:#6B7177}
+.badge{display:inline-block;padding:1px 7px;border-radius:999px;font-size:10.5px;margin-left:6px;vertical-align:1px}
+.b-ai{background:#EFEBF8;color:#4A3A86}.b-ed{background:#FFF3D6;color:#7A5200}.b-us{background:#E2EEF0;color:#0E4A54}
+.grid7{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr) minmax(0,1fr);border:1px solid var(--line);border-radius:10px;overflow:hidden;font-size:13px}
+.grid7>div{padding:9px 12px;border-top:1px solid var(--line)}
+.grid7 .gh{background:var(--soft);font-weight:700;font-size:12px;color:var(--muted);border-top:none}
+.sel{font-weight:700}.sel.PENDING{color:#9B1C12}.sel.CONFIRMED{color:#1F5B3B}.sel.NA{color:#5E646A}
+.note-s{font-size:11.5px;color:#6B7177;margin-top:2px}
+.modal{position:absolute;inset:0;background:rgba(20,24,28,.45);display:flex;align-items:center;justify-content:center;z-index:5}
+.dialog{width:600px;max-height:88vh;overflow:auto;border-radius:12px;background:#fff;padding:22px 24px;display:flex;flex-direction:column;gap:14px;box-shadow:0 12px 40px rgba(0,0,0,.25)}
+.field{display:flex;flex-direction:column;gap:6px}.field label,.field .l{font-size:13px;font-weight:700}
+.hint{font-size:12px;color:#6B7177}
+.toast{position:absolute;left:50%;bottom:28px;transform:translateX(-50%);padding:12px 20px;border-radius:8px;background:var(--ink);color:#fff;font-size:13px;z-index:6}
+.side{width:360px;flex-shrink:0;height:100vh;overflow-y:auto;padding:24px;display:flex;flex-direction:column;gap:20px}
+.side .h{font-size:12px;font-weight:700;color:#454B51}
+.role{text-align:left;padding:9px 12px;border-radius:8px;font-size:13px;border:1px solid #D3D0C8;background:#fff;color:#2A2F34}
+.role.on{border-color:var(--teal);background:var(--teal);color:#fff}
+.note{display:flex;gap:10px;font-size:13px;line-height:1.65;color:#2A2F34}
+.note .n{flex-shrink:0;width:22px;height:22px;border-radius:11px;background:var(--teal);color:#fff;font-size:11px;display:flex;align-items:center;justify-content:center}
+.sim{padding:12px 14px;border-radius:10px;background:#FFF7E8;display:flex;flex-direction:column;gap:8px}
+.sim button{text-align:left;padding:8px 10px;border-radius:8px;border:1px solid #E0C98F;background:#fff;font-size:12.5px}
+.sr{position:absolute;left:-9999px}
+</style>
+</head>
+<body>
+<div id="root"><div style="max-width:640px;margin:60px auto;padding:24px 28px;background:#fff;border-radius:12px;line-height:1.8">この画面が表示されたままの場合、JavaScript が動いていません。index.html をブラウザ（Edge／Chrome／Safari）で直接開いてください。</div></div>
+<script>
+(function () {
+'use strict';
+/* ---------- master ---------- */
+var STATUSES = [['RECEIVED','受付済み'],['BRIEFING','論点整理中'],['AWAITING_REVIEW','審議待ち'],['UNDER_REVIEW','審議中'],['ANSWERED','回答済み'],['IN_CONSULTATION','協議中'],['APPROVED','承認済み'],['REJECTED','非承認'],['WITHDRAWN','取り下げ']];
+var SL = {}; STATUSES.forEach(function (s) { SL[s[0]] = s[1]; });
+var SCOLOR = { RECEIVED:['#E2EEF0','#0E4A54'], BRIEFING:['#E2EEF0','#0E4A54'], AWAITING_REVIEW:['#E2EEF0','#0E4A54'], UNDER_REVIEW:['#ECE8F6','#4A3A86'], ANSWERED:['#ECE8F6','#4A3A86'], IN_CONSULTATION:['#FBE6E3','#9B1C12'], APPROVED:['#E3F1E8','#1F5B3B'], REJECTED:['#EEECE7','#5E646A'], WITHDRAWN:['#EEECE7','#5E646A'] };
+var STEPS7 = ['RECEIVED','BRIEFING','AWAITING_REVIEW','UNDER_REVIEW','ANSWERED','IN_CONSULTATION','FINAL'];
+var CAPS = ['戦略・ガバナンス','Solution Delivery','Service Mgmt & Ops','Platform & Infra','Cybersecurity','Data & GxP','組織・ソーシング'];
+var MY_CAPS = ['Platform & Infra','Cybersecurity'];
+var SELL = { PENDING:'保留', CONFIRMED:'確認済み', NA:'該当なし' };
+var ROLES = [['SEC','事務局（あなた＝事務局A）'],['REV','審査担当者（担当：Platform & Infra／Cybersecurity）'],['CHAIR','委員長'],['MEMBER','委員'],['PPM','PPM']];
+var ME = { SEC:'事務局A', REV:'審査担当者（あなた）', CHAIR:'委員長', MEMBER:'委員', PPM:'PPM担当' };
+var TODAY = new Date(2026, 8, 23);
+
+function addBiz(d, n) { var x = new Date(d); while (n > 0) { x.setDate(x.getDate() + 1); if (x.getDay() !== 0 && x.getDay() !== 6) n--; } return x; }
+function fmt(d) { return d ? (d.getMonth() + 1) + '/' + d.getDate() : ''; }
+function esc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+function checks(sel) { var o = []; CAPS.forEach(function (c) { ['基盤性','負債'].forEach(function (a) { o.push({ cap: c, axis: a, sel: (sel && sel[c + a]) || 'PENDING', by: '', note: '' }); }); }); return o; }
+function allConfirmed(except) { var m = {}; CAPS.forEach(function (c) { ['基盤性','負債'].forEach(function (a) { m[c + a] = (except || []).indexOf(c + a) >= 0 ? 'PENDING' : (c === 'Data & GxP' && a === '負債' ? 'CONFIRMED' : (a === '基盤性' ? 'NA' : 'CONFIRMED')); }); }); return m; }
+
+var SUMMARY_LIMS = [
+  ['1 目的・背景', [['現状の課題','試験記録の約6割が紙のワークシートで作成・承認されている。出荷判定の集計を Excel で手作業で行っている。','ai'],['案件の必要性','現行 LIMS の保守が終了し、延長保守は提供されない。','ed'],['ビジネス上の背景','「品質データのデジタル化」の方針に沿った取り組み。','ai']]],
+  ['2 期待効果', [['定量的効果','出荷判定のリードタイム：平均5日 → 3日','ai'],['定性的効果','試験記録の電子化、工場間の比較','ai']]],
+  ['3 スコープ', [['対象組織・ユーザー','静岡工場・富山工場の品質管理（QC）部門','ai'],['対象業務プロセス','受入試験・工程内試験・出荷試験・安定性試験（工場実施分）','ai'],['明確に除外する範囲','微生物試験、治験薬の試験','ai']]],
+  ['4 事実項目', [['受益範囲','品質管理部（静岡・富山）。利用者 約120名','ed'],['連携システム','生産管理システム（夜間 CSV）、分析機器データシステム（コネクタ）','ai'],['対象データの種類','GxP電子記録、個人情報','ai'],['新規／更新の別','既存システムの更新（現行：LabTrack 7）','ai'],['現行製品の保守期限','2027年12月','ed'],['運用・保守の体制','QC システムチーム（2名）、国内代理店と保守契約','ai']]],
+  ['5 主要ステークホルダー', [['ビジネススポンサー','信頼性保証本部長 [氏名]','us'],['業務オーナー','品質管理部 QC システムチーム','ai']]],
+  ['6 概算予算', [['初期投資合計','18,000 万円','ai'],['運用コスト合計','5,000 万円／年','ai']]],
+  ['7 想定スケジュール', [['想定開始・完了','2027年4月 〜 2028年1月','ai']]],
+  ['8 主要リスク', [['主要リスク','稼働遅延／利用者の習熟／過去データの参照','ai']]]
+];
+function mkSummary(title) { return SUMMARY_LIMS.map(function (s) { return [s[0], s[1].map(function (f) { return f.slice(); })]; }); }
+
+function mkCase(o) {
+  var c = { no: '', title: '', dept: '', owner: '[氏名]', submitter: '[起案担当者]', submittedAt: '9/10', status: 'RECEIVED', assignees: [], briefVer: 0, applicant: 'UNCHECKED',
+    checks: [], comments: [], result: null, conditions: '', resultBy: '', deputy: false, answerStatus: 'NONE', answerVer: 0, consultDeadline: null, meeting: null,
+    due: null, dueType: '', attach: 'INCLUDE', files: [], summary: mkSummary(), events: [], minutes: false, handedOff: null };
+  for (var k in o) c[k] = o[k];
+  return c;
+}
+var CASES = [
+  mkCase({ no: 'IC-2026-0015', title: '経費精算 SaaS の導入', dept: '管理本部 経理部', status: 'RECEIVED', submittedAt: '9/22', due: addBiz(new Date(2026, 8, 22), 3), dueType: '作成・回付', files: ['経費精算_企画書.pptx'],
+    events: [['9/22 10:12', '申請（S02）', '[起案担当者]']] }),
+  mkCase({ no: 'IC-2026-0014', title: 'MES（製造実行システム）のバージョンアップ', dept: '生産本部 生産管理部', status: 'RECEIVED', submittedAt: '9/15', assignees: ['事務局A'], due: addBiz(new Date(2026, 8, 15), 3), dueType: '作成・回付', attach: 'EXCLUDE',
+    events: [['9/15 09:40', '申請（S02）', '[起案担当者]'], ['9/15 13:05', '担当者の割当（S03）', '事務局B']] }),
+  mkCase({ no: 'IC-2026-0012', title: '品質試験データ管理システム（LIMS）の更新', dept: '信頼性保証本部 品質管理部', status: 'BRIEFING', submittedAt: '9/10', assignees: ['事務局A','事務局B'], briefVer: 2, applicant: 'QUESTIONED',
+    checks: checks(allConfirmed(['Platform & Infra基盤性','Cybersecurity負債'])), due: addBiz(new Date(2026, 8, 19), 3), dueType: '確認',
+    files: ['案件概要書_LIMS更新.docx','QLabCloud_提案書.pdf','概算見積書.pdf'],
+    comments: [
+      { kind: '起案者の疑義・意見', body: '論点2「独自の品目コードを認めるか」について、工場ごとの桁数の違いは生産管理側の改修予定があるため前提を補足したい。', by: '[起案担当者]', ver: 2, resolved: false, res: '' },
+      { kind: '審査担当者の追加依頼', body: 'データセンターが米国リージョンのため、データの所在に関する論点を追加してほしい。', by: 'Cybersecurity 担当', ver: 1, resolved: true, res: '版2で論点4として追加した。' }],
+    events: [['9/10 16:20', '申請（S02）', '[起案担当者]'], ['9/11 09:15', '担当者の割当（S03）', '事務局B'], ['9/12 17:40', '論点整理書の登録・回付 版1（S04）', '事務局A'], ['9/16 11:02', '論点の追加依頼（S06）', 'Cybersecurity 担当'], ['9/17 15:30', '修正版の登録・回付 版2（S07）', '事務局A'], ['9/19 10:05', '疑義・意見の登録（S05）', '[起案担当者]']] }),
+  mkCase({ no: 'IC-2026-0011', title: 'CRM の刷新', dept: '営業本部 営業企画部', status: 'AWAITING_REVIEW', submittedAt: '9/01', assignees: ['事務局A'], briefVer: 1, applicant: 'CONFIRMED', checks: checks(allConfirmed()),
+    events: [['9/01 11:00', '申請（S02）', '[起案担当者]'], ['9/22 16:45', 'Step2 へ移行（S09・自動）', 'CMS']] }),
+  mkCase({ no: 'IC-2026-0009', title: '生産スケジューラの更新', dept: '生産本部 生産管理部', status: 'UNDER_REVIEW', submittedAt: '8/25', assignees: ['事務局B'], briefVer: 1, applicant: 'CONFIRMED', checks: checks(allConfirmed()),
+    due: addBiz(new Date(2026, 8, 15), 3), dueType: '審議',
+    events: [['8/25 10:00', '申請（S02）', '[起案担当者]'], ['9/15 09:30', '回答依頼の登録（S10）', '事務局B']] }),
+  mkCase({ no: 'IC-2026-0007', title: '研究データ基盤の構築', dept: '研究本部 分析研究部', status: 'UNDER_REVIEW', submittedAt: '8/20', assignees: ['事務局A'], briefVer: 1, applicant: 'CONFIRMED', checks: checks(allConfirmed()),
+    result: 'APPROVE_WITH_CONDITIONS', conditions: '第1期を研究所内に限定し、全社展開は第1期の評価後に改めて審議する。', resultBy: '委員長', answerStatus: 'IN_REVIEW', answerVer: 1,
+    due: addBiz(new Date(2026, 8, 22), 2), dueType: '回答書確認',
+    events: [['8/20 14:00', '申請（S02）', '[起案担当者]'], ['9/16 10:00', '回答依頼の登録（S10）', '事務局A'], ['9/18 17:00', '審議結果の登録（S11）', '委員長'], ['9/22 11:30', '回答書（案）の登録 版1（S12）', '事務局A']] }),
+  mkCase({ no: 'IC-2026-0004', title: '文書管理システムの統合', dept: '信頼性保証本部 QA部', status: 'ANSWERED', submittedAt: '8/05', assignees: ['事務局A'], briefVer: 1, applicant: 'CONFIRMED', checks: checks(allConfirmed()),
+    result: 'APPROVE', resultBy: '委員長', answerStatus: 'FINAL', answerVer: 2, consultDeadline: addBiz(new Date(2026, 8, 17), 3), dueType: '議論要請の受付', due: addBiz(new Date(2026, 8, 17), 3),
+    events: [['8/05 09:00', '申請（S02）', '[起案担当者]'], ['9/17 15:00', '回答書の確定（S15）', '事務局A']] }),
+  mkCase({ no: 'IC-2026-0002', title: '全社データ連携基盤', dept: 'IT部門', status: 'APPROVED', submittedAt: '7/28', assignees: ['事務局B'], briefVer: 1, applicant: 'CONFIRMED', checks: checks(allConfirmed()),
+    result: 'APPROVE_WITH_CONDITIONS', conditions: '連携方式の全社標準を先に定め、その標準に沿って構築する。', resultBy: '委員長代理', deputy: true, answerStatus: 'FINAL', answerVer: 1, handedOff: '9/12',
+    events: [['7/28 10:00', '申請（S02）', '[起案担当者]'], ['9/12 10:00', '結果の確定登録（S18）・PPM へ引き渡し（S21）', '事務局B']] })
+];
+
+/* ---------- state ---------- */
+var S = { role: 'SEC', view: 'home', caseNo: null, tab: 'summary', dialog: null, toast: '', showOrigin: false, filters: { status: [], overdue: false, mine: false, q: '' } };
+function cur() { return CASES.filter(function (c) { return c.no === S.caseNo; })[0]; }
+function isOver(c) { return c.due && c.due < TODAY && ['APPROVED','REJECTED','WITHDRAWN'].indexOf(c.status) < 0; }
+function pending(c) { return c.checks.filter(function (x) { return x.sel === 'PENDING'; }).length; }
+function myPending(c) { return c.checks.filter(function (x) { return x.sel === 'PENDING' && MY_CAPS.indexOf(x.cap) >= 0; }).length; }
+function openComments(c) { return c.comments.filter(function (x) { return !x.resolved && x.kind !== '議論要請'; }).length; }
+function mine(c) { return c.assignees.indexOf('事務局A') >= 0; }
+function ev(c, text, who) { var d = TODAY; c.events.push([(d.getMonth() + 1) + '/' + d.getDate() + ' ' + '（今）', text, who || ME[S.role]]); }
+function tag(st) { var col = SCOLOR[st]; return '<span class="tag" style="background:' + col[0] + ';color:' + col[1] + '">' + SL[st] + '</span>'; }
+function dueCell(c) { if (!c.due || ['APPROVED','REJECTED','WITHDRAWN'].indexOf(c.status) >= 0) return '<span style="color:#8A9096">−</span>'; return isOver(c) ? '<span class="over">● ' + fmt(c.due) + ' 超過</span>' : fmt(c.due) + '<div class="note-s">' + esc(c.dueType) + '</div>'; }
+function evaluateStep2(c) {
+  if (c.status === 'BRIEFING' && c.applicant === 'CONFIRMED' && pending(c) === 0) { c.status = 'AWAITING_REVIEW'; c.due = null; c.dueType = ''; ev(c, 'Step2 へ移行（S09・自動）', 'CMS'); return true; }
+  return false;
+}
+
+/* ---------- queues (W1) ---------- */
+function queues() {
+  var r = S.role, q = [];
+  function add(title, list, info) { q.push({ title: title, list: list.sort(function (a, b) { return (isOver(b) - isOver(a)) || ((a.due || 0) - (b.due || 0)); }), info: info }); }
+  if (r === 'SEC') {
+    add('担当の割当', CASES.filter(function (c) { return c.status === 'RECEIVED' && !c.assignees.length; }), function () { return '担当なし'; });
+    add('論点整理書の作成・回付', CASES.filter(function (c) { return c.status === 'RECEIVED' && mine(c); }), function (c) { return c.attach === 'EXCLUDE' ? '添付の提出なし' : '添付 ' + c.files.length + '件'; });
+    add('意見・依頼への対応', CASES.filter(function (c) { return c.status === 'BRIEFING' && mine(c) && openComments(c); }), function (c) { return '未対応 ' + openComments(c) + '件'; });
+    add('委員会への回答依頼', CASES.filter(function (c) { return c.status === 'AWAITING_REVIEW' && mine(c); }), function () { return '条件がそろいました'; });
+    add('回答書の作成・確定', CASES.filter(function (c) { return c.status === 'UNDER_REVIEW' && mine(c) && (c.result && (c.answerStatus === 'NONE' || c.answerStatus === 'REVISION_REQUESTED' || c.answerStatus === 'CHECKED')); }), function (c) { return { NONE: '回答書（案）が未作成', REVISION_REQUESTED: '修正依頼あり', CHECKED: '内容確認済み：確定できます' }[c.answerStatus]; });
+    add('結果の確定登録', CASES.filter(function (c) { return mine(c) && (c.status === 'IN_CONSULTATION' || (c.status === 'ANSWERED' && c.consultDeadline < TODAY)); }), function (c) { return c.status === 'IN_CONSULTATION' ? '協議中' : '議論要請の受付が終了'; });
+  }
+  if (r === 'REV') add('確認表の選択（自分の担当行に保留あり）', CASES.filter(function (c) { return c.status === 'BRIEFING' && myPending(c); }), function (c) { return '自分の保留 ' + myPending(c) + '件／論点整理書 版' + c.briefVer; });
+  if (r === 'CHAIR') {
+    add('審議結果の登録', CASES.filter(function (c) { return c.status === 'UNDER_REVIEW' && !c.result; }), function () { return '結果が未登録'; });
+    add('回答書（案）の内容確認', CASES.filter(function (c) { return c.status === 'UNDER_REVIEW' && c.answerStatus === 'IN_REVIEW'; }), function (c) { return '版' + c.answerVer; });
+  }
+  if (r === 'MEMBER') {
+    add('回答書（案）の内容確認（修正依頼ができます）', CASES.filter(function (c) { return c.status === 'UNDER_REVIEW' && c.answerStatus === 'IN_REVIEW'; }), function (c) { return '版' + c.answerVer; });
+    add('議論要請の受付中', CASES.filter(function (c) { return c.status === 'ANSWERED' && c.consultDeadline >= TODAY; }), function (c) { return '受付期限 ' + fmt(c.consultDeadline); });
+  }
+  if (r === 'PPM') add('引き渡された承認案件（30日以内）', CASES.filter(function (c) { return c.status === 'APPROVED' && c.handedOff; }), function (c) { return '引き渡し ' + c.handedOff + (c.conditions ? '／承認条件あり' : ''); });
+  return q;
+}
+
+/* ---------- views ---------- */
+var COLS = 'grid-template-columns:130px minmax(0,2.6fr) minmax(0,1.3fr) 110px minmax(0,1.3fr)';
+function caseRow(c, info) {
+  return '<div class="row link" style="' + COLS + '" data-act="open" data-no="' + c.no + '"><div style="color:#555B61">' + c.no + '</div><div style="font-weight:700">' + esc(c.title) + '<div class="note-s">' + esc(c.dept) + '</div></div><div>' + esc(info) + '</div><div>' + dueCell(c) + '</div><div>' + tag(c.status) + '</div></div>';
+}
+function vHome() {
+  var qs = queues(), total = qs.reduce(function (n, q) { return n + q.list.length; }, 0);
+  var h = '<div class="col"><div><h1>対応が必要な案件</h1><p class="lead">' + esc(ROLES.filter(function (r) { return r[0] === S.role; })[0][1]) + ' として、いま操作が必要な案件です（' + total + '件）。期限を超過した案件が先頭に出ます。</p></div>';
+  qs.forEach(function (q) {
+    h += '<div class="sec"><div class="sec-h"><span class="t">' + q.title + '</span><span class="n">' + q.list.length + '件</span></div>' +
+      (q.list.length ? '<div class="row head" style="' + COLS + '"><div>案件ID</div><div>案件名</div><div>状況</div><div>期限</div><div>状態</div></div>' + q.list.map(function (c) { return caseRow(c, q.info(c)); }).join('') : '<div class="empty">対応が必要な案件はありません</div>') + '</div>';
+  });
+  return h + '</div>';
+}
+function vList() {
+  var f = S.filters;
+  var list = CASES.filter(function (c) {
+    if (f.status.length && f.status.indexOf(c.status) < 0) return false;
+    if (f.overdue && !isOver(c)) return false;
+    if (f.mine && !mine(c)) return false;
+    if (f.q && (c.no + c.title).indexOf(f.q) < 0) return false;
+    return true;
+  });
+  var h = '<div class="col"><div><h1>案件一覧</h1><p class="lead">今年度の全案件です。</p></div>';
+  h += '<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center"><span class="hint">状態：</span>' + STATUSES.map(function (s) { var on = f.status.indexOf(s[0]) >= 0; return '<button class="pill' + (on ? ' on' : '') + '" data-act="fStatus" data-v="' + s[0] + '">' + s[1] + '</button>'; }).join('') + '</div>';
+  h += '<div style="display:flex;gap:12px;align-items:center"><label for="q" class="sr">検索</label><input type="text" id="q" value="' + esc(f.q) + '" placeholder="案件ID・案件名で検索" style="max-width:320px"><button class="pill' + (f.overdue ? ' on' : '') + '" data-act="fOver">期限超過のみ</button>' + (S.role === 'SEC' ? '<button class="pill' + (f.mine ? ' on' : '') + '" data-act="fMine">自分が担当のみ</button>' : '') + '<button class="secondary" style="height:30px;font-size:12px" data-act="fClear">条件をクリア</button></div>';
+  h += '<div class="sec"><div class="row head" style="' + COLS + '"><div>案件ID</div><div>案件名</div><div>担当・申請日</div><div>期限</div><div>状態</div></div>' +
+    (list.length ? list.map(function (c) { return caseRow(c, (c.assignees.join('・') || '担当なし') + '／' + c.submittedAt); }).join('') : '<div class="empty">条件に合う案件はありません</div>') + '</div>';
+  return h + '</div>';
+}
+function progress(c) {
+  var idx = c.status === 'APPROVED' || c.status === 'REJECTED' ? 6 : STEPS7.indexOf(c.status);
+  var labels = ['受付済み','論点整理中','審議待ち','審議中','回答済み','協議中','結果確定'];
+  return '<div class="progress">' + labels.map(function (l, i) {
+    var cls = c.status === 'WITHDRAWN' ? '' : i < idx ? 'done' : i === idx ? 'cur' : '';
+    if (i === 5 && c.status !== 'IN_CONSULTATION' && idx > 5) cls = '';
+    return '<span class="st ' + cls + '">' + (i === 6 && idx === 6 ? SL[c.status] : l) + (i === 5 ? '（例外）' : '') + '</span>' + (i < 6 ? '<span class="ar">▶</span>' : '');
+  }).join('') + (c.status === 'WITHDRAWN' ? '<span class="tag" style="background:#EEECE7;color:#5E646A;margin-left:8px">取り下げ</span>' : '') + '</div>';
+}
+function actions(c) {
+  var r = S.role, a = [], st = c.status, assigned = mine(c);
+  if (r === 'SEC') {
+    if (st === 'RECEIVED' && !c.assignees.length) a.push(['D1', '担当者を割り当てる', true]);
+    if (st === 'RECEIVED' && c.assignees.length) a.push(['D2', '論点整理書を登録・回付', true]);
+    if (st === 'BRIEFING' && assigned) a.push(['D2', '修正版を登録・回付', false]);
+    if ((st === 'BRIEFING' || st === 'UNDER_REVIEW') && assigned && openComments(c)) a.push(['D3', '意見・依頼に対応済みにする', false]);
+    if (st === 'AWAITING_REVIEW' && assigned) a.push(['D6', '委員会へ回答を依頼する', true]);
+    if (st === 'UNDER_REVIEW' && assigned && c.result && (c.answerStatus === 'NONE' || c.answerStatus === 'REVISION_REQUESTED')) a.push(['D8', '回答書（案）を登録する', true]);
+    if (st === 'UNDER_REVIEW' && assigned && c.answerStatus === 'CHECKED') a.push(['D11', '回答書を確定する', true]);
+    if (st === 'IN_CONSULTATION' && assigned) { a.push(['D13', '招集情報を登録する', !c.meeting]); a.push(['D14', '結果を確定登録する', !!c.meeting]); }
+    if (st === 'ANSWERED' && assigned && c.consultDeadline < TODAY) a.push(['D14', '結果を確定登録する', true]);
+  }
+  if (r === 'REV' && st === 'BRIEFING') { a.push(['D4', '確認表を選択する', true]); a.push(['D5', '論点の追加を依頼する', false]); }
+  if (r === 'CHAIR' && st === 'UNDER_REVIEW' && !c.result) a.push(['D7', '審議結果を登録する', true]);
+  if (r === 'CHAIR' && st === 'UNDER_REVIEW' && c.answerStatus === 'IN_REVIEW') a.push(['D10', '回答書の内容を確認済みにする', true]);
+  if ((r === 'MEMBER' || r === 'CHAIR') && st === 'UNDER_REVIEW' && c.answerStatus === 'IN_REVIEW') a.push(['D9', '回答書の修正を依頼する', false]);
+  if ((r === 'MEMBER' || r === 'CHAIR') && st === 'ANSWERED' && c.consultDeadline >= TODAY) a.push(['D12', '議論を要請する', false]);
+  return a;
+}
+var DTABS = [['summary','案件概要書'],['brief','論点整理'],['comments','意見・依頼'],['review','審議'],['consult','協議'],['files','添付資料'],['history','履歴']];
+function vDetail() {
+  var c = cur(); if (!c) return '';
+  var acts = actions(c);
+  var h = '<div class="col"><div><button class="secondary" style="height:30px;font-size:12px" data-act="back">← 戻る</button></div>';
+  h += '<div style="display:flex;justify-content:space-between;gap:16px;align-items:flex-start"><div><div class="hint">' + c.no + '　' + esc(c.dept) + '　提案責任者：' + esc(c.owner) + '　起案担当者：' + esc(c.submitter) + '</div><h1 style="margin-top:4px">' + esc(c.title) + '</h1></div><div style="text-align:right;font-size:13px">' + tag(c.status) + '<div style="margin-top:6px">期限：' + dueCell(c) + '</div></div></div>';
+  h += progress(c);
+  h += '<div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap"><div class="hint">事務局の担当：' + (c.assignees.join('・') || '<span class="over">未割当</span>') + (c.status === 'BRIEFING' ? '　／　起案者確認：' + { UNCHECKED: '未確認', QUESTIONED: '疑義あり', CONFIRMED: '確認完了' }[c.applicant] + '　／　確認表の保留：' + pending(c) + '件' : '') + '</div>' +
+    '<div style="display:flex;gap:8px;flex-wrap:wrap">' + (acts.length ? acts.map(function (x) { return '<button class="act' + (x[2] ? ' main' : '') + '" data-act="dlg" data-d="' + x[0] + '">' + x[1] + '</button>'; }).join('') : '<span class="hint">あなたのロールで今できる操作はありません</span>') + '</div></div>';
+  var tabs = DTABS.filter(function (t) { return t[0] !== 'history' || S.role === 'SEC'; }).filter(function (t) { return t[0] !== 'consult' || c.status === 'IN_CONSULTATION' || c.meeting || c.comments.some(function (x) { return x.kind === '議論要請'; }); });
+  h += '<div class="dtabs">' + tabs.map(function (t) { return '<button class="' + (S.tab === t[0] ? 'on' : '') + '" data-act="tab" data-t="' + t[0] + '">' + t[1] + (t[0] === 'comments' && openComments(c) ? '（' + openComments(c) + '）' : '') + '</button>'; }).join('') + '</div>';
+  h += '<div>' + ({ summary: tSummary, brief: tBrief, comments: tComments, review: tReview, consult: tConsult, files: tFiles, history: tHistory }[S.tab] || tSummary)(c) + '</div>';
+  return h + '</div>';
+}
+function tSummary(c) {
+  var h = '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><label style="font-size:13px;display:flex;gap:8px;align-items:center"><input type="checkbox" id="origin"' + (S.showOrigin ? ' checked' : '') + '> 項目ごとの「AI生成／修正／入力」を表示</label><button class="act" data-act="pdf">PDF出力</button></div>';
+  c.summary.forEach(function (s) {
+    h += '<h2 style="margin:16px 0 8px">' + s[0] + '</h2><div class="kv">' + s[1].map(function (f) {
+      var b = S.showOrigin ? { ai: '<span class="badge b-ai">AI生成</span>', ed: '<span class="badge b-ed">AI生成を修正</span>', us: '<span class="badge b-us">入力</span>' }[f[2]] : '';
+      return '<div class="k">' + f[0] + b + '</div><div>' + esc(f[1]) + '</div>';
+    }).join('') + '</div>';
+  });
+  return h;
+}
+function tBrief(c) {
+  if (!c.briefVer) return '<div class="empty">論点整理書はまだ登録されていません。</div>';
+  var h = '<div class="sec" style="margin-bottom:16px"><div class="sec-h"><span class="t">論点整理書</span><span class="n">最新：版' + c.briefVer + '</span></div>';
+  for (var v = c.briefVer; v >= 1; v--) h += '<div class="row" style="grid-template-columns:1fr 120px"><div>論点整理書_' + c.no + '.docx　<span class="hint">版' + v + (v === c.briefVer ? '（最新）' : '') + '</span></div><div><button class="secondary" style="height:30px;font-size:12px">開く</button></div></div>';
+  h += '</div><h2 style="margin-bottom:8px">確認表</h2><p class="lead" style="margin-bottom:10px">保留が 0 になり、起案者が確認完了すると、自動で審議待ちに進みます。</p>';
+  h += '<div class="grid7"><div class="gh">ケイパビリティ</div><div class="gh">基盤性</div><div class="gh">負債</div>';
+  CAPS.forEach(function (cap) {
+    h += '<div style="font-weight:700">' + cap + (S.role === 'REV' && MY_CAPS.indexOf(cap) >= 0 ? '<span class="badge b-us">あなたの担当</span>' : '') + '</div>';
+    ['基盤性','負債'].forEach(function (ax) {
+      var x = c.checks.filter(function (k) { return k.cap === cap && k.axis === ax; })[0];
+      h += '<div><span class="sel ' + x.sel + '">' + SELL[x.sel] + '</span>' + (x.by ? '<div class="note-s">' + esc(x.by) + '</div>' : '') + (x.note ? '<div class="note-s" style="color:#7A5200">リスク：' + esc(x.note) + '</div>' : '') + '</div>';
+    });
+  });
+  return h + '</div>';
+}
+function tComments(c) {
+  if (!c.comments.length) return '<div class="empty">意見・依頼はありません。</div>';
+  return '<div class="col">' + c.comments.map(function (x) {
+    return '<div class="sec"><div class="sec-h"><span class="t">' + esc(x.kind) + '<span class="hint" style="font-weight:400">　' + esc(x.by) + '　対象：版' + x.ver + '</span></span>' + (x.kind === '議論要請' ? '' : x.resolved ? '<span class="tag" style="background:#E3F1E8;color:#1F5B3B">対応済み</span>' : '<span class="tag" style="background:#FBE6E3;color:#9B1C12">未対応</span>') + '</div><div style="padding:12px 16px;font-size:13px;line-height:1.7">' + esc(x.body) + (x.res ? '<div class="note-s" style="margin-top:6px">対応：' + esc(x.res) + '</div>' : '') + '</div></div>';
+  }).join('') + '</div>';
+}
+function tReview(c) {
+  var R = { APPROVE: '承認', APPROVE_WITH_CONDITIONS: '条件付き承認', REJECT: '非承認' };
+  var A = { NONE: '未作成', IN_REVIEW: '内容確認中', REVISION_REQUESTED: '修正依頼中', CHECKED: '内容確認済み', FINAL: '確定' };
+  if (['RECEIVED','BRIEFING','AWAITING_REVIEW'].indexOf(c.status) >= 0) return '<div class="empty">審議はまだ始まっていません。</div>';
+  return '<div class="kv"><div class="k">審議結果</div><div>' + (c.result ? '<strong>' + R[c.result] + '</strong>　<span class="hint">登録：' + esc(c.resultBy) + (c.deputy ? '（代理）' : '') + '</span>' : '未登録') + '</div>' +
+    '<div class="k">承認条件</div><div>' + (esc(c.conditions) || '−') + '</div><div class="k">回答書</div><div>' + A[c.answerStatus] + (c.answerVer ? '（版' + c.answerVer + '）　<button class="secondary" style="height:28px;font-size:12px">開く</button>' : '') + '</div>' +
+    (c.consultDeadline ? '<div class="k">議論要請の受付期限</div><div>' + fmt(c.consultDeadline) + (c.consultDeadline < TODAY ? '（終了）' : '') + '</div>' : '') + '</div>';
+}
+function tConsult(c) {
+  var req = c.comments.filter(function (x) { return x.kind === '議論要請'; });
+  return '<div class="kv"><div class="k">議論要請</div><div>' + (req.map(function (x) { return esc(x.by) + '：' + esc(x.body); }).join('<br>') || '−') + '</div><div class="k">招集</div><div>' + (c.meeting ? esc(c.meeting.at) + '　<a href="#" onclick="return false">Teams 会議リンク</a>' : '未登録') + '</div><div class="k">議事録</div><div>' + (c.minutes ? '議事録_' + c.no + '.docx' : '−') + '</div></div>';
+}
+function tFiles(c) {
+  if (c.attach === 'EXCLUDE') return '<div class="empty">起案者は「案件概要書のみ」を選びました。添付資料の提出はありません。</div>';
+  return '<div class="sec">' + c.files.map(function (f) { return '<div class="row" style="grid-template-columns:1fr 120px"><div>' + esc(f) + '</div><div><button class="secondary" style="height:30px;font-size:12px">開く</button></div></div>'; }).join('') + '</div><p class="hint">案件リストを参照できる人全員が閲覧できます。</p>';
+}
+function tHistory(c) {
+  return '<div class="sec"><div class="row head" style="grid-template-columns:140px 1fr 160px"><div>日時</div><div>操作</div><div>実行者</div></div>' + c.events.slice().reverse().map(function (e) { return '<div class="row" style="grid-template-columns:140px 1fr 160px"><div>' + e[0] + '</div><div>' + esc(e[1]) + '</div><div>' + esc(e[2]) + '</div></div>'; }).join('') + '</div><p class="hint">操作記録は事務局と CMS 管理者だけに表示します。</p>';
+}
+
+/* ---------- dialogs ---------- */
+function dlg(d) {
+  var c = cur(), body = '', title = '', ok = '登録する';
+  if (d === 'D1') { title = '担当者を割り当てる'; body = '<div class="field"><span class="l">事務局の担当（1名以上）</span>' + ['事務局A','事務局B','事務局C'].map(function (n) { return '<label style="font-size:14px;font-weight:400;display:flex;gap:8px;align-items:center"><input type="checkbox" name="asg" value="' + n + '"' + (n === '事務局A' ? ' checked' : '') + '> ' + n + '</label>'; }).join('') + '</div>'; ok = '割り当てる'; }
+  if (d === 'D2') {
+    var rev = c.briefVer > 0; title = rev ? '修正版を登録・回付' : '論点整理書を登録・回付';
+    body = '<div class="field"><span class="l">論点整理書のファイル</span><button class="secondary" style="width:max-content">ファイルを選択</button><span class="hint">論点整理書_' + c.no + '.docx（版' + (c.briefVer + 1) + 'として登録）。草案は Copilot で作成してください（CMS の外）。</span></div>';
+    if (rev) body += '<div class="field"><span class="l">「保留」に戻す確認表の行（0行も可）</span><span class="hint">修正で影響のあるケイパビリティだけを選びます。選ばなかった行は、審査担当者の選択が残ります。</span><div style="display:grid;grid-template-columns:1fr 1fr;gap:4px 16px">' +
+      c.checks.map(function (x, i) { return '<label style="font-size:13px;font-weight:400;display:flex;gap:6px;align-items:center"><input type="checkbox" name="reset" value="' + i + '"' + (x.sel === 'PENDING' ? ' disabled' : '') + '> ' + x.cap + '／' + x.axis + (x.sel === 'PENDING' ? '（保留中）' : '') + '</label>'; }).join('') + '</div></div>';
+    else body += '<p class="hint">登録すると確認表（7ケイパビリティ×基盤性／負債）がすべて「保留」で作られ、起案者と審査担当者に回付されます。期限：確認 3営業日。</p>';
+    ok = '登録して回付する';
+  }
+  if (d === 'D3') { title = '意見・依頼に対応済みにする'; var open = c.comments.filter(function (x) { return !x.resolved && x.kind !== '議論要請'; }); body = open.map(function (x, i) { return '<div class="field"><span class="l">' + esc(x.kind) + '：' + esc(x.body) + '</span><textarea name="res" data-i="' + c.comments.indexOf(x) + '" rows="2" placeholder="対応内容（例：版3で論点2を修正）"></textarea></div>'; }).join(''); ok = '対応済みにする'; }
+  if (d === 'D4') {
+    title = '確認表を選択する';
+    body = '<p class="hint">あなたの担当（' + MY_CAPS.join('／') + '）の行だけ選べます。問題があればリスクを記載し、事務局に論点の追加を依頼したうえで「確認済み」を選びます。</p>' +
+      c.checks.map(function (x, i) { return MY_CAPS.indexOf(x.cap) < 0 ? '' : '<div class="field" style="border:1px solid #E3E1DB;border-radius:8px;padding:10px 12px"><span class="l">' + x.cap + '／' + x.axis + '</span><select name="sel" data-i="' + i + '">' + ['PENDING','CONFIRMED','NA'].map(function (k) { return '<option value="' + k + '"' + (x.sel === k ? ' selected' : '') + '>' + SELL[k] + '</option>'; }).join('') + '</select><textarea name="note" data-i="' + i + '" rows="2" placeholder="リスクとして記載すべき事項（任意）">' + esc(x.note) + '</textarea></div>'; }).join('');
+    ok = '保存する';
+  }
+  if (d === 'D5') { title = '論点の追加を依頼する'; body = '<div class="field"><label for="txt">依頼内容</label><textarea id="txt" rows="4"></textarea></div>'; ok = '依頼する'; }
+  if (d === 'D6') { title = '委員会へ回答を依頼する'; body = '<p class="hint">起案者の確認完了と、確認表の保留ゼロがそろっています。依頼すると状態が「審議中」になり、委員会メンバーに通知されます。期限：審議 3営業日。</p><div class="field"><label for="txt">依頼の一言（任意）</label><textarea id="txt" rows="2"></textarea></div>'; ok = '依頼する'; }
+  if (d === 'D7') { title = '審議結果を登録する'; body = '<div class="field"><span class="l">判定</span>' + [['APPROVE','承認'],['APPROVE_WITH_CONDITIONS','条件付き承認'],['REJECT','非承認']].map(function (o, i) { return '<label style="font-size:14px;font-weight:400;display:flex;gap:8px"><input type="radio" name="res" value="' + o[0] + '"' + (i === 1 ? ' checked' : '') + '> ' + o[1] + '</label>'; }).join('') + '</div><div class="field"><label for="txt">承認条件</label><textarea id="txt" rows="3"></textarea></div><p class="hint">登録者：委員長（あなた）。代理で登録した場合は自動で「代理」と記録されます。</p>'; }
+  if (d === 'D8') { title = '回答書（案）を登録する'; body = '<div class="field"><span class="l">回答書のファイル</span><button class="secondary" style="width:max-content">ファイルを選択</button><span class="hint">審議回答書_' + c.no + '.docx（版' + (c.answerVer + 1) + '）。委員会メンバーに内容確認を依頼します。期限：回答書確認 2営業日。</span></div>'; }
+  if (d === 'D9') { title = '回答書の修正を依頼する'; body = '<div class="field"><label for="txt">修正してほしい点</label><textarea id="txt" rows="4"></textarea></div>'; ok = '依頼する'; }
+  if (d === 'D10') { title = '回答書の内容を確認済みにする'; body = '<p class="hint">回答書（案）版' + c.answerVer + 'の内容（論点の網羅性など）を確認済みにします。事務局が確定できるようになります。</p>'; ok = '確認済みにする'; }
+  if (d === 'D11') { title = '回答書を確定する'; body = '<p class="hint">回答書を確定版として固定し、起案者と通知先に通知します。起案者と委員会は 3営業日のあいだ議論を要請できます。</p>'; ok = '確定する'; }
+  if (d === 'D12') { title = '議論を要請する'; body = '<div class="field"><label for="txt">理由</label><textarea id="txt" rows="3"></textarea></div><p class="hint">受付期限：' + fmt(c.consultDeadline) + '。要請すると状態が「協議中」になり、事務局が会議を招集します。</p>'; ok = '要請する'; }
+  if (d === 'D13') { title = '招集情報を登録する'; body = '<div class="field"><label for="dt">日時</label><input type="datetime-local" id="dt" value="2026-09-30T15:00"></div><div class="field"><label for="lk">Teams 会議のリンク</label><input type="text" id="lk" value="https://teams.microsoft.com/…"></div>'; }
+  if (d === 'D14') { title = '結果を確定登録する'; var R = { APPROVE: '承認', APPROVE_WITH_CONDITIONS: '条件付き承認', REJECT: '非承認' }; body = '<div class="kv"><div class="k">審議結果</div><div><strong>' + R[c.result] + '</strong></div><div class="k">承認条件</div><div>' + (esc(c.conditions) || '−') + '</div></div>' + (c.status === 'IN_CONSULTATION' ? '<div class="field"><span class="l">議事録（必須）</span><button class="secondary" style="width:max-content">ファイルを選択</button><span class="hint">議事録_' + c.no + '.docx</span></div>' : '') + '<p class="hint">確定すると起案者・委員会・通知先に通知します。' + (c.result !== 'REJECT' ? '承認のため PPM へ引き渡します。' : '') + '</p>'; ok = '確定登録する'; }
+  return '<div class="modal"><div class="dialog" role="dialog" aria-modal="true" aria-label="' + esc(title) + '"><div style="font-size:17px;font-weight:700">' + title + '</div><div class="hint">' + c.no + '　' + esc(c.title) + '</div>' + body + '<div style="display:flex;justify-content:flex-end;gap:10px;margin-top:4px"><button class="secondary" data-act="close">キャンセル</button><button class="primary" data-act="submit" data-d="' + d + '">' + ok + '</button></div></div></div>';
+}
+function val(sel) { var el = document.querySelector(sel); return el ? el.value : ''; }
+function submit(d) {
+  var c = cur(), msg = '登録しました';
+  if (d === 'D1') { var a = Array.prototype.map.call(document.querySelectorAll('input[name=asg]:checked'), function (x) { return x.value; }); if (!a.length) { toast('担当者を1名以上選んでください'); return; } c.assignees = a; ev(c, '担当者の割当（S03）'); msg = '担当者を割り当てました'; }
+  if (d === 'D2') {
+    var first = c.briefVer === 0; c.briefVer++; c.applicant = 'UNCHECKED';
+    if (first) { c.checks = checks(); c.status = 'BRIEFING'; ev(c, '論点整理書の登録・回付 版' + c.briefVer + '（S04）'); }
+    else { Array.prototype.forEach.call(document.querySelectorAll('input[name=reset]:checked'), function (x) { var k = c.checks[+x.value]; k.sel = 'PENDING'; k.by = ''; }); ev(c, '修正版の登録・回付 版' + c.briefVer + '（S07）'); }
+    c.due = addBiz(TODAY, 3); c.dueType = '確認'; msg = '版' + c.briefVer + 'を登録し、起案者と審査担当者に回付しました';
+  }
+  if (d === 'D3') { Array.prototype.forEach.call(document.querySelectorAll('textarea[name=res]'), function (t) { var x = c.comments[+t.dataset.i]; x.resolved = true; x.res = t.value || '対応済み'; }); ev(c, '意見・依頼の対応を記録'); msg = '対応済みにしました'; }
+  if (d === 'D4') {
+    Array.prototype.forEach.call(document.querySelectorAll('select[name=sel]'), function (s) { var x = c.checks[+s.dataset.i]; if (x.sel !== s.value) { x.sel = s.value; x.by = ME.REV + '（今）'; } });
+    Array.prototype.forEach.call(document.querySelectorAll('textarea[name=note]'), function (t) { c.checks[+t.dataset.i].note = t.value; });
+    ev(c, '確認表の選択（S06）'); msg = '確認表を保存しました（保留 ' + pending(c) + '件）';
+    if (evaluateStep2(c)) msg += '。条件がそろったため審議待ちに進みました';
+  }
+  if (d === 'D5') { c.comments.push({ kind: '審査担当者の追加依頼', body: val('#txt') || '（依頼内容）', by: ME.REV, ver: c.briefVer, resolved: false, res: '' }); ev(c, '論点の追加依頼（S06）'); msg = '事務局に依頼しました'; }
+  if (d === 'D6') { c.status = 'UNDER_REVIEW'; c.due = addBiz(TODAY, 3); c.dueType = '審議'; ev(c, '回答依頼の登録（S10）'); msg = '委員会に回答を依頼しました'; }
+  if (d === 'D7') { var r = document.querySelector('input[name=res]:checked'); c.result = r.value; c.conditions = val('#txt'); c.resultBy = '委員長'; c.due = null; c.dueType = ''; ev(c, '審議結果の登録（S11）'); msg = '審議結果を登録しました'; }
+  if (d === 'D8') { c.answerVer++; c.answerStatus = 'IN_REVIEW'; c.due = addBiz(TODAY, 2); c.dueType = '回答書確認'; ev(c, '回答書（案）の登録 版' + c.answerVer + '（S12）'); msg = '回答書（案）を登録し、内容確認を依頼しました'; }
+  if (d === 'D9') { c.answerStatus = 'REVISION_REQUESTED'; c.comments.push({ kind: '委員の修正依頼', body: val('#txt') || '（修正してほしい点）', by: ME[S.role], ver: c.answerVer, resolved: false, res: '' }); ev(c, '回答書の修正依頼（S13）'); msg = '事務局に修正を依頼しました'; }
+  if (d === 'D10') { c.answerStatus = 'CHECKED'; c.due = null; c.dueType = ''; ev(c, '回答書の内容確認完了（S14）'); msg = '確認済みにしました'; }
+  if (d === 'D11') { c.answerStatus = 'FINAL'; c.status = 'ANSWERED'; c.consultDeadline = addBiz(TODAY, 3); c.due = c.consultDeadline; c.dueType = '議論要請の受付'; ev(c, '回答書の確定（S15）'); msg = '回答書を確定し、起案者に通知しました'; }
+  if (d === 'D12') { c.status = 'IN_CONSULTATION'; c.comments.push({ kind: '議論要請', body: val('#txt') || '（理由）', by: ME[S.role], ver: c.answerVer, resolved: false, res: '' }); c.due = null; c.dueType = ''; ev(c, '議論要請（S17）'); msg = '議論を要請しました'; }
+  if (d === 'D13') { c.meeting = { at: val('#dt').replace('T', ' ') }; ev(c, '招集情報の登録（S19a）'); msg = '招集情報を登録し、関係者に通知しました'; }
+  if (d === 'D14') { if (c.status === 'IN_CONSULTATION') c.minutes = true; c.status = c.result === 'REJECT' ? 'REJECTED' : 'APPROVED'; c.due = null; c.dueType = ''; if (c.status === 'APPROVED') c.handedOff = fmt(TODAY); ev(c, '結果の確定登録' + (c.status === 'APPROVED' ? '・PPM へ引き渡し（S18／S19b・S21）' : '（S18／S19b）')); msg = '結果を確定しました'; }
+  S.dialog = null; toast(msg);
+}
+var tt; function toast(m) { S.toast = m; render(); clearTimeout(tt); tt = setTimeout(function () { S.toast = ''; render(); }, 2600); }
+
+/* ---------- side panel ---------- */
+var NOTES = {
+  home: ['ロールごとに「自分の番」の案件だけを出す。複数のロールを持つ人は区画が縦に並ぶ。', '期限を超過した案件は赤い印で先頭に出る。', '行を押すと案件詳細（W3）を開く。Teams・メールの通知のリンクからも同じ画面を開く。', '右の「ロールを切り替える」で、事務局・審査担当者・委員長・委員・PPM の見え方を比べられる。'],
+  list: ['全案件を状態・期限超過・自分の担当で絞り込む。', '検索は案件ID・案件名の前方一致（SharePoint 側で絞り込める条件だけを使う）。'],
+  detail: ['上部に状態の進み具合・期限・担当。操作ボタンは「今の状態」と「あなたのロール」の両方が合うときだけ出る。', 'ボタンを押すとダイアログが開き、登録はすべてフロー（サービスアカウント）経由で行う。', '「案件概要書」タブでは、項目ごとの AI生成／修正／入力 を表示できる。', '「論点整理」タブの確認表は、保留ゼロ＋起案者の確認完了で自動的に審議待ちへ進む。', '「履歴」タブは事務局だけに出る。']
+};
+function side() {
+  var c = cur();
+  var h = '<div><div style="font-size:12px;font-weight:700;color:#0E5A66;letter-spacing:.08em">紙芝居｜審議ワークベンチ</div><div style="margin-top:6px;font-size:12px;color:#555B61;line-height:1.7">画面項目と動作のイメージです。実際の画面は Power Apps の標準部品で作ります。案件はすべて架空のサンプルで、操作はこのページの中だけで反映されます（再読込で元に戻ります）。</div></div>';
+  h += '<div style="display:flex;flex-direction:column;gap:6px"><div class="h">ロールを切り替える</div>' + ROLES.map(function (r) { return '<button class="role' + (S.role === r[0] ? ' on' : '') + '" data-act="role" data-r="' + r[0] + '">' + r[1] + '</button>'; }).join('') + '</div>';
+  var key = S.view === 'detail' ? 'detail' : S.view;
+  h += '<div style="display:flex;flex-direction:column;gap:10px"><div class="h">この画面の動作</div>' + NOTES[key].map(function (t, i) { return '<div class="note"><div class="n">' + (i + 1) + '</div><div>' + t + '</div></div>'; }).join('') + '</div>';
+  if (S.view === 'detail' && c) {
+    var sims = [];
+    if (c.status === 'BRIEFING' && c.applicant !== 'CONFIRMED') sims.push(['simConfirm', '起案者が「確認完了」を登録する']);
+    if (c.status === 'BRIEFING') sims.push(['simQuestion', '起案者が疑義・意見を登録する']);
+    if (c.status === 'ANSWERED' && c.consultDeadline >= TODAY) sims.push(['simConsult', '起案者が議論を要請する']);
+    if (c.status === 'ANSWERED' && c.consultDeadline >= TODAY) sims.push(['simExpire', '受付期限が過ぎたことにする']);
+    if (['APPROVED','REJECTED','WITHDRAWN'].indexOf(c.status) < 0) sims.push(['simWithdraw', '起案者が取り下げる']);
+    if (sims.length) h += '<div class="sim"><div class="h" style="color:#7A5200">申請用アプリ側の操作を再現（紙芝居用）</div>' + sims.map(function (s) { return '<button data-act="' + s[0] + '">' + s[1] + '</button>'; }).join('') + '</div>';
+  }
+  return h;
+}
+var SIM = {
+  simConfirm: function (c) { c.applicant = 'CONFIRMED'; ev(c, '確認完了の登録（S08）', '[起案担当者]'); return evaluateStep2(c) ? '起案者が確認完了。条件がそろい、審議待ちに進みました' : '起案者が確認完了しました（確認表の保留が残っています）'; },
+  simQuestion: function (c) { c.applicant = 'QUESTIONED'; c.comments.push({ kind: '起案者の疑義・意見', body: '（紙芝居用の疑義・意見）', by: '[起案担当者]', ver: c.briefVer, resolved: false, res: '' }); ev(c, '疑義・意見の登録（S05）', '[起案担当者]'); return '起案者の疑義・意見を登録しました'; },
+  simConsult: function (c) { c.status = 'IN_CONSULTATION'; c.comments.push({ kind: '議論要請', body: '（紙芝居用の議論要請）', by: '[起案担当者]', ver: c.answerVer, resolved: false, res: '' }); c.due = null; c.dueType = ''; ev(c, '議論要請（S17）', '[起案担当者]'); return '起案者が議論を要請しました'; },
+  simExpire: function (c) { c.consultDeadline = new Date(2026, 8, 22); c.due = c.consultDeadline; ev(c, '議論要請の受付終了（S16・自動）', 'CMS'); return '受付期限が過ぎました。事務局が結果を確定登録できます'; },
+  simWithdraw: function (c) { c.status = 'WITHDRAWN'; c.due = null; ev(c, '取り下げ（S20）', '[起案担当者]'); return '起案者が取り下げました（データは残ります）'; }
+};
+
+/* ---------- render ---------- */
+function render() {
+  var body = document.querySelector('.body'), top = body ? body.scrollTop : 0, keep = S._keep; S._keep = false;
+  var h = '<div class="wrap"><main class="app"><div class="hdr"><div style="display:flex;align-items:center;gap:12px"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h16M6 20V9l6-5 6 5v11M10 20v-6h4v6"/></svg><span class="name">審議ワークベンチ</span><span style="font-size:12px;color:#A9BFD0">投資委員会 案件管理システム（CMS）</span></div><div style="font-size:13px;color:#D6E0EA">' + esc(ME[S.role]) + '</div></div>';
+  h += '<div class="tabs"><button class="' + (S.view === 'home' ? 'on' : '') + '" data-act="view" data-v="home">ホーム</button><button class="' + (S.view === 'list' ? 'on' : '') + '" data-act="view" data-v="list">案件一覧</button></div>';
+  h += '<div class="body">' + (S.view === 'home' ? vHome() : S.view === 'list' ? vList() : vDetail()) + '</div>';
+  if (S.dialog) h += dlg(S.dialog);
+  if (S.toast) h += '<div class="toast" role="status">' + esc(S.toast) + '</div>';
+  h += '</main><aside class="side">' + side() + '</aside></div>';
+  var active = document.activeElement && document.activeElement.id;
+  document.getElementById('root').innerHTML = h;
+  var nb = document.querySelector('.body'); if (nb && keep) nb.scrollTop = top;
+  if (active === 'q') { var q = document.getElementById('q'); q.focus(); q.setSelectionRange(q.value.length, q.value.length); }
+}
+function rer() { S._keep = true; render(); }
+var root = document.getElementById('root');
+root.addEventListener('click', function (e) {
+  var b = e.target.closest('[data-act]'); if (!b) return; var d = b.dataset, act = d.act;
+  if (act === 'open') { S.caseNo = d.no; S.view = 'detail'; S.tab = 'summary'; render(); }
+  else if (act === 'view') { S.view = d.v; S.caseNo = null; render(); }
+  else if (act === 'back') { S.view = S._from || 'home'; render(); }
+  else if (act === 'role') { S.role = d.r; if (S.view === 'detail' && S.tab === 'history' && S.role !== 'SEC') S.tab = 'summary'; rer(); }
+  else if (act === 'tab') { S.tab = d.t; rer(); }
+  else if (act === 'dlg') { S.dialog = d.d; rer(); }
+  else if (act === 'close') { S.dialog = null; rer(); }
+  else if (act === 'submit') { submit(d.d); }
+  else if (act === 'fStatus') { var f = S.filters.status, i = f.indexOf(d.v); if (i >= 0) f.splice(i, 1); else f.push(d.v); rer(); }
+  else if (act === 'fOver') { S.filters.overdue = !S.filters.overdue; rer(); }
+  else if (act === 'fMine') { S.filters.mine = !S.filters.mine; rer(); }
+  else if (act === 'fClear') { S.filters = { status: [], overdue: false, mine: false, q: '' }; rer(); }
+  else if (act === 'pdf') { toast('PDF を作成しています（方式は #T14 で確定）'); }
+  else if (SIM[act]) { toast(SIM[act](cur())); }
+});
+root.addEventListener('mousedown', function (e) { var b = e.target.closest('[data-act=open]'); if (b) S._from = S.view; });
+root.addEventListener('input', function (e) { if (e.target.id === 'q') { S.filters.q = e.target.value; rer(); } });
+root.addEventListener('change', function (e) { if (e.target.id === 'origin') { S.showOrigin = e.target.checked; rer(); } });
+render();
+})();
+</script>
+</body>
+</html>
