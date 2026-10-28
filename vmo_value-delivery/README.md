@@ -34,6 +34,9 @@ vmo_value-delivery/
 │   ├── D_sow-sla.md                               付録D：SOWとSLA（運用保守委託の契約文書の構造）
 │   └── E_data-protection.md                       付録E：データ保護・セキュリティの契約要件
 │
+├── procurement-alignment/                       ← 購買部門との認識合わせ（作業用）
+│   └── vmo_purchasing-authority_check.xlsx         購買規程上の可否の確認表（結果は第1章 1.5.4のRACIへ反映）
+│
 ├── plans/                                       ← 年度ごとの作業用フォルダ（第4章の適用）
 │   └── 2027/
 │       ├── README.md                               2027年の段取りと未決事項
