@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 318" font-family="sans-serif" width="800" height="363" role="img">
+<title>03章の製品の分類の例（ERP）</title>
+<desc>提供元の種類と提供形態の2軸で、ERP の製品を格子に配置した例</desc>
+<style>
+.box{fill:#fff;stroke:#12305e;stroke-width:1.5}
+.sub{fill:#fff;stroke:#8a94a3;stroke-width:1}
+.dash{fill:#fff;stroke:#8a94a3;stroke-width:1.2;stroke-dasharray:5 4}
+.layer{fill:#f4f6f9;stroke:none}
+.zone{fill:none;stroke:#8a94a3;stroke-width:1}
+.zonef{fill:#fafbfc;stroke:#c4cad3;stroke-width:1}
+.cross{fill:#e9edf3;stroke:none}
+.T{fill:#1b2430;font-size:15px;font-weight:bold;text-anchor:middle}
+.t{fill:#1b2430;font-size:11.5px;text-anchor:middle}
+.tb{fill:#1b2430;font-size:11.5px;font-weight:bold;text-anchor:middle}
+.t2{fill:#1b2430;font-size:10.5px;text-anchor:middle}
+.s{fill:#5b6573;font-size:9.5px;text-anchor:middle}
+.L{fill:#1b2430;font-size:11.5px;font-weight:bold}
+.Ls{fill:#5b6573;font-size:10px}
+.Lr{fill:#5b6573;font-size:10px;text-anchor:end}
+.a{fill:#5b6573;font-size:9.5px;text-anchor:middle}
+.ln{stroke:#5b6573;stroke-width:1.3;fill:none}
+.lnd{stroke:#5b6573;stroke-width:1.2;fill:none;stroke-dasharray:4 3}
+</style>
+<defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#5b6573"/></marker></defs>
+<rect x="0" y="0" width="700" height="318" fill="#fff"/>
+<style>.c{fill:#fff;stroke:#c4cad3;stroke-width:1}.h{fill:#f4f6f9;stroke:#c4cad3;stroke-width:1}.na{fill:#8a94a3;font-size:9.5px;text-anchor:middle}.p{fill:#1b2430;font-size:10.5px;text-anchor:middle}.ax{stroke:#12305e;stroke-width:1.6;fill:none}</style>
+<text x="15" y="20" class="L">例：ERP の製品を「提供元の種類 × 提供形態」の格子に置く</text>
+<polyline points="150,46 690,46" class="ax" marker-end="url(#ar)" marker-start="url(#ar)"/>
+<text x="150" y="40" class="Ls">ベンダーが環境を管理</text>
+<text x="690" y="40" class="Lr">利用企業が環境を管理</text>
+<rect x="150" y="62" width="180" height="18" class="h"/>
+<text x="240.0" y="75" class="t2">パブリッククラウド（SaaS）</text>
+<rect x="330" y="62" width="180" height="18" class="h"/>
+<text x="420.0" y="75" class="t2">マネージド・プライベート</text>
+<rect x="510" y="62" width="180" height="18" class="h"/>
+<text x="600.0" y="75" class="t2">自社運用（BYOL・オンプレミス）</text>
+<rect x="15" y="80" width="135" height="58" class="h"/>
+<text x="82.5" y="109.0" class="tb">グローバルの大手</text>
+<text x="82.5" y="125.0" class="s">スイート</text>
+<rect x="150" y="80" width="180" height="58" class="c"/>
+<text x="240.0" y="99.0" class="p">SAP Cloud ERP</text>
+<text x="240.0" y="113.0" class="p">Oracle Fusion Cloud ERP</text>
+<text x="240.0" y="127.0" class="p">Dynamics 365</text>
+<rect x="330" y="80" width="180" height="58" class="c"/>
+<text x="420.0" y="106.0" class="p">SAP Cloud ERP Private</text>
+<text x="420.0" y="120.0" class="p">（旧 RISE with SAP）</text>
+<rect x="510" y="80" width="180" height="58" class="c"/>
+<text x="600.0" y="113.0" class="p">SAP S/4HANA</text>
+<rect x="15" y="138" width="135" height="58" class="h"/>
+<text x="82.5" y="171.0" class="tb">中堅・業界特化</text>
+<rect x="150" y="138" width="180" height="58" class="c"/>
+<text x="240.0" y="157.0" class="p">Oracle NetSuite</text>
+<text x="240.0" y="171.0" class="p">IFS Cloud・Infor CloudSuite</text>
+<text x="240.0" y="185.0" class="p">Epicor</text>
+<rect x="330" y="138" width="180" height="58" class="c"/>
+<text x="420.0" y="171.0" class="na">03章に該当なし</text>
+<rect x="510" y="138" width="180" height="58" class="c"/>
+<text x="600.0" y="171.0" class="na">03章に該当なし</text>
+<rect x="15" y="196" width="135" height="58" class="h"/>
+<text x="82.5" y="229.0" class="tb">国内のパッケージ</text>
+<rect x="150" y="196" width="180" height="58" class="c"/>
+<text x="240.0" y="229.0" class="p">GLOVIA One</text>
+<rect x="330" y="196" width="180" height="58" class="c"/>
+<text x="420.0" y="229.0" class="na">03章に該当なし</text>
+<rect x="510" y="196" width="180" height="58" class="c"/>
+<text x="600.0" y="222.0" class="p">mcframe</text>
+<text x="600.0" y="236.0" class="p">OBIC7（クラウド版もある）</text>
+<polyline points="600.0,278 240.0,278" class="ax" marker-end="url(#ar)"/>
+<text x="420.0" y="272" class="a">市場の動き：新しい機能はクラウドの契約に寄る</text>
+<text x="420.0" y="292" class="s">（SAP は AI などの新機能を RISE・GROW に限る方針。ECC の標準保守は2027年末に終了）</text>
+<text x="15" y="310" class="Ls">縦軸と横軸の取り方はトピックごとに変わる。分類の根拠は各トピックの 03章（本資料の整理）</text>
+</svg>

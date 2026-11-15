@@ -1,0 +1,111 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1340 575" font-family="sans-serif" role="img">
+<title>機能配置の俯瞰図</title>
+<desc>主要なシステム間の機能配置と、重要なやり取りだけを抜粋した図</desc>
+<style>
+.box{fill:#fff;stroke:#12305e;stroke-width:1.5}
+.sub{fill:#fff;stroke:#8a94a3;stroke-width:1}
+.dash{fill:#fff;stroke:#8a94a3;stroke-width:1.2;stroke-dasharray:5 4}
+.layer{fill:#f4f6f9;stroke:none}
+.zone{fill:none;stroke:#8a94a3;stroke-width:1}
+.zonef{fill:#fafbfc;stroke:#c4cad3;stroke-width:1}
+.cross{fill:#e9edf3;stroke:none}
+.T{fill:#1b2430;font-size:15px;font-weight:bold;text-anchor:middle}
+.t{fill:#1b2430;font-size:11.5px;text-anchor:middle}
+.tb{fill:#1b2430;font-size:11.5px;font-weight:bold;text-anchor:middle}
+.t2{fill:#1b2430;font-size:10.5px;text-anchor:middle}
+.s{fill:#5b6573;font-size:9.5px;text-anchor:middle}
+.L{fill:#1b2430;font-size:11.5px;font-weight:bold}
+.Ls{fill:#5b6573;font-size:10px}
+.Lr{fill:#5b6573;font-size:10px;text-anchor:end}
+.a{fill:#5b6573;font-size:9.5px;text-anchor:middle}
+.ln{stroke:#5b6573;stroke-width:1.3;fill:none}
+.lnd{stroke:#5b6573;stroke-width:1.2;fill:none;stroke-dasharray:4 3}
+</style>
+<defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#5b6573"/></marker></defs>
+<rect x="0" y="0" width="1340" height="575" fill="#fff"/>
+<style>.Lst{fill:#5b6573;font-size:10px}</style>
+<rect x="22" y="36" width="600" height="300" class="zonef"/>
+<text x="32" y="52" class="Ls">GxP の記録を扱う領域（gxp-compliance の要件がかかる）</text>
+<rect x="40" y="70" width="170" height="58" class="box"/>
+<text x="125.0" y="88.0" class="tb">研究開発・臨床</text>
+<text x="125.0" y="103.0" class="s">持つ：承認前のデータ</text>
+<text x="125.0" y="118.0" class="s">rd</text>
+<rect x="330" y="70" width="170" height="58" class="box"/>
+<text x="415.0" y="88.0" class="tb">品質・薬事・安全性</text>
+<text x="415.0" y="103.0" class="s">持つ：逸脱・出荷判定・承認・症例</text>
+<text x="415.0" y="118.0" class="s">quality-regulatory</text>
+<rect x="40" y="250" width="170" height="58" class="box"/>
+<text x="125.0" y="268.0" class="tb">製造（MES）</text>
+<text x="125.0" y="283.0" class="s">持つ：製造の実行・電子バッチ記録</text>
+<text x="125.0" y="298.0" class="s">manufacturing</text>
+<rect x="430" y="250" width="170" height="58" class="box"/>
+<text x="515.0" y="268.0" class="tb">ERP</text>
+<text x="515.0" y="283.0" class="s">持つ：取引の正・在庫と出荷の制御</text>
+<text x="515.0" y="298.0" class="s">erp</text>
+<rect x="650" y="70" width="170" height="58" class="box"/>
+<text x="735.0" y="88.0" class="tb">マスタデータ管理</text>
+<text x="735.0" y="103.0" class="s">持つ：項目ごとの正本の決定</text>
+<text x="735.0" y="118.0" class="s">master-data</text>
+<rect x="900" y="70" width="170" height="58" class="box"/>
+<text x="985.0" y="88.0" class="tb">人事（HCM）</text>
+<text x="985.0" y="103.0" class="s">持つ：所属・役職・入退社日の正本</text>
+<text x="985.0" y="118.0" class="s">hcm</text>
+<rect x="900" y="250" width="170" height="58" class="box"/>
+<text x="985.0" y="268.0" class="tb">営業・マーケ（CRM）</text>
+<text x="985.0" y="283.0" class="s">持つ：顧客との活動</text>
+<text x="985.0" y="298.0" class="s">crm</text>
+<rect x="300" y="420" width="170" height="58" class="box"/>
+<text x="385.0" y="438.0" class="tb">経営管理（EPM）</text>
+<text x="385.0" y="453.0" class="s">持つ：計画・連結の数字</text>
+<text x="385.0" y="468.0" class="s">epm</text>
+<rect x="640" y="420" width="170" height="58" class="box"/>
+<text x="725.0" y="438.0" class="tb">分析基盤</text>
+<text x="725.0" y="453.0" class="s">持つ：データの蓄積と分析</text>
+<text x="725.0" y="468.0" class="s">analytics</text>
+<rect x="1145" y="20" width="180" height="470" class="cross"/>
+<text x="1235" y="40" class="tb">横断の関心事</text>
+<text x="1235" y="54" class="s">cross-cutting/</text>
+<rect x="1150" y="70" width="170" height="58" class="box"/>
+<text x="1235.0" y="88.0" class="tb">ID・アクセス管理</text>
+<text x="1235.0" y="103.0" class="s">持つ：ID と権限</text>
+<text x="1235.0" y="118.0" class="s">identity</text>
+<rect x="1150" y="250" width="170" height="58" class="box"/>
+<text x="1235.0" y="268.0" class="tb">GxP のシステム</text>
+<text x="1235.0" y="283.0" class="s">持つ：記録の信頼性の要件</text>
+<text x="1235.0" y="298.0" class="s">gxp-compliance</text>
+<rect x="1150" y="420" width="170" height="58" class="box"/>
+<text x="1235.0" y="438.0" class="tb">OT セキュリティ</text>
+<text x="1235.0" y="453.0" class="s">持つ：制御系の守り方</text>
+<text x="1235.0" y="468.0" class="s">ot-security</text>
+<polyline points="210,99 330,99" class="ln" marker-end="url(#ar)"/>
+<text x="270" y="92" class="a">申請資料・有害事象</text>
+<polyline points="125,250 125,190 370,190 370,128" class="ln" marker-end="url(#ar)"/>
+<text x="250" y="184" class="a">逸脱</text>
+<polyline points="470,128 470,250" class="ln" marker-end="url(#ar)"/>
+<text x="464" y="215" class="Lr">出荷保留・国別の出荷可否</text>
+<polyline points="430,268 210,268" class="ln" marker-end="url(#ar)"/>
+<text x="320" y="262" class="a">製造指図</text>
+<polyline points="210,292 430,292" class="ln" marker-end="url(#ar)"/>
+<text x="320" y="306" class="a">実績・原材料の消費</text>
+<polyline points="690,128 690,190 580,190 580,250" class="ln" marker-end="url(#ar)"/>
+<text x="735" y="165" class="a">品目・取引先のマスタ</text>
+<polyline points="940,128 940,215 595,215 595,250" class="ln" marker-end="url(#ar)"/>
+<text x="820" y="209" class="a">組織・コストセンター</text>
+<polyline points="600,279 900,279" class="ln" marker-end="url(#ar)"/>
+<text x="750" y="272" class="a">得意先・製品のマスタ</text>
+<polyline points="1070,99 1150,99" class="ln" marker-end="url(#ar)"/>
+<text x="1110" y="92" class="a">入社・異動・退職</text>
+<polyline points="470,308 470,380 385,380 385,420" class="ln" marker-end="url(#ar)"/>
+<text x="428" y="374" class="a">実績</text>
+<polyline points="560,308 560,380 725,380 725,420" class="ln" marker-end="url(#ar)"/>
+<text x="643" y="374" class="a">取引データ</text>
+<polyline points="1180,308 1180,350 612,350 612,336" class="lnd" marker-end="url(#ar)"/>
+<text x="880" y="344" class="a">記録の要件</text>
+<polyline points="125,308 125,515 1235,515 1235,478" class="lnd" marker-end="url(#ar)"/>
+<text x="680" y="509" class="a">制御系の守り方、OT から IT へデータを出す経路</text>
+<polyline points="40,548 80,548" class="ln"/>
+<text x="88" y="552" class="Ls">データ・判断の流れ</text>
+<polyline points="220,548 260,548" class="lnd"/>
+<text x="268" y="552" class="Ls">要件・守り方（データは流れない）</text>
+<text x="470" y="552" class="Ls">アプリどうしのやり取りは、原則として連携基盤（integration）を介す（図では省略）</text>
+</svg>

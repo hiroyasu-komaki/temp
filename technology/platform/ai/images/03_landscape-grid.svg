@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 232" font-family="sans-serif" width="800" height="265" role="img">
+<title>生成 AI の製品と提供形態</title>
+<desc>生成 AI の製品と提供形態</desc>
+<style>
+.box{fill:#fff;stroke:#12305e;stroke-width:1.5}
+.sub{fill:#fff;stroke:#8a94a3;stroke-width:1}
+.dash{fill:#fff;stroke:#8a94a3;stroke-width:1.2;stroke-dasharray:5 4}
+.layer{fill:#f4f6f9;stroke:none}
+.zone{fill:none;stroke:#8a94a3;stroke-width:1}
+.zonef{fill:#fafbfc;stroke:#c4cad3;stroke-width:1}
+.cross{fill:#e9edf3;stroke:none}
+.T{fill:#1b2430;font-size:15px;font-weight:bold;text-anchor:middle}
+.t{fill:#1b2430;font-size:11.5px;text-anchor:middle}
+.tb{fill:#1b2430;font-size:11.5px;font-weight:bold;text-anchor:middle}
+.t2{fill:#1b2430;font-size:10.5px;text-anchor:middle}
+.s{fill:#5b6573;font-size:9.5px;text-anchor:middle}
+.L{fill:#1b2430;font-size:11.5px;font-weight:bold}
+.Ls{fill:#5b6573;font-size:10px}
+.Lr{fill:#5b6573;font-size:10px;text-anchor:end}
+.a{fill:#5b6573;font-size:9.5px;text-anchor:middle}
+.ln{stroke:#5b6573;stroke-width:1.3;fill:none}
+.lnd{stroke:#5b6573;stroke-width:1.2;fill:none;stroke-dasharray:4 3}
+</style>
+<defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#5b6573"/></marker></defs>
+<rect x="0" y="0" width="700" height="232" fill="#fff"/>
+<style>.c{fill:#fff;stroke:#c4cad3;stroke-width:1}.h{fill:#f4f6f9;stroke:#c4cad3;stroke-width:1}.na{fill:#8a94a3;font-size:9.5px;text-anchor:middle}.p{fill:#1b2430;font-size:10.5px;text-anchor:middle}.ax{stroke:#12305e;stroke-width:1.6;fill:none}</style>
+<text x="15" y="20" class="L">生成 AI の製品と提供形態</text>
+<polyline points="150,46 685,46" class="ax" marker-end="url(#ar)" marker-start="url(#ar)"/>
+<text x="150" y="40" class="Ls">ベンダーが管理</text>
+<text x="685" y="40" class="Lr">利用企業が管理</text>
+<rect x="150.0" y="62" width="133.75" height="18" class="h"/>
+<text x="216.875" y="75" class="t2">業務ソフトに組み込み</text>
+<rect x="283.75" y="62" width="133.75" height="18" class="h"/>
+<text x="350.625" y="75" class="t2">AI ベンダーの法人向け</text>
+<rect x="417.5" y="62" width="133.75" height="18" class="h"/>
+<text x="484.375" y="75" class="t2">クラウドの AI 基盤</text>
+<rect x="551.25" y="62" width="133.75" height="18" class="h"/>
+<text x="618.125" y="75" class="t2">自社の環境で動かす</text>
+<rect x="15" y="80" width="135" height="60" class="h"/>
+<text x="82.5" y="114.0" class="tb">グローバルの製品</text>
+<rect x="150.0" y="80" width="133.75" height="60" class="c"/>
+<text x="216.875" y="107.0" class="p">Microsoft 365 Copilot</text>
+<text x="216.875" y="121.0" class="p">Workspace の Gemini</text>
+<rect x="283.75" y="80" width="133.75" height="60" class="c"/>
+<text x="350.625" y="107.0" class="p">ChatGPT・Claude</text>
+<text x="350.625" y="121.0" class="p">Gemini の法人向け</text>
+<rect x="417.5" y="80" width="133.75" height="60" class="c"/>
+<text x="484.375" y="100.0" class="p">Amazon Bedrock</text>
+<text x="484.375" y="114.0" class="p">Microsoft Foundry</text>
+<text x="484.375" y="128.0" class="p">Vertex AI・watsonx</text>
+<rect x="551.25" y="80" width="133.75" height="60" class="c"/>
+<text x="618.125" y="114.0" class="na">03章に該当なし</text>
+<rect x="15" y="140" width="135" height="60" class="h"/>
+<text x="82.5" y="174.0" class="tb">国内のモデル</text>
+<rect x="150.0" y="140" width="133.75" height="60" class="c"/>
+<text x="216.875" y="174.0" class="na">03章に該当なし</text>
+<rect x="283.75" y="140" width="133.75" height="60" class="c"/>
+<text x="350.625" y="174.0" class="na">03章に該当なし</text>
+<rect x="417.5" y="140" width="133.75" height="60" class="c"/>
+<text x="484.375" y="174.0" class="na">03章に該当なし</text>
+<rect x="551.25" y="140" width="133.75" height="60" class="c"/>
+<text x="618.125" y="160.0" class="p">tsuzumi 2</text>
+<text x="618.125" y="174.0" class="p">Sarashina・cotomi</text>
+<text x="618.125" y="188.0" class="p">Takane・PLaMo</text>
+<text x="15" y="224" class="Ls">本資料の整理。製品の詳細と出典は本文の各節</text>
+</svg>

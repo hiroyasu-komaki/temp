@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 260" font-family="sans-serif" width="800" height="297" role="img">
+<title>CRM の製品と提供形態</title>
+<desc>CRM の製品と提供形態</desc>
+<style>
+.box{fill:#fff;stroke:#12305e;stroke-width:1.5}
+.sub{fill:#fff;stroke:#8a94a3;stroke-width:1}
+.dash{fill:#fff;stroke:#8a94a3;stroke-width:1.2;stroke-dasharray:5 4}
+.layer{fill:#f4f6f9;stroke:none}
+.zone{fill:none;stroke:#8a94a3;stroke-width:1}
+.zonef{fill:#fafbfc;stroke:#c4cad3;stroke-width:1}
+.cross{fill:#e9edf3;stroke:none}
+.T{fill:#1b2430;font-size:15px;font-weight:bold;text-anchor:middle}
+.t{fill:#1b2430;font-size:11.5px;text-anchor:middle}
+.tb{fill:#1b2430;font-size:11.5px;font-weight:bold;text-anchor:middle}
+.t2{fill:#1b2430;font-size:10.5px;text-anchor:middle}
+.s{fill:#5b6573;font-size:9.5px;text-anchor:middle}
+.L{fill:#1b2430;font-size:11.5px;font-weight:bold}
+.Ls{fill:#5b6573;font-size:10px}
+.Lr{fill:#5b6573;font-size:10px;text-anchor:end}
+.a{fill:#5b6573;font-size:9.5px;text-anchor:middle}
+.ln{stroke:#5b6573;stroke-width:1.3;fill:none}
+.lnd{stroke:#5b6573;stroke-width:1.2;fill:none;stroke-dasharray:4 3}
+</style>
+<defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#5b6573"/></marker></defs>
+<rect x="0" y="0" width="700" height="260" fill="#fff"/>
+<style>.c{fill:#fff;stroke:#c4cad3;stroke-width:1}.h{fill:#f4f6f9;stroke:#c4cad3;stroke-width:1}.na{fill:#8a94a3;font-size:9.5px;text-anchor:middle}.p{fill:#1b2430;font-size:10.5px;text-anchor:middle}.ax{stroke:#12305e;stroke-width:1.6;fill:none}</style>
+<text x="15" y="20" class="L">CRM の製品と提供形態</text>
+<polyline points="150,46 685,46" class="ax" marker-end="url(#ar)" marker-start="url(#ar)"/>
+<text x="150" y="40" class="Ls">業界向けの機能をベンダーが持つ</text>
+<text x="685" y="40" class="Lr">利用企業が作り込む</text>
+<rect x="150.0" y="62" width="178.33333333333334" height="18" class="h"/>
+<text x="239.16666666666669" y="75" class="t2">製薬向けの専用 SaaS</text>
+<rect x="328.33333333333337" y="62" width="178.33333333333334" height="18" class="h"/>
+<text x="417.50000000000006" y="75" class="t2">汎用の基盤の上の業界向け SaaS</text>
+<rect x="506.6666666666667" y="62" width="178.33333333333334" height="18" class="h"/>
+<text x="595.8333333333334" y="75" class="t2">一般の業種向けの SaaS</text>
+<rect x="15" y="80" width="135" height="46" class="h"/>
+<text x="82.5" y="107.0" class="tb">製薬向けの CRM</text>
+<rect x="150.0" y="80" width="178.33333333333334" height="46" class="c"/>
+<text x="239.16666666666669" y="107.0" class="p">Vault CRM</text>
+<rect x="328.33333333333337" y="80" width="178.33333333333334" height="46" class="c"/>
+<text x="417.50000000000006" y="100.0" class="p">Life Sciences Cloud</text>
+<text x="417.50000000000006" y="114.0" class="p">IQVIA OCE（2029年まで）</text>
+<rect x="506.6666666666667" y="80" width="178.33333333333334" height="46" class="c"/>
+<text x="595.8333333333334" y="107.0" class="na">03章に該当なし</text>
+<rect x="15" y="126" width="135" height="60" class="h"/>
+<text x="82.5" y="156.0" class="tb">一般の業種向けの CRM</text>
+<text x="82.5" y="172.0" class="s">（SFA）</text>
+<rect x="150.0" y="126" width="178.33333333333334" height="60" class="c"/>
+<text x="239.16666666666669" y="160.0" class="na">03章に該当なし</text>
+<rect x="328.33333333333337" y="126" width="178.33333333333334" height="60" class="c"/>
+<text x="417.50000000000006" y="160.0" class="na">03章に該当なし</text>
+<rect x="506.6666666666667" y="126" width="178.33333333333334" height="60" class="c"/>
+<text x="595.8333333333334" y="146.0" class="p">Sales Cloud</text>
+<text x="595.8333333333334" y="160.0" class="p">Dynamics 365 Sales</text>
+<text x="595.8333333333334" y="174.0" class="p">Oracle Sales</text>
+<polyline points="578.0,210 257.0,210" class="ax" marker-end="url(#ar)"/>
+<text x="417.5" y="200" class="a">市場の動き：Veeva CRM（Salesforce の基盤）から Vault CRM へ</text>
+<text x="15" y="252" class="Ls">本資料の整理。製品の詳細と出典は本文の各節</text>
+</svg>

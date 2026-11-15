@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 356" font-family="sans-serif" width="800" height="285" role="img">
+<title>営業・マーケティング（CRM）のビジネス要件</title>
+<desc>営業・マーケティング（CRM）のビジネス要件</desc>
+<style>
+.box{fill:#fff;stroke:#12305e;stroke-width:1.5}
+.sub{fill:#fff;stroke:#8a94a3;stroke-width:1}
+.dash{fill:#fff;stroke:#8a94a3;stroke-width:1.2;stroke-dasharray:5 4}
+.layer{fill:#f4f6f9;stroke:none}
+.zone{fill:none;stroke:#8a94a3;stroke-width:1}
+.zonef{fill:#fafbfc;stroke:#c4cad3;stroke-width:1}
+.cross{fill:#e9edf3;stroke:none}
+.T{fill:#1b2430;font-size:15px;font-weight:bold;text-anchor:middle}
+.t{fill:#1b2430;font-size:11.5px;text-anchor:middle}
+.tb{fill:#1b2430;font-size:11.5px;font-weight:bold;text-anchor:middle}
+.t2{fill:#1b2430;font-size:10.5px;text-anchor:middle}
+.s{fill:#5b6573;font-size:9.5px;text-anchor:middle}
+.L{fill:#1b2430;font-size:11.5px;font-weight:bold}
+.Ls{fill:#5b6573;font-size:10px}
+.Lr{fill:#5b6573;font-size:10px;text-anchor:end}
+.a{fill:#5b6573;font-size:9.5px;text-anchor:middle}
+.ln{stroke:#5b6573;stroke-width:1.3;fill:none}
+.lnd{stroke:#5b6573;stroke-width:1.2;fill:none;stroke-dasharray:4 3}
+</style>
+<defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#5b6573"/></marker></defs>
+<rect x="0" y="0" width="1000" height="356" fill="#fff"/>
+<style>.ttl{fill:#1b2430;font-size:16px;font-weight:bold}.hd{fill:#fff;font-size:14px;font-weight:bold;text-anchor:middle}.hs{fill:#dfe6f0;font-size:11px;text-anchor:middle}.it{fill:#1b2430;font-size:13.5px;font-weight:bold}.it2{fill:#1b2430;font-size:13px}.rf{fill:#5b6b80;font-size:11.5px}.sh{fill:#12305e;font-size:12.5px;font-weight:bold}.bx{fill:#fff;stroke:#c4cad3;stroke-width:1.2}.hb{fill:#12305e}.hb2{fill:#3a5a8a}.ar{stroke:#12305e;stroke-width:2;fill:none}.ft{fill:#8a94a3;font-size:11px}</style>
+<text x="20" y="30" class="ttl">営業・マーケティング（CRM）のビジネス要件</text>
+<rect x="20" y="60" width="290" height="46" class="hb"/>
+<text x="165.0" y="80" class="hd">ファンクションが決めること</text>
+<text x="165.0" y="97" class="hs">ビジネス要件</text>
+<rect x="20" y="106" width="290" height="210" class="bx"/>
+<text x="36" y="130" class="it">営業・メディカル・マーケティングを1</text>
+<text x="36" y="149" class="it">つにまとめるか</text>
+<text x="36" y="168" class="rf">→ 04章 論点3</text>
+<text x="36" y="193" class="it">対面中心か、オムニチャネルか</text>
+<text x="36" y="212" class="rf">→ 04章 論点4</text>
+<text x="36" y="237" class="it">移行をいつ行うか</text>
+<text x="36" y="256" class="rf">→ 04章 論点2</text>
+<rect x="355" y="60" width="290" height="46" class="hb2"/>
+<text x="500.0" y="80" class="hd">GDS が決めること</text>
+<text x="500.0" y="97" class="hs">システム要件・ソリューション</text>
+<rect x="355" y="106" width="290" height="210" class="bx"/>
+<text x="371" y="130" class="it">Veeva か、Salesforce</text>
+<text x="371" y="149" class="it"> か</text>
+<text x="371" y="168" class="rf">→ 04章 論点1</text>
+<text x="371" y="193" class="it">顧客のマスタを外部のデータに頼るか</text>
+<text x="371" y="212" class="rf">→ 04章 論点5</text>
+<rect x="690" y="60" width="290" height="46" class="hb"/>
+<text x="835.0" y="80" class="hd">効果目標と受け入れ基準</text>
+<text x="835.0" y="97" class="hs">受け入れ・ビジネス効果</text>
+<rect x="690" y="106" width="290" height="210" class="bx"/>
+<text x="706" y="130" class="sh">効果目標の例</text>
+<text x="706" y="149" class="it2">・1人あたりの医療従事者との接点の数</text>
+<text x="706" y="168" class="it2">・承認済みの資材の配信までの日数</text>
+<text x="706" y="187" class="it2">・MR が聞いた有害事象を安全性部門へ</text>
+<text x="706" y="206" class="it2">伝えるまでの時間</text>
+<text x="706" y="234" class="sh">受け入れ基準</text>
+<text x="706" y="253" class="it2">決めた経路ごとに、同意の取得から資材の</text>
+<text x="706" y="272" class="it2">配信、活動の記録までを通しで実行できる</text>
+<text x="706" y="291" class="it2">こと</text>
+<polyline points="316,83 349,83" class="ar" marker-end="url(#ar)"/>
+<polyline points="651,83 684,83" class="ar" marker-end="url(#ar)"/>
+<text x="20" y="342" class="ft">各項目の中身（聞く問い、決めないと起きること、根拠になる情報）は本文。論点の番号は04章</text>
+</svg>

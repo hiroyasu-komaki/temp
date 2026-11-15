@@ -1,0 +1,47 @@
+<svg viewBox="0 0 1000 560" xmlns="http://www.w3.org/2000/svg" role="img">
+<title>設備マスタの多重管理問題(マスタデータガバナンスの典型例)</title>
+<desc>現場に1台しかない設備が、ERPの固定資産マスタ、MES/CMMSの設備マスタ、SCADA/PLCのタグという3つの異なるシステムでそれぞれ別のIDで管理され、自動連携されていない典型的な問題を示す図。解決策として共通キーによるマッピングテーブルを提案。</desc>
+<rect x="0" y="0" width="1000" height="560" fill="#ffffff"/>
+
+<text x="500" y="28" text-anchor="middle" font-size="17" font-weight="700" fill="#1a1a1a">設備マスタの多重管理問題(マスタデータガバナンスの典型例)</text>
+
+<rect x="350" y="50" width="300" height="56" rx="8" fill="#f3f4f6" stroke="#1a1a1a" stroke-width="1.5"/>
+<text x="500" y="74" text-anchor="middle" font-size="13" font-weight="700" fill="#1a1a1a">物理設備:プレス機#3</text>
+<text x="500" y="92" text-anchor="middle" font-size="10" fill="#6b7280">(現場に1台だけ存在)</text>
+
+<line x1="500" y1="106" x2="200" y2="150" stroke="#6b7280" stroke-width="1.5"/>
+<line x1="500" y1="106" x2="500" y2="150" stroke="#6b7280" stroke-width="1.5"/>
+<line x1="500" y1="106" x2="800" y2="150" stroke="#6b7280" stroke-width="1.5"/>
+
+<rect x="70" y="150" width="260" height="120" rx="8" fill="#2563eb" opacity="0.14" stroke="#2563eb" stroke-width="1.5"/>
+<text x="90" y="176" font-size="13" font-weight="700" fill="#1a1a1a">ERP固定資産マスタ</text>
+<text x="90" y="198" font-size="11" fill="#6b7280">資産番号: A-00123</text>
+<text x="90" y="216" font-size="11" fill="#6b7280">目的: 減価償却・会計処理</text>
+<text x="90" y="248" font-size="11" font-weight="700" fill="#2563eb">IT部門が管理</text>
+
+<rect x="370" y="150" width="260" height="120" rx="8" fill="#d97706" opacity="0.15" stroke="#d97706" stroke-width="1.5"/>
+<text x="390" y="176" font-size="13" font-weight="700" fill="#1a1a1a">MES/CMMS設備マスタ</text>
+<text x="390" y="198" font-size="11" fill="#6b7280">設備コード: EQ-PRESS-03</text>
+<text x="390" y="216" font-size="11" fill="#6b7280">目的: 生産・保全管理</text>
+<text x="390" y="248" font-size="11" font-weight="700" fill="#d97706">生産ITが管理</text>
+
+<rect x="670" y="150" width="260" height="120" rx="8" fill="#16a34a" opacity="0.14" stroke="#16a34a" stroke-width="1.5"/>
+<text x="690" y="176" font-size="13" font-weight="700" fill="#1a1a1a">SCADA/PLCタグ</text>
+<text x="690" y="198" font-size="11" fill="#6b7280">デバイスID: PLC01.LINE2.M03</text>
+<text x="690" y="216" font-size="11" fill="#6b7280">目的: 制御・監視</text>
+<text x="690" y="248" font-size="11" font-weight="700" fill="#16a34a">生産ITが管理</text>
+
+<text x="500" y="300" text-anchor="middle" font-size="12" fill="#6b7280" font-style="italic">↑ コード体系がバラバラで、システム間の自動連携がないのが典型的な状態</text>
+
+<line x1="200" y1="270" x2="500" y2="350" stroke="#6b7280" stroke-width="1.5" stroke-dasharray="4 3"/>
+<line x1="500" y1="270" x2="500" y2="350" stroke="#6b7280" stroke-width="1.5" stroke-dasharray="4 3"/>
+<line x1="800" y1="270" x2="500" y2="350" stroke="#6b7280" stroke-width="1.5" stroke-dasharray="4 3"/>
+
+<rect x="200" y="360" width="600" height="90" rx="8" fill="#d97706" opacity="0.10" stroke="#d97706" stroke-width="1.5" stroke-dasharray="5 4"/>
+<text x="500" y="388" text-anchor="middle" font-size="13" font-weight="700" fill="#1a1a1a">紐付けテーブル(マッピングマスタ)</text>
+<text x="500" y="408" text-anchor="middle" font-size="11" fill="#6b7280">共通キーでA-00123 / EQ-PRESS-03 / PLC01.LINE2.M03 を名寄せ</text>
+<text x="500" y="428" text-anchor="middle" font-size="11" fill="#6b7280">どれか1つを正(System of Record)と定めるのがガバナンスの出発点</text>
+
+<text x="70" y="490" font-size="12" fill="#6b7280">※ 同じ物理設備が複数マスタに別コードで存在するのは、ERP・生産IT(MES/OT)がそれぞれ別目的でマスタを持つために起きる典型例。</text>
+<text x="70" y="510" font-size="12" fill="#6b7280">品目マスタも同様の構造になりやすく、次に洗い出すべき対象。</text>
+</svg>

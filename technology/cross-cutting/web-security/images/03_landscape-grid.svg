@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 204" font-family="sans-serif" width="800" height="233" role="img">
+<title>Web セキュリティの製品と提供形態</title>
+<desc>Web セキュリティの製品と提供形態</desc>
+<style>
+.box{fill:#fff;stroke:#12305e;stroke-width:1.5}
+.sub{fill:#fff;stroke:#8a94a3;stroke-width:1}
+.dash{fill:#fff;stroke:#8a94a3;stroke-width:1.2;stroke-dasharray:5 4}
+.layer{fill:#f4f6f9;stroke:none}
+.zone{fill:none;stroke:#8a94a3;stroke-width:1}
+.zonef{fill:#fafbfc;stroke:#c4cad3;stroke-width:1}
+.cross{fill:#e9edf3;stroke:none}
+.T{fill:#1b2430;font-size:15px;font-weight:bold;text-anchor:middle}
+.t{fill:#1b2430;font-size:11.5px;text-anchor:middle}
+.tb{fill:#1b2430;font-size:11.5px;font-weight:bold;text-anchor:middle}
+.t2{fill:#1b2430;font-size:10.5px;text-anchor:middle}
+.s{fill:#5b6573;font-size:9.5px;text-anchor:middle}
+.L{fill:#1b2430;font-size:11.5px;font-weight:bold}
+.Ls{fill:#5b6573;font-size:10px}
+.Lr{fill:#5b6573;font-size:10px;text-anchor:end}
+.a{fill:#5b6573;font-size:9.5px;text-anchor:middle}
+.ln{stroke:#5b6573;stroke-width:1.3;fill:none}
+.lnd{stroke:#5b6573;stroke-width:1.2;fill:none;stroke-dasharray:4 3}
+</style>
+<defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#5b6573"/></marker></defs>
+<rect x="0" y="0" width="700" height="204" fill="#fff"/>
+<style>.c{fill:#fff;stroke:#c4cad3;stroke-width:1}.h{fill:#f4f6f9;stroke:#c4cad3;stroke-width:1}.na{fill:#8a94a3;font-size:9.5px;text-anchor:middle}.p{fill:#1b2430;font-size:10.5px;text-anchor:middle}.ax{stroke:#12305e;stroke-width:1.6;fill:none}</style>
+<text x="15" y="20" class="L">Web セキュリティの製品と提供形態</text>
+<polyline points="150,46 685,46" class="ax" marker-end="url(#ar)" marker-start="url(#ar)"/>
+<text x="150" y="40" class="Ls">ベンダーが管理</text>
+<text x="685" y="40" class="Lr">利用企業が管理</text>
+<rect x="150.0" y="62" width="178.33333333333334" height="18" class="h"/>
+<text x="239.16666666666669" y="75" class="t2">SaaS・クラウド型</text>
+<rect x="328.33333333333337" y="62" width="178.33333333333334" height="18" class="h"/>
+<text x="417.50000000000006" y="75" class="t2">機器・ソフトウェア型</text>
+<rect x="506.6666666666667" y="62" width="178.33333333333334" height="18" class="h"/>
+<text x="595.8333333333334" y="75" class="t2">—</text>
+<rect x="15" y="80" width="135" height="46" class="h"/>
+<text x="82.5" y="103.0" class="tb">利用者の認証</text>
+<text x="82.5" y="119.0" class="s">CIAM</text>
+<rect x="150.0" y="80" width="178.33333333333334" height="46" class="c"/>
+<text x="239.16666666666669" y="100.0" class="p">Auth0・Entra External ID</text>
+<text x="239.16666666666669" y="114.0" class="p">Amazon Cognito</text>
+<rect x="328.33333333333337" y="80" width="178.33333333333334" height="46" class="c"/>
+<text x="417.50000000000006" y="107.0" class="na">03章に該当なし</text>
+<rect x="506.6666666666667" y="80" width="178.33333333333334" height="46" class="c"/>
+<text x="595.8333333333334" y="107.0" class="na">03章に該当なし</text>
+<rect x="15" y="126" width="135" height="46" class="h"/>
+<text x="82.5" y="153.0" class="tb">WAF・WAAP</text>
+<rect x="150.0" y="126" width="178.33333333333334" height="46" class="c"/>
+<text x="239.16666666666669" y="146.0" class="p">Cloudflare・Akamai</text>
+<text x="239.16666666666669" y="160.0" class="p">攻撃遮断くん・Scutum</text>
+<rect x="328.33333333333337" y="126" width="178.33333333333334" height="46" class="c"/>
+<text x="417.50000000000006" y="146.0" class="p">F5 BIG-IP</text>
+<text x="417.50000000000006" y="160.0" class="p">FortiWeb の仮想アプライアンス</text>
+<rect x="506.6666666666667" y="126" width="178.33333333333334" height="46" class="c"/>
+<text x="595.8333333333334" y="153.0" class="na">03章に該当なし</text>
+<text x="15" y="196" class="Ls">本資料の整理。製品の詳細と出典は本文の各節</text>
+</svg>

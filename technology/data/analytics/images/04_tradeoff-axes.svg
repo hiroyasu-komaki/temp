@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 470" font-family="sans-serif" width="800" height="376" role="img">
+<title>分析基盤の論点と製品の寄り方</title>
+<desc>分析基盤の論点と製品の寄り方</desc>
+<style>
+.box{fill:#fff;stroke:#12305e;stroke-width:1.5}
+.sub{fill:#fff;stroke:#8a94a3;stroke-width:1}
+.dash{fill:#fff;stroke:#8a94a3;stroke-width:1.2;stroke-dasharray:5 4}
+.layer{fill:#f4f6f9;stroke:none}
+.zone{fill:none;stroke:#8a94a3;stroke-width:1}
+.zonef{fill:#fafbfc;stroke:#c4cad3;stroke-width:1}
+.cross{fill:#e9edf3;stroke:none}
+.T{fill:#1b2430;font-size:15px;font-weight:bold;text-anchor:middle}
+.t{fill:#1b2430;font-size:11.5px;text-anchor:middle}
+.tb{fill:#1b2430;font-size:11.5px;font-weight:bold;text-anchor:middle}
+.t2{fill:#1b2430;font-size:10.5px;text-anchor:middle}
+.s{fill:#5b6573;font-size:9.5px;text-anchor:middle}
+.L{fill:#1b2430;font-size:11.5px;font-weight:bold}
+.Ls{fill:#5b6573;font-size:10px}
+.Lr{fill:#5b6573;font-size:10px;text-anchor:end}
+.a{fill:#5b6573;font-size:9.5px;text-anchor:middle}
+.ln{stroke:#5b6573;stroke-width:1.3;fill:none}
+.lnd{stroke:#5b6573;stroke-width:1.2;fill:none;stroke-dasharray:4 3}
+</style>
+<defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#5b6573"/></marker></defs>
+<rect x="0" y="0" width="1000" height="470" fill="#fff"/>
+<style>.ax{stroke:#12305e;stroke-width:1.8;fill:none}.axd{stroke:#8a94a3;stroke-width:1.6;fill:none;stroke-dasharray:6 5}.ab{fill:#1b2430;font-size:14px;font-weight:bold}.pr{fill:#3a4656;font-size:12px}.ttl{fill:#1b2430;font-size:16px;font-weight:bold}.no{fill:#12305e;font-size:13px;font-weight:bold}.nd{fill:#8a94a3;font-size:11px;text-anchor:middle}.ex{fill:#8a94a3;font-size:12px;text-anchor:middle}</style>
+<text x="20" y="30" class="ttl">分析基盤の論点と製品の寄り方</text>
+<text x="20" y="79" class="no">論点1</text>
+<polyline points="250,74 750,74" class="ax" marker-end="url(#ar)" marker-start="url(#ar)"/>
+<text x="240" y="79" class="ab" text-anchor="end">DWH</text>
+<text x="760" y="79" class="ab">レイクハウス</text>
+<text x="256" y="96" class="pr">Amazon Redshift</text>
+<text x="256" y="111" class="pr">Snowflake</text>
+<text x="744" y="96" class="pr" text-anchor="end">Databricks Data In…</text>
+<text x="744" y="111" class="pr" text-anchor="end">Microsoft Fabric</text>
+<text x="20" y="157" class="no">論点2</text>
+<polyline points="250,152 750,152" class="ax" marker-end="url(#ar)" marker-start="url(#ar)"/>
+<text x="240" y="157" class="ab" text-anchor="end">1つの製品群</text>
+<text x="760" y="157" class="ab">別々に選ぶ</text>
+<text x="256" y="174" class="pr">Microsoft Fabric＋P…</text>
+<text x="256" y="189" class="pr">BigQuery＋Looker</text>
+<text x="744" y="174" class="pr" text-anchor="end">Snowflake・Databric…</text>
+<text x="744" y="189" class="pr" text-anchor="end">Tableau・Qlik Sense…</text>
+<text x="20" y="235" class="no">論点3</text>
+<polyline points="250,230 750,230" class="axd"/>
+<text x="240" y="235" class="ab" text-anchor="end">オープンな形式</text>
+<text x="760" y="235" class="ab">製品の形式</text>
+<text x="500.0" y="223" class="nd">製品では決まらない（設定の選択）</text>
+<text x="20" y="313" class="no">論点4</text>
+<polyline points="250,308 750,308" class="axd"/>
+<text x="240" y="313" class="ab" text-anchor="end">中央で整える</text>
+<text x="760" y="313" class="ab">各部門に任せる</text>
+<text x="500.0" y="301" class="nd">製品では決まらない（運用の選択）</text>
+<text x="20" y="391" class="no">論点5</text>
+<polyline points="250,386 750,386" class="ax" marker-end="url(#ar)" marker-start="url(#ar)"/>
+<text x="240" y="391" class="ab" text-anchor="end">業務システムの付属の分析</text>
+<text x="760" y="391" class="ab">全社の分析基盤</text>
+<text x="256" y="408" class="pr">業務アプリの組み込みの分析</text>
+<text x="744" y="408" class="pr" text-anchor="end">クラウドの DWH・レイクハウスと …</text>
+<text x="20" y="460" class="Ls">実線：03章の製品・提供形態が両端に分かれる軸　破線：製品では決まらない軸（本資料の整理）</text>
+</svg>

@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 356" font-family="sans-serif" width="800" height="285" role="img">
+<title>AIのビジネス要件</title>
+<desc>AIのビジネス要件</desc>
+<style>
+.box{fill:#fff;stroke:#12305e;stroke-width:1.5}
+.sub{fill:#fff;stroke:#8a94a3;stroke-width:1}
+.dash{fill:#fff;stroke:#8a94a3;stroke-width:1.2;stroke-dasharray:5 4}
+.layer{fill:#f4f6f9;stroke:none}
+.zone{fill:none;stroke:#8a94a3;stroke-width:1}
+.zonef{fill:#fafbfc;stroke:#c4cad3;stroke-width:1}
+.cross{fill:#e9edf3;stroke:none}
+.T{fill:#1b2430;font-size:15px;font-weight:bold;text-anchor:middle}
+.t{fill:#1b2430;font-size:11.5px;text-anchor:middle}
+.tb{fill:#1b2430;font-size:11.5px;font-weight:bold;text-anchor:middle}
+.t2{fill:#1b2430;font-size:10.5px;text-anchor:middle}
+.s{fill:#5b6573;font-size:9.5px;text-anchor:middle}
+.L{fill:#1b2430;font-size:11.5px;font-weight:bold}
+.Ls{fill:#5b6573;font-size:10px}
+.Lr{fill:#5b6573;font-size:10px;text-anchor:end}
+.a{fill:#5b6573;font-size:9.5px;text-anchor:middle}
+.ln{stroke:#5b6573;stroke-width:1.3;fill:none}
+.lnd{stroke:#5b6573;stroke-width:1.2;fill:none;stroke-dasharray:4 3}
+</style>
+<defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#5b6573"/></marker></defs>
+<rect x="0" y="0" width="1000" height="356" fill="#fff"/>
+<style>.ttl{fill:#1b2430;font-size:16px;font-weight:bold}.hd{fill:#fff;font-size:14px;font-weight:bold;text-anchor:middle}.hs{fill:#dfe6f0;font-size:11px;text-anchor:middle}.it{fill:#1b2430;font-size:13.5px;font-weight:bold}.it2{fill:#1b2430;font-size:13px}.rf{fill:#5b6b80;font-size:11.5px}.sh{fill:#12305e;font-size:12.5px;font-weight:bold}.bx{fill:#fff;stroke:#c4cad3;stroke-width:1.2}.hb{fill:#12305e}.hb2{fill:#3a5a8a}.ar{stroke:#12305e;stroke-width:2;fill:none}.ft{fill:#8a94a3;font-size:11px}</style>
+<text x="20" y="30" class="ttl">AIのビジネス要件</text>
+<rect x="20" y="60" width="290" height="46" class="hb"/>
+<text x="165.0" y="80" class="hd">ファンクションが決めること</text>
+<text x="165.0" y="97" class="hs">ビジネス要件</text>
+<rect x="20" y="106" width="290" height="210" class="bx"/>
+<text x="36" y="130" class="it">利用を広く認めるか、用途を絞って認め</text>
+<text x="36" y="149" class="it">るか</text>
+<text x="36" y="168" class="rf">→ 04章 論点5</text>
+<text x="36" y="193" class="it">AI に答えさせるだけにするか、操作</text>
+<text x="36" y="212" class="it">までさせるか</text>
+<text x="36" y="231" class="rf">→ 04章 論点3</text>
+<text x="36" y="256" class="it">社内のデータをどこまで AI に渡す</text>
+<text x="36" y="275" class="it">か</text>
+<text x="36" y="294" class="rf">→ 04章 論点4</text>
+<rect x="355" y="60" width="290" height="46" class="hb2"/>
+<text x="500.0" y="80" class="hd">GDS が決めること</text>
+<text x="500.0" y="97" class="hs">システム要件・ソリューション</text>
+<rect x="355" y="106" width="290" height="210" class="bx"/>
+<text x="371" y="130" class="it">組み込まれた AI を使うか、自社で</text>
+<text x="371" y="149" class="it">作るか</text>
+<text x="371" y="168" class="rf">→ 04章 論点1</text>
+<text x="371" y="193" class="it">1つのモデル・ベンダーに決めるか、複</text>
+<text x="371" y="212" class="it">数を使い分けるか</text>
+<text x="371" y="231" class="rf">→ 04章 論点2</text>
+<rect x="690" y="60" width="290" height="46" class="hb"/>
+<text x="835.0" y="80" class="hd">効果目標と受け入れ基準</text>
+<text x="835.0" y="97" class="hs">受け入れ・ビジネス効果</text>
+<rect x="690" y="106" width="290" height="210" class="bx"/>
+<text x="706" y="130" class="sh">効果目標の例</text>
+<text x="706" y="149" class="it2">・対象の作業にかかる時間の短縮</text>
+<text x="706" y="168" class="it2">・利用者の数と利用の頻度</text>
+<text x="706" y="187" class="it2">・答えの誤りの件数</text>
+<text x="706" y="215" class="sh">受け入れ基準</text>
+<text x="706" y="234" class="it2">決めた業務の作業で、決めた確かめ方のも</text>
+<text x="706" y="253" class="it2">とで、決めた効果が出ること</text>
+<polyline points="316,83 349,83" class="ar" marker-end="url(#ar)"/>
+<polyline points="651,83 684,83" class="ar" marker-end="url(#ar)"/>
+<text x="20" y="342" class="ft">各項目の中身（聞く問い、決めないと起きること、根拠になる情報）は本文。論点の番号は04章</text>
+</svg>

@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 430" font-family="sans-serif" role="img">
+<title>ランディングゾーンの構成</title>
+<desc>組織でクラウドを使うときの共通の土台。ガードレールが全体にかかり、IDと権限・ログと監視・ネットワークのハブを共通の環境に置き、システムごと・環境ごとのアカウントをハブ＆スポーク型でつなぐ。費用はタグで配賦して管理する。</desc>
+<style>
+.box{fill:#fff;stroke:#12305e;stroke-width:1.5}
+.sub{fill:#fff;stroke:#8a94a3;stroke-width:1}
+.dash{fill:#fff;stroke:#8a94a3;stroke-width:1.2;stroke-dasharray:5 4}
+.layer{fill:#f4f6f9;stroke:none}
+.zone{fill:none;stroke:#8a94a3;stroke-width:1}
+.zonef{fill:#fafbfc;stroke:#c4cad3;stroke-width:1}
+.cross{fill:#e9edf3;stroke:none}
+.T{fill:#1b2430;font-size:15px;font-weight:bold;text-anchor:middle}
+.t{fill:#1b2430;font-size:11.5px;text-anchor:middle}
+.tb{fill:#1b2430;font-size:11.5px;font-weight:bold;text-anchor:middle}
+.t2{fill:#1b2430;font-size:10.5px;text-anchor:middle}
+.s{fill:#5b6573;font-size:9.5px;text-anchor:middle}
+.L{fill:#1b2430;font-size:11.5px;font-weight:bold}
+.Ls{fill:#5b6573;font-size:10px}
+.Lr{fill:#5b6573;font-size:10px;text-anchor:end}
+.a{fill:#5b6573;font-size:9.5px;text-anchor:middle}
+.ln{stroke:#5b6573;stroke-width:1.3;fill:none}
+.lnd{stroke:#5b6573;stroke-width:1.2;fill:none;stroke-dasharray:4 3}
+</style>
+<defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#5b6573"/></marker></defs>
+<rect x="0" y="0" width="960" height="430" fill="#fff"/>
+<rect x="20" y="20" width="920" height="34" class="cross"/>
+<text x="480" y="42" class="tb">ガードレール：禁止する設定を予防的に止め、違反を検知する（すべての環境にかかる）</text>
+<rect x="20" y="64" width="720" height="346" class="zonef"/>
+<text x="32" y="84" class="L">クラウド（ランディングゾーン）</text>
+<text x="40" y="106" class="Ls">共通の環境</text>
+<rect x="40" y="114" width="200" height="50" class="box"/>
+<text x="140.0" y="135.5" class="tb">ID と権限</text>
+<text x="140.0" y="150.5" class="s">誰がどの環境に入れるか（→ identity）</text>
+<rect x="40" y="194" width="200" height="50" class="box"/>
+<text x="140.0" y="215.5" class="tb">ログと監視</text>
+<text x="140.0" y="230.5" class="s">操作ログの集約（→ security-operations）</text>
+<rect x="40" y="274" width="200" height="50" class="box"/>
+<text x="140.0" y="295.5" class="tb">ネットワーク（ハブ）</text>
+<text x="140.0" y="310.5" class="s">拠点との接続・環境間の通信</text>
+<rect x="290" y="96" width="436" height="234" class="zone"/>
+<text x="300" y="114" class="Ls">システムごと・環境ごとのアカウント（Azure ではサブスクリプション）</text>
+<rect x="306" y="128" width="124" height="50" class="box"/>
+<text x="368.0" y="149.5" class="tb">本番</text>
+<text x="368.0" y="164.5" class="s">システム A</text>
+<rect x="446" y="128" width="124" height="50" class="box"/>
+<text x="508.0" y="149.5" class="tb">検証</text>
+<text x="508.0" y="164.5" class="s">システム A</text>
+<rect x="586" y="128" width="124" height="50" class="box"/>
+<text x="648.0" y="149.5" class="tb">開発</text>
+<text x="648.0" y="164.5" class="s">システム A</text>
+<rect x="306" y="198" width="124" height="50" class="box"/>
+<text x="368.0" y="219.5" class="tb">本番</text>
+<text x="368.0" y="234.5" class="s">システム B</text>
+<rect x="446" y="198" width="124" height="50" class="box"/>
+<text x="508.0" y="219.5" class="tb">検証</text>
+<text x="508.0" y="234.5" class="s">システム B</text>
+<rect x="586" y="198" width="124" height="50" class="box"/>
+<text x="648.0" y="219.5" class="tb">開発</text>
+<text x="648.0" y="234.5" class="s">システム B</text>
+<text x="508" y="284" class="a">各アカウントの中の管理の分担はサービスモデルで決まる（表1）</text>
+<text x="508" y="302" class="a">ワークロードは Well-Architected Framework で点検する</text>
+<polyline points="240,139 290,139" class="ln" marker-end="url(#ar)"/>
+<text x="265" y="131" class="a">権限</text>
+<polyline points="290,219 240,219" class="lnd" marker-end="url(#ar)"/>
+<text x="265" y="211" class="a">操作ログ</text>
+<polyline points="240,299 290,299" class="ln" marker-end="url(#ar)" marker-start="url(#ar)"/>
+<text x="265" y="291" class="a">スポーク</text>
+<rect x="290" y="342" width="436" height="52" class="sub"/>
+<text x="508.0" y="364.5" class="tb">費用の管理（FinOps）</text>
+<text x="508.0" y="379.5" class="s">タグで配賦して可視化 → 最適化 → 運用 を繰り返す</text>
+<rect x="770" y="64" width="170" height="346" class="zonef"/>
+<text x="782" y="84" class="L">オンプレミス・拠点</text>
+<rect x="785" y="230" width="140" height="46" class="box"/>
+<text x="855.0" y="257.0" class="tb">データセンター</text>
+<rect x="785" y="300" width="140" height="46" class="box"/>
+<text x="855.0" y="327.0" class="tb">拠点</text>
+<polyline points="855,276 855,300" class="ln"/>
+<polyline points="140,324 140,402 855,402 855,346" class="ln" marker-end="url(#ar)" marker-start="url(#ar)"/>
+<text x="810" y="396" class="a">専用線・VPN</text>
+</svg>

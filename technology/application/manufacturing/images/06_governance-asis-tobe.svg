@@ -1,0 +1,64 @@
+<svg viewBox="0 0 1020 600" xmlns="http://www.w3.org/2000/svg" role="img">
+<title>IT部門・生産ITの協働体制:現状とあるべき姿</title>
+<desc>左側は現状の姿で、IT部門と生産ITが正式な権限を持たない努力目標ベースの協働で連携している状態を示す。右側はあるべき姿で、IT部門・生産IT・業務部門(生産管理・生産技術・経理等)が参加する正式なデータガバナンス体制が、マスタのSystem of Record指定やコード標準化、変更管理を担う構造を示す。</desc>
+<rect x="0" y="0" width="1020" height="600" fill="#ffffff"/>
+
+<text x="510" y="30" text-anchor="middle" font-size="17" font-weight="700" fill="#1a1a1a">IT部門・生産ITの協働体制:現状とあるべき姿</text>
+
+<line x1="500" y1="55" x2="500" y2="500" stroke="#6b7280" stroke-width="1" stroke-dasharray="3 3"/>
+
+<text x="250" y="80" text-anchor="middle" font-size="14" font-weight="700" fill="#1a1a1a">現状(As-Is)</text>
+<text x="760" y="80" text-anchor="middle" font-size="14" font-weight="700" fill="#1a1a1a">あるべき姿(To-Be)</text>
+
+<rect x="60" y="150" width="160" height="90" rx="8" fill="#2563eb" opacity="0.14" stroke="#2563eb" stroke-width="1.5"/>
+<text x="140" y="190" text-anchor="middle" font-size="14" font-weight="700" fill="#1a1a1a">IT部門</text>
+<text x="140" y="210" text-anchor="middle" font-size="10" fill="#6b7280">ERP・全社基盤</text>
+
+<rect x="280" y="150" width="160" height="90" rx="8" fill="#16a34a" opacity="0.14" stroke="#16a34a" stroke-width="1.5"/>
+<text x="360" y="190" text-anchor="middle" font-size="14" font-weight="700" fill="#1a1a1a">生産IT</text>
+<text x="360" y="210" text-anchor="middle" font-size="10" fill="#6b7280">MES/OT・工場設備</text>
+
+<line x1="220" y1="195" x2="280" y2="195" stroke="#6b7280" stroke-width="2" stroke-dasharray="5 4" marker-end="url(#arrow)" marker-start="url(#arrowStart)"/>
+<text x="250" y="180" text-anchor="middle" font-size="10" font-weight="700" fill="#6b7280">協働・連携</text>
+
+<text x="250" y="270" text-anchor="middle" font-size="11" fill="#6b7280">(努力目標。正式な権限・</text>
+<text x="250" y="286" text-anchor="middle" font-size="11" fill="#6b7280">決定プロセスは存在しない)</text>
+
+<rect x="70" y="320" width="360" height="60" rx="6" fill="#6b7280" opacity="0.10" stroke="#6b7280" stroke-width="1"/>
+<text x="250" y="345" text-anchor="middle" font-size="11" font-weight="700" fill="#6b7280">リスク</text>
+<text x="250" y="362" text-anchor="middle" font-size="10" fill="#6b7280">意思決定の遅延・属人化・System of Recordの不在</text>
+
+<rect x="580" y="140" width="360" height="90" rx="8" fill="#d97706" opacity="0.15" stroke="#d97706" stroke-width="1.5"/>
+<text x="760" y="168" text-anchor="middle" font-size="14" font-weight="700" fill="#1a1a1a">データガバナンス体制(委員会)</text>
+<text x="760" y="188" text-anchor="middle" font-size="10" fill="#6b7280">System of Record指定 / コード標準化</text>
+<text x="760" y="204" text-anchor="middle" font-size="10" fill="#6b7280">変更管理プロセスの承認</text>
+
+<rect x="560" y="300" width="110" height="80" rx="8" fill="#2563eb" opacity="0.14" stroke="#2563eb" stroke-width="1.5"/>
+<text x="615" y="335" text-anchor="middle" font-size="12" font-weight="700" fill="#1a1a1a">IT部門</text>
+<text x="615" y="352" text-anchor="middle" font-size="9" fill="#6b7280">System管理</text>
+
+<rect x="700" y="300" width="110" height="80" rx="8" fill="#16a34a" opacity="0.14" stroke="#16a34a" stroke-width="1.5"/>
+<text x="755" y="335" text-anchor="middle" font-size="12" font-weight="700" fill="#1a1a1a">生産IT</text>
+<text x="755" y="352" text-anchor="middle" font-size="9" fill="#6b7280">System管理</text>
+
+<rect x="840" y="300" width="120" height="80" rx="8" fill="#7c3aed" opacity="0.14" stroke="#7c3aed" stroke-width="1.5"/>
+<text x="900" y="330" text-anchor="middle" font-size="12" font-weight="700" fill="#1a1a1a">業務部門</text>
+<text x="900" y="348" text-anchor="middle" font-size="9" fill="#6b7280">生産管理・生産技術</text>
+<text x="900" y="362" text-anchor="middle" font-size="9" fill="#6b7280">経理 等(Data Owner)</text>
+
+<line x1="615" y1="300" x2="700" y2="230" stroke="#6b7280" stroke-width="1.5" marker-end="url(#arrow)"/>
+<line x1="755" y1="300" x2="755" y2="230" stroke="#6b7280" stroke-width="1.5" marker-end="url(#arrow)"/>
+<line x1="900" y1="300" x2="820" y2="230" stroke="#6b7280" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+<text x="60" y="440" font-size="12" fill="#6b7280">現状: IT部門と生産ITの善意の協働に依存し、正式な決定機関がない。</text>
+<text x="580" y="440" font-size="12" fill="#6b7280">あるべき姿: 業務部門も含めた正式な体制が、マスタの正・変更ルールを決定する。</text>
+
+<defs>
+<marker id="arrow" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto">
+<path d="M0,0 L8,4 L0,8 Z" fill="#6b7280"/>
+</marker>
+<marker id="arrowStart" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto-start-reverse">
+<path d="M0,0 L8,4 L0,8 Z" fill="#6b7280"/>
+</marker>
+</defs>
+</svg>
