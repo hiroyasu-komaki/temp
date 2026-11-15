@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>付録B　レコードイメージ（T_BUDGET・T_ACTUAL → T_BASE → T_FORECAST → Summary）</title>
+<style>
+body{margin:0;padding:24px;background:#ffffff;font-family:-apple-system,"Hiragino Sans","Hiragino Kaku Gothic ProN","Yu Gothic UI","Meiryo",sans-serif;color:#1f1f1d}
+.w{max-width:760px;margin:0 auto;font-size:12px}
+h1{font-size:16px;font-weight:500;margin:0 0 4px}
+.note{font-size:12px;color:#73726c;margin:0 0 16px}
+.lbl{font-size:13px;font-weight:500;margin:0 0 4px}
+.sub{font-size:12px;color:#73726c;font-weight:400;margin-left:6px}
+table.r{border-collapse:collapse;width:100%;font-size:12px}
+table.r th,table.r td{border:0.5px solid #dedcd5;padding:3px 5px;text-align:right;white-space:nowrap}
+table.r th{background:#f5f4ef;color:#73726c;font-weight:400}
+table.r td.k,table.r th.k{text-align:left}
+.in{background:#FAEEDA;color:#854F0B}
+.calc{background:#EAF3DE;color:#3B6D11}
+.muted{color:#9c9a92}
+.arrow{display:flex;align-items:center;gap:8px;color:#73726c;font-size:12px;margin:6px 0 6px 12px}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.card{border:0.5px solid #dedcd5;border-radius:12px;padding:10px}
+.legend{display:flex;gap:14px;font-size:12px;color:#73726c;margin:4px 0 10px}
+.sw{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-2px;margin-right:4px;border:0.5px solid #dedcd5}
+</style>
+</head>
+<body>
+<div class="w">
+<h1>付録B　レコードイメージ</h1>
+<p class="note">日本リージョン・締め月 2026年6月（会計年度は4月始まり）を想定した架空データ。参照元：../chapters/03_design.md 4章</p>
+
+<div class="row2">
+ <div class="card">
+  <div class="lbl">T_BUDGET<span class="sub">Tagetikの予算をそのまま貼る</span></div>
+  <table class="r"><tr><th class="k">予算番号</th><th class="k">勘定科目</th><th>年月</th><th>金額</th></tr>
+  <tr><td class="k">1001</td><td class="k">6100 通信費</td><td>202604</td><td>100</td></tr>
+  <tr><td class="k">1001</td><td class="k">6100 通信費</td><td>202605</td><td>100</td></tr>
+  <tr><td class="k">2001</td><td class="k">6300 保守費</td><td>202604</td><td>50</td></tr>
+  <tr><td class="k">（空白）</td><td class="k">6200 ソフト</td><td>202604</td><td>30</td></tr>
+  <tr><td class="k muted" colspan="4">… 12か月分すべての行</td></tr></table>
+ </div>
+ <div class="card">
+  <div class="lbl">T_ACTUAL<span class="sub">Tagetikの実績をそのまま貼る</span></div>
+  <table class="r"><tr><th class="k">予算番号</th><th class="k">勘定科目</th><th>年月</th><th>金額</th></tr>
+  <tr><td class="k">1001</td><td class="k">6100 通信費</td><td>202604</td><td>95</td></tr>
+  <tr><td class="k">1001</td><td class="k">6100 通信費</td><td>202606</td><td>100</td></tr>
+  <tr><td class="k">2001</td><td class="k">6300 保守費</td><td>202605</td><td>50</td></tr>
+  <tr><td class="k">（空白）</td><td class="k">6200 ソフト</td><td>202606</td><td>40</td></tr>
+  <tr><td class="k muted" colspan="4">… 締め月（202606）までの行</td></tr></table>
+ </div>
+</div>
+
+<div class="arrow">↓　予算番号で1行にまとめ、月を横に並べる（空白は「(未設定)」に）</div>
+
+<div class="card">
+ <div class="lbl">T_BASE<span class="sub">数式。1行＝1予算番号</span></div>
+ <table class="r">
+ <tr><th class="k" rowspan="2">予算番号</th><th colspan="5">予算</th><th colspan="4">実績</th></tr>
+ <tr><th>4月</th><th>5月</th><th>6月</th><th>…</th><th>年間</th><th>4月</th><th>5月</th><th>6月</th><th>累計</th></tr>
+ <tr><td class="k">1001</td><td>100</td><td>100</td><td>100</td><td>…</td><td>1,200</td><td>95</td><td>110</td><td>100</td><td>305</td></tr>
+ <tr><td class="k">2001</td><td>50</td><td>50</td><td>50</td><td>…</td><td>600</td><td>40</td><td>50</td><td>45</td><td>135</td></tr>
+ <tr><td class="k">(未設定)</td><td>30</td><td>30</td><td>30</td><td>…</td><td>360</td><td>35</td><td>30</td><td>40</td><td>105</td></tr>
+ </table>
+</div>
+
+<div class="arrow">↓　同じ予算番号の行に予算・実績を表示</div>
+
+<div class="card" style="margin-bottom:8px">
+ <div class="lbl">前月版の T_FORECAST<span class="sub">gds_forecast_202605.xlsx（締め月 5月）</span></div>
+ <table class="r">
+ <tr><th class="k">予算番号</th><th class="k">担当</th><th>6月</th><th>7月</th><th>…</th><th>3月</th><th class="k">着地差異の理由</th></tr>
+ <tr><td class="k">1001</td><td class="k">インフラ</td><td>100</td><td>100</td><td>…</td><td>100</td><td class="k">回線増設を予定</td></tr>
+ <tr><td class="k">2001</td><td class="k">アプリ</td><td>50</td><td>50</td><td>…</td><td>50</td><td class="k">—</td></tr>
+ </table>
+</div>
+<div class="arrow">↓　担当・予測値・理由を引き継ぐ（6月は締まったので実績に置き換わる）</div>
+
+<div class="card">
+ <div class="lbl">T_FORECAST<span class="sub">gds_forecast_202606.xlsx。予算管理者が開く1枚</span></div>
+ <div class="legend"><span><span class="sw" style="background:#f5f4ef"></span>T_BASEから表示</span><span><span class="sw" style="background:#FAEEDA"></span>予算管理者が入力</span><span><span class="sw" style="background:#EAF3DE"></span>計算</span></div>
+ <table class="r">
+ <tr><th class="k">予算番号</th><th class="k">担当</th><th>年間予算</th><th>実績累計</th><th class="in">7月</th><th class="in">8月</th><th class="in">…</th><th class="in">3月</th><th class="calc">着地見込み</th><th class="calc">着地差異</th><th class="k in">理由</th></tr>
+ <tr><td class="k">1001</td><td class="k">インフラ</td><td>1,200</td><td>305</td><td class="in">100</td><td class="in">100</td><td class="in">…</td><td class="in">100</td><td class="calc">1,205</td><td class="calc">+5</td><td class="k in">6月に回線増設</td></tr>
+ <tr><td class="k">2001</td><td class="k">アプリ</td><td>600</td><td>135</td><td class="in">50</td><td class="in">50</td><td class="in">…</td><td class="in">50</td><td class="calc">585</td><td class="calc">−15</td><td class="k in">保守単価の見直し</td></tr>
+ <tr><td class="k">(未設定)</td><td class="k">ITF</td><td>360</td><td>105</td><td class="in">30</td><td class="in">30</td><td class="in">…</td><td class="in">30</td><td class="calc">375</td><td class="calc">+15</td><td class="k in">—</td></tr>
+ </table>
+ <div style="font-size:12px;color:#73726c;margin-top:6px">着地見込み ＝ 実績累計 ＋ 7月〜3月の予測値の合計（例：1001 は 305 ＋ 900 ＝ 1,205）。予算・実績は実際には1〜12か月目を横に並べて表示する（図では年間予算・実績累計にまとめている）</div>
+</div>
+
+<div class="arrow">↓　合計する</div>
+
+<div class="card">
+ <div class="lbl">Summary<span class="sub">数式</span></div>
+ <table class="r">
+ <tr><th>年間予算</th><th>実績累計</th><th>着地見込み</th><th>着地差異</th><th>予算番号の設定率（予算）</th><th>同（実績）</th></tr>
+ <tr><td>2,160</td><td>545</td><td>2,165</td><td>+5</td><td>83.3%</td><td>80.7%</td></tr>
+ </table>
+</div>
+</div>
+</body>
+</html>
